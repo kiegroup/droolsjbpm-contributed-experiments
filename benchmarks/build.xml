@@ -1,0 +1,258 @@
+<project name="Drools" basedir="." xmlns:artifact="urn:maven-artifact-ant" default="help">
+    <property name="version"   value="3.1"/>                            
+    
+    <!--
+    drools.removeIdentities = <true|false>
+    drools.shareAlphaNodes  = <true|false>
+    drools.shareBetaNodes = <true|false>
+    drools.alphaMemory = <true/false>
+    drools.alphaNodeHashingThreshold = <1...n>
+    drools.compositeKeyDepth = <1..3>
+    drools.indexLeftBetaMemory = <true/false>
+    drools.indexRightBetaMemory = <true/false>
+    drools.assertBehaviour = <IDENTITY|EQUALITY>
+    drools.logicalOverride = <DISCARD|PRESERVE>
+    -->
+    
+    <target name="help">
+        <echo>usage:</echo>
+        <echo>run-drools-waltz50</echo>
+        <echo>run-drools-waltz50-withprints</echo>
+        <echo>run-drools-manners128</echo>
+        <echo>run-drools-manners128-withprints</echo>
+        <echo>run-drools-manners128-noLeftIndexing</echo>
+        <echo></echo>
+        <echo>run-jess-waltz50</echo>
+        <echo>run-jess-waltz50-withprints</echo>
+        <echo>run-jess-manners128</echo>
+        <echo>run-jess-manners128-withprints</echo>        
+        <echo>run-jess-javabean-manners128</echo>
+        <echo>run-jess-javabean-manners128-withprints</echo>
+		</target>
+
+		<target name="clean">
+      <delete>        
+        <fileset dir="target" includes="**/**"/>        
+      </delete>  		    
+		</target>
+
+    <target name="compile">
+      <mkdir dir="target"/>
+      <mkdir dir="target/classes"/>  
+      
+      <copy todir="target/classes">
+        <fileset dir="src/resources"/>
+        <fileset dir="src/rules"/>
+      </copy>                     
+     
+      <javac srcdir="src/java"
+             destdir="target/classes"
+             source="1.5">
+        <classpath>            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+      </javac>                          
+    </target>  
+
+    <target name="run-drools-waltz50">                    
+      <java classname="benchmarks.waltz.WaltzBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="drools"/>
+        <arg value="waltz.drl"/>
+        <arg value="waltz50.dat"/>
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>         
+
+    <target name="run-drools-waltz50-withprints">                    
+      <java classname="benchmarks.waltz.WaltzBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="drools"/>
+        <arg value="waltz-withprints.drl"/>
+        <arg value="waltz50.dat"/>
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>         
+
+    <target name="run-drools-manners128">                    
+      <java classname="benchmarks.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="drools"/>
+        <arg value="manners.drl"/>       
+        <arg value="manners128.dat"/>  
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target> 
+    
+    <target name="run-drools-manners128-noLeftIndexing">                    
+      <java classname="benchmarks.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="drools"/>
+        <arg value="manners.drl"/>       
+        <arg value="manners128.dat"/>  
+        <sysproperty key="drools.indexLeftBetaMemory" value="false"/>
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>                 
+    
+    <target name="run-drools-manners128-withprints">                    
+      <java classname="benchmarks.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="drools"/>
+        <arg value="manners-withprints.drl"/>       
+        <arg value="manners128.dat"/>  
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>        
+
+    <target name="run-jess-waltz50">                    
+      <java classname="benchmarks.waltz.WaltzBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="jess"/>
+        <arg value="waltz.clp"/>
+        <arg value="waltz50.dat"/>
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>  
+    
+    <target name="run-jess-waltz50-withprints">                    
+      <java classname="benchmarks.waltz.WaltzBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="jess"/>
+        <arg value="waltz-withprints.clp"/>
+        <arg value="waltz50.dat"/>
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>      
+        
+        
+    <target name="run-jess-manners128">                    
+      <java classname="benchmarks.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="jess"/>
+        <arg value="manners.clp"/>       
+        <arg value="manners128.dat"/>  
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>              
+    
+    <target name="run-jess-manners128-withprints">                    
+      <java classname="benchmarks.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="jess"/>
+        <arg value="manners-withprints.clp"/>       
+        <arg value="manners128.dat"/>  
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>  
+    
+    <target name="run-jess-javabean-manners128">                    
+      <java classname="benchmarks.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="jess-javabean"/>
+        <arg value="manners-javabean.clp"/>       
+        <arg value="manners128.dat"/>  
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>   
+    
+    <target name="run-jess-javabean-manners128-withprints">                    
+      <java classname="benchmarks.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="jess-javabean"/>
+        <arg value="manners-javabean-withprints.clp"/>  
+        <arg value="manners128.dat"/>  
+        <jvmarg value="-Xmx512M" />
+        <jvmarg value="-Xms512M" />
+        <jvmarg value="-server" />
+      </java>                          
+    </target>                     
+</project>
