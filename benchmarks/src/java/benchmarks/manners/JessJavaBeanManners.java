@@ -10,7 +10,12 @@ import org.drools.WorkingMemory;
 import benchmarks.Benchmark;
 import benchmarks.BaseBenchmark.Stats;
 
+import jess.Activation;
+import jess.Defrule;
 import jess.Funcall;
+import jess.JessEvent;
+import jess.JessException;
+import jess.JessListener;
 import jess.RU;
 import jess.Rete;
 import jess.Value;
@@ -19,11 +24,36 @@ public class JessJavaBeanManners
     implements
     Benchmark {    
     Rete rete = new Rete();
+    private final Stats stats  = new Stats();
 
     public void init(String fileName, boolean buildStats) throws Exception {
         rete.executeCommand("(clear)");
         rete.executeCommand("(batch \"benchmarks/manners/"+fileName+"\")");
         rete.executeCommand("(reset)");
+        
+        JessListener listener  = new JessListener()  {
+            public void eventHappened(JessEvent event) throws JessException {
+                System.out.println( "help" );
+                switch ( event.getTag() ) {
+                    case JessEvent.DEFRULE_FIRED:
+                        Defrule rule =  ( Defrule ) event.getSource();
+                        stats.fired( rule.getName() );
+                        break;
+                    case JessEvent.ACTIVATION:
+                        Activation activation = (Activation) event.getSource();
+                        if ( activation.isInactive() ) {
+                            stats.cancelled( activation.getRule().getName() );
+                        } else  {
+                            stats.created( activation.getRule().getName() );
+                        }
+                        break;
+                }                
+            }            
+        };
+        
+        if( buildStats ) {
+            rete.addJessListener( listener );
+        }
     }
 
     public void assertObjects(String fileName) throws Exception {

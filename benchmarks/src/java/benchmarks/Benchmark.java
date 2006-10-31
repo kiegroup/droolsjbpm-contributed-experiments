@@ -1,7 +1,5 @@
 package benchmarks;
 
-import java.util.List;
-
 import benchmarks.BaseBenchmark.Stats;
 
 public interface Benchmark {
