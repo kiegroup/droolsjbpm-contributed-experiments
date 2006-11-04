@@ -67,7 +67,7 @@ public abstract class BaseBenchmark {
             }
                         
             Map created = stats.getCreated();
-            System.out.println("Total Created:  " +  created.size() );
+            System.out.println("Total Created:  " +  getTotal( created ) );
             System.out.println("--------------------" );
             for( Iterator  it = created.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
@@ -75,7 +75,7 @@ public abstract class BaseBenchmark {
             }
             System.out.println("");
             Map cancelled = stats.getCancelled();
-            System.out.println("Total Cancelled:  " +  cancelled.size() );
+            System.out.println("Total Cancelled:  " +   getTotal( cancelled ) );
             System.out.println("--------------------" );            
             for( Iterator  it = cancelled.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
@@ -83,7 +83,7 @@ public abstract class BaseBenchmark {
             }  
             System.out.println("");
             Map fired = stats.getFired();
-            System.out.println("Total Fired:  " +  fired.size() );
+            System.out.println("Total Fired:  " +   getTotal( fired ) );
             System.out.println("--------------------" );            
             for( Iterator  it = fired.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
@@ -95,6 +95,15 @@ public abstract class BaseBenchmark {
         }
     }
 
+    private int getTotal(Map map) {
+    	int total = 0;
+        for( Iterator  it = map.values().iterator(); it.hasNext(); ) {
+        	Counter counter = (Counter) it.next();
+        	total += counter.getValue();
+        }
+        return total;
+    }
+    
     public static class Stats {
         private Map created = new HashMap();
         private Map cancelled = new HashMap();
@@ -142,6 +151,11 @@ public abstract class BaseBenchmark {
     
     public static class Counter {
         int value=0;
+        
+        public int getValue() {
+        	return this.value;
+        }
+        
         public void increase(){
             value++;
         }       
