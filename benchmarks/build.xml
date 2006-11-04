@@ -31,6 +31,7 @@
 		</target>
 
 		<target name="clean">
+		  <mkdir dir="target"/>
       <delete>        
         <fileset dir="target" includes="**/**"/>        
       </delete>  		    
