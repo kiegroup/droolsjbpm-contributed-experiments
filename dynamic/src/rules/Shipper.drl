@@ -1,0 +1,45 @@
+package com.jbpm.action
+ 
+import com.sample.Customer;
+import com.sample.Order;
+import com.sample.LineItem;
+
+rule "Total order"
+    salience 10 
+    when
+        $item : LineItem( $amount : amount, processed == false );
+        $order: Order( lineItems contains $item )
+    then
+        System.out.println("Adding "+$item.getAmount()+" to the total amount");
+        $order.setTotalAmount( $order.getTotalAmount() + $item.getAmount() );
+        $item.setProcessed( true );
+        modify( $order );
+        modify( $item );
+end
+        
+rule "Show total"
+    salience 5
+    when
+        $order: Order( )
+    then
+        System.out.println("Total: "+$order.getTotalAmount());
+end
+        
+
+rule "Shipper FEDX"
+	when
+		$cust  : Customer( region >= 1 )
+		$order : Order( customer == $cust, totalAmount > 30 )
+	then
+		System.out.println("TotalAmount: "+$order.getTotalAmount()+" -> ship via FEDX " );
+		
+end
+
+rule "Shipper USPS"
+	when
+		$cust  : Customer( region >= 1 )
+		$order : Order( customer == $cust, totalAmount <= 30 )
+	then
+		System.out.println("TotalAmount: "+$order.getTotalAmount()+" -> ship via USPS" );
+		
+end
