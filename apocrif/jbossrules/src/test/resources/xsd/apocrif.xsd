@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="LOAN_APPLICATION">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="_DATA_INFORMATION"/>
+        <xs:element ref="ADDITIONAL_CASE_DATA"/>
+        <xs:element ref="ASSET"/>
+        <xs:element ref="GOVERNMENT_REPORTING"/>
+        <xs:element ref="INTERVIEWER_INFORMATION"/>
+        <xs:element ref="LIABILITY"/>
+        <xs:element ref="LOAN_PRODUCT_DATA"/>
+        <xs:element ref="LOAN_PURPOSE"/>
+        <xs:element ref="LOAN_QUALIFICATION"/>
+        <xs:element ref="MORTGAGE_TERMS"/>
+        <xs:element ref="PROPERTY"/>
+        <xs:element ref="PROPOSED_HOUSING_EXPENSE"/>
+        <xs:element ref="REO_PROPERTY"/>
+        <xs:element ref="TRANSACTION_DETAIL"/>
+        <xs:element ref="BORROWER"/>
+      </xs:sequence>
+      <xs:attribute name="MISMOVersionID" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="_DATA_INFORMATION">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="DATA_VERSION"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DATA_VERSION">
+    <xs:complexType>
+      <xs:attribute name="_Name" use="required" type="xs:NCName"/>
+      <xs:attribute name="_Number" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ADDITIONAL_CASE_DATA">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="MORTGAGE_SCORE"/>
+        <xs:element ref="TRANSMITTAL_DATA"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MORTGAGE_SCORE">
+    <xs:complexType>
+      <xs:attribute name="_Value" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TRANSMITTAL_DATA">
+    <xs:complexType>
+      <xs:attribute name="BelowMarketSubordinateFinancingIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="CurrentFirstMortgageHolderType" use="required" type="xs:NCName"/>
+      <xs:attribute name="PropertyEstimatedValueAmount" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ASSET">
+    <xs:complexType>
+      <xs:attribute name="BorrowerID" use="required" type="xs:NCName"/>
+      <xs:attribute name="_AccountIdentifier" use="required" type="xs:NCName"/>
+      <xs:attribute name="_CashOrMarketValueAmount" use="required" type="xs:integer"/>
+      <xs:attribute name="_HolderCity" use="required" type="xs:NCName"/>
+      <xs:attribute name="_HolderName" use="required"/>
+      <xs:attribute name="_HolderPostalCode" use="required" type="xs:integer"/>
+      <xs:attribute name="_HolderState" use="required" type="xs:NCName"/>
+      <xs:attribute name="_HolderStreetAddress" use="required"/>
+      <xs:attribute name="_Type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GOVERNMENT_REPORTING">
+    <xs:complexType>
+      <xs:attribute name="HMDAPreapprovalType" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="INTERVIEWER_INFORMATION">
+    <xs:complexType>
+      <xs:attribute name="ApplicationTakenMethodType" use="required" type="xs:NCName"/>
+      <xs:attribute name="InterviewerApplicationSignedDate" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="InterviewersEmployerCity" use="required" type="xs:NCName"/>
+      <xs:attribute name="InterviewersEmployerName" use="required"/>
+      <xs:attribute name="InterviewersEmployerPostalCode" use="required" type="xs:integer"/>
+      <xs:attribute name="InterviewersEmployerState" use="required" type="xs:NCName"/>
+      <xs:attribute name="InterviewersEmployerStreetAddress" use="required"/>
+      <xs:attribute name="InterviewersTelephoneNumber" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LIABILITY">
+    <xs:complexType>
+      <xs:attribute name="BorrowerID" use="required" type="xs:NCName"/>
+      <xs:attribute name="REO_ID" use="required" type="xs:NCName"/>
+      <xs:attribute name="_AccountIdentifier" use="required" type="xs:NCName"/>
+      <xs:attribute name="_ExclusionIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="_HolderCity" use="required" type="xs:NCName"/>
+      <xs:attribute name="_HolderName" use="required"/>
+      <xs:attribute name="_HolderPostalCode" use="required" type="xs:integer"/>
+      <xs:attribute name="_HolderState" use="required" type="xs:NCName"/>
+      <xs:attribute name="_HolderStreetAddress" use="required"/>
+      <xs:attribute name="_ID" use="required" type="xs:NCName"/>
+      <xs:attribute name="_MonthlyPaymentAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="_PayoffStatusIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="_RemainingTermMonths" use="required" type="xs:integer"/>
+      <xs:attribute name="_Type" use="required" type="xs:NCName"/>
+      <xs:attribute name="_UnpaidBalanceAmount" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LOAN_PRODUCT_DATA">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ARM"/>
+        <xs:element ref="LOAN_FEATURES"/>
+        <xs:element ref="PAYMENT_ADJUSTMENT"/>
+        <xs:element ref="RATE_ADJUSTMENT"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ARM">
+    <xs:complexType>
+      <xs:attribute name="RateAdjustmentLifetimeCapPercent" use="required" type="xs:decimal"/>
+      <xs:attribute name="_ConversionOptionIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="_IndexCurrentValuePercent" use="required" type="xs:decimal"/>
+      <xs:attribute name="_IndexMarginPercent" use="required" type="xs:decimal"/>
+      <xs:attribute name="_IndexType" use="required" type="xs:NCName"/>
+      <xs:attribute name="_QualifyingRatePercent" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LOAN_FEATURES">
+    <xs:complexType>
+      <xs:attribute name="AssumabilityIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="BalloonIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="BuydownTemporarySubsidyIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="EscrowWaiverIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="GSEPropertyType" use="required" type="xs:NCName"/>
+      <xs:attribute name="LienPriorityType" use="required" type="xs:NCName"/>
+      <xs:attribute name="LoanRepaymentType" use="required" type="xs:NCName"/>
+      <xs:attribute name="LoanScheduledClosingDate" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="PaymentFrequencyType" use="required" type="xs:NCName"/>
+      <xs:attribute name="PrepaymentPenaltyIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="ScheduledFirstPaymentDate" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PAYMENT_ADJUSTMENT">
+    <xs:complexType>
+      <xs:attribute name="FirstPaymentAdjustmentMonths" use="required" type="xs:integer"/>
+      <xs:attribute name="SubsequentPaymentAdjustmentMonths" use="required" type="xs:integer"/>
+      <xs:attribute name="_PeriodNumber" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RATE_ADJUSTMENT">
+    <xs:complexType>
+      <xs:attribute name="FirstRateAdjustmentMonths" use="required" type="xs:integer"/>
+      <xs:attribute name="SubsequentRateAdjustmentMonths" use="required" type="xs:integer"/>
+      <xs:attribute name="_DurationMonths" use="required" type="xs:integer"/>
+      <xs:attribute name="_Percent" use="required" type="xs:integer"/>
+      <xs:attribute name="_PeriodNumber" use="required" type="xs:integer"/>
+      <xs:attribute name="_SubsequentCapPercent" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LOAN_PURPOSE">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="CONSTRUCTION_REFINANCE_DATA"/>
+      </xs:sequence>
+      <xs:attribute name="PropertyRightsType" use="required" type="xs:NCName"/>
+      <xs:attribute name="PropertyUsageType" use="required" type="xs:NCName"/>
+      <xs:attribute name="_Type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CONSTRUCTION_REFINANCE_DATA">
+    <xs:complexType>
+      <xs:attribute name="GSERefinancePurposeType" use="required" type="xs:NCName"/>
+      <xs:attribute name="PropertyAcquiredYear" use="required" type="xs:integer"/>
+      <xs:attribute name="PropertyExistingLienAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="PropertyOriginalCostAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="RefinanceImprovementsType" use="required" type="xs:NCName"/>
+      <xs:attribute name="SecondaryFinancingRefinanceIndicator" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LOAN_QUALIFICATION">
+    <xs:complexType>
+      <xs:attribute name="AdditionalBorrowerAssetsConsideredIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="AdditionalBorrowerAssetsNotConsideredIndicator" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MORTGAGE_TERMS">
+    <xs:complexType>
+      <xs:attribute name="ARMTypeDescription" use="required"/>
+      <xs:attribute name="BaseLoanAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="BorrowerRequestedLoanAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="LenderCaseIdentifier" use="required" type="xs:NCName"/>
+      <xs:attribute name="LoanAmortizationTermMonths" use="required" type="xs:integer"/>
+      <xs:attribute name="LoanAmortizationType" use="required" type="xs:NCName"/>
+      <xs:attribute name="MortgageType" use="required" type="xs:NCName"/>
+      <xs:attribute name="RequestedInterestRatePercent" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PROPERTY">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="PARSED_STREET_ADDRESS"/>
+        <xs:element ref="_VALUATION"/>
+      </xs:sequence>
+      <xs:attribute name="BuildingStatusType" use="required" type="xs:NCName"/>
+      <xs:attribute name="PlannedUnitDevelopmentIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="_City" use="required" type="xs:NCName"/>
+      <xs:attribute name="_County" use="required" type="xs:NCName"/>
+      <xs:attribute name="_FinancedNumberOfUnits" use="required" type="xs:integer"/>
+      <xs:attribute name="_PostalCode" use="required" type="xs:integer"/>
+      <xs:attribute name="_State" use="required" type="xs:NCName"/>
+      <xs:attribute name="_StreetAddress" use="required"/>
+      <xs:attribute name="_StructureBuiltYear" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PARSED_STREET_ADDRESS">
+    <xs:complexType>
+      <xs:attribute name="_HouseNumber" use="required" type="xs:integer"/>
+      <xs:attribute name="_StreetName" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="_VALUATION">
+    <xs:complexType>
+      <xs:attribute name="_MethodType" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PROPOSED_HOUSING_EXPENSE">
+    <xs:complexType>
+      <xs:attribute name="HousingExpenseType" use="required"/>
+      <xs:attribute name="_PaymentAmount" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="REO_PROPERTY">
+    <xs:complexType>
+      <xs:attribute name="BorrowerID" use="required" type="xs:NCName"/>
+      <xs:attribute name="LiabilityID" use="required" type="xs:NCName"/>
+      <xs:attribute name="REO_ID" use="required" type="xs:NCName"/>
+      <xs:attribute name="_City" use="required" type="xs:NCName"/>
+      <xs:attribute name="_CurrentResidenceIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="_DispositionStatusType" use="required"/>
+      <xs:attribute name="_GSEPropertyType" use="required" type="xs:NCName"/>
+      <xs:attribute name="_LienInstallmentAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="_LienUPBAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="_MaintenanceExpenseAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="_MarketValueAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="_PostalCode" use="required" type="xs:integer"/>
+      <xs:attribute name="_State" use="required" type="xs:NCName"/>
+      <xs:attribute name="_StreetAddress" use="required"/>
+      <xs:attribute name="_SubjectIndicator" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TRANSACTION_DETAIL">
+    <xs:complexType>
+      <xs:attribute name="BorrowerPaidDiscountPointsTotalAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="EstimatedClosingCostsAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="FREReservesAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="PrepaidItemsEstimatedAmount" use="required" type="xs:decimal"/>
+      <xs:attribute name="RefinanceIncludingDebtsToBePaidOffAmount" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BORROWER">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="_RESIDENCE"/>
+        <xs:element ref="CURRENT_INCOME"/>
+        <xs:element ref="DECLARATION"/>
+        <xs:element ref="EMPLOYER"/>
+        <xs:element ref="GOVERNMENT_MONITORING"/>
+        <xs:element maxOccurs="unbounded" ref="PRESENT_HOUSING_EXPENSE"/>
+      </xs:sequence>
+      <xs:attribute name="BorrowerID" use="required" type="xs:NCName"/>
+      <xs:attribute name="JointAssetLiabilityReportingType" use="required" type="xs:NCName"/>
+      <xs:attribute name="MaritalStatusType" use="required" type="xs:NCName"/>
+      <xs:attribute name="_ApplicationSignedDate" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="_BirthDate" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="_FirstName" use="required" type="xs:NCName"/>
+      <xs:attribute name="_LastName" use="required" type="xs:NCName"/>
+      <xs:attribute name="_PrintPositionType" use="required" type="xs:NCName"/>
+      <xs:attribute name="_SSN" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="_RESIDENCE">
+    <xs:complexType>
+      <xs:attribute name="BorrowerResidencyBasisType" use="required" type="xs:NCName"/>
+      <xs:attribute name="BorrowerResidencyDurationMonths" use="required" type="xs:integer"/>
+      <xs:attribute name="BorrowerResidencyDurationYears" use="required" type="xs:integer"/>
+      <xs:attribute name="BorrowerResidencyType" use="required" type="xs:NCName"/>
+      <xs:attribute name="_City" use="required" type="xs:NCName"/>
+      <xs:attribute name="_Country" use="required" type="xs:NCName"/>
+      <xs:attribute name="_PostalCode" use="required" type="xs:integer"/>
+      <xs:attribute name="_State" use="required" type="xs:NCName"/>
+      <xs:attribute name="_StreetAddress" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CURRENT_INCOME">
+    <xs:complexType>
+      <xs:attribute name="IncomeType" use="required" type="xs:NCName"/>
+      <xs:attribute name="_MonthlyTotalAmount" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DECLARATION">
+    <xs:complexType>
+      <xs:attribute name="AlimonyChildSupportObligationIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="BankruptcyIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="BorrowedDownPaymentIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="CitizenshipResidencyType" use="required" type="xs:NCName"/>
+      <xs:attribute name="CoMakerEndorserOfNoteIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="HomeownerPastThreeYearsType" use="required" type="xs:NCName"/>
+      <xs:attribute name="IntentToOccupyType" use="required" type="xs:NCName"/>
+      <xs:attribute name="LoanForeclosureOrJudgementIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="OutstandingJudgementsIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="PartyToLawsuitIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="PresentlyDelinquentIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="PriorPropertyTitleType" use="required" type="xs:NCName"/>
+      <xs:attribute name="PriorPropertyUsageType" use="required" type="xs:NCName"/>
+      <xs:attribute name="PropertyForeclosedPastSevenYearsIndicator" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EMPLOYER">
+    <xs:complexType>
+      <xs:attribute name="CurrentEmploymentMonthsOnJob" use="required" type="xs:integer"/>
+      <xs:attribute name="CurrentEmploymentYearsOnJob" use="required" type="xs:integer"/>
+      <xs:attribute name="EmploymentBorrowerSelfEmployedIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="EmploymentCurrentIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="EmploymentPrimaryIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="_City" use="required" type="xs:NCName"/>
+      <xs:attribute name="_Name" use="required"/>
+      <xs:attribute name="_PostalCode" use="required" type="xs:integer"/>
+      <xs:attribute name="_State" use="required" type="xs:NCName"/>
+      <xs:attribute name="_StreetAddress" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GOVERNMENT_MONITORING">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="HMDA_RACE"/>
+      </xs:sequence>
+      <xs:attribute name="GenderType" use="required" type="xs:NCName"/>
+      <xs:attribute name="HMDAEthnicityType" use="required" type="xs:NCName"/>
+      <xs:attribute name="RaceNationalOriginRefusalIndicator" use="required" type="xs:NCName"/>
+      <xs:attribute name="RaceNationalOriginType" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="HMDA_RACE">
+    <xs:complexType>
+      <xs:attribute name="_Type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PRESENT_HOUSING_EXPENSE">
+    <xs:complexType>
+      <xs:attribute name="HousingExpenseType" use="required" type="xs:NCName"/>
+      <xs:attribute name="_PaymentAmount" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
