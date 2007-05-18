@@ -289,7 +289,6 @@ public class Rif2DrlTranslator
             try {
                 JAXBContextImpl contextImpl = (JAXBContextImpl) JAXBContext.newInstance( variable.getType().getNamespaceURI(),
                                                                                          classLoader );
-                //typeName = contextImpl.getNearestTypeName( new QName( variable.getType().getNamespaceURI(), variable.getType().getLocalPart() ) );
                 Class clazz = contextImpl.getGlobalType( variable.getType() ).jaxbType;
                 imports.add( clazz.getName() );
                 typeName = clazz.getSimpleName();

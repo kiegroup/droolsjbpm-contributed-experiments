@@ -12,6 +12,8 @@ import java.util.Collection;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import mismo.LOANAPPLICATION;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.rule.Package;
@@ -31,8 +33,8 @@ public class JBossRulesTest extends TestCase {
                               String pkgName,
                               ClassLoader classLoader) throws Exception {
         Ruleset rifRuleset = deserializer.deserialize( new BufferedReader( new FileReader( new File( rifFileName ) ) ) );
-        String actualDrlText = new Rif2DrlTranslator(classLoader).translateToString( rifRuleset, 
-                                                                          pkgName );
+        String actualDrlText = new Rif2DrlTranslator( classLoader ).translateToString( rifRuleset,
+                                                                                       pkgName );
 
         String expectedDrlText = readFileAsString( drlFileName );
         System.out.println( expectedDrlText );
@@ -50,11 +52,11 @@ public class JBossRulesTest extends TestCase {
         final String RIF_FILE = "src/test/resources/xml/creditscore1.xml";
         //final String IMPLICIT_PCK = "mismo2";
 
-//        File file = new File( "src/test/resources/creditscore.jar" );
-//        ClassLoader classLoader = new URLClassLoader( new URL[] { file.toURL() } );
-//        assertTrue( file.exists() );
+        //        File file = new File( "src/test/resources/creditscore.jar" );
+        //        ClassLoader classLoader = new URLClassLoader( new URL[] { file.toURL() } );
+        //        assertTrue( file.exists() );
         //classLoader.
-        
+
         testParser( RIF_FILE,
                     DRL_FILE,
                     "creditscore",
@@ -93,23 +95,27 @@ public class JBossRulesTest extends TestCase {
         //		final String XSD_FILE = "data/xsd/CREDIT_RESPONSE_v2_3_1(MXCompliance).xsd";
 
         final String XML_FILE = "src/test/resources/xml/AUSMXARM.xml";
-        final String IRL_FILE = "src/test/resources/irl/creditscore3.irl";
-        final String RIF_FILE = "src/test/resources/xml/creditscore3.xml";
-        //final String IMPLICIT_PCK = "mismo";
+        //final String IRL_FILE = "src/test/resources/drl/test.irl";
+        final String RIF_FILE = "src/test/resources/xml/test.xml";
 
-//        Reader reader = new BufferedReader( new FileReader( new File( RIF_FILE ) ) );
-//        JBossRulesDriver driver = new JBossRulesDriver("mismo",
-//                                                       Thread.currentThread().getContextClassLoader() ).toURL() } ) );
-//        Package pkg = driver.readFromRifXml( reader );
-//        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-//        ruleBase.addPackage( pkg );
-        
-        JAXBContext jc = JAXBContext.newInstance("mismo");
-        Unmarshaller unmarshaller = jc.createUnmarshaller();
-        
-        Collection collection = (Collection)
-        unmarshaller.unmarshal(new File( XML_FILE ) );
-                        
+        Ruleset rifRuleset = deserializer.deserialize( new BufferedReader( new FileReader( new File( RIF_FILE ) ) ) );
+        String actualDrlText = new Rif2DrlTranslator( Thread.currentThread().getContextClassLoader() ).translateToString( rifRuleset,
+                                                                                                                          "mismo" );
+
+        //        JAXBContext jc = JAXBContext.newInstance( "mismo" );
+        //        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        //
+        //        LOANAPPLICATION application = (LOANAPPLICATION) unmarshaller.unmarshal( new File( XML_FILE ) );
+        //
+        //        JBossRulesDriver driver = new JBossRulesDriver( "mismo",
+        //                                                        Thread.currentThread().getContextClassLoader() );
+        //        
+        //        Reader reader = new BufferedReader( new FileReader( new File( RIF_FILE ) ) );
+        //
+        //        Package pkg = driver.readFromRifXml( reader );
+        //        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        //        ruleBase.addPackage( pkg );
+
         //executeDegradedRuleset(XSD_FILE, XML_FILE, IRL_FILE, RIF_FILE, IMPLICIT_PCK );
     }
 
