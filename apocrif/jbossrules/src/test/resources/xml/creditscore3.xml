@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Ruleset xmlns:aprif="http://apocrif/pr" xmlns:ns0="mismo" xmlns:xpath="http://www.w3.org/2005/xpath-functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Ruleset xmlns:aprif="http://apocrif/pr" xmlns:ns0="creditscore" xmlns:xpath="http://www.w3.org/2005/xpath-functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <name>IlrContext</name>
 <ProductionRule>
 <name>Credit_Score_Adjustments_0</name>

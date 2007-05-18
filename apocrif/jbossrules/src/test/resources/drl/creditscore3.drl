@@ -1,6 +1,6 @@
-package mismo
+package creditscore
 
-import mismo.CreditScore
+import creditscore.CreditScore
 
 rule "Credit_Score_Adjustments_0"
 when 

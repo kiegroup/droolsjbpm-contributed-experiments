@@ -1,6 +1,6 @@
-package mismo
+package creditscore
 
-import mismo.Root
+import creditscore.Root
 
 rule "Occupancy_Adjustments_1"
 when 

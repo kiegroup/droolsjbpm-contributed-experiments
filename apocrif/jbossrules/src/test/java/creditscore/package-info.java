@@ -5,6 +5,6 @@
 // Generated on: 2007.05.15 at 02:31:11 PM BST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "mismo")
-package mismo;
+@javax.xml.bind.annotation.XmlSchema(namespace = "creditscore")
+package creditscore;
 

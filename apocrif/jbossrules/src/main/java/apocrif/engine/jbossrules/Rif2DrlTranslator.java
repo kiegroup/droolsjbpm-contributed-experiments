@@ -56,44 +56,14 @@ public class Rif2DrlTranslator
     private String        var;
 
     private boolean       inConsequence;
-
-    public class Pattern {
-        private String       type;
-        private String       binding;
-        private List<String> constraints;
-        private String       from;
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getBinding() {
-            return binding;
-        }
-
-        public void setBinding(String binding) {
-            this.binding = binding;
-        }
-
-        public List<String> getConstraints() {
-            if ( this.constraints == null ) {
-                this.constraints = new ArrayList();
-            }
-            return this.constraints;
-        }
-
-        public String getFrom() {
-            return from;
-        }
-
-        public void setFrom(String from) {
-            this.from = from;
-        }
+    
+    private ClassLoader   classLoader;
+    
+    public Rif2DrlTranslator(ClassLoader classLoader) {
+        this();
+        this.classLoader = classLoader;
     }
+    
 
     public Rif2DrlTranslator() {
         binaryOp2Irl = new HashMap<String, String>();
@@ -113,8 +83,9 @@ public class Rif2DrlTranslator
                           "-" );
     }
 
-    public Package translateToPackage(Ruleset rifRuleset) throws Exception {
-        String drlString = translateToString( rifRuleset );
+    public Package translateToPackage(Ruleset rifRuleset, String pkgName) throws Exception {
+        String drlString = translateToString( rifRuleset, 
+                                              pkgName );
 
         PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackageFromDrl( new StringReader( drlString ) );
@@ -122,7 +93,7 @@ public class Rif2DrlTranslator
         return pkg;
     }
 
-    public String translateToString(Ruleset rifRuleset) throws Exception {
+    public String translateToString(Ruleset rifRuleset, String pkgName) throws Exception {
         StringWriter sw = new StringWriter();
         writer = new PrintWriter( sw );
 
@@ -135,7 +106,7 @@ public class Rif2DrlTranslator
         }
 
         StringBuilder builder = new StringBuilder();
-        builder.append( "package mismo\n" );
+        builder.append( "package " + pkgName + "\n" );
         for ( String entry : imports ) {
             builder.append( "import " + entry + "\n" );
         }
@@ -317,7 +288,7 @@ public class Rif2DrlTranslator
 
             try {
                 JAXBContextImpl contextImpl = (JAXBContextImpl) JAXBContext.newInstance( variable.getType().getNamespaceURI(),
-                                                                                         this.getClass().getClassLoader() );
+                                                                                         classLoader );
                 //typeName = contextImpl.getNearestTypeName( new QName( variable.getType().getNamespaceURI(), variable.getType().getLocalPart() ) );
                 Class clazz = contextImpl.getGlobalType( variable.getType() ).jaxbType;
                 imports.add( clazz.getName() );
@@ -328,6 +299,45 @@ public class Rif2DrlTranslator
             }
 
             pattern.setType( typeName );
+        }
+    }
+
+    
+    public class Pattern {
+        private String       type;
+        private String       binding;
+        private List<String> constraints;
+        private String       from;
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getBinding() {
+            return binding;
+        }
+
+        public void setBinding(String binding) {
+            this.binding = binding;
+        }
+
+        public List<String> getConstraints() {
+            if ( this.constraints == null ) {
+                this.constraints = new ArrayList();
+            }
+            return this.constraints;
+        }
+
+        public String getFrom() {
+            return from;
+        }
+
+        public void setFrom(String from) {
+            this.from = from;
         }
     }
 

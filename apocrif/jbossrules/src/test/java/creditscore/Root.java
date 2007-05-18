@@ -5,7 +5,7 @@
 // Generated on: 2007.05.15 at 02:31:11 PM BST 
 //
 
-package mismo;
+package creditscore;
 
 import java.util.ArrayList;
 import java.util.List;

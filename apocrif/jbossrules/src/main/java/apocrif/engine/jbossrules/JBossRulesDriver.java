@@ -15,11 +15,20 @@ import apocrif.io.DOMSerializer;
 public class JBossRulesDriver
     implements
     Driver {
-    DOMSerializer   serializer   = new DOMSerializer();
-    DOMDeserializer deserializer = new DOMDeserializer();
+    private DOMSerializer   serializer   = new DOMSerializer();
+    private DOMDeserializer deserializer = new DOMDeserializer();
+    private String pkgName;
+    private ClassLoader classLoader;
+    
+    
+    public JBossRulesDriver(String pkgName,
+                            ClassLoader classLoader) {
+        this.pkgName = pkgName;
+        this.classLoader = classLoader;
+    }       
 
     public Package readFromRif(Ruleset rifRuleset) throws Exception {
-        return new Rif2DrlTranslator().translateToPackage( rifRuleset );
+        return new Rif2DrlTranslator(this.classLoader).translateToPackage( rifRuleset, pkgName );
     }
 
     public Package readFromRifXml(Reader reader) throws Exception {
