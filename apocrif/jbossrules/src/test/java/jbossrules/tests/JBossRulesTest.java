@@ -88,30 +88,30 @@ public class JBossRulesTest extends TestCase {
                     Thread.currentThread().getContextClassLoader() );
     }
 
-//    public void testCreditscore3() throws Exception {
-//        final String XSD_FILE = "src/test/resources/xsd/AUS_v2_4.xsd";
-//        //		final String XSD_FILE = "data/xsd/CREDIT_RESPONSE_v2_3_1(MXCompliance).xsd";
-//
-//        final String XML_FILE = "src/test/resources/xml/AUSMXARM.xml";
-//        final String IRL_FILE = "src/test/resources/irl/creditscore3.irl";
-//        final String RIF_FILE = "src/test/resources/xml/creditscore3.xml";
-//        //final String IMPLICIT_PCK = "mismo";
-//
+    public void testMismo() throws Exception {
+        final String XSD_FILE = "src/test/resources/xsd/AUS_v2_4.xsd";
+        //		final String XSD_FILE = "data/xsd/CREDIT_RESPONSE_v2_3_1(MXCompliance).xsd";
+
+        final String XML_FILE = "src/test/resources/xml/AUSMXARM.xml";
+        final String IRL_FILE = "src/test/resources/irl/creditscore3.irl";
+        final String RIF_FILE = "src/test/resources/xml/creditscore3.xml";
+        //final String IMPLICIT_PCK = "mismo";
+
 //        Reader reader = new BufferedReader( new FileReader( new File( RIF_FILE ) ) );
 //        JBossRulesDriver driver = new JBossRulesDriver("mismo",
-//                                                       new URLClassLoader( new URL[] { new File( "src/test/resources/creditscore.jar" ).toURL() } ) );
+//                                                       Thread.currentThread().getContextClassLoader() ).toURL() } ) );
 //        Package pkg = driver.readFromRifXml( reader );
 //        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 //        ruleBase.addPackage( pkg );
-//        
-//        JAXBContext jc = JAXBContext.newInstance("mismo");
-//        Unmarshaller unmarshaller = jc.createUnmarshaller();
-//        
-//        Collection collection= (Collection)
-//        unmarshaller.unmarshal(new File( XML_FILE ) );
-//                        
-//        //executeDegradedRuleset(XSD_FILE, XML_FILE, IRL_FILE, RIF_FILE, IMPLICIT_PCK );
-//    }
+        
+        JAXBContext jc = JAXBContext.newInstance("mismo");
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        
+        Collection collection = (Collection)
+        unmarshaller.unmarshal(new File( XML_FILE ) );
+                        
+        //executeDegradedRuleset(XSD_FILE, XML_FILE, IRL_FILE, RIF_FILE, IMPLICIT_PCK );
+    }
 
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
