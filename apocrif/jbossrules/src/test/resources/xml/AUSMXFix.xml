@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LOAN_APPLICATION MISMOVersionID="2.3.1">
+	<_DATA_INFORMATION>
+		<DATA_VERSION _Name="MISMO" _Number="2.3.1"/>
+	</_DATA_INFORMATION>
+	<ADDITIONAL_CASE_DATA>
+		<TRANSMITTAL_DATA BelowMarketSubordinateFinancingIndicator="N" CurrentFirstMortgageHolderType="Unknown" PropertyEstimatedValueAmount="156500.00"/>
+	</ADDITIONAL_CASE_DATA>
+	<ASSET BorrowerID="B1" _AccountIdentifier="B129893" _CashOrMarketValueAmount="46425" _Type="SavingsAccount" _HolderName="The Savings Bank" _HolderStreetAddress="984 Rock Road" _HolderCity="McLean" _HolderState="VA" _HolderPostalCode="22102"/>
+	<DOWN_PAYMENT _Amount="31300"/>
+	<GOVERNMENT_REPORTING HMDAPreapprovalType="NotApplicable"/>
+	<INTERVIEWER_INFORMATION InterviewersEmployerStreetAddress="9631 Thorton Road" InterviewersEmployerCity="McLean" InterviewersEmployerState="VA" InterviewersEmployerPostalCode="22102" InterviewersTelephoneNumber="8008659713" ApplicationTakenMethodType="FaceToFace" InterviewerApplicationSignedDate="2005-12-06" InterviewersEmployerName="The Lending Company Corporation"/>
+	<LIABILITY _ID="L1" BorrowerID="B1" REO_ID="R1" _HolderStreetAddress="431 Riverside Drive" _HolderCity="McLean" _HolderState="VA" _HolderPostalCode="22102" _AccountIdentifier="M120934" _ExclusionIndicator="N" _HolderName="The Mortgage Company" _MonthlyPaymentAmount="585.00" _PayoffStatusIndicator="Y" _RemainingTermMonths="159" _Type="MortgageLoan" _UnpaidBalanceAmount="92650.00"/>
+	<LOAN_PRODUCT_DATA>
+		<LOAN_FEATURES AssumabilityIndicator="N" BalloonIndicator="N" BuydownTemporarySubsidyIndicator="N" EscrowWaiverIndicator="N" GSEPropertyType="Detached" LienPriorityType="FirstLien" LoanRepaymentType="NoNegativeAmortization" LoanScheduledClosingDate="2006-01-15" PaymentFrequencyType="Monthly" PrepaymentPenaltyIndicator="N" ScheduledFirstPaymentDate="2006-03-01"/>
+	</LOAN_PRODUCT_DATA>
+	<LOAN_PURPOSE _Type="Purchase" PropertyRightsType="FeeSimple" PropertyUsageType="PrimaryResidence"/>
+	<LOAN_QUALIFICATION AdditionalBorrowerAssetsNotConsideredIndicator="N" AdditionalBorrowerAssetsConsideredIndicator="Y"/>
+	<MORTGAGE_TERMS BaseLoanAmount="125000.00" BorrowerRequestedLoanAmount="125000.00" LenderCaseIdentifier="AUSMX-FIX" LoanAmortizationTermMonths="360" LoanAmortizationType="Fixed" MortgageType="Conventional" RequestedInterestRatePercent="6.750"/>
+	<PROPERTY _StreetAddress="12 South Main Street" _City="McLean" _State="MI" _County="Fairfax" _PostalCode="22102" BuildingStatusType="Existing" _FinancedNumberOfUnits="1" _StructureBuiltYear="1929" PlannedUnitDevelopmentIndicator="N">
+		<PARSED_STREET_ADDRESS _HouseNumber="12" _StreetName="South Main Street"/>
+		<_VALUATION _MethodType="Other"/>
+	</PROPERTY>
+	<PROPOSED_HOUSING_EXPENSE HousingExpenseType="FirstMortgagePrincipalAndInterest" _PaymentAmount="810.75"/>
+	<REO_PROPERTY REO_ID="R1" BorrowerID="B1" LiabilityID="L1" _StreetAddress="22 Lakeshore" _City="McLean" _State="VA" _PostalCode="22102" _CurrentResidenceIndicator="Y" _DispositionStatusType="PendingSale" _GSEPropertyType="SingleFamily" _LienInstallmentAmount="585.00" _LienUPBAmount="92650.00" _MaintenanceExpenseAmount="100.00" _MarketValueAmount="98500.00" _SubjectIndicator="N"/>
+	<TRANSACTION_DETAIL BorrowerPaidDiscountPointsTotalAmount="1250.00" EstimatedClosingCostsAmount="2500.00" PrepaidItemsEstimatedAmount="398.48" PurchasePriceAmount="156300.00" FREReservesAmount="12226.52"/>
+	<BORROWER BorrowerID="B1" JointAssetBorrowerID="B2" _FirstName="Megan" _LastName="Lane" _BirthDate="1953-03-03" _ApplicationSignedDate="2005-12-06" _PrintPositionType="Borrower" _SSN="111111111" JointAssetLiabilityReportingType="Jointly" MaritalStatusType="Married">
+		<_RESIDENCE _StreetAddress="22 Lakeshore Drive" _City="McLean" _State="VA" _PostalCode="22102" _Country="US" BorrowerResidencyBasisType="Own" BorrowerResidencyDurationMonths="00" BorrowerResidencyDurationYears="3" BorrowerResidencyType="Current"/>
+		<CURRENT_INCOME IncomeType="Base" _MonthlyTotalAmount="4300.00"/>
+		<DECLARATION AlimonyChildSupportObligationIndicator="N" BankruptcyIndicator="N" BorrowedDownPaymentIndicator="N" CitizenshipResidencyType="USCitizen" CoMakerEndorserOfNoteIndicator="N" HomeownerPastThreeYearsType="Yes" IntentToOccupyType="Yes" LoanForeclosureOrJudgementIndicator="N" OutstandingJudgementsIndicator="N" PartyToLawsuitIndicator="N" PresentlyDelinquentIndicator="N" PriorPropertyTitleType="JointWithSpouse" PriorPropertyUsageType="PrimaryResidence" PropertyForeclosedPastSevenYearsIndicator="N"/>
+		<EMPLOYER _Name="ABC Wire" _StreetAddress="11 Maple Rd" _City="McLean" _State="VA" _PostalCode="22102" CurrentEmploymentMonthsOnJob="0" CurrentEmploymentYearsOnJob="1" EmploymentBorrowerSelfEmployedIndicator="N" EmploymentCurrentIndicator="Y" EmploymentPrimaryIndicator="Y"/>
+		<EMPLOYER _Name="XYZ Electric" _StreetAddress="48 North Street" _City="McLean" _State="VA" _PostalCode="22102" EmploymentBorrowerSelfEmployedIndicator="N" EmploymentCurrentIndicator="N" EmploymentPrimaryIndicator="N" PreviousEmploymentEndDate="2005-12-01" PreviousEmploymentStartDate="1996-11-01"/>
+		<GOVERNMENT_MONITORING GenderType="Female" RaceNationalOriginRefusalIndicator="N" RaceNationalOriginType="Hispanic" HMDAEthnicityType="HispanicOrLatino">
+			<HMDA_RACE _Type="AmericanIndianOrAlaskaNative"/>
+			<HMDA_RACE _Type="NativeHawaiianOrOtherPacificIslander"/>
+		</GOVERNMENT_MONITORING>
+		<PRESENT_HOUSING_EXPENSE HousingExpenseType="FirstMortgagePrincipalAndInterest" _PaymentAmount="585.00"/>
+		<PRESENT_HOUSING_EXPENSE HousingExpenseType="HazardInsurance" _PaymentAmount="25.00"/>
+		<PRESENT_HOUSING_EXPENSE HousingExpenseType="RealEstateTax" _PaymentAmount="100.00"/>
+	</BORROWER>
+	<BORROWER BorrowerID="B2" JointAssetBorrowerID="B1" _FirstName="Robert" _LastName="Lane" _BirthDate="1950-02-02" _ApplicationSignedDate="2005-12-06" _PrintPositionType="CoBorrower" _SSN="222222222" JointAssetLiabilityReportingType="Jointly" MaritalStatusType="Married">
+		<_RESIDENCE _StreetAddress="22 Lakeshore Drive" _City="McLean" _State="VA" _PostalCode="22102" _Country="US" BorrowerResidencyBasisType="Own" BorrowerResidencyDurationMonths="00" BorrowerResidencyDurationYears="3" BorrowerResidencyType="Current"/>
+		<DECLARATION AlimonyChildSupportObligationIndicator="N" BankruptcyIndicator="N" BorrowedDownPaymentIndicator="N" CitizenshipResidencyType="USCitizen" CoMakerEndorserOfNoteIndicator="N" HomeownerPastThreeYearsType="Yes" IntentToOccupyType="Yes" LoanForeclosureOrJudgementIndicator="N" OutstandingJudgementsIndicator="N" PartyToLawsuitIndicator="N" PresentlyDelinquentIndicator="N" PriorPropertyTitleType="JointWithSpouse" PriorPropertyUsageType="PrimaryResidence" PropertyForeclosedPastSevenYearsIndicator="N"/>
+		<EMPLOYER EmploymentBorrowerSelfEmployedIndicator="N" EmploymentCurrentIndicator="Y" EmploymentPrimaryIndicator="N"/>
+		<GOVERNMENT_MONITORING GenderType="Male" RaceNationalOriginRefusalIndicator="N" RaceNationalOriginType="AsianOrPacificIslander" HMDAEthnicityType="NotHispanicOrLatino">
+			<HMDA_RACE _Type="Asian"/>
+		</GOVERNMENT_MONITORING>
+	</BORROWER>
+</LOAN_APPLICATION>

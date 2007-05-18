@@ -1,0 +1,15 @@
+package mismo
+
+import mismo.Root
+import mismo.CreditScore
+
+rule "Occupancy_Adjustments_1"
+
+when 
+    r : Root( division=="wholesale",
+              occupancy=="Investors" )
+    cs1 : CreditScore() from r.creditScore1
+    cs2 : CreditScore() from r.creditScore2
+then
+    r.setOccupancyAdjustment(0.95);
+end

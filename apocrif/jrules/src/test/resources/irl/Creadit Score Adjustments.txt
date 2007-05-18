@@ -1,0 +1,87 @@
+// begin DT Credit Score Adjustments
+// -- begin rule 'Credit Score Adjustments 0'
+rule Credit_Score_Adjustments_0 {
+   property ilog.rules.dt = "Credit Score Adjustments";
+   property status = "new";
+   property ilog.rules.group = "Credit_Score_Adjustments";
+   when {
+      data: ilog.mismo.XOM();
+      evaluate ((((data.programGroup.equals("ACMEPowerBuyerGroup"))) && (data.lienType in {("FIRST_TD" + "SECOND_TD")}) && ((data.division.equals("Wholesale"))) && (data.creditScore in [500, 579])));
+   } then {
+      data.creditScoreAdjustment = (double) 0 ;
+   }
+}
+
+// -- end rule 'Credit Score Adjustments 0'
+// -- begin rule 'Credit Score Adjustments 1'
+rule Credit_Score_Adjustments_1 {
+   property ilog.rules.dt = "Credit Score Adjustments";
+   property status = "new";
+   property ilog.rules.group = "Credit_Score_Adjustments";
+   when {
+      data: ilog.mismo.XOM();
+      evaluate ((((data.programGroup.equals("ACMEPowerBuyerGroup"))) && (data.lienType in {("FIRST_TD" + "SECOND_TD")}) && ((data.division.equals("Wholesale"))) && (data.creditScore in [580, 679])));
+   } then {
+      data.creditScoreAdjustment = -0.3d;
+   }
+}
+
+// -- end rule 'Credit Score Adjustments 1'
+// -- begin rule 'Credit Score Adjustments 2'
+rule Credit_Score_Adjustments_2 {
+   property ilog.rules.dt = "Credit Score Adjustments";
+   property status = "new";
+   property ilog.rules.group = "Credit_Score_Adjustments";
+   when {
+      data: ilog.mismo.XOM();
+      evaluate ((((data.programGroup.equals("ACMEPowerBuyerGroup"))) && (data.lienType in {("FIRST_TD" + "SECOND_TD")}) && ((data.division.equals("Wholesale"))) && (data.creditScore >= 680)));
+   } then {
+      data.creditScoreAdjustment = -0.8d;
+   }
+}
+
+// -- end rule 'Credit Score Adjustments 2'
+// -- begin rule 'Credit Score Adjustments 3'
+rule Credit_Score_Adjustments_3 {
+   property ilog.rules.dt = "Credit Score Adjustments";
+   property status = "new";
+   property ilog.rules.group = "Credit_Score_Adjustments";
+   when {
+      data: ilog.mismo.XOM();
+      evaluate ((((data.programGroup.equals("ACMEPowerBuyerGroup"))) && (data.lienType in {("FIRST_TD" + "SECOND_TD")}) && ((data.division.equals("National"))) && (data.creditScore in [500, 579])));
+   } then {
+      data.creditScoreAdjustment = 0.0d;
+   }
+}
+
+// -- end rule 'Credit Score Adjustments 3'
+// -- begin rule 'Credit Score Adjustments 4'
+rule Credit_Score_Adjustments_4 {
+   property ilog.rules.dt = "Credit Score Adjustments";
+   property status = "new";
+   property ilog.rules.group = "Credit_Score_Adjustments";
+   when {
+      data: ilog.mismo.XOM();
+      evaluate ((((data.programGroup.equals("ACMEPowerBuyerGroup"))) && (data.lienType in {("FIRST_TD" + "SECOND_TD")}) && ((data.division.equals("National"))) && (data.creditScore in [580, 679])));
+   } then {
+      data.creditScoreAdjustment = -0.2d;
+   }
+}
+
+// -- end rule 'Credit Score Adjustments 4'
+// -- begin rule 'Credit Score Adjustments 5'
+rule Credit_Score_Adjustments_5 {
+   property ilog.rules.dt = "Credit Score Adjustments";
+   property status = "new";
+   property ilog.rules.group = "Credit_Score_Adjustments";
+   when {
+      data: ilog.mismo.XOM();
+      evaluate ((((data.programGroup.equals("ACMEPowerBuyerGroup"))) && (data.lienType in {("FIRST_TD" + "SECOND_TD")}) && ((data.division.equals("National"))) && (data.creditScore >= 680)));
+   } then {
+      data.creditScoreAdjustment = -0.9d;
+   }
+}
+
+// -- end rule 'Credit Score Adjustments 5'
+// end DT Credit Score Adjustments
+

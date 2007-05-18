@@ -1,0 +1,14 @@
+import mismo2.*;
+
+rule Occupancy_Adjustments_1
+{
+  when {
+     r : Root ();
+     cs1 : CreditScore () from r.creditScore1;
+     cs2 : CreditScore () in r.creditScore2List;
+     evaluate( r.division.equals( "wholesale"); r.occupancy.equals("Investors")  );
+  }
+  then {
+    r.occupancyAdjustment = 0.95d;
+  }
+}

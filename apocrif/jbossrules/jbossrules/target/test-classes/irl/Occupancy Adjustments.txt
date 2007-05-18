@@ -1,0 +1,31 @@
+// begin DT Occupancy Adjustments
+// -- begin rule 'Occupancy Adjustments 0'
+rule Occupancy_Adjustments_0 {
+   property ilog.rules.dt = "Occupancy Adjustments";
+   property status = "new";
+   property ilog.rules.group = "Occupancy_Adjustments";
+   when {
+      data: ilog.mismo.XOM();
+      evaluate ((((data.division.equals("National"))) && ((data.occupancy.equals("Investor")))));
+   } then {
+      data.occupancyAdjustment = 0.9d;
+   }
+}
+
+// -- end rule 'Occupancy Adjustments 0'
+// -- begin rule 'Occupancy Adjustments 1'
+rule Occupancy_Adjustments_1 {
+   property ilog.rules.dt = "Occupancy Adjustments";
+   property status = "new";
+   property ilog.rules.group = "Occupancy_Adjustments";
+   when {
+      data: ilog.mismo.XOM();
+      evaluate ((((data.division.equals("Wholesale"))) && ((data.occupancy.equals("Investor")))));
+   } then {
+      data.occupancyAdjustment = 0.95d;
+   }
+}
+
+// -- end rule 'Occupancy Adjustments 1'
+// end DT Occupancy Adjustments
+

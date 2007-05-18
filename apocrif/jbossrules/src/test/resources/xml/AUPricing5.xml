@@ -1,0 +1,2572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Ruleset xmlns:aprif="http://apocrif/pr" xmlns:ns0="" xmlns:xpath="http://www.w3.org/2005/xpath-functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<name>AUPricing</name>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_0</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">500</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">579</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">1000000</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">15.2</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_1</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">500</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">579</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">500000</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">999999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">15.6</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_2</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">500</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">579</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">499999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">16.0</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_3</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">580</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">699</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">1000000</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">14.1</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_4</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">580</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">699</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">500000</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">999999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">14.5</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_5</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">580</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">699</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">499999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">14.9</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_6</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">700</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">1000000</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">11.1</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_7</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">700</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">500000</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">999999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">11.5</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_8</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">FullDocumentation</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">700</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">499999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">11.9</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_9</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">500</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">579</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">1000000</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">16.2</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_10</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">500</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">579</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">500000</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">999999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">16.6</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_11</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">500</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">579</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">499999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">17.0</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_12</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">580</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">699</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">1000000</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">12.9</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_13</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">580</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">699</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">500000</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">999999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">13.3</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_14</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">580</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">699</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">499999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">13.7</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_15</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">700</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">1000000</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">11.6</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_16</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">700</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">500000</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">999999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">12.0</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+<ProductionRule>
+<name>ACMEPlus_CC_Base_Rates_17</name>
+<declare>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</declare>
+<declare>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>LenderCaseIdentifier</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">ACMEPlusGroup</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_DECLARATION_Type</Const>
+<Const>PresentlyDelinquentIndicator</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_BORROWER_Type</Const>
+<Const>DECLARATION</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">N</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_FEATURES_Type</Const>
+<Const>LoanDocumentationType</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_PRODUCT_DATA_Type</Const>
+<Const>LOAN_FEATURES</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>LOAN_PRODUCT_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:string">NoVerificationOfStatedIncomeEmploymentOrAssets</Const>
+</Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:ge</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_SCORE_Type</Const>
+<Const>_Value</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+</Uniterm>
+<Const type="xsd:int">700</Const>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:le</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>BorrowerRequestedLoanAmount</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Const type="xsd:int">499999</Const>
+</Uniterm>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_BORROWER_Type">the_borrower</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>BORROWER</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:AUS_MORTGAGE_SCORE_Type">the_mortgage_score</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_ADDITIONAL_CASE_DATA_Type</Const>
+<Const>MORTGAGE_SCORE</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>ADDITIONAL_CASE_DATA</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:AUS_MORTGAGE_TERMS_Type</Const>
+<Const>RequestedInterestRatePercent</Const>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:AUS_LOAN_APPLICATION_Type</Const>
+<Const>MORTGAGE_TERMS</Const>
+<Var type="ns0:AUS_LOAN_APPLICATION_Type">the_loan_application</Var>
+</Uniterm>
+<Const type="xsd:decimal">12.4</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+</Ruleset>

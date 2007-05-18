@@ -1,0 +1,360 @@
+ruleset AUPricing;
+
+propertydefinition
+{
+  String priority;
+  Date effectiveDate;
+  Date expirationDate;
+  String status;
+  ilog.rules.PackageHierarchy ilog.rules.package;
+}
+package Pricing
+{
+  }
+package Pricing.Base
+{
+  import org.mismo.aus.*;
+
+    rule ACMEPlus_CC_Base_Rates_0
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 500) && (?the_mortgage_score._Value <= 579) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 1000000)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 15.2d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_1
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 500) && (?the_mortgage_score._Value <= 579) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 500000) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 999999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 15.6d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_2
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 500) && (?the_mortgage_score._Value <= 579) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 499999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 16.0d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_3
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 580) && (?the_mortgage_score._Value <= 699) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 1000000)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 14.1d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_4
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 580) && (?the_mortgage_score._Value <= 699) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 500000) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 999999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 14.5d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_5
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 580) && (?the_mortgage_score._Value <= 699) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 499999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 14.9d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_6
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 700) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 1000000)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 11.1d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_7
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 700) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 500000) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 999999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 11.5d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_8
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("FullDocumentation") && (?the_mortgage_score._Value >= 700) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 499999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 11.9d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_9
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 500) && (?the_mortgage_score._Value <= 579) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 1000000)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 16.2d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_10
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 500) && (?the_mortgage_score._Value <= 579) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 500000) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 999999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 16.6d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_11
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 500) && (?the_mortgage_score._Value <= 579) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 499999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 17.0d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_12
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 580) && (?the_mortgage_score._Value <= 699) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 1000000)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 12.9d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_13
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 580) && (?the_mortgage_score._Value <= 699) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 500000) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 999999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 13.3d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_14
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 580) && (?the_mortgage_score._Value <= 699) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 499999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 13.7d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_15
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 700) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 1000000)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 11.6d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_16
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 700) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount >= 500000) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 999999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 12.0d;
+    }
+  };
+
+  rule ACMEPlus_CC_Base_Rates_17
+  {
+    property ilog.rules.dt = "Pricing.Base.ACMEPlus CC Base Rates";
+    property status = "new";
+    property ilog.rules.group = "Pricing.Base.ACMEPlus_CC_Base_Rates";
+    property ilog.rules.package = "Pricing.Base";
+    when
+    {
+      ?the_loan_application: AUS_LOAN_APPLICATION_Type();
+      ?the_borrower: AUS_BORROWER_Type() in ?the_loan_application.BORROWERList;
+      ?the_mortgage_score: AUS_MORTGAGE_SCORE_Type() in ?the_loan_application.ADDITIONAL_CASE_DATA.MORTGAGE_SCOREList;
+      evaluate ((?the_loan_application.MORTGAGE_TERMS.LenderCaseIdentifier.equals("ACMEPlusGroup") && ?the_borrower.DECLARATION.PresentlyDelinquentIndicator.equals("N") && ?the_loan_application.LOAN_PRODUCT_DATA.LOAN_FEATURES.LoanDocumentationType.equals("NoVerificationOfStatedIncomeEmploymentOrAssets") && (?the_mortgage_score._Value >= 700) && (?the_loan_application.MORTGAGE_TERMS.BorrowerRequestedLoanAmount <= 499999)));
+    }
+    then
+    {
+      ?the_loan_application.MORTGAGE_TERMS.RequestedInterestRatePercent = 12.4d;
+    }
+  };
+
+}

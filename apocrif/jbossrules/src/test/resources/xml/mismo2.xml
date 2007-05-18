@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Ruleset xmlns:aprif="http://apocrif/pr" xmlns:ns0="mismo" xmlns:xpath="http://www.w3.org/2005/xpath-functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<name>IlrContext</name>
+<ProductionRule>
+<name>Occupancy_Adjustments_1</name>
+<declare>
+<Var type="ns0:root">r</Var>
+</declare>
+<declare>
+<Var type="ns0:CreditScore">cs1</Var>
+</declare>
+<declare>
+<Var type="ns0:CreditScore">cs2</Var>
+</declare>
+<if>
+<And>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:root</Const>
+<Const>division</Const>
+<Var type="ns0:root">r</Var>
+</Uniterm>
+<Const type="xsd:string">wholesale</Const>
+</Equal>
+<Equal>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:root</Const>
+<Const>occupancy</Const>
+<Var type="ns0:root">r</Var>
+</Uniterm>
+<Const type="xsd:string">Investors</Const>
+</Equal>
+</And>
+</if>
+<constaints>
+<And>
+<Uniterm>
+<Const type="xsd:QName">aprif:fromGeneratorOp</Const>
+<Var type="ns0:CreditScore">cs1</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:root</Const>
+<Const>creditScore1</Const>
+<Var type="ns0:root">r</Var>
+</Uniterm>
+</Uniterm>
+<Uniterm>
+<Const type="xsd:QName">aprif:inGeneratorOp</Const>
+<Var type="ns0:CreditScore">cs2</Var>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlGetter</Const>
+<Const type="xsd:QName">ns0:root</Const>
+<Const>creditScore2</Const>
+<Var type="ns0:root">r</Var>
+</Uniterm>
+</Uniterm>
+</And>
+</constaints>
+<then>
+<Uniterm>
+<Const type="xsd:QName">aprif:xmlSetter</Const>
+<Const type="xsd:QName">ns0:root</Const>
+<Const>occupancyAdjustment</Const>
+<Var type="ns0:root">r</Var>
+<Const type="xsd:decimal">0.95</Const>
+</Uniterm>
+</then>
+</ProductionRule>
+</Ruleset>
