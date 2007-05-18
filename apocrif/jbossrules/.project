@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>Link</name>
-			<type>2</type>
-			<locationURI>TEMP</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
