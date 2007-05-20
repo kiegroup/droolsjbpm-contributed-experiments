@@ -29,7 +29,7 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _Root_QNAME = new QName( "mismo",
+    private final static QName _Root_QNAME = new QName( "creditscore",
                                                         "root" );
 
     /**
@@ -59,7 +59,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Root }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "mismo", name = "root")
+    @XmlElementDecl(namespace = "creditscore", name = "root")
     public JAXBElement<Root> createRoot(Root value) {
         return new JAXBElement<Root>( _Root_QNAME,
                                       Root.class,

@@ -3,6 +3,8 @@ package apocrif.engine.jbossrules;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +14,14 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
+import mismo.LOANAPPLICATION;
+import mismo.ObjectFactory;
 
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
@@ -59,6 +69,8 @@ public class Rif2DrlTranslator
     
     private ClassLoader   classLoader;
     
+    private Map mappings;
+    
     public Rif2DrlTranslator(ClassLoader classLoader) {
         this();
         this.classLoader = classLoader;
@@ -83,9 +95,10 @@ public class Rif2DrlTranslator
                           "-" );
     }
 
-    public Package translateToPackage(Ruleset rifRuleset, String pkgName) throws Exception {
+    public Package translateToPackage(Ruleset rifRuleset, String pkgName, Class objectFactoryClass) throws Exception {
         String drlString = translateToString( rifRuleset, 
-                                              pkgName );
+                                              pkgName,
+                                              objectFactoryClass );
 
         PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackageFromDrl( new StringReader( drlString ) );
@@ -93,7 +106,55 @@ public class Rif2DrlTranslator
         return pkg;
     }
 
-    public String translateToString(Ruleset rifRuleset, String pkgName) throws Exception {
+    public String translateToString(Ruleset rifRuleset, String pkgName, Class objectFactoryClass) throws Exception {
+        this.mappings = new HashMap();
+        
+        try {
+            for ( Method method : objectFactoryClass.getMethods() ) {
+                if ( method.getName().startsWith( "create" ) ) {
+                    String name = method.getName().substring( 6 );
+                    Class clazz = objectFactoryClass.getClassLoader().loadClass( objectFactoryClass.getPackage().getName() + "." + name );
+                    XmlRootElement xmlRootElement = ( XmlRootElement ) clazz.getAnnotation( XmlRootElement.class );
+                    ClassMapping classMapping = new ClassMapping( clazz  ); 
+                    if ( xmlRootElement != null ) {
+                        //System.out.println( clazz.getName()  + " = " + xmlRootElement.name() );
+                        this.mappings.put( new QName(pkgName, xmlRootElement.name()), classMapping );
+                    } else {
+                        XmlType xmlType = ( XmlType ) clazz.getAnnotation( XmlType.class );
+                        if ( xmlType == null ) {
+                            throw new RuntimeException( "unable to complete xml type to class type mappings" );
+                        }
+                        //System.out.println( clazz.getName()  + " = " + xmlType.name() );
+                        this.mappings.put( new QName(pkgName, xmlType.name()), classMapping  );
+                    }
+                    
+                    for ( Field field : clazz.getDeclaredFields() ) {
+                        XmlAttribute xmlAttribute = field.getAnnotation( XmlAttribute.class );
+                        if ( xmlAttribute != null ) {
+                            String fieldName = xmlAttribute.name();
+                            if ( fieldName == null ) {
+                                fieldName = field.getName();
+                            }
+                            classMapping.addFieldMapping( fieldName, getFieldName( clazz, field.getName() ) );
+                        } else {
+                            XmlElement xmlEement = (XmlElement) field.getAnnotation( XmlElement.class );
+                            String fieldName = null;
+                            if ( xmlEement != null ) {
+                                fieldName = xmlEement.name();
+                            }
+                            
+                            if ( fieldName == null || fieldName.equals( "##default" )) {
+                                fieldName = field.getName();
+                            }
+                            classMapping.addFieldMapping( fieldName, getFieldName( clazz, field.getName() ) );
+                        }
+                    }
+                }
+            }    
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( "unable to complete xml type to class type mappings", e );
+        }
+        
         StringWriter sw = new StringWriter();
         writer = new PrintWriter( sw );
 
@@ -113,6 +174,23 @@ public class Rif2DrlTranslator
         builder.append( sw );
 
         return builder.toString();
+    }
+    
+    private String getFieldName(Class clazz, String property) {
+        String upperProperty = "GET" + property.toUpperCase(); 
+        String fieldName = null;
+        for ( Method method : clazz.getMethods() ) {
+            if ( method.getName().toUpperCase().equals( upperProperty ) ) {
+                fieldName =  method.getName().substring( 3 );
+                break;
+            }
+        }
+        
+        if ( fieldName != null && Character.isLowerCase( fieldName.charAt( 1 ) ) ) {
+            // second char is lower case, so lowercase first;
+            fieldName = lcFirst(fieldName );
+        }
+        return fieldName;
     }
 
     public Void visit(ProductionRule rifRule) {
@@ -191,10 +269,14 @@ public class Rif2DrlTranslator
             var = ((Variable) fieldGetter.targetTerm).getName();
             fieldGetter.targetTerm.accept( this );
             buffer.append( '.' );
+            
+            ClassMapping mapping = ( ClassMapping ) this.mappings.get( fieldGetter.xmlDeclaringCType );
+            String fieldName = mapping.getFieldNameMapping( fieldGetter.xmlField.getLocalPart() );
+            
             if ( inConsequence ) {
-                buffer.append( "get" + ucFirst( fieldGetter.xmlField.getLocalPart() ) + "()" );
+                buffer.append( "get" + ucFirst( fieldName ) + "()" );
             } else {
-                buffer.append( fieldGetter.xmlField );
+                buffer.append( fieldName );
             }
             return null;
         }
@@ -241,6 +323,11 @@ public class Rif2DrlTranslator
         return str.substring( 0,
                               1 ).toUpperCase() + str.substring( 1 );
     }
+    
+    private String lcFirst(String str) {
+        return str.substring( 0,
+                              1 ).toLowerCase() + str.substring( 1 );
+    }    
 
     public Void visit(Variable n) {
 
@@ -264,16 +351,44 @@ public class Rif2DrlTranslator
             if ( uniterm.getOperator().equals( PRHelper.fromGeneratorOp ) || uniterm.getOperator().equals( PRHelper.inGeneratorOp ) ) {
                 Variable v0 = (Variable) uniterm.getArguments().get( 0 );
                 Uniterm fromTerm = (Uniterm) uniterm.getArguments().get( 1 );
-                buffer = new StringBuilder();
-                XmlFieldGetter fieldGetter = prHelper.getXmlFieldGetter( fromTerm );
+                buffer = new StringBuilder();                
+                
+                XmlFieldGetter fieldGetter = prHelper.getXmlFieldGetter( fromTerm );                                                
+                
                 var = ((Variable) fieldGetter.targetTerm).getName();
                 buffer.append( var + '.' );
-                buffer.append( fieldGetter.xmlField );
+
+                ClassMapping mapping = ( ClassMapping ) this.mappings.get( fieldGetter.xmlDeclaringCType );
+                String fieldName = mapping.getFieldNameMapping( fieldGetter.xmlField.getLocalPart() );
+                
+                buffer.append( fieldName );
 
                 ((Pattern) patterns.get( v0.getName() )).setFrom( buffer.toString() );
                 buffer = null;
             }
 
+        }
+    }
+    
+    public class ClassMapping {
+        private Class mappedClass;
+        private Map fieldMapping;
+        
+        public ClassMapping(Class mappedClass) {
+            this.mappedClass = mappedClass;
+            this.fieldMapping = new HashMap();
+        }
+        
+        public Class getMappedClass() {
+            return this.mappedClass;
+        }
+        
+        public void addFieldMapping(String attributeName, String fieldName) {
+            this.fieldMapping.put( attributeName, fieldName );
+        }
+        
+        public String getFieldNameMapping(String attributeName) {
+            return ( String ) this.fieldMapping.get( attributeName );
         }
     }
 
@@ -284,18 +399,20 @@ public class Rif2DrlTranslator
             patterns.put( variable.getName(),
                           pattern );
 
-            String typeName = null;
-
-            try {
-                JAXBContextImpl contextImpl = (JAXBContextImpl) JAXBContext.newInstance( variable.getType().getNamespaceURI(),
-                                                                                         classLoader );
-                Class clazz = contextImpl.getGlobalType( variable.getType() ).jaxbType;
-                imports.add( clazz.getName() );
-                typeName = clazz.getSimpleName();
-
-            } catch ( JAXBException e ) {
-                e.printStackTrace();
-            }
+            ClassMapping mapping = ( ClassMapping ) this.mappings.get( variable.getType() );
+            String typeName = mapping.getMappedClass().getSimpleName();
+            
+            imports.add( mapping.getMappedClass().getName() );
+            
+//            try {
+//                JAXBContextImpl contextImpl = (JAXBContextImpl) JAXBContext.newInstance( "mismo" );
+//                Class clazz = contextImpl.getGlobalType( variable.getType() ).jaxbType;
+//                imports.add( clazz.getName() );
+//                typeName = clazz.getSimpleName();
+//
+//            } catch ( JAXBException e ) {
+//                e.printStackTrace();
+//            }
 
             pattern.setType( typeName );
         }

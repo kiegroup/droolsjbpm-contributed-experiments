@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -11,12 +12,17 @@ import java.util.Collection;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-
+import javax.xml.bind.annotation.XmlRootElement;
 import mismo.LOANAPPLICATION;
+import mismo.ObjectFactory;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatelessSession;
+import org.drools.StatelessSessionResult;
 import org.drools.rule.Package;
+
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 import junit.framework.TestCase;
 import apocrif.core.Ruleset;
@@ -24,6 +30,7 @@ import apocrif.engine.Driver;
 import apocrif.engine.jbossrules.JBossRulesDriver;
 import apocrif.engine.jbossrules.Rif2DrlTranslator;
 import apocrif.io.DOMDeserializer;
+import javax.xml.namespace.QName;
 
 public class JBossRulesTest extends TestCase {
     DOMDeserializer deserializer = new DOMDeserializer();
@@ -31,10 +38,12 @@ public class JBossRulesTest extends TestCase {
     public boolean testParser(String rifFileName,
                               String drlFileName,
                               String pkgName,
+                              Class objectTypeFactory,
                               ClassLoader classLoader) throws Exception {
         Ruleset rifRuleset = deserializer.deserialize( new BufferedReader( new FileReader( new File( rifFileName ) ) ) );
         String actualDrlText = new Rif2DrlTranslator( classLoader ).translateToString( rifRuleset,
-                                                                                       pkgName );
+                                                                                       pkgName,
+                                                                                       objectTypeFactory );
 
         String expectedDrlText = readFileAsString( drlFileName );
         System.out.println( expectedDrlText );
@@ -60,6 +69,7 @@ public class JBossRulesTest extends TestCase {
         testParser( RIF_FILE,
                     DRL_FILE,
                     "creditscore",
+                    creditscore.ObjectFactory.class,
                     Thread.currentThread().getContextClassLoader() );
     }
 
@@ -72,6 +82,7 @@ public class JBossRulesTest extends TestCase {
         testParser( RIF_FILE,
                     DRL_FILE,
                     "creditscore",
+                    creditscore.ObjectFactory.class,
                     Thread.currentThread().getContextClassLoader() );
     }
 
@@ -87,6 +98,7 @@ public class JBossRulesTest extends TestCase {
         testParser( RIF_FILE,
                     DRL_FILE,
                     "creditscore",
+                    creditscore.ObjectFactory.class,
                     Thread.currentThread().getContextClassLoader() );
     }
 
@@ -100,21 +112,42 @@ public class JBossRulesTest extends TestCase {
 
         Ruleset rifRuleset = deserializer.deserialize( new BufferedReader( new FileReader( new File( RIF_FILE ) ) ) );
         String actualDrlText = new Rif2DrlTranslator( Thread.currentThread().getContextClassLoader() ).translateToString( rifRuleset,
-                                                                                                                          "mismo" );
+                                                                                                                          "mismo",
+                                                                                                                          mismo.ObjectFactory.class );
 
-        //        JAXBContext jc = JAXBContext.newInstance( "mismo" );
-        //        Unmarshaller unmarshaller = jc.createUnmarshaller();
-        //
-        //        LOANAPPLICATION application = (LOANAPPLICATION) unmarshaller.unmarshal( new File( XML_FILE ) );
-        //
-        //        JBossRulesDriver driver = new JBossRulesDriver( "mismo",
-        //                                                        Thread.currentThread().getContextClassLoader() );
-        //        
-        //        Reader reader = new BufferedReader( new FileReader( new File( RIF_FILE ) ) );
-        //
-        //        Package pkg = driver.readFromRifXml( reader );
-        //        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        //        ruleBase.addPackage( pkg );
+        System.out.println( actualDrlText );
+
+        JAXBContextImpl jc = (JAXBContextImpl) JAXBContext.newInstance( "mismo" );
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        LOANAPPLICATION application = (LOANAPPLICATION) unmarshaller.unmarshal( new File( XML_FILE ) );
+
+        //jc.
+        //System.out.println( jc.createJAXBIntrospector().( new QName("mismo", "LOAN_APPLICATION") ) );
+
+        //                for ( Method method : ObjectFactory.class.getMethods() ) {
+        //                    if ( method.getName().startsWith( "create" ) ) {
+        //                        String name = method.getName().substring( 6 );
+        //                        Class clazz = ObjectFactory.class.getClassLoader().loadClass( ObjectFactory.class.getPackage().getName() + "." + name );
+        //                        XmlRootElement xmlRootElement = ( XmlRootElement ) clazz.getAnnotation( XmlRootElement.class );
+        //                        System.out.println( clazz.getName()  + " = " + xmlRootElement.name() );
+        //                    }
+        //                }
+        //                
+//        System.out.println( jc.getGlobalType( new QName( "mismo",
+//                                                         "LOAN_APPLICATION" ) ) );
+
+        JBossRulesDriver driver = new JBossRulesDriver( "mismo",
+                                                        mismo.ObjectFactory.class,
+                                                        Thread.currentThread().getContextClassLoader() );
+
+        Reader reader = new BufferedReader( new FileReader( new File( RIF_FILE ) ) );
+
+        Package pkg = driver.readFromRifXml( reader );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        
+        StatelessSession session = ruleBase.newStatelessSession();
+        StatelessSessionResult results = session.executeWithResults( new Object[] { application }  );
 
         //executeDegradedRuleset(XSD_FILE, XML_FILE, IRL_FILE, RIF_FILE, IMPLICIT_PCK );
     }

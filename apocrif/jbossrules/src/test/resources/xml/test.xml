@@ -7,7 +7,7 @@
       <Var type="ns0:LOAN_APPLICATION">loanApplication</Var>
     </declare>
     <declare>
-      <Var type="ns0:MORTGAGE_SCORE">mortgageScore</Var>
+      <Var type="ns0:REO_PROPERTY">reoproperty</Var>
     </declare>
 
     <if>
@@ -15,11 +15,11 @@
         <Equal>
           <Uniterm>
             <Const type="xsd:QName">aprif:xmlGetter</Const>
-            <Const type="xsd:QName">ns0:MORTGAGE_SCORE</Const>
-            <Const>value</Const>
-            <Var type="ns0:MORTGAGE_SCORE">mortgageScore</Var>
+            <Const type="xsd:QName">ns0:REO_PROPERTY</Const>
+            <Const>BorrowerID</Const>
+            <Var type="ns0:REO_PROPERTY">reoproperty</Var>
           </Uniterm>
-          <Const type="xsd:string">MyValue</Const>
+          <Const type="xsd:string">yyyy</Const>
         </Equal>
       </And>
     </if>
@@ -27,11 +27,11 @@
       <And>
         <Uniterm>
           <Const type="xsd:QName">aprif:fromGeneratorOp</Const>
-          <Var type="ns0:CreditScore">cs1</Var>
+          <Var type="ns0:REO_PROPERTY">reoproperty</Var>
           <Uniterm>
             <Const type="xsd:QName">aprif:xmlGetter</Const>
             <Const type="xsd:QName">ns0:LOAN_APPLICATION</Const>
-            <Const>MORTGAGE_SCORE</Const>
+            <Const>REO_PROPERTY</Const>
             <Var type="ns0:LOAN_APPLICATION">loanApplication</Var>
           </Uniterm>
         </Uniterm>
@@ -40,10 +40,10 @@
     <then>
       <Uniterm>
         <Const type="xsd:QName">aprif:xmlSetter</Const>
-        <Const type="xsd:QName">ns0:MORTGAGE_SCORE</Const>
-        <Const>mortgageScore</Const>
-        <Var type="ns0:MORTGAGE_SCORE">r</Var>
-        <Const type="xsd:string">xxx</Const>
+        <Const type="xsd:QName">ns0:REOPROPERTY</Const>
+        <Const>BorrowerID</Const>
+        <Var type="ns0:REOPROPERTY">reoproperty</Var>
+        <Const type="xsd:string">xxxx</Const>
       </Uniterm>
     </then>
   </ProductionRule>

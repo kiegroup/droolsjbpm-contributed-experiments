@@ -18,17 +18,20 @@ public class JBossRulesDriver
     private DOMSerializer   serializer   = new DOMSerializer();
     private DOMDeserializer deserializer = new DOMDeserializer();
     private String pkgName;
+    private Class objectFactoryClass;
     private ClassLoader classLoader;
     
     
     public JBossRulesDriver(String pkgName,
+                            Class objectFactoryClass,
                             ClassLoader classLoader) {
         this.pkgName = pkgName;
+        this.objectFactoryClass = objectFactoryClass;
         this.classLoader = classLoader;
     }       
 
     public Package readFromRif(Ruleset rifRuleset) throws Exception {
-        return new Rif2DrlTranslator(this.classLoader).translateToPackage( rifRuleset, pkgName );
+        return new Rif2DrlTranslator(this.classLoader).translateToPackage( rifRuleset, pkgName, objectFactoryClass );
     }
 
     public Package readFromRifXml(Reader reader) throws Exception {

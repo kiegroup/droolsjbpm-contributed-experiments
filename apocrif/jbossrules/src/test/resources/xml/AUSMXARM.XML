@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
- <LOAN_APPLICATION MISMOVersionID="2.3.1">
- <_DATA_INFORMATION>
-  <DATA_VERSION _Name="MISMO" _Number="2.3.1" /> 
+ <LOAN_APPLICATION MISMOVersionID="2.3.1" xmlns="mismo">
+ <_DATA_INFORMATION xmlns="mismo">
+  <DATA_VERSION _Name="MISMO" _Number="2.3.1" xmlns="mismo" /> 
   </_DATA_INFORMATION>
  <ADDITIONAL_CASE_DATA>
  <MORTGAGE_SCORE _Value='MyValue'/> 
