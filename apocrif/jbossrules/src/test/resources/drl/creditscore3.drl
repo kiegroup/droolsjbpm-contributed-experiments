@@ -3,6 +3,7 @@ package creditscore
 import creditscore.CreditScore
 
 rule "Credit_Score_Adjustments_0"
+    no-loop true
 when 
     cs : CreditScore( programGroup=="ACMEPowerBuyerGroup",
                       lienType=="FIRST_TD; SECOND_TD",

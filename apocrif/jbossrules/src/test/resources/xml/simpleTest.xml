@@ -19,7 +19,7 @@
             <Const>BorrowerID</Const>
             <Var type="ns0:REO_PROPERTY">reoproperty</Var>
           </Uniterm>
-          <Const type="xsd:string">yyyy</Const>
+          <Const type="xsd:string">B1</Const>
         </Equal>
       </And>
     </if>
@@ -43,7 +43,7 @@
         <Const type="xsd:QName">ns0:REOPROPERTY</Const>
         <Const>BorrowerID</Const>
         <Var type="ns0:REOPROPERTY">reoproperty</Var>
-        <Const type="xsd:string">xxxx</Const>
+        <Const type="xsd:string">B2</Const>
       </Uniterm>
     </then>
   </ProductionRule>

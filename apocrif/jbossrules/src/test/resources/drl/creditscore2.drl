@@ -4,7 +4,7 @@ import creditscore.CreditScore
 import creditscore.Root
 
 rule "Occupancy_Adjustments_1"
-
+    no-loop true
 when 
     r : Root( division=="wholesale",
               occupancy=="Investors" )

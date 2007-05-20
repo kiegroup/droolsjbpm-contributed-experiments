@@ -195,8 +195,8 @@ public class Rif2DrlTranslator
 
     public Void visit(ProductionRule rifRule) {
         inConsequence = false;
-        writer.print( "rule " );
-        writer.println( "\"" + rifRule.getName() + "\"" );
+        writer.println( "rule " + "\"" + rifRule.getName() + "\"" );
+        writer.println( "no-loop true");
         writer.println( "when " );
 
         // declare variable
