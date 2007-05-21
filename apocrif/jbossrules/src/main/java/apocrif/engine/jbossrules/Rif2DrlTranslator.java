@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -173,6 +174,8 @@ public class Rif2DrlTranslator
         }
         builder.append( sw );
 
+        System.out.println( builder.toString() );
+        
         return builder.toString();
     }
     
@@ -231,7 +234,7 @@ public class Rif2DrlTranslator
         rifRule.getThenPart().accept( this );
         writer.print( buffer.toString() );
 
-        writer.print( "end" );
+        writer.println( "end\n" );
 
         return null;
     }
@@ -283,14 +286,29 @@ public class Rif2DrlTranslator
 
         XmlFieldSetter fieldSetter = prHelper.getXmlFieldSetter( n );
         if ( fieldSetter != null ) {
+            ClassMapping mapping = ( ClassMapping ) this.mappings.get( fieldSetter.xmlDeclaringCType );
+            String fieldName = mapping.getFieldNameMapping( fieldSetter.xmlField.getLocalPart() );
+            
             buffer.append( ((Variable) fieldSetter.targetTerm).getName() );
             buffer.append( '.' );
-            buffer.append( "set" + ucFirst( fieldSetter.xmlField.getLocalPart() ) );
+            buffer.append( "set" + ucFirst( fieldName ) );
             buffer.append( '(' );
+             if ( (( Const)fieldSetter.newTerm).getType().getLocalPart().equals( "integer" ) ) {
+                 buffer.append(  "new java.math.BigInteger( \"" );
+                 fieldSetter.newTerm.accept( this );
+                 buffer.append( "\" ) " );
+             } else if ( (( Const)fieldSetter.newTerm).getType().getLocalPart().equals( "decimal" ) ) {
+                 buffer.append(  "new java.math.BigDecimal( \"" );
+                 fieldSetter.newTerm.accept( this );
+                 buffer.append( "\" ) " );
+             } else {
+                 fieldSetter.newTerm.accept( this );
+             }
             //buffer = new StringBuilder();
-            fieldSetter.newTerm.accept( this );
+            
             //buffer.append( buffer.toString() );
             buffer.append( ");\n" );
+            //buffer.append( "modify(" + ((Variable) fieldSetter.targetTerm).getName() + ");\n" );
             return null;
         }
 

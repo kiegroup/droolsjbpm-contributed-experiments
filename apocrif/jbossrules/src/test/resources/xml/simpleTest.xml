@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Ruleset xmlns:aprif="http://apocrif/pr" xmlns:ns0="mismo" xmlns:xpath="http://www.w3.org/2005/xpath-functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <name>IlrContext</name>
+  <name>JBossRulesContext</name>
   <ProductionRule>
     <name>rule 1</name>
     <declare>
       <Var type="ns0:LOAN_APPLICATION">loanApplication</Var>
     </declare>
+    
     <declare>
       <Var type="ns0:REO_PROPERTY">reoproperty</Var>
     </declare>
+
+    <declare>
+      <Var type="ns0:LOAN_PRODUCT_DATA">loanProductData</Var>
+    </declare>
+
+    <declare>
+      <Var type="ns0:RATE_ADJUSTMENT">rateAdjustment</Var>
+    </declare>
+
+
 
     <if>
       <And>
@@ -21,8 +32,19 @@
           </Uniterm>
           <Const type="xsd:string">B1</Const>
         </Equal>
-      </And>
+        
+        <Equal>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:RATE_ADJUSTMENT</Const>
+            <Const>FirstRateAdjustmentMonths</Const>
+            <Var type="ns0:REO_PROPERTY">rateAdjustment</Var>
+          </Uniterm>
+          <Const type="xsd:integer">12</Const>
+        </Equal>        
+      </And>          
     </if>
+    
     <constaints>
       <And>
         <Uniterm>
@@ -35,16 +57,143 @@
             <Var type="ns0:LOAN_APPLICATION">loanApplication</Var>
           </Uniterm>
         </Uniterm>
+        
+        <Uniterm>
+          <Const type="xsd:QName">aprif:fromGeneratorOp</Const>
+          <Var type="ns0:LOAN_PRODUCT_DATA">loanProductData</Var>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:LOAN_APPLICATION</Const>
+            <Const>LOAN_PRODUCT_DATA</Const>
+            <Var type="ns0:LOAN_APPLICATION">loanApplication</Var>
+          </Uniterm>
+        </Uniterm>  
+        
+        <Uniterm>
+          <Const type="xsd:QName">aprif:fromGeneratorOp</Const>
+          <Var type="ns0:LOAN_PRODUCT_DATA">rateAdjustment</Var>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:LOAN_PRODUCT_DATA</Const>
+            <Const>RATE_ADJUSTMENT</Const>
+            <Var type="ns0:LOAN_APPLICATION">loanProductData</Var>
+          </Uniterm>
+        </Uniterm>                
+        
       </And>
     </constaints>
-    <then>
+    
+    <then>      
       <Uniterm>
         <Const type="xsd:QName">aprif:xmlSetter</Const>
-        <Const type="xsd:QName">ns0:REOPROPERTY</Const>
-        <Const>BorrowerID</Const>
-        <Var type="ns0:REOPROPERTY">reoproperty</Var>
-        <Const type="xsd:string">B2</Const>
-      </Uniterm>
+        <Const type="xsd:QName">ns0:RATE_ADJUSTMENT</Const>
+        <Const>FirstRateAdjustmentMonths</Const>
+        <Var type="ns0:REOPROPERTY">rateAdjustment</Var>
+        <Const type="xsd:integer">6</Const>
+      </Uniterm>      
     </then>
   </ProductionRule>
+  
+  <ProductionRule>
+    <name>rule 2</name>
+    <declare>
+      <Var type="ns0:LOAN_APPLICATION">loanApplication</Var>
+    </declare>
+    
+    <declare>
+      <Var type="ns0:REO_PROPERTY">reoproperty</Var>
+    </declare>
+
+    <declare>
+      <Var type="ns0:LOAN_PRODUCT_DATA">loanProductData</Var>
+    </declare>
+
+    <declare>
+      <Var type="ns0:RATE_ADJUSTMENT">rateAdjustment</Var>
+    </declare>
+
+
+
+    <if>
+      <And>
+        <Equal>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:REO_PROPERTY</Const>
+            <Const>BorrowerID</Const>
+            <Var type="ns0:REO_PROPERTY">reoproperty</Var>
+          </Uniterm>
+          <Const type="xsd:string">B1</Const>
+        </Equal>        
+        
+        <Equal>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:RATE_ADJUSTMENT</Const>
+            <Const>FirstRateAdjustmentMonths</Const>
+            <Var type="ns0:REO_PROPERTY">rateAdjustment</Var>
+          </Uniterm>
+          <Const type="xsd:integer">12</Const>
+        </Equal>  
+        
+        <Equal>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:RATE_ADJUSTMENT</Const>
+            <Const>_SubsequentCapPercent</Const>
+            <Var type="ns0:REO_PROPERTY">rateAdjustment</Var>
+          </Uniterm>        
+          <Const type="xsd:decimal">2.000</Const>
+        </Equal>               
+      </And>          
+    </if>
+    
+    <constaints>
+      <And>
+        <Uniterm>
+          <Const type="xsd:QName">aprif:fromGeneratorOp</Const>
+          <Var type="ns0:REO_PROPERTY">reoproperty</Var>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:LOAN_APPLICATION</Const>
+            <Const>REO_PROPERTY</Const>
+            <Var type="ns0:LOAN_APPLICATION">loanApplication</Var>
+          </Uniterm>
+        </Uniterm>
+        
+        <Uniterm>
+          <Const type="xsd:QName">aprif:fromGeneratorOp</Const>
+          <Var type="ns0:LOAN_PRODUCT_DATA">loanProductData</Var>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:LOAN_APPLICATION</Const>
+            <Const>LOAN_PRODUCT_DATA</Const>
+            <Var type="ns0:LOAN_APPLICATION">loanApplication</Var>
+          </Uniterm>
+        </Uniterm>  
+        
+        <Uniterm>
+          <Const type="xsd:QName">aprif:fromGeneratorOp</Const>
+          <Var type="ns0:LOAN_PRODUCT_DATA">rateAdjustment</Var>
+          <Uniterm>
+            <Const type="xsd:QName">aprif:xmlGetter</Const>
+            <Const type="xsd:QName">ns0:LOAN_PRODUCT_DATA</Const>
+            <Const>RATE_ADJUSTMENT</Const>
+            <Var type="ns0:LOAN_APPLICATION">loanProductData</Var>
+          </Uniterm>
+        </Uniterm>                
+        
+      </And>
+    </constaints>
+    
+    <then>      
+      <Uniterm>
+        <Const type="xsd:QName">aprif:xmlSetter</Const>
+        <Const type="xsd:QName">ns0:RATE_ADJUSTMENT</Const>
+        <Const>_SubsequentCapPercent</Const>
+        <Var type="ns0:REOPROPERTY">rateAdjustment</Var>
+        <Const type="xsd:decimal">4.000</Const>
+      </Uniterm>      
+    </then>
+  </ProductionRule>  
 </Ruleset>

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -109,6 +111,8 @@ public class JBossRulesTest extends TestCase {
 
         // check values before executing the rule session
         assertEquals( "B1", application.getREOPROPERTY().getBorrowerID() );
+        assertEquals( BigInteger.valueOf( 12 ), application.getLOANPRODUCTDATA().getRATEADJUSTMENT().getFirstRateAdjustmentMonths()  );
+        assertEquals( new BigDecimal( "2.000" ), application.getLOANPRODUCTDATA().getRATEADJUSTMENT().getSubsequentCapPercent()  );
         
         StatelessSession session = ruleBase.newStatelessSession();
         StatelessSessionResult results = session.executeWithResults( new Object[] { application }  );
@@ -116,7 +120,9 @@ public class JBossRulesTest extends TestCase {
         LOANAPPLICATION returnedApplication = ( LOANAPPLICATION ) results.iterateObjects().next();        
         
         // check vlaues after executing the rule session
-        assertEquals( "B2", returnedApplication.getREOPROPERTY().getBorrowerID() );
+        //assertEquals( "B2", returnedApplication.getREOPROPERTY().getBorrowerID() );
+        assertEquals( BigInteger.valueOf( 6 ), returnedApplication.getLOANPRODUCTDATA().getRATEADJUSTMENT().getFirstRateAdjustmentMonths()  );
+        assertEquals( new BigDecimal( "4.000" ), returnedApplication.getLOANPRODUCTDATA().getRATEADJUSTMENT().getSubsequentCapPercent()  );
 
         // This is how you "write" the results back to a stream using jaxb marshalling.
         Marshaller marshaller = jc.createMarshaller();
