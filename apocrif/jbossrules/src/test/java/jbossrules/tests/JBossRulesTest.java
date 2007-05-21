@@ -11,6 +11,7 @@ import java.net.URLClassLoader;
 import java.util.Collection;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import mismo.LOANAPPLICATION;
@@ -112,10 +113,14 @@ public class JBossRulesTest extends TestCase {
         StatelessSession session = ruleBase.newStatelessSession();
         StatelessSessionResult results = session.executeWithResults( new Object[] { application }  );
 
-        LOANAPPLICATION returnedApplication = ( LOANAPPLICATION ) results.iterateObjects().next();
+        LOANAPPLICATION returnedApplication = ( LOANAPPLICATION ) results.iterateObjects().next();        
         
         // check vlaues after executing the rule session
         assertEquals( "B2", returnedApplication.getREOPROPERTY().getBorrowerID() );
+
+        // This is how you "write" the results back to a stream using jaxb marshalling.
+        Marshaller marshaller = jc.createMarshaller();
+        marshaller.marshal( returnedApplication, System.out );
     }
 
     private void assertEqualsIgnoreWhitespace(final String expected,
