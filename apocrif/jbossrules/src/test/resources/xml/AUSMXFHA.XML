@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LOAN_APPLICATION MISMOVersionID="2.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AUS_v2_4.xsd">
+	<_DATA_INFORMATION>
+		<DATA_VERSION _Name="MISMO" _Number="2.3.1"/>
+	</_DATA_INFORMATION>
+	<ADDITIONAL_CASE_DATA>
+	<MORTGAGE_SCORE _Type="FraudFilterScore" _Value="620"/>
+		<TRANSMITTAL_DATA BelowMarketSubordinateFinancingIndicator="N" CurrentFirstMortgageHolderType="Unknown" PropertyEstimatedValueAmount="107000.00"/>
+	</ADDITIONAL_CASE_DATA>
+	<ASSET BorrowerID="B1" _AccountIdentifier="B129893" _CashOrMarketValueAmount="6425" _Type="SavingsAccount" _HolderName="Northshore Bank" _HolderStreetAddress="1 Main Street" _HolderCity="McLean" _HolderState="VA" _HolderPostalCode="22102"/>
+	<DOWN_PAYMENT _Amount="2398"/>
+	<GOVERNMENT_LOAN>
+		<FHA_LOAN FHACoverageRenewalRatePercent="0.500" FHAUpfrontMIPremiumPercent="1.500" _LenderIdentifier="1234567890" SectionOfActType="203B"/>
+		<FHA_VA_LOAN BorrowerPaidFHA_VAClosingCostsAmount="1041.52" GovernmentMortgageCreditCertificateAmount="0.00" GovernmentRefinanceType="FullDocumentation" PropertyEnergyEfficientHomeIndicator="N"/>
+	</GOVERNMENT_LOAN>
+	<GOVERNMENT_REPORTING HMDAPreapprovalType="NotApplicable"/>
+	<INTERVIEWER_INFORMATION InterviewersEmployerStreetAddress="9631 Thorton Road" InterviewersEmployerCity="McLean" InterviewersEmployerState="VA" InterviewersEmployerPostalCode="22102" InterviewersTelephoneNumber="8008659713" ApplicationTakenMethodType="FaceToFace" InterviewerApplicationSignedDate="2005-12-06" InterviewersEmployerName="The Lending Company Corporation"/>
+	<LOAN_PRODUCT_DATA>
+		<LOAN_FEATURES AssumabilityIndicator="N" BalloonIndicator="N" BuydownTemporarySubsidyIndicator="N" EscrowWaiverIndicator="N" GSEPropertyType="Detached" LienPriorityType="FirstLien" LoanRepaymentType="NoNegativeAmortization" LoanScheduledClosingDate="2006-01-15" PaymentFrequencyType="Monthly" PrepaymentPenaltyIndicator="N" ScheduledFirstPaymentDate="2006-03-01" LoanDocumentationType="NoVerificationOfStatedIncomeEmploymentOrAssets"/>
+	</LOAN_PRODUCT_DATA>
+	<LOAN_PURPOSE _Type="Purchase" PropertyRightsType="FeeSimple" PropertyUsageType="PrimaryResidence"/>
+	<LOAN_QUALIFICATION AdditionalBorrowerAssetsNotConsideredIndicator="N" AdditionalBorrowerAssetsConsideredIndicator="Y"/>
+	<MORTGAGE_TERMS AgencyCaseIdentifier="093-465678703" BaseLoanAmount="104152.00" BorrowerRequestedLoanAmount="1450000" LenderCaseIdentifier="ACMEPlusGroup" LoanAmortizationTermMonths="360" LoanAmortizationType="Fixed" MortgageType="FHA" RequestedInterestRatePercent="6.000"/>
+	<PROPERTY _StreetAddress="432 Langley Street" _City="McLean" _State="VA" _County="Fairfax" _PostalCode="22102" BuildingStatusType="Existing" _FinancedNumberOfUnits="1" _StructureBuiltYear="1929" PlannedUnitDevelopmentIndicator="N">
+		<PARSED_STREET_ADDRESS _HouseNumber="432" _StreetName="Langley Street"/>
+		<_VALUATION _MethodType="Other"/>
+	</PROPERTY>
+	<PROPOSED_HOUSING_EXPENSE HousingExpenseType="FirstMortgagePrincipalAndInterest" _PaymentAmount="633.81"/>
+	<PROPOSED_HOUSING_EXPENSE HousingExpenseType="MI" _PaymentAmount="43.16"/>
+	<TRANSACTION_DETAIL BorrowerPaidDiscountPointsTotalAmount="1057.14" EstimatedClosingCostsAmount="2098.66" MIAndFundingFeeFinancedAmount="1562.00" MIAndFundingFeeTotalAmount="1562.28" PrepaidItemsEstimatedAmount="260.70" PurchasePriceAmount="106550.00" FREReservesAmount="1667.36"/>
+	<BORROWER BorrowerID="B1" _FirstName="Georgia" _LastName="Ricardo" _BirthDate="1964-09-15" _ApplicationSignedDate="2005-12-06" _PrintPositionType="Borrower" _SSN="111111111" JointAssetLiabilityReportingType="NotJointly" MaritalStatusType="Unmarried">
+		<_RESIDENCE _StreetAddress="989 Riverside Drive" _City="McLean" _State="VA" _PostalCode="22102" _Country="US" BorrowerResidencyBasisType="Rent" BorrowerResidencyDurationMonths="6" BorrowerResidencyDurationYears="4" BorrowerResidencyType="Current"/>
+		<CURRENT_INCOME IncomeType="Base" _MonthlyTotalAmount="2950.00"/>
+		<DECLARATION AlimonyChildSupportObligationIndicator="N" BankruptcyIndicator="N" BorrowedDownPaymentIndicator="N" CitizenshipResidencyType="USCitizen" CoMakerEndorserOfNoteIndicator="N" HomeownerPastThreeYearsType="No" IntentToOccupyType="Yes" LoanForeclosureOrJudgementIndicator="N" OutstandingJudgementsIndicator="N" PartyToLawsuitIndicator="N" PresentlyDelinquentIndicator="N" PriorPropertyTitleType="Sole" PropertyForeclosedPastSevenYearsIndicator="N"/>
+		<EMPLOYER _Name="The Roundtable" _StreetAddress="83 Lark Drive" _City="McLean" _State="VA" _PostalCode="22102" CurrentEmploymentMonthsOnJob="0" CurrentEmploymentYearsOnJob="4" EmploymentBorrowerSelfEmployedIndicator="N" EmploymentCurrentIndicator="Y" EmploymentPrimaryIndicator="Y"/>
+		<FHA_VA_BORROWER FNMBankruptcyCount="0" FNMBorrowerCreditRating="0" FNMForeclosureCount="0" VeteranStatusIndicator="N"/>
+		<GOVERNMENT_MONITORING GenderType="Female" RaceNationalOriginRefusalIndicator="N" RaceNationalOriginType="Hispanic" HMDAEthnicityType="HispanicOrLatino">
+			<HMDA_RACE _Type="White"/>
+		</GOVERNMENT_MONITORING>
+		<PRESENT_HOUSING_EXPENSE HousingExpenseType="Rent" _PaymentAmount="625.00"/>
+	</BORROWER>
+</LOAN_APPLICATION>
