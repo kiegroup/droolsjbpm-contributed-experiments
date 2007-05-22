@@ -4,6 +4,7 @@ import creditscore.CreditScore
 import creditscore.Root
 
 rule "Occupancy_Adjustments_1"
+    dialect "mvel"
     no-loop true
 when 
     r : Root( division=="wholesale",
@@ -11,5 +12,5 @@ when
     cs1 : CreditScore() from r.creditScore1
     cs2 : CreditScore() from r.creditScore2
 then
-    r.setOccupancyAdjustment(0.95);
+    r.occupancyAdjustment = 0.95;
 end

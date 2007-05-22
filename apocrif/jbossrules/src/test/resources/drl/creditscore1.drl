@@ -3,10 +3,11 @@ package creditscore
 import creditscore.Root
 
 rule "Occupancy_Adjustments_1"
+    dialect "mvel"
     no-loop true
 when 
     r : Root( division=="wholesale",
               occupancy=="Investors" )
 then
-    r.setOccupancyAdjustment(0.95);
+    r.occupancyAdjustment = 0.95;
 end

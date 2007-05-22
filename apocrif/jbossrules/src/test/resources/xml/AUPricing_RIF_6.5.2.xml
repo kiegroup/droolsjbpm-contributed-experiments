@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Ruleset xmlns:aprif="http://apocrif/pr" xmlns:xpath="http://www.w3.org/2005/xpath-functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Ruleset xmlns:aprif="http://apocrif/pr" xmlns:ns0="mismo"  xmlns:xpath="http://www.w3.org/2005/xpath-functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <name>AUPricing</name>
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_0</name>
@@ -142,6 +142,7 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_1</name>
 <declare>
@@ -298,6 +299,7 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_2</name>
 <declare>
@@ -439,6 +441,7 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_3</name>
 <declare>
@@ -580,6 +583,7 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_4</name>
 <declare>
@@ -736,6 +740,7 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_5</name>
 <declare>
@@ -877,6 +882,7 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_6</name>
 <declare>
@@ -1008,6 +1014,7 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_7</name>
 <declare>
@@ -1154,6 +1161,7 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 <ProductionRule>
 <name>ACMEPlus_CC_Base_Rates_8</name>
 <declare>
@@ -2569,4 +2577,5 @@
 </Uniterm>
 </then>
 </ProductionRule>
+
 </Ruleset>

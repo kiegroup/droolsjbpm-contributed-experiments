@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LOAN_APPLICATION MISMOVersionID="2.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AUS_v2_4.xsd">
+<LOAN_APPLICATION MISMOVersionID="2.3.1" >
 	<_DATA_INFORMATION>
 		<DATA_VERSION _Name="MISMO" _Number="2.3.1"/>
 	</_DATA_INFORMATION>

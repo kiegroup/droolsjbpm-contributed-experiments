@@ -1,10 +1,8 @@
 package apocrif.engine.jbossrules;
 
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.Writer;
 
-import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
 import apocrif.core.Ruleset;
