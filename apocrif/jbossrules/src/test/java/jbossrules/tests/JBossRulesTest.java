@@ -4,36 +4,33 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Collection;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-import mismo.LOANAPPLICATION;
-import mismo.ObjectFactory;
+import javax.xml.namespace.QName;
+
+import junit.framework.TestCase;
+import mismo.AUSBORROWERType;
+import mismo.AUSLOANAPPLICATIONType;
+import mismo.AUSLoanDocumentationTypeEnumerated;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
+import org.drools.event.DebugAgendaEventListener;
 import org.drools.rule.Package;
 
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
-
-import junit.framework.TestCase;
 import apocrif.core.Ruleset;
-import apocrif.engine.Driver;
 import apocrif.engine.jbossrules.JBossRulesDriver;
 import apocrif.engine.jbossrules.Rif2DrlTranslator;
 import apocrif.io.DOMDeserializer;
-import javax.xml.namespace.QName;
+
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 public class JBossRulesTest extends TestCase {
     DOMDeserializer deserializer = new DOMDeserializer();
@@ -91,13 +88,14 @@ public class JBossRulesTest extends TestCase {
                     Thread.currentThread().getContextClassLoader() );
     }
 
-    public void testMismo() throws Exception {
-        final String XML_FILE = "src/test/resources/xml/AUSMXARM.xml";
-        final String RIF_FILE = "src/test/resources/xml/simpleTest.xml";
+    public void testAUSMXFix() throws Exception {
+        final String XML_FILE = "src/test/resources/xml/AUSMXFix.xml";
+        final String RIF_FILE = "src/test/resources/xml/AUPricing_RIF_6.5.2.xml";
 
         JAXBContextImpl jc = (JAXBContextImpl) JAXBContext.newInstance( "mismo" );
         Unmarshaller unmarshaller = jc.createUnmarshaller();
-        LOANAPPLICATION application = (LOANAPPLICATION) unmarshaller.unmarshal( new File( XML_FILE ) );
+        JAXBElement element = ( JAXBElement ) unmarshaller.unmarshal( new File( XML_FILE ) );
+        AUSLOANAPPLICATIONType application = ( AUSLOANAPPLICATIONType) element.getValue();
 
         JBossRulesDriver driver = new JBossRulesDriver( "mismo",
                                                         mismo.ObjectFactory.class,
@@ -108,27 +106,91 @@ public class JBossRulesTest extends TestCase {
         Package pkg = driver.readFromRifXml( reader );
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
-
-        // check values before executing the rule session
-        assertEquals( "B1", application.getREOPROPERTY().getBorrowerID() );
-        assertEquals( BigInteger.valueOf( 12 ), application.getLOANPRODUCTDATA().getRATEADJUSTMENT().getFirstRateAdjustmentMonths()  );
-        assertEquals( new BigDecimal( "2.000" ), application.getLOANPRODUCTDATA().getRATEADJUSTMENT().getSubsequentCapPercent()  );
         
+        assertEquals( new Double( 6.750 ), application.getMORTGAGETERMS().getRequestedInterestRatePercent() );
         StatelessSession session = ruleBase.newStatelessSession();
-        StatelessSessionResult results = session.executeWithResults( new Object[] { application }  );
-
-        LOANAPPLICATION returnedApplication = ( LOANAPPLICATION ) results.iterateObjects().next();        
+        session.addEventListener( new DebugAgendaEventListener() );
         
-        // check vlaues after executing the rule session
-        //assertEquals( "B2", returnedApplication.getREOPROPERTY().getBorrowerID() );
-        assertEquals( BigInteger.valueOf( 6 ), returnedApplication.getLOANPRODUCTDATA().getRATEADJUSTMENT().getFirstRateAdjustmentMonths()  );
-        assertEquals( new BigDecimal( "4.000" ), returnedApplication.getLOANPRODUCTDATA().getRATEADJUSTMENT().getSubsequentCapPercent()  );
+        StatelessSessionResult results = session.executeWithResults( new Object[] { application }  );        
 
+        AUSLOANAPPLICATIONType returnedApplication = ( AUSLOANAPPLICATIONType ) results.iterateObjects().next();
+        
+        assertEquals( new Double( 11.9 ), returnedApplication.getMORTGAGETERMS().getRequestedInterestRatePercent() );
+        
         // This is how you "write" the results back to a stream using jaxb marshalling.
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.marshal( returnedApplication, System.out );
+        Marshaller marshaller = jc.createMarshaller();        
+        marshaller.marshal( new JAXBElement( new QName("mismo", "AUSLOANAPPLICATIONType"),returnedApplication.getClass(), returnedApplication ), System.out );
     }
 
+    public void testAUSMXARM() throws Exception {
+        final String XML_FILE = "src/test/resources/xml/AUSMXARM.xml";
+        final String RIF_FILE = "src/test/resources/xml/AUPricing_RIF_6.5.2.xml";
+
+        JAXBContextImpl jc = (JAXBContextImpl) JAXBContext.newInstance( "mismo" );
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        JAXBElement element = ( JAXBElement ) unmarshaller.unmarshal( new File( XML_FILE ) );
+        AUSLOANAPPLICATIONType application = ( AUSLOANAPPLICATIONType) element.getValue();
+
+        JBossRulesDriver driver = new JBossRulesDriver( "mismo",
+                                                        mismo.ObjectFactory.class,
+                                                        Thread.currentThread().getContextClassLoader() );
+
+        Reader reader = new BufferedReader( new FileReader( new File( RIF_FILE ) ) );
+
+        Package pkg = driver.readFromRifXml( reader );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        
+        assertEquals( new Double( 5.0 ), application.getMORTGAGETERMS().getRequestedInterestRatePercent() );
+        StatelessSession session = ruleBase.newStatelessSession();
+        session.addEventListener( new DebugAgendaEventListener() );
+        
+        StatelessSessionResult results = session.executeWithResults( new Object[] { application }  );        
+
+        AUSLOANAPPLICATIONType returnedApplication = ( AUSLOANAPPLICATIONType ) results.iterateObjects().next();
+        
+        assertEquals( new Double( 15.6 ), returnedApplication.getMORTGAGETERMS().getRequestedInterestRatePercent() );
+        
+        // This is how you "write" the results back to a stream using jaxb marshalling.
+        Marshaller marshaller = jc.createMarshaller();        
+        marshaller.marshal( new JAXBElement( new QName("mismo", "AUSLOANAPPLICATIONType"),returnedApplication.getClass(), returnedApplication ), System.out );
+    }
+    
+    public void testAUSMXFHA() throws Exception {
+        final String XML_FILE = "src/test/resources/xml/AUSMXFHA.xml";
+        final String RIF_FILE = "src/test/resources/xml/AUPricing_RIF_6.5.2.xml";
+
+        JAXBContextImpl jc = (JAXBContextImpl) JAXBContext.newInstance( "mismo" );
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        JAXBElement element = ( JAXBElement ) unmarshaller.unmarshal( new File( XML_FILE ) );
+        AUSLOANAPPLICATIONType application = ( AUSLOANAPPLICATIONType) element.getValue();
+
+        JBossRulesDriver driver = new JBossRulesDriver( "mismo",
+                                                        mismo.ObjectFactory.class,
+                                                        Thread.currentThread().getContextClassLoader() );
+
+        Reader reader = new BufferedReader( new FileReader( new File( RIF_FILE ) ) );
+
+        Package pkg = driver.readFromRifXml( reader );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        
+        assertEquals( new Double( 6.0 ), application.getMORTGAGETERMS().getRequestedInterestRatePercent() );
+        StatelessSession session = ruleBase.newStatelessSession();
+        session.addEventListener( new DebugAgendaEventListener() );
+        
+        StatelessSessionResult results = session.executeWithResults( new Object[] { application }  );        
+
+        AUSLOANAPPLICATIONType returnedApplication = ( AUSLOANAPPLICATIONType ) results.iterateObjects().next();
+        
+        assertEquals( new Double( 12.9 ), returnedApplication.getMORTGAGETERMS().getRequestedInterestRatePercent() );
+        
+        // This is how you "write" the results back to a stream using jaxb marshalling.
+        Marshaller marshaller = jc.createMarshaller();        
+        marshaller.marshal( new JAXBElement( new QName("mismo", "AUSLOANAPPLICATIONType"),returnedApplication.getClass(), returnedApplication ), System.out );
+    }    
+    
+    
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
 
