@@ -1,0 +1,62 @@
+package dispatch
+
+/*
+ * Copyright 2007 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import benchmarks.dispatch.fact.derived.*
+import benchmarks.dispatch.fact.independent.*
+import java.util.Date
+
+expander dispatch.dsl
+
+rule "Vehicle size must be sufficiently large"
+	when
+		j : Job(vs: vehicleSizeRequired.sizeNumber)
+		job dispatchable
+		w: Worker(vehicleSize.sizeNumber < vs)
+	then
+		ineligible because of VEHICLE_SIZE
+end
+
+rule "If the job requires a wrench, the worker must have a wrench"
+	when
+		j : Job(wrenchRequired == true)
+		job dispatchable
+		w : Worker(hasWrench == false)
+	then 
+		ineligible because of WRENCH_REQUIRED
+end
+
+rule "If the job requires X sticks, the worker must have X sticks"
+	when
+		j : Job(req:numberOfSticksRequired)
+		job dispatchable
+		w : Worker(numberOfSticks < req)
+	then 
+		ineligible because of NUM_STICKS
+end
+
+rule "If the job requires X rocks, the worker must have X rocks"
+	when
+		j : Job(req:numberOfRocksRequired)
+		job dispatchable
+		w : Worker(numberOfRocks < req)
+	then 
+		ineligible because of NUM_ROCKS
+end
+
+
+

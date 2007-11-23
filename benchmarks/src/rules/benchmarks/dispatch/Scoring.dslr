@@ -1,0 +1,55 @@
+package dispatch
+
+/*
+ * Copyright 2007 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import benchmarks.dispatch.fact.derived.*
+import benchmarks.dispatch.fact.independent.*
+import java.util.Date
+
+expander dispatch.dsl
+
+rule "Distance to Job Score"
+	when
+		j: Job()
+		job dispatchable
+		w: Worker()
+		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
+			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
+	then 
+		ScoreComponent sc = new ScoreComponent(j, w);
+		sc.setType(ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB);
+		if (w.getVehicleSize() == VehicleSize.EXTRA_LARGE){
+			sc.setContribution(- 0.55 * (dist - 100));
+		} else {
+			sc.setContribution(- 0.4 * (dist - 100));
+		}
+		insertLogical(sc);
+end
+
+rule "Late to Job Score"
+	when
+		j : Job 
+		job dispatchable
+		w : Worker()
+		i: DecimalInfo(jobId == j.jobId, workerId == w.workerId,
+			type == Info.Type.MINUTES_LATE_TO_JOB, minutesLate: value >= 0)
+	then 
+		ScoreComponent sc = new ScoreComponent(j, w);
+		sc.setType(ScoreComponent.Type.LATE_TO_JOB);
+		sc.setContribution(- 400 - minutesLate * 0.2);
+		insertLogical(sc);
+end
