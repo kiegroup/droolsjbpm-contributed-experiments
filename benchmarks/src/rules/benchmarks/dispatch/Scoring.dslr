@@ -41,7 +41,7 @@ rule "Distance to Job Score - Regular"
 	when
 		j: Job()
 		job dispatchable
-		w: Worker(vehicleSize <> VehicleSize.EXTRA_LARGE)
+		w: Worker(vehicleSize != VehicleSize.EXTRA_LARGE)
 		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
 			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
 	then 
