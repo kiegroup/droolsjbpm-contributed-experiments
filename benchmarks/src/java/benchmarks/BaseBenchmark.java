@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import benchmarks.manners.DroolsManners;
-
 public abstract class BaseBenchmark {
     public abstract void help();
       
