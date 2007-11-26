@@ -22,21 +22,32 @@ import java.util.Date
 
 expander dispatch.dsl
 
-rule "Distance to Job Score"
+rule "Distance to Job Score - Extra Large"
 	when
 		j: Job()
 		job dispatchable
-		w: Worker()
+		w: Worker(vehicleSize == VehicleSize.EXTRA_LARGE)
 		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
 			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
 	then 
 		ScoreComponent sc = new ScoreComponent(j, w);
 		sc.setType(ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB);
-		if (w.getVehicleSize() == VehicleSize.EXTRA_LARGE){
-			sc.setContribution(- 0.55 * (dist - 100));
-		} else {
-			sc.setContribution(- 0.4 * (dist - 100));
-		}
+		sc.setContribution(- 0.55 * (dist - 100));
+		insertLogical(sc);
+end
+
+
+rule "Distance to Job Score - Regular"
+	when
+		j: Job()
+		job dispatchable
+		w: Worker(vehicleSize <> VehicleSize.EXTRA_LARGE)
+		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
+			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
+	then 
+		ScoreComponent sc = new ScoreComponent(j, w);
+		sc.setType(ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB);
+		sc.setContribution(- 0.4 * (dist - 100));
 		insertLogical(sc);
 end
 
