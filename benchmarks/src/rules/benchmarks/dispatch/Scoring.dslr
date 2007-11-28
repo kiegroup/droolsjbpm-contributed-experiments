@@ -30,12 +30,12 @@ rule "Distance to Job Score - Extra Large"
 		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
 			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
 	then 
-		ScoreComponent sc = new ScoreComponent(j, w);
-		sc.setType(ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB);
-		sc.setContribution(- 0.55 * (dist - 100));
+		ScoreComponent sc = new ScoreComponent(j,
+			w,
+			ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB,
+			- 0.55 * (dist - 100));
 		insertLogical(sc);
 end
-
 
 rule "Distance to Job Score - Regular"
 	when
@@ -45,9 +45,10 @@ rule "Distance to Job Score - Regular"
 		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
 			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
 	then 
-		ScoreComponent sc = new ScoreComponent(j, w);
-		sc.setType(ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB);
-		sc.setContribution(- 0.4 * (dist - 100));
+		ScoreComponent sc = new ScoreComponent(j,
+			w,
+			ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB,
+			- 0.4 * (dist - 100));
 		insertLogical(sc);
 end
 
@@ -59,8 +60,9 @@ rule "Late to Job Score"
 		i: DecimalInfo(jobId == j.jobId, workerId == w.workerId,
 			type == Info.Type.MINUTES_LATE_TO_JOB, minutesLate: value >= 0)
 	then 
-		ScoreComponent sc = new ScoreComponent(j, w);
-		sc.setType(ScoreComponent.Type.LATE_TO_JOB);
-		sc.setContribution(- 400 - minutesLate * 0.2);
+		ScoreComponent sc = new ScoreComponent(j,
+			w,
+			ScoreComponent.Type.LATE_TO_JOB,
+			- 400 - minutesLate * 0.2);
 		insertLogical(sc);
 end

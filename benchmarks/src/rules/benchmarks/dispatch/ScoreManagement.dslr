@@ -33,12 +33,11 @@ when
     #Don't score workers that aren't eligible
     not Exclusion(workerId == w.workerId, jobId == j.jobId)
 then
-		ScoreComponent sc = new ScoreComponent(j, w);
-		sc.setType(ScoreComponent.Type.DEFAULT);
-		sc.setContribution(0D);
-		insertLogical(sc);
+	ScoreComponent sc = new ScoreComponent(j, w, ScoreComponent.Type.DEFAULT, 0D);
+	insertLogical(sc);
 end
 
+ 
 rule "Accumulate Score"
 salience -50
 when
@@ -74,3 +73,6 @@ then
     }
     insertLogical(topWorkers);
 end
+
+
+

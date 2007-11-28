@@ -31,6 +31,8 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.spi.Activation;
+import org.drools.spi.AgendaFilter;
 
 import benchmarks.dispatch.fact.independent.DispatchState;
 import benchmarks.dispatch.fact.independent.Worker;
@@ -84,6 +86,7 @@ public class DispatchBenchmark {
 		ruleBase.addPackage(builder.getPackage());
 
 		wm = ruleBase.newStatefulSession();
+
 	}
 
 	private Reader getReader(String resourceName) {
@@ -92,13 +95,12 @@ public class DispatchBenchmark {
 	}
 
 	public void go(int numWorkers, int numJobs) throws Exception {
-		createWM();
-		
+
 		DispatchState ds = new DispatchState();
 		ds.setCurrentTime(new Date());
 		FactHandle dsfh = wm.insert(ds);
 
-		WorkerGenerator wg = new WorkerGenerator(100);
+		WorkerGenerator wg = new WorkerGenerator(100, ds.getCurrentTime());
 
 		for (int i = 0; i < numWorkers; i++) {
 			Worker w = wg.generateWorker();
@@ -107,7 +109,7 @@ public class DispatchBenchmark {
 			wm.insert(wp);
 		}
 
-		JobGenerator jg = new JobGenerator(100);
+		JobGenerator jg = new JobGenerator(100, ds.getCurrentTime());
 
 		for (int i = 0; i < numJobs; i++) {
 			wm.insert(jg.generateJob());
@@ -119,15 +121,23 @@ public class DispatchBenchmark {
 	public static void main(String args[]) throws Exception {
 		int numWorkers = 1;
 		int numJobs = 1;
-		
-		
+
 		if (args.length == 2){
 			numWorkers = new Integer(args[0]);
 			numJobs = new Integer(args[1]);
 		}
 		
+		System.out.println("Running benchmark with " + numWorkers + " workers and " + numJobs + " jobs.");
+		
 		DispatchBenchmark db = new DispatchBenchmark();
+		
+		db.createWM();
+		
+		long startTime = System.currentTimeMillis();
+		
 		db.go(numWorkers, numJobs);
+		
+		System.out.println("Completed in " + (System.currentTimeMillis() - startTime)+ "ms");
 	}
 
 }

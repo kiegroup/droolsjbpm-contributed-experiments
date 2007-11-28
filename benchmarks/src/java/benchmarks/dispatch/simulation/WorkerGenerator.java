@@ -1,6 +1,6 @@
 package benchmarks.dispatch.simulation;
 
-import java.util.Random;
+import java.util.Date;
 
 import benchmarks.dispatch.fact.independent.VehicleSize;
 import benchmarks.dispatch.fact.independent.Worker;
@@ -22,32 +22,74 @@ import benchmarks.dispatch.fact.independent.WorkerPosition;
  * limitations under the License.
  */
 
-public class WorkerGenerator {
+public class WorkerGenerator extends AbstractGenerator {
 
-    Random random;
+	public WorkerGenerator(long seed, Date now) {
+		super(seed, now);
+	}
 
-    public WorkerGenerator(long seed) {
-        random = new Random( seed );
-    }
+	public Worker generateWorker() {
 
-    public Worker generateWorker() {
+		Worker w = new Worker();
+		w.setWorkerId(rdi.nextHexString(10));
+		w.setHasWrench(rdi.nextUniform(0, 1) > 0.5);
+		w.setNumberOfRocks(nextUnitRequired());
+		w.setNumberOfSticks(nextUnitRequired());
+		w.setStatus(nextWorkerStatus());
+		w.setVehicleSize(nextVehicleSize());
 
-        Worker w = new Worker();
-        w.setWorkerId( new Integer( random.nextInt() ).toString() );
-        w.setHasWrench( false );
-        w.setNumberOfRocks( 1 );
-        w.setNumberOfSticks( 2 );
-        w.setStatus( Worker.Status.WAITING_FOR_JOB );
-        w.setVehicleSize( VehicleSize.SMALL );
+		if (w.getStatus() == Worker.Status.DISPATCHED_FOR_JOB) {;
+			w.setCurrentJobLatitude(rdi.nextUniform(30, 48));
+			w.setCurrentJobLongitude(rdi.nextUniform(-120, -75));
+			w.setTimeAvailable(nextFutureDate());
+		}
 
-        return w;
-    }
+		return w;
+	}
 
-    public WorkerPosition generateWorkerPosition(Worker w) {
-        WorkerPosition wp = new WorkerPosition();
-        wp.setLatitude( -90D );
-        wp.setLongitude( -90D );
-        wp.setWorkerId( w.getWorkerId() );
-        return wp;
-    }
+	public WorkerPosition generateWorkerPosition(Worker w) {
+		WorkerPosition wp = new WorkerPosition();
+		wp.setLatitude(rdi.nextUniform(30, 48));
+
+		// -75 - 120
+		wp.setLongitude(rdi.nextUniform(-120, -75));
+		wp.setWorkerId(w.getWorkerId());
+		return wp;
+	}
+
+	public Worker.Status nextWorkerStatus() {
+		switch (rdi.nextInt(0, 2)) {
+		case 0:
+			return Worker.Status.DISPATCHED_FOR_JOB;
+		default: // 2x as likely
+			return Worker.Status.WAITING_FOR_JOB;
+		}
+	}
+
+	public VehicleSize nextVehicleSize() {
+		switch (rdi.nextInt(0, 4)) {
+		case 0:
+			return VehicleSize.SMALL;
+		case 1:
+			return VehicleSize.MEDIUM;
+		case 2:
+			return VehicleSize.LARGE;
+		default: // 2x as likely
+			return VehicleSize.EXTRA_LARGE;
+		}
+	}
+
+	// two hours in the future + up to four days
+	public Date nextFutureDate() {
+		return new Date(now.getTime() + (120 + rdi.nextInt(0, 1 * 24 * 60))
+				* 60 * 1000);
+	}
+
+	public int nextUnitRequired() {
+		if (rdi.nextUniform(0, 1) < 0.9) {
+			return 0;
+		} else {
+			return rdi.nextInt(1, 3);
+		}
+	}
 }

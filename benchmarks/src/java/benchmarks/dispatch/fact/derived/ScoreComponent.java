@@ -21,55 +21,65 @@ import benchmarks.dispatch.fact.independent.Worker;
 
 public class ScoreComponent extends Compatibility {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public enum Type {
-        LATE_TO_JOB, EXCESSIVE_DISTANCE_TO_JOB, DEFAULT
-    }
+	public enum Type {
+		LATE_TO_JOB, EXCESSIVE_DISTANCE_TO_JOB, DEFAULT
+	}
 
-    private Double contribution;
-    private Type   type;
+	private Double contribution;
+	private Type type;
 
-    public ScoreComponent(Job job,
-                          Worker worker) {
-        super( job,
-               worker );
-    }
+	public ScoreComponent(Job job, Worker worker) {
+		super(job, worker);
 
-    public void setContribution(Double scoreContribution) {
-        this.contribution = scoreContribution;
-    }
+	}
 
-    public Double getContribution() {
-        return contribution;
-    }
+	public ScoreComponent(Job job, Worker worker, Type type, Double contribution) {
+		super(job, worker);
+		this.type = type;
+		this.contribution = contribution;
+	}
 
-    public Type getType() {
-        return type;
-    }
+	public void setContribution(Double scoreContribution) {
+		this.contribution = scoreContribution;
+	}
 
-    public void setType(Type type) {
-        this.type = type;
-    }
+	public Double getContribution() {
+		return contribution;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
-    }
+	public Type getType() {
+		return type;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( !super.equals( obj ) ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        final ScoreComponent other = (ScoreComponent) obj;
-        if ( type == null ) {
-            if ( other.type != null ) return false;
-        } else if ( !type.equals( other.type ) ) return false;
-        return true;
-    }
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final ScoreComponent other = (ScoreComponent) obj;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
 
 }

@@ -26,7 +26,7 @@ public class Job {
 
     private String      jobId;
     private Status      status;
-    private Date        startTime, endTime;
+    private Date        startTime;
     private Double      latitude, longitude;
     private VehicleSize vehicleSizeRequired;
     private Boolean     wrenchRequired;
@@ -103,14 +103,6 @@ public class Job {
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
     }
 
     @Override
