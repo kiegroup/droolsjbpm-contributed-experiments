@@ -22,3 +22,11 @@ import benchmarks.dispatch.fact.independent.*
 query getTopWorkersForJob (String s)
 	e: TopWorkers(jobId == s)
 end
+
+query getWorkerInfo(String id, WorkerInfo.Type t)
+	wi: WorkerInfo(workerId == id, type == t)
+end
+
+query getInfo(String wId, String jId, Info.Type t)
+	i: Info(workerId == wId, jobId == jId, type == t)
+end

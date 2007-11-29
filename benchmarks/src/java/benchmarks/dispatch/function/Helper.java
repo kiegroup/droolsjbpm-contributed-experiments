@@ -22,31 +22,37 @@ import benchmarks.dispatch.fact.independent.Job;
 
 public class Helper {
 
-    public static Double distanceToPickupInMiles(Job job,
-                                                 Double workerLatitude,
-                                                 Double workerLongitude) {
+	public static Double distanceToPickupInMiles(Job job,
+			Double workerLatitude, Double workerLongitude) {
 
-        Double jobLatitude = job.getLatitude();
-        Double jobLongitude = job.getLongitude();
+		Double jobLatitude = job.getLatitude();
+		Double jobLongitude = job.getLongitude();
 
-        jobLatitude = Math.toRadians( jobLatitude );
-        workerLatitude = Math.toRadians( workerLatitude );
-        jobLongitude = Math.toRadians( jobLongitude );
-        workerLongitude = Math.toRadians( workerLongitude );
+		jobLatitude = Math.toRadians(jobLatitude);
+		workerLatitude = Math.toRadians(workerLatitude);
+		jobLongitude = Math.toRadians(jobLongitude);
+		workerLongitude = Math.toRadians(workerLongitude);
 
-        double angle = Math.acos( Math.sin( jobLatitude ) * Math.sin( workerLatitude ) + Math.cos( jobLatitude ) * Math.cos( workerLatitude ) * Math.cos( jobLongitude - workerLongitude ) );
+		double angle = Math.acos(Math.sin(jobLatitude)
+				* Math.sin(workerLatitude) + Math.cos(jobLatitude)
+				* Math.cos(workerLatitude)
+				* Math.cos(jobLongitude - workerLongitude));
 
-        return Math.toDegrees( angle ) * 69.1105; //miles per degree
-    }
+		return Math.toDegrees(angle) * 69.1105; // miles per degree
+	}
 
-    public static Double minutesLateToJob(Date jobStartTime,
-                                          Date workerAvailableTime,
-                                          Double minutesToJob) {
-        return 1D;
-    }
+	public static Double minutesLateToJob(Date jobStartTime,
+			Date workerAvailableTime, Double minutesToJob) {
+		Date earliestArrival = new Date(workerAvailableTime.getTime() + Math.round(minutesToJob * 1000 * 60));
+		if (earliestArrival.before(jobStartTime)){
+			return 0D;
+		} else {
+			long diff = earliestArrival.getTime() - jobStartTime.getTime();
+			return diff / 1000.0 / 60.0;
+		}
+	}
 
-    public static Double minutesBetweenDates(Date start,
-                                             Date end) {
-        return 0D;
-    }
+	public static Double minutesBetweenDates(Date start, Date end) {
+		return 0D;
+	}
 }

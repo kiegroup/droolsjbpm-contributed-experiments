@@ -48,6 +48,11 @@ public class TopWorkers
     public List<String> getTopWorkers() {
         return workerScores;
     }
+    
+    //Allow indexing by drools
+    public int getSize(){
+    	return workerScores.size();
+    }
 
     public String getJobId() {
         return jobId;

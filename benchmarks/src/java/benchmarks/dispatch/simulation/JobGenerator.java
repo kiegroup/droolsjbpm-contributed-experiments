@@ -1,10 +1,6 @@
 package benchmarks.dispatch.simulation;
 
 import java.util.Date;
-import java.util.Random;
-
-import org.apache.commons.math.random.RandomDataImpl;
-import org.apache.commons.math.random.RandomGenerator;
 
 import benchmarks.dispatch.fact.independent.Job;
 import benchmarks.dispatch.fact.independent.VehicleSize;

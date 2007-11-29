@@ -23,10 +23,12 @@ import java.util.Date
 expander dispatch.dsl
 
 rule "Distance to Job Score - Extra Large"
+	salience -10
 	when
 		j: Job()
 		job dispatchable
 		w: Worker(vehicleSize == VehicleSize.EXTRA_LARGE)
+		within range
 		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
 			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
 	then 
@@ -38,10 +40,12 @@ rule "Distance to Job Score - Extra Large"
 end
 
 rule "Distance to Job Score - Regular"
+	salience -10
 	when
 		j: Job()
 		job dispatchable
 		w: Worker(vehicleSize != VehicleSize.EXTRA_LARGE)
+		within range
 		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
 			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
 	then 
@@ -53,10 +57,12 @@ rule "Distance to Job Score - Regular"
 end
 
 rule "Late to Job Score"
+	salience -10
 	when
 		j : Job 
 		job dispatchable
 		w : Worker()
+		within range
 		i: DecimalInfo(jobId == j.jobId, workerId == w.workerId,
 			type == Info.Type.MINUTES_LATE_TO_JOB, minutesLate: value >= 0)
 	then 

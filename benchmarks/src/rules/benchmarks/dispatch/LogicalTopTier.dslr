@@ -18,6 +18,7 @@ package dispatch
 
 import benchmarks.dispatch.fact.derived.*
 import benchmarks.dispatch.fact.independent.*
+import benchmarks.dispatch.DispatchParameters;
 import java.util.Date
 
 expander dispatch.dsl
@@ -38,6 +39,26 @@ rule "Clobber dispatched jobs"
 		retract(j);
 end
 
+rule "Establish Beginning Max Radius"
+	salience 300
+	when
+		j: Job()
+		not MaxRadius(jobId == j.jobId)
+	then
+		MaxRadius mr = new MaxRadius(j);
+		mr.setMaxRadius(DispatchParameters.INITIAL_SEARCH_RADIUS);
+		#Do not insert logical to avoid infinite loop
+		insert(mr);
+end
+
+rule "Clobber Dead Max Radius"
+	salience 300
+	when
+		mr: MaxRadius()
+		not Job(jobId == mr.jobId)
+	then
+		retract(mr);
+end
 
 
 rule "Clobber dead positions"

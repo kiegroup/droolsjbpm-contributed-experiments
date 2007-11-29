@@ -110,7 +110,6 @@ rule "Minutes Late to Job"
 	then 
 		DecimalInfo ti = new DecimalInfo(j ,w);
 		ti.setType(Info.Type.MINUTES_LATE_TO_JOB);
-		
 		ti.setValue(minutesLateToJob(j.getStartTime(), availDate.getValue(), timeToJob.getValue()));
 		insertLogical(ti);
 end

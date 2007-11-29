@@ -27,6 +27,7 @@ rule "Vehicle size must be sufficiently large"
 		j : Job(vs: vehicleSizeRequired.sizeNumber)
 		job dispatchable
 		w: Worker(vehicleSize.sizeNumber < vs)
+		within range
 	then
 		ineligible because of VEHICLE_SIZE
 end
@@ -36,6 +37,7 @@ rule "If the job requires a wrench, the worker must have a wrench"
 		j : Job(wrenchRequired == true)
 		job dispatchable
 		w : Worker(hasWrench == false)
+		within range
 	then 
 		ineligible because of WRENCH_REQUIRED
 end
@@ -45,6 +47,7 @@ rule "If the job requires X sticks, the worker must have X sticks"
 		j : Job(req:numberOfSticksRequired)
 		job dispatchable
 		w : Worker(numberOfSticks < req)
+		within range
 	then 
 		ineligible because of NUM_STICKS
 end
@@ -54,6 +57,7 @@ rule "If the job requires X rocks, the worker must have X rocks"
 		j : Job(req:numberOfRocksRequired)
 		job dispatchable
 		w : Worker(numberOfRocks < req)
+		within range
 	then 
 		ineligible because of NUM_ROCKS
 end
