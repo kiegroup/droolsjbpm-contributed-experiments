@@ -28,6 +28,7 @@ rule "Distance to Job Score - Extra Large"
 		j: Job()
 		job dispatchable
 		w: Worker(vehicleSize == VehicleSize.EXTRA_LARGE)
+		no exclusions
 		within range
 		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
 			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
@@ -45,7 +46,7 @@ rule "Distance to Job Score - Regular"
 		j: Job()
 		job dispatchable
 		w: Worker(vehicleSize != VehicleSize.EXTRA_LARGE)
-		within range
+		no exclusions
 		i: DecimalInfo(workerId == w.workerId, jobId == j.jobId,
 			type == Info.Type.DISTANCE_TO_JOB_MILES, dist: value >= 100)
 	then 
@@ -62,9 +63,9 @@ rule "Late to Job Score"
 		j : Job 
 		job dispatchable
 		w : Worker()
-		within range
+		no exclusions
 		i: DecimalInfo(jobId == j.jobId, workerId == w.workerId,
-			type == Info.Type.MINUTES_LATE_TO_JOB, minutesLate: value >= 0)
+			type == Info.Type.MINUTES_LATE_TO_JOB, minutesLate: value > 0)
 	then 
 		ScoreComponent sc = new ScoreComponent(j,
 			w,

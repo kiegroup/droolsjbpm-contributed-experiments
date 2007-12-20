@@ -31,9 +31,9 @@ when
 	j : Job()
 	job dispatchable
 	w: Worker()
+	#Don't score workers that aren't eligible
+	no exclusions
 	within range
-    #Don't score workers that aren't eligible
-    not Exclusion(workerId == w.workerId, jobId == j.jobId)
 then
 	ScoreComponent sc = new ScoreComponent(j, w, ScoreComponent.Type.DEFAULT, 0D);
 	insertLogical(sc);
@@ -46,9 +46,8 @@ when
 	j : Job()
 	job dispatchable
 	w: Worker()
+	no exclusions
 	within range
-    #Don't score workers that aren't eligible
-    not Exclusion(workerId == w.workerId, jobId == j.jobId)
     totScore : Double() 
              from accumulate( ScoreComponent( workerId == w.workerId, jobId == j.jobId, sc:contribution ),
                               sum(sc) )
@@ -81,12 +80,11 @@ rule "Ensure Enough Workers"
 salience -200
 when
 	tw: TopWorkers(size < DispatchParameters.MIN_SCORED_WORKERS)
-	#Ensure no infinite loop?  Doesn't propogation cease on its own?
 	mw: MaxRadius(jobId == tw.jobId, maxRadius < 4000)
 	#TODO: Ensure sufficient minimum score of Top N vehicles here
 then
-	mw.setMaxRadius(mw.getMaxRadius() + DispatchParameters.INCREMENTAL_SEARCH_RADIUS);
-    insert(mw);
+	mw.setMaxRadius(mw.getMaxRadius() * DispatchParameters.INCREMENTAL_SEARCH_RADIUS_MULTIPLIER);
+    update(mw);
 end
 
 

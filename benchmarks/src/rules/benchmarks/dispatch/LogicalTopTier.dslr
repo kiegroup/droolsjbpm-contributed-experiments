@@ -57,6 +57,7 @@ rule "Clobber Dead Max Radius"
 		mr: MaxRadius()
 		not Job(jobId == mr.jobId)
 	then
+		System.out.println("Clobber MR");
 		retract(mr);
 end
 

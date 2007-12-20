@@ -23,10 +23,30 @@ query getTopWorkersForJob (String s)
 	e: TopWorkers(jobId == s)
 end
 
+query getJobExclusion (String s)
+	e: JobExclusion(jobId == s)
+end
+
 query getWorkerInfo(String id, WorkerInfo.Type t)
 	wi: WorkerInfo(workerId == id, type == t)
 end
 
-query getInfo(String wId, String jId, Info.Type t)
-	i: Info(workerId == wId, jobId == jId, type == t)
+query getInfo(String jId, String wId, Info.Type t)
+	i: Info(jobId == jId, workerId == wId, type == t)
+end
+
+query getExclusion(String jId, String wId, Exclusion.Type t)
+	i: Exclusion(jobId == jId, workerId == wId, type == t)
+end
+
+query getScoreComponent(String jId, String wId, ScoreComponent.Type t)
+	i: ScoreComponent(jobId == jId, workerId == wId, type == t)
+end
+
+query getScoreComponents(String wId, String jId)
+	s: ScoreComponent(workerId == wId, jobId == jId)
+end
+
+query getScore(String wId, String jId)
+	s: Score(workerId == wId, jobId == jId)
 end
