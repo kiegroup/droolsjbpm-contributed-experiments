@@ -154,27 +154,4 @@ public class TestDerivations extends AbstractDispatchTest {
 		//TODO
 	}
 
-	private WorkerInfo getWorkerInfo(String workerId, WorkerInfo.Type type) {
-		QueryResults qrs = wm.getQueryResults("getWorkerInfo", new Object[] {
-				workerId, type });
-		if (qrs.size() == 0)
-			return null;
-		QueryResult qr = qrs.get(0);
-		if (qr.size() == 0)
-			return null;
-		return (WorkerInfo) qr.get(0);
-
-	}
-
-	private Info getInfo(String workerId, String jobId, Info.Type type) {
-		QueryResults qrs = wm.getQueryResults("getInfo", new Object[] {
-				workerId, jobId, type });
-		if (qrs.size() == 0)
-			return null;
-		QueryResult qr = qrs.get(0);
-		if (qr.size() == 0)
-			return null;
-		return (Info) qr.get(0);
-
-	}
 }
