@@ -4,7 +4,7 @@ import benchmarks.dispatch.fact.derived.Exclusion;
 import benchmarks.dispatch.fact.independent.VehicleSize;
 
 public class TestWorkerEligibility extends AbstractDispatchTest {
-	public void testWrenchRule() throws Exception {
+	public void testVehicleSizeRule() throws Exception {
 		
 		Couple c = createNeighboringCouple();
 		

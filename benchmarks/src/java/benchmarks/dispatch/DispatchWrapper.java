@@ -40,7 +40,7 @@ import benchmarks.dispatch.fact.derived.Info;
 import benchmarks.dispatch.fact.derived.ScoreComponent;
 import benchmarks.dispatch.fact.derived.TopWorkers;
 
-public class DispatchWrapper {
+public class DispatchWrapper implements IDispatchWrapper {
 
 	public DispatchWrapper() throws Exception {
 		createWM();
@@ -72,6 +72,7 @@ public class DispatchWrapper {
 
 		conf.setAssertBehaviour(RuleBaseConfiguration.AssertBehaviour.EQUALITY);
 		conf.setRemoveIdentities(true);
+		
 		conf.setLogicalOverride(RuleBaseConfiguration.LogicalOverride.DISCARD);
 		conf.setMaintainTms(true);
 		conf.setShadowProxy(true);
@@ -112,15 +113,32 @@ public class DispatchWrapper {
 		public long cancels, creates, fireAfter, fireBefore, pops, pushes;
 
 		public Map<String, Integer> fires = new HashMap<String, Integer>();
+		public Map<String, Integer> cancelMap = new HashMap<String, Integer>();
 
 		public void dump() {
+			System.out.println("Fires:");
 			for (Map.Entry<String, Integer> e : fires.entrySet()) {
+				System.out.println(e.getKey() + ":" + e.getValue());
+			}
+			
+			System.out.println("Cancels:");
+			for (Map.Entry<String, Integer> e : cancelMap.entrySet()) {
 				System.out.println(e.getKey() + ":" + e.getValue());
 			}
 		}
 
 		public void activationCancelled(ActivationCancelledEvent event,
 				WorkingMemory workingMemory) {
+	
+			String name = event.getActivation().getRule().getName();
+			Integer current = cancelMap.get(name);
+			
+			//System.out.println("CancelSource:" + event.getSource().toString());
+			
+			if (current == null) {
+				current = new Integer(0);
+			}
+			cancelMap.put(name, ++current);
 			cancels++;
 
 		}
@@ -193,6 +211,11 @@ public class DispatchWrapper {
 
 		List<JobEligibility> eligibilities = new ArrayList<JobEligibility>();
 
+		//TEMP for ILog
+		if (topWorkers == null){
+			return eligibilities;
+		}
+		
 		for (String workerId : topWorkers.getTopWorkers()) {
 			JobEligibility je = new JobEligibility();
 			je.setWorkerId(workerId);

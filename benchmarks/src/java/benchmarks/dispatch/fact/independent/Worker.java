@@ -29,7 +29,7 @@ public class Worker {
     private Date        timeAvailable;
     private Double      currentJobLatitude, currentJobLongitude;
     private VehicleSize vehicleSize;
-    private Boolean     hasWrench;
+    private Boolean     hasWrench = new Boolean(false);
     private Integer     numberOfSticks, numberOfRocks;
 
     public Status getStatus() {

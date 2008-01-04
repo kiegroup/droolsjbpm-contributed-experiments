@@ -29,7 +29,7 @@ public class Job {
     private Date        startTime;
     private Double      latitude, longitude;
     private VehicleSize vehicleSizeRequired;
-    private Boolean     wrenchRequired;
+    private Boolean     wrenchRequired = new Boolean(false);
     private Integer     numberOfSticksRequired;
     private Integer     numberOfRocksRequired;
 

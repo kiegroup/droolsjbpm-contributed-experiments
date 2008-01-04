@@ -52,7 +52,4 @@ public class Helper {
 		}
 	}
 
-	public static Double minutesBetweenDates(Date start, Date end) {
-		return 0D;
-	}
 }

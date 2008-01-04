@@ -7,6 +7,7 @@ public class DispatchParameters {
 	//Increase surface area by 25%
 	public final static double INCREMENTAL_SEARCH_RADIUS_MULTIPLIER = Math.sqrt(1.25);
 	
+	
 	public final static int MIN_SCORED_WORKERS = 50;
 	
 }

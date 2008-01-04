@@ -17,8 +17,10 @@ package benchmarks.dispatch;
  */
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.FactHandle;
@@ -40,6 +42,10 @@ public class DispatchBenchmark {
 		dw = new DispatchWrapper();
 	}
 
+	public DispatchBenchmark(DispatchWrapper dw) throws Exception {
+		this.dw = dw;
+	}
+
 	public void go(int numWorkers, int numJobs) throws Exception {
 
 		DispatchState ds = new DispatchState();
@@ -48,11 +54,13 @@ public class DispatchBenchmark {
 
 		WorkerGenerator wg = new WorkerGenerator(100, ds.getCurrentTime());
 
+		Map<FactHandle, WorkerPosition> positions = new HashMap<FactHandle, WorkerPosition>();
+
 		for (int i = 0; i < numWorkers; i++) {
 			Worker w = wg.generateWorker();
 			dw.insert(w);
 			WorkerPosition wp = wg.generateWorkerPosition(w);
-			dw.insert(wp);
+			positions.put(dw.insert(wp), wp);
 		}
 
 		Set<Job> jobs = new HashSet<Job>();
@@ -66,6 +74,36 @@ public class DispatchBenchmark {
 		}
 
 		dw.fireAllRules();
+
+		// test clock updates
+/*
+		long startClock = System.currentTimeMillis();
+		// 50 clock cycles, 20 min each
+		for (int i = 0; i < 50; i++) {
+			ds.setCurrentTime(new Date(ds.getCurrentTime().getTime() + 1000 * 20));
+			dw.getWM().update(dsfh, ds);
+			dw.getWM().fireAllRules();
+		}
+
+		System.out.println("ClockUpdates:" + (System.currentTimeMillis() - startClock));
+
+		startClock = System.currentTimeMillis();
+		// 50 clock cycles, 20 min each
+		for (int i = 0; i < 10; i++) {
+			for (Map.Entry<FactHandle, WorkerPosition> e : positions.entrySet()) {
+				e.getValue().setLongitude(e.getValue().getLongitude() + 1);
+				e.getValue().setLatitude(e.getValue().getLatitude() + 1);
+				dw.getWM().insert(e.getValue());
+				//dw.getWM().update(e.getKey(), e.getValue());
+			}
+			System.out.println("Now firing rules");
+			dw.getWM().fireAllRules();
+			System.out.println("Just fired rules");
+		}
+
+		System.out.println("PositionUpdates:" + (System.currentTimeMillis() - startClock));
+
+*/
 
 		System.out.println("Inserts:" + dw.wmel.inserts);
 		System.out.println("Retracts:" + dw.wmel.retracts);
@@ -93,8 +131,11 @@ public class DispatchBenchmark {
 				continue;
 			}
 
-			System.out.println("Job:" + j.getJobId() + ":"
-					+ eligibilities.size() + ":"
+			// TEMP for ILOG
+			if (eligibilities.size() == 0)
+				continue;
+
+			System.out.println("Job:" + j.getJobId() + ":" + eligibilities.size() + ":"
 					+ eligibilities.get(0).getDistanceToJobInMiles());
 
 		}
@@ -110,17 +151,25 @@ public class DispatchBenchmark {
 			numJobs = new Integer(args[1]);
 		}
 
-		System.out.println("Running benchmark with " + numWorkers
-				+ " workers and " + numJobs + " jobs.");
+		System.out.println("Running benchmark with " + numWorkers + " workers and " + numJobs + " jobs.");
 
 		long startTime = System.currentTimeMillis();
-		
+
 		DispatchBenchmark db = new DispatchBenchmark();
-		
+
 		db.go(numWorkers, numJobs);
-		
-		System.out.println("Completed in "
-				+ (System.currentTimeMillis() - startTime) + "ms");
+
+		System.out.println("Completed in " + (System.currentTimeMillis() - startTime) + "ms");
+
+		System.gc();
+		System.gc();
+		System.gc();
+		System.gc();
+		System.gc();
+
+		long endMem = Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory();
+
+		System.out.println("PostGC WM Size:" + (endMem));
 
 	}
 
