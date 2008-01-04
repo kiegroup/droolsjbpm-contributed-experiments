@@ -22,7 +22,6 @@ import java.util.Date
 
 import function benchmarks.dispatch.function.Helper.distanceToPickupInMiles
 import function benchmarks.dispatch.function.Helper.minutesLateToJob
-import function benchmarks.dispatch.function.Helper.minutesBetweenDates
 
 expander dispatch.dsl
 
@@ -41,7 +40,6 @@ end
 rule "Time Available for Job when already on Job"
 	when
 		w : Worker(status == Worker.Status.DISPATCHED_FOR_JOB)
-		
 	then 
 		DateWorkerInfo workerInfo = new DateWorkerInfo(w.getWorkerId());
 		workerInfo.setType(WorkerInfo.Type.TIME_AVAILABLE_FOR_DISPATCH);
@@ -73,11 +71,16 @@ rule "Position Available for Dispatch When On Load"
 end
 
 rule "Distance to job"
+	salience 0
 	when
 		j : Job()
 		job dispatchable
 		w: Worker()
-		dvi: PositionWorkerInfo(workerId == w.workerId, type == WorkerInfo.Type.POSITION_AVAILABLE_FOR_DISPATCH)
+		no exclusions
+		dvi: PositionWorkerInfo(
+			workerId == w.workerId,
+			type == WorkerInfo.Type.POSITION_AVAILABLE_FOR_DISPATCH
+			)
 	then 
 		Double dist = distanceToPickupInMiles(j, dvi.getLatitude(), dvi.getLongitude());
 		DecimalInfo i = new DecimalInfo(j, w);
@@ -91,12 +94,14 @@ rule "Time to get to job"
 		j : Job()
 		job dispatchable
 		w: Worker()
-		i: DecimalInfo(jobId == j.jobId, workerId == w.workerId, type == Info.Type.DISTANCE_TO_JOB_MILES)
+		no exclusions
+		within range
 	then 
 		DecimalInfo ti = new DecimalInfo(j, w);
 		ti.setType(Info.Type.TIME_TO_JOB_MINUTES);
 		#Presume 45 MPH
-		ti.setValue((Double)i.getValue() / 45 * 60);
+		#dist_mr from "within range"
+		ti.setValue((Double)dist_mr.getValue() / 45 * 60);
 		insertLogical(ti);
 end
 
@@ -105,6 +110,9 @@ rule "Minutes Late to Job"
 		j : Job()
 		job dispatchable
 		w: Worker()
+		no exclusions
+		#Redundant, but should be efficient given same rete network as above rule
+		within range
 		availDate: DateWorkerInfo(workerId == w.workerId, type == WorkerInfo.Type.TIME_AVAILABLE_FOR_DISPATCH)
 		timeToJob: DecimalInfo(jobId == j.jobId, workerId == w.workerId, type == Info.Type.TIME_TO_JOB_MINUTES)
 	then 
@@ -114,6 +122,7 @@ rule "Minutes Late to Job"
 		insertLogical(ti);
 end
 
+/*
 rule "Age of Worker Position"
 	when
 		j: Job() 
@@ -128,4 +137,5 @@ rule "Age of Worker Position"
 		ti.setValue(minutesBetweenDates(wp.getPositionObservationDate(), ds.getPositionCutOff()));
 		insertLogical(ti);
 end
+*/
 

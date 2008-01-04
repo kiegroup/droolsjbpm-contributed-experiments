@@ -22,7 +22,7 @@ import benchmarks.dispatch.fact.independent.*
 expander dispatch.dsl
 
 rule "Retract Eligibility if job too far in future"
-	salience 300 
+	salience 350 
 	when
 		time matters
 		#We refuse to waste cycles on jobs far in the future

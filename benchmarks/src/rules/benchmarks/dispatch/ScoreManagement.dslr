@@ -39,7 +39,6 @@ then
 	insertLogical(sc);
 end
 
- 
 rule "Accumulate Score"
 salience -50
 when
@@ -86,6 +85,3 @@ then
 	mw.setMaxRadius(mw.getMaxRadius() * DispatchParameters.INCREMENTAL_SEARCH_RADIUS_MULTIPLIER);
     update(mw);
 end
-
-
-
