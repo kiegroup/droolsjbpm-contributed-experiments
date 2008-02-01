@@ -1,0 +1,111 @@
+import benchmarks.dispatch.fact.derived.*;
+import benchmarks.dispatch.fact.independent.*;
+import java.util.Date;
+
+rule TimeAvailableforJobwhennotonjob {
+	when {
+		w : Worker(status != Worker.Status.DISPATCHED_FOR_JOB);
+		ds: DispatchState();
+	}
+	then {
+		DateWorkerInfo workerInfo = new DateWorkerInfo(w.getWorkerId());
+		workerInfo.setType(WorkerInfo.Type.TIME_AVAILABLE_FOR_DISPATCH);
+		//If we just use system date, workers get stamped as available in the past
+		workerInfo.setValue(ds.getCurrentTime());
+		insertLogical(workerInfo);
+	}
+}
+
+
+rule TimeAvailableforJobwhenalreadyonJob {
+	when {
+		w : Worker(status == Worker.Status.DISPATCHED_FOR_JOB);
+	}
+	then {
+		DateWorkerInfo workerInfo = new DateWorkerInfo(w.getWorkerId());
+		workerInfo.setType(WorkerInfo.Type.TIME_AVAILABLE_FOR_DISPATCH);
+		workerInfo.setValue(w.getTimeAvailable());
+		insertLogical(workerInfo);
+	}
+}
+
+
+rule PositionAvailableforjobwhennotonjob {
+	when {
+		w : Worker(status != Worker.Status.DISPATCHED_FOR_JOB);
+		wp: WorkerPosition(workerId == w.workerId);
+	}
+	then {
+		PositionWorkerInfo workerInfo = new PositionWorkerInfo(w.getWorkerId());
+		workerInfo.setType(WorkerInfo.Type.POSITION_AVAILABLE_FOR_DISPATCH);
+		workerInfo.setLatitude(wp.getLatitude());
+		workerInfo.setLongitude(wp.getLongitude());
+		insertLogical(workerInfo);
+	}
+}
+
+
+rule PositionAvailableforDispatchWhenOnLoad {
+	when {
+		w : Worker(status == Worker.Status.DISPATCHED_FOR_JOB);
+	}
+	then {
+		PositionWorkerInfo workerInfo = new PositionWorkerInfo(w.getWorkerId());
+		workerInfo.setType(WorkerInfo.Type.POSITION_AVAILABLE_FOR_DISPATCH);
+		workerInfo.setLatitude(w.getCurrentJobLatitude());
+		workerInfo.setLongitude(w.getCurrentJobLongitude());
+		insertLogical(workerInfo);
+	}
+}
+
+
+rule Distancetojob {
+	when {
+		j : Job();
+		not JobExclusion(jobId == j.jobId);
+		w: Worker();
+		dvi: PositionWorkerInfo(workerId == w.workerId && type == WorkerInfo.Type.POSITION_AVAILABLE_FOR_DISPATCH);
+	}
+	then {
+		Double dist = distanceToPickupInMiles(j, dvi.getLatitude(), dvi.getLongitude());
+		DecimalInfo i = new DecimalInfo(j, w);
+		i.setValue(dist * 1.3);
+		i.setType(Info.Type.DISTANCE_TO_JOB_MILES);
+		insert logical(i);
+	}
+}
+
+
+rule Timetogettojob {
+	when {
+		j : Job();
+		not JobExclusion(jobId == j.jobId);
+		w: Worker();
+		i: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.DISTANCE_TO_JOB_MILES);
+	}
+	then {
+		DecimalInfo ti = new DecimalInfo(j, w);
+		ti.setType(Info.Type.TIME_TO_JOB_MINUTES);
+		//Presume 45 MPH
+		ti.setValue((Double)i.getValue() / 45 * 60);
+		insert logical(ti);
+	}
+}
+
+
+rule MinutesLatetoJob {
+	when {
+		j : Job();
+		not JobExclusion(jobId == j.jobId);
+		w: Worker();
+		availDate: DateWorkerInfo(workerId == w.workerId && type == WorkerInfo.Type.TIME_AVAILABLE_FOR_DISPATCH);
+		timeToJob: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.TIME_TO_JOB_MINUTES);
+	}
+	then {
+		DecimalInfo ti = new DecimalInfo(j ,w);
+		ti.setType(Info.Type.MINUTES_LATE_TO_JOB);
+		ti.setValue(minutesLateToJob(j.getStartTime(), availDate.getValue(), timeToJob.getValue()));
+		insert logical(ti);
+	}
+}
+

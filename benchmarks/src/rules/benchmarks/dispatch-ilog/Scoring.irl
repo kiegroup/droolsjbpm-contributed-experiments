@@ -1,0 +1,61 @@
+import benchmarks.dispatch.fact.derived.*;
+import benchmarks.dispatch.fact.independent.*;
+import java.util.Date;
+
+rule DistanceToJobScoreExtraLarge {
+	priority = -10;
+when {
+	j: Job();
+	not JobExclusion(jobId == j.jobId);
+	w: Worker(vehicleSize == VehicleSize.EXTRA_LARGE);
+	not Exclusion(workerId == w.workerId && jobId == j.jobId);
+	dist_mr: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.DISTANCE_TO_JOB_MILES);
+	MaxRadius(jobId == j.jobId && maxRadius.doubleValue() >= dist_mr.value.doubleValue());
+	i: DecimalInfo(workerId == w.workerId && jobId == j.jobId && type == Info.Type.DISTANCE_TO_JOB_MILES && value >= 100);
+	}
+then {
+	ScoreComponent sc = new ScoreComponent(j,
+		w,
+		ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB,
+		new Double(- 0.55 * (i.getValue() - 100)));
+	insert logical(sc);
+	}
+}
+
+
+rule DistanceToJobScoreRegular {
+	priority = -10;
+when {
+	j: Job();
+	not JobExclusion(jobId == j.jobId);
+	w: Worker(vehicleSize != VehicleSize.EXTRA_LARGE);
+	not Exclusion(workerId == w.workerId && jobId == j.jobId);
+	i: DecimalInfo(workerId == w.workerId && jobId == j.jobId && type == Info.Type.DISTANCE_TO_JOB_MILES && value >= 100);
+	}
+then {
+	ScoreComponent sc = new ScoreComponent(j,
+		w,
+		ScoreComponent.Type.EXCESSIVE_DISTANCE_TO_JOB,
+		new Double(- 0.4 * (i.getValue() - 100)));
+	insert logical(sc);
+	}
+}
+
+
+rule LateToJobScore {
+	priority = -10;
+when {
+	j : Job();
+	not JobExclusion(jobId == j.jobId);
+	w : Worker();
+	not Exclusion(workerId == w.workerId && jobId == j.jobId);
+	i: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.MINUTES_LATE_TO_JOB && value > 0);
+	}
+then {
+	ScoreComponent sc = new ScoreComponent(j,
+		w,
+		ScoreComponent.Type.LATE_TO_JOB,
+		new Double(- 400 - i.getValue() * 0.2));
+	insert logical (sc);
+	}
+}

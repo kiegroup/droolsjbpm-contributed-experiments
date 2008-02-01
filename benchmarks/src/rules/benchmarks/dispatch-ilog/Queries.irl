@@ -1,0 +1,52 @@
+package dispatch
+
+/*
+ * Copyright 2007 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import benchmarks.dispatch.fact.derived.*
+import benchmarks.dispatch.fact.independent.*
+
+query getTopWorkersForJob (String s)
+	e: TopWorkers(jobId == s)
+end
+
+query getJobExclusion (String s)
+	e: JobExclusion(jobId == s)
+end
+
+query getWorkerInfo(String id, WorkerInfo.Type t)
+	wi: WorkerInfo(workerId == id, type == t)
+end
+
+query getInfo(String jId, String wId, Info.Type t)
+	i: Info(jobId == jId, workerId == wId, type == t)
+end
+
+query getExclusion(String jId, String wId, Exclusion.Type t)
+	i: Exclusion(jobId == jId, workerId == wId, type == t)
+end
+
+query getScoreComponent(String jId, String wId, ScoreComponent.Type t)
+	i: ScoreComponent(jobId == jId, workerId == wId, type == t)
+end
+
+query getScoreComponents(String wId, String jId)
+	s: ScoreComponent(workerId == wId, jobId == jId)
+end
+
+query getScore(String wId, String jId)
+	s: Score(workerId == wId, jobId == jId)
+end

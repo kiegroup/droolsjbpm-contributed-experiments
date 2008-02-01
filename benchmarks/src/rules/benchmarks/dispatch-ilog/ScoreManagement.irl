@@ -1,0 +1,85 @@
+import benchmarks.dispatch.fact.derived.*;
+import benchmarks.dispatch.fact.independent.*;
+import benchmarks.dispatch.DispatchParameters;
+import java.util.Date;
+import java.util.Set;
+
+
+
+rule DefaultScoreComponent {
+priority = -25;
+when {
+	//Force score accumulation even if no score components
+	j : Job();
+	not JobExclusion(jobId == j.jobId);
+	w: Worker();
+	//Don't score workers that aren't eligible
+	not Exclusion(workerId == w.workerId && jobId == j.jobId);
+	dist_mr: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.DISTANCE_TO_JOB_MILES);
+	MaxRadius(jobId == j.jobId && maxRadius.doubleValue() >= dist_mr.value.doubleValue());
+	}
+then {
+	ScoreComponent sc = new ScoreComponent(j, w, ScoreComponent.Type.DEFAULT, new Double(0D));
+	insert logical(sc);
+	}
+}
+
+
+
+ 
+rule AccumulateScore {
+priority = -50;
+when {
+	j : Job();
+	not JobExclusion(jobId == j.jobId);
+	w: Worker();
+	not Exclusion(workerId == w.workerId && jobId == j.jobId);
+	dist_mr: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.DISTANCE_TO_JOB_MILES);
+	MaxRadius(jobId == j.jobId && maxRadius.doubleValue() >= dist_mr.value.doubleValue());
+	totScore : Double() 
+		from accumulate( ScoreComponent( workerId == w.workerId, jobId == j.jobId, sc:contribution ), sum(sc) );
+	}
+then {
+   Score s = new Score(j, w);
+   s.setScore(totScore);
+   insert logical(s);
+   }
+}
+
+
+
+rule AccumulateTopWorkers {
+priority = -100;
+when {
+	j : Job();
+	not JobExclusion(jobId == j.jobId);
+   	scoreList : Set()
+		from accumulate( s: Score(jobId == j.jobId), top_workers(s));
+	}
+then {
+	TopWorkers topWorkers = new TopWorkers();
+	topWorkers.setJobId(j.getJobId());
+	for (Object s: scoreList){
+		topWorkers.getTopWorkers().add(((Score)s).getWorkerId());
+	}
+	insert logical(topWorkers);
+	}
+}
+
+
+rule "Ensure Enough Workers" {
+priority = -200
+when {
+	tw: TopWorkers(size < DispatchParameters.MIN_SCORED_WORKERS);
+	mw: MaxRadius(jobId == tw.jobId, maxRadius < 4000);
+	#TODO: Ensure sufficient minimum score of Top N vehicles here
+	}
+then {
+	mw.setMaxRadius(mw.getMaxRadius() * DispatchParameters.INCREMENTAL_SEARCH_RADIUS_MULTIPLIER);
+	update(mw);
+	}
+}
+
+
+
+

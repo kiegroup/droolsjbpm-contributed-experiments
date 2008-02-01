@@ -1,0 +1,42 @@
+import java.util.Date;
+import benchmarks.dispatch.fact.independent.Job;
+
+ruleset TestCase
+{
+  property ilog.rules.engine.useJIT = true;
+  property ilog.rules.engine.useStaticAgenda = true;
+  in int intvalue;
+  out int outvalue;
+};
+
+
+	function double distanceToPickupInMiles(Job job,
+			Double workerLatitude, Double workerLongitude) {
+
+		Double jobLatitude = job.getLatitude();
+		Double jobLongitude = job.getLongitude();
+
+		jobLatitude = Math.toRadians(jobLatitude);
+		workerLatitude = Math.toRadians(workerLatitude);
+		jobLongitude = Math.toRadians(jobLongitude);
+		workerLongitude = Math.toRadians(workerLongitude);
+
+		double angle = Math.acos(Math.sin(jobLatitude)
+				* Math.sin(workerLatitude) + Math.cos(jobLatitude)
+				* Math.cos(workerLatitude)
+				* Math.cos(jobLongitude - workerLongitude));
+
+		return Math.toDegrees(angle) * 69.1105D; // miles per degree
+	}
+
+
+	function double minutesLateToJob(Date jobStartTime,
+			Date workerAvailableTime, Double minutesToJob) {
+		Date earliestArrival = new Date(workerAvailableTime.getTime() + Math.round(minutesToJob * 1000 * 60));
+		if (earliestArrival.before(jobStartTime)){
+			return 0D;
+		} else {
+			long diff = earliestArrival.getTime() - jobStartTime.getTime();
+			return diff / 1000.0D / 60.0D;
+		}
+	}

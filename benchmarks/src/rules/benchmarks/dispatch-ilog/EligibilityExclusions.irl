@@ -1,0 +1,19 @@
+
+
+import benchmarks.dispatch.fact.derived.*;
+import benchmarks.dispatch.fact.independent.*;
+
+
+
+rule RetractEligibilityifjobtoofarinfuture {
+	priority = 300;
+	when {
+		ds: DispatchState();
+		j : Job(startTime.getTime() > ds.startTimeCutOff.getTime());
+	}
+	then {
+	JobExclusion je = new JobExclusion();
+	je.setJobId(j.getJobId());
+	insert logical(je);
+	}
+}

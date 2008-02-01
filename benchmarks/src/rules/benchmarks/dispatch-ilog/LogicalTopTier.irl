@@ -1,0 +1,64 @@
+
+
+import benchmarks.dispatch.fact.derived.*;
+import benchmarks.dispatch.fact.independent.*;
+import benchmarks.dispatch.DispatchParameters;
+import java.util.Date;
+
+rule ClobberInactiveWorkers {
+priority = 400;
+	when {
+		w: Worker(status == Worker.Status.INACTIVE);
+		}
+	then {
+		retract(w);
+		}
+}
+
+rule ClobberDispatchedJobs {
+	priority = 400;
+	when {
+		j: Job(status != Job.Status.PENDING);
+		}
+	then {
+		retract(j);
+		}
+}
+
+rule EstablishBeginningMaxRadius {
+	priority = 300;
+	when {
+		j: Job();
+		not MaxRadius(jobId == j.jobId);
+		}
+	then {
+		MaxRadius mr = new MaxRadius(j);
+		mr.setMaxRadius(DispatchParameters.INITIAL_SEARCH_RADIUS);
+		//Do not insert logical to avoid infinite loop
+		insert(mr);
+		}
+}
+
+rule ClobberDeadMaxRadius {
+	priority = 300;
+	when {
+		mr: MaxRadius();
+		not Job(jobId == mr.jobId);
+		}
+	then {
+		System.out.println("Clobber MR");
+		retract(mr);
+		}
+}
+
+
+rule ClobberDeadPositions {
+	priority = 200;
+	when {
+		wp: WorkerPosition();
+		not Worker(workerId == wp.workerId);
+		}
+	then {
+		retract(wp);
+		}
+}

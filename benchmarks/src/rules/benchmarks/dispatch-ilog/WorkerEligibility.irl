@@ -1,0 +1,65 @@
+
+
+import benchmarks.dispatch.fact.derived.*;
+import benchmarks.dispatch.fact.independent.*;
+import java.util.Date;
+
+rule VehicleSizeMustBeSufficientlyLarge {
+when {
+	j : Job(vs: vehicleSizeRequired.sizeNumber);
+	not JobExclusion(jobId == j.jobId);
+	w: Worker(vehicleSize.sizeNumber < vs);
+	dist_mr: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.DISTANCE_TO_JOB_MILES);
+	MaxRadius(jobId == j.jobId && maxRadius.doubleValue() >= dist_mr.value.doubleValue());
+	}
+then {
+	Exclusion e = new Exclusion(j, w);
+	e.setType(Exclusion.Type.VEHICLE_SIZE);
+	insert logical(e);
+	}
+}
+
+rule Ifthejobrequiresawrenchtheworkermusthaveawrench {
+when {
+	j : Job(wrenchRequired == true);
+	not JobExclusion(jobId == j.jobId);
+	w : Worker(hasWrench == false);
+	dist_mr: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.DISTANCE_TO_JOB_MILES);
+	MaxRadius(jobId == j.jobId && maxRadius.doubleValue() >= dist_mr.value.doubleValue());
+	}
+then {
+	Exclusion e = new Exclusion(j, w);
+	e.setType(Exclusion.Type.WRENCH_REQUIRED);
+	insert logical(e);
+	}
+}
+
+rule IfthejobrequiresXstickstheworkermusthaveXsticks {
+when {
+	j : Job(req:numberOfSticksRequired);
+	not JobExclusion(jobId == j.jobId);
+	w : Worker(numberOfSticks.intValue() < req.intValue());
+	dist_mr: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.DISTANCE_TO_JOB_MILES);
+	MaxRadius(jobId == j.jobId && maxRadius.doubleValue() >= dist_mr.value.doubleValue());
+	}
+then {
+	Exclusion e = new Exclusion(j, w);
+	e.setType(Exclusion.Type.NUM_STICKS);
+	insert logical(e);
+	}
+}
+
+rule IfthejobrequiresXrockstheworkermusthaveXrocks {
+when {
+	j : Job(req:numberOfRocksRequired);
+	not JobExclusion(jobId == j.jobId);
+	w : Worker(numberOfRocks.intValue() < req.intValue());
+	dist_mr: DecimalInfo(jobId == j.jobId && workerId == w.workerId && type == Info.Type.DISTANCE_TO_JOB_MILES);
+	MaxRadius(jobId == j.jobId && maxRadius.doubleValue() >= dist_mr.value.doubleValue());
+	}
+then {
+	Exclusion e = new Exclusion(j, w);
+	e.setType(Exclusion.Type.NUM_ROCKS);
+	insert logical(e);
+	}
+}
