@@ -59,6 +59,11 @@ public class TopWorkerAccumulator implements AccumulateFunction {
 	private class ScoreComparator implements Comparator<Score> {
 
 		public int compare(Score o1, Score o2) {
+			//Must do this for set correctness
+			if (o1.equals(o2)){
+				return 0;
+			}
+			
 			if (o1.getScore() < o2.getScore()){
 				return -1;
 			} else {
