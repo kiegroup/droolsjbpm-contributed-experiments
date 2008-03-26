@@ -34,7 +34,7 @@ public class BocukFileExample {
 			//System.out.println(bocuksTree);
 
 			RulePrinter my_printer = new RulePrinter();
-			my_printer.printer(bocuksTree);
+			my_printer.printer(bocuksTree, null, null);
 		}
 	}
 

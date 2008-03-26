@@ -1,5 +1,6 @@
 package id3;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,7 +28,7 @@ public class RulePrinter {
 		nodes = new Stack<NodeValue>();
 	}
 	
-	public void printer(DecisionTree dt) {//, PrintStream object
+	public void printer(DecisionTree dt, String packageName, String outputFile) {//, PrintStream object
 		ruleObject = dt.getName();
 		dfs(dt.getRoot());
 		
@@ -37,12 +38,35 @@ public class RulePrinter {
 //			System.out.println("Rule " +j + " suggests that \n"+ rule +".\n");
 //		}
 		
+		//String outputFile = new String("src/id3/rules"+".drl");
+		if (outputFile!=null) {
+			if (packageName != null)
+				write("package " + packageName +";\n\n", false, outputFile);
+			else
+				try {
+					throw new Exception("The package is not specified");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+//			write("/* \n", false, outputFile);
+//			write(" * Spitting the rules= \n", true, outputFile);
+//			write(" */ \n", true, outputFile);
+		}
+		
 		int i = 0;
 		Collections.sort(rules, Rule.getRankComparator());
 		for( Rule rule: rules) {
 			i++;
 			System.out.println("//rule " +i + " write to drl \n"+ rule +"\n");
+			if (outputFile!=null) {
+				write(rule.toString(), true, outputFile);
+				write("\n", true, outputFile);
+			}
 		}
+	}
+	public Object getRuleObject() {
+		return ruleObject;
 	}
 	
 	private void dfs(TreeNode my_node) {
@@ -55,7 +79,9 @@ public class RulePrinter {
 			//rule_list.add(spit(nodes));
 			// what if more than one condition (more than one leafNode)
 			
-			rules.add(spitRule(nodes));
+			Rule newRule = spitRule(nodes);
+			newRule.setId(rules.size());
+			rules.add(newRule);
 			return;
 		}
 		
@@ -73,21 +99,11 @@ public class RulePrinter {
 			
 		
 	}
-	private ArrayList<NodeValue> spit(Stack<NodeValue> nodes) {
-		ArrayList<NodeValue> list_nodes = new ArrayList<NodeValue>(nodes.size());
-		Iterator<NodeValue> it = nodes.iterator();
-
-		while (it.hasNext()) {
-			
-			NodeValue current = it.next();
-			list_nodes.add(current);
-		}
-		return list_nodes;	
-	}
 	
 	private Rule spitRule(Stack<NodeValue> nodes) {
 						//, Stack<NodeValue> leaves // if more than one leaf
 		Rule newRule = new Rule(nodes.size());// (nodes, leaves) //if more than one leaf
+		newRule.setObject(getRuleObject().toString());
 		Iterator<NodeValue> it = nodes.iterator();
 
 		while (it.hasNext()) {
@@ -133,13 +149,44 @@ public class RulePrinter {
 		return out;	
 	}
 	
+	//	--------------------------------------------------------------------------------
+	// Saves the string
+	//--------------------------------------------------------------------------------
+	public void write(String toWrite, boolean append, String data)	{  
+		//String data = new String("data/results_"+System.currentTimeMillis()+".m");
+		File file =new File(data);
+		if (append)
+		{
+			if(!file.exists())
+				System.out.println("File doesnot exit, creating...");
+			try {
+				BufferedWriter out = new BufferedWriter(new FileWriter(data, true));
+				out.write(toWrite);
+				out.close();
+				//System.out.println("I wrote "+ toWrite);
+			} catch (IOException e) {
+				System.out.println("No I cannot write to the file");
+				System.exit(0);
+			}
+
+		} else {
+			if(file.exists()&& (file.length()>0))
+				file.delete();
+			try {
+				BufferedWriter out = new BufferedWriter(new FileWriter(data));
+				out.write(toWrite);
+				out.close();
+				System.out.println("I wrote "+ toWrite);
+			} catch (IOException e) {
+				System.out.println("No I cannot write to the file");
+			}
+		}
+	}
 }
 
-
-
-
 class Rule {
-
+	private int id;
+	private String attr_obj;
 	private double rank;
 	private ArrayList<NodeValue> conditions;
 	private ArrayList<NodeValue>  actions;
@@ -160,11 +207,27 @@ class Rule {
 		actions.add(new NodeValue(current.getNode(), current.getNodeValue()));
 		rank = ((LeafNode)current.getNode()).getRank();
 	}
+	public void setObject(String obj) {
+		attr_obj= obj;
+	}
+	
+	public String getObject() {
+		return attr_obj;
+	}
+	
+	private int getId() {
+		// TODO Auto-generated method stub
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id= id;
+	}
+	
 	
 	
 	public String toString() {
-		/*
-		 
+		/*		 
 		rule "Good Bye"
     		dialect "java"
 			when
@@ -173,29 +236,36 @@ class Rule {
 				System.out.println( "Goodbye: " + message ); 
 		end
 		 */
-
-		String out = "rule \"#x rank:"+rank+"\" \n";
-		out += "\t when";
-		out += "\n\t\t Object("+ "";
-		for (NodeValue cond: conditions) {
-			out += cond + " & ";
-		}
-	
-		out = out.substring(0, out.length()-3) + ")\n";
 		
+		String out = ""; //"rule \"#"+getId()+" "+decision+" rank:"+rank+"\" \n";
+		out += "\t when";
+		out += "\n\t\t "+getObject() +"("+ "";
+		for (NodeValue cond: conditions) {
+			out += cond + ", ";
+		}
 		
 		String action = "";
+		String decision = "";
 		for (NodeValue act: actions) {
-			action += act.getNodeValue() + " & ";
+			out += act.getDomain() + " : "+act.getDomain()+" , ";
+			action += act.getNodeValue() + " , ";
+			decision += act.getDomain() + " ";
 		}
 		action = action.substring(0, action.length()-3);
+		out = out.substring(0, out.length()-3) + ")\n";
 		
-		out += "\n\t then ";
-		out += "\n\t\t System.out.println(\"Decision (\"+" + action + "+\")\");";
+		out += "\t then ";
+		out += "\n\t\t System.out.println(\"Decision on "+decision+"= \"+" + decision + "+\": ("+action+")\");\n";
+		
+		out = "rule \"#"+getId()+" "+decision+ "= "+action+" with rank:"+rank+"\" \n" + out;
+		
+		out += "end\n";
 
 		return out;
 	}
 	
+
+
 
 	public static Comparator<Rule> getRankComparator() {
 		return new RuleComparator();
@@ -245,7 +315,10 @@ class NodeValue {
 		this.nodeValue = nodeValue;
 	}
 	public String toString() {
-		return node.getDomain() + " == "+ nodeValue; 
+		if (node.getDomain() instanceof LiteralDomain)
+			return node.getDomain() + " == "+ "\""+nodeValue+ "\""; 
+		else
+			return node.getDomain() + " == "+ nodeValue;
 	}
 		
 }

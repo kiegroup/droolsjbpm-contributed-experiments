@@ -1,6 +1,8 @@
 package id3;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -117,6 +119,64 @@ public class DecisionTree {
 		}
 		return sum;
 	}
+	
+	
+	private class FactNumericAttributeComparator implements Comparator<Fact> {
+		private String attr_name;
+		public FactNumericAttributeComparator(String _attr_name) {
+			attr_name = _attr_name;
+		}
+
+		public int compare(Fact f0, Fact f1) {
+			Number n0 = (Number)f0.getFieldValue(attr_name);
+			Number n1 = (Number)f1.getFieldValue(attr_name);
+			if (n0.doubleValue() < n1.doubleValue())
+				return -1;
+			else if (n0.doubleValue() > n1.doubleValue())
+				return 1;
+			else
+				return 0;
+		}
+	}
+
+	/* GLOBAL DISCRETIZATION
+	 a a b a b b b b b   (target)
+	 1 2 3 4 5 6 7 8 9   (attr c)
+	 0 0 0 0 1 1 1 1 1
+	    "<5", ">=5"
+	  "true"  "false"
+	*/
+
+	//*OPT*	public double getGain(List<FactSet> facts, String attributeToSplit) {
+	public double getContinuousGain(List<Fact> facts, String attributeToSplit) {
+		System.out.println("What is the attributeToSplit? "+attributeToSplit);
+
+		List<?> boundaries = getPossibleValues(attributeToSplit);
+
+		/* sort the values */
+		Collections.sort(facts, new FactNumericAttributeComparator(attributeToSplit));
+
+		//Fact split_point = facts.get(facts.size() / 2);
+		//		a b a a b
+		// 		1 2 3 4 5
+		//       1.5
+		//			2.5
+		//			 3.5
+		//    0.00001 0.00002 1 100
+		//		0.000015    
+		
+		//      <  50   >
+		//      25     75
+		//HashTable<Boolean>
+		
+		String attr_sum = "sum";
+
+		List<?> targetValues = getPossibleValues(target);
+		//Hashtable<Object, Integer> facts_in_class = new Hashtable<Object, Integer>(targetValues.size());
+
+		return 1.0;
+	}
+	
 	
 //*OPT*		public double getInformation(List<FactSet> facts) {	
 	Hashtable<Object, Integer> getStatistics(List<Fact> facts, String target, List<?> targetValues) {

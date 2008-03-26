@@ -7,6 +7,9 @@ public interface Domain<T> {
 	boolean isConstant();
 	void setConstant();
 	
+	boolean isDiscrete();
+	//void setConstant();
+	
 	boolean contains(T value);
 
 	String getName();

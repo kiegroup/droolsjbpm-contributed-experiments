@@ -29,9 +29,9 @@ public class LiteralDomain implements Domain<String> {
 //	}
 
 	
-//	public boolean isDiscrete() {
-//		return discrete;
-//	}
+	public boolean isDiscrete() {
+		return true;
+	}
 
 	public String getName() {
 		return fName;

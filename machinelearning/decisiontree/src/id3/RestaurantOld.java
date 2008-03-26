@@ -1,7 +1,7 @@
 package id3;
 
 
-public class Restaurant {
+public class RestaurantOld {
 	
 
 	private boolean alternate; 	//yesno
@@ -17,7 +17,7 @@ public class Restaurant {
 	private boolean will_wait; 	//yesno
 	
 	
-	public Restaurant (boolean alt, boolean b, boolean f_s, boolean hung, String pat, int pri, 
+	public RestaurantOld (boolean alt, boolean b, boolean f_s, boolean hung, String pat, int pri, 
 				boolean rain, boolean reserv, String t, String wait, boolean will) {
 		alternate = alt; 		//yesno
 		bar = b; 				//yesno

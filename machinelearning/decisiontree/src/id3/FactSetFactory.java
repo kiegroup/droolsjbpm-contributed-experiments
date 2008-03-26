@@ -27,7 +27,7 @@ public class FactSetFactory {
 
 		String filename = "../data/nursery/nursery.data.txt";
 		String separator = ",";
-		String klass = "Nursey";
+		String klass = "Nursery";
 		ArrayList<Domain<?>> domains = new ArrayList<Domain<?>>();
 		domains.add(new LiteralDomain("parents", new String[]{"usual", "pretentious", "great_pret"}));
 		domains.add(new LiteralDomain("has_nurs", new String[]{"proper", "less_proper", "improper", "critical", "very_crit"}));

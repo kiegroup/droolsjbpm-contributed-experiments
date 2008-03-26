@@ -208,7 +208,13 @@ public class DecisionTreeBuilder {
 		double greatestGain = 0.0;
 		String attributeWithGreatestGain = attrs.get(0);
 		for (String attr : attrs) {
-			double gain = dt_info - dt.getGain(facts, attr);
+			double gain = 0;
+			if (dt.getDomain(attr).isDiscrete()) {
+				gain = dt_info - dt.getGain(facts, attr);
+			} else {
+				gain = dt_info - dt.getContinuousGain(facts, attr);
+			}
+				
 			System.out.println("Attribute: "+attr +" the gain: "+gain);
 			if (gain > greatestGain) {
 				greatestGain = gain;
