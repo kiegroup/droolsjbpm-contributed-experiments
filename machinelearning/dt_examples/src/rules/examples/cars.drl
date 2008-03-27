@@ -1,0 +1,2074 @@
+package examples;
+
+rule "#3 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#4 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#5 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#6 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#9 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "vhigh", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#10 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "vhigh", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#11 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "vhigh", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#12 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "vhigh", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#15 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "med", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#16 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "med", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#17 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "med", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#18 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "med", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#22 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#23 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#24 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#25 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#29 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "med", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#30 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "med", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#31 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "med", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#32 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "med", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#36 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#37 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#38 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#39 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#42 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "vhigh", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#43 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "vhigh", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#44 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "vhigh", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#45 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "vhigh", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#49 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "high", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#50 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "high", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#51 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "high", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#52 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "high", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#58 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "4", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#59 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "4", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#60 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "4", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#61 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "4", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#62 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "5more", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#63 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "5more", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#64 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "5more", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#65 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "5more", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#69 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "small", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#70 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "small", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#71 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "small", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#72 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "small", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#73 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#74 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#75 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#76 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#79 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "vhigh", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#80 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "vhigh", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#81 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "vhigh", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#82 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "vhigh", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#84 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "small", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#85 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "small", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#86 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "small", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#87 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "small", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#88 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#89 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#90 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#91 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#95 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "high", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#96 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "high", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#97 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "high", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#100 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#101 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#102 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#103 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#107 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "med", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#108 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "med", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#109 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "med", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#110 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "med", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#113 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "small", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#114 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "small", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#115 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "small", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#116 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "small", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#117 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#118 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#119 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#120 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#123 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "vhigh", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#124 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "vhigh", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#125 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "vhigh", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#126 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "vhigh", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#130 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "med", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#131 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "med", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#132 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "med", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#135 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "high", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#136 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "high", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#137 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "high", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#138 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "high", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#144 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "4", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#145 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "4", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#146 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "4", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#147 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "4", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#148 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "5more", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#149 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "5more", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#150 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "5more", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#151 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "5more", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#152 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "3", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#153 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "3", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#154 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "3", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#155 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "3", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#160 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#161 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#162 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#163 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#167 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "med", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#168 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "med", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#169 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "med", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#170 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "med", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#173 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "high", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#174 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "high", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#175 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "high", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#176 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "high", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#183 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#184 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#185 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#186 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#190 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "med", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#191 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "med", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#192 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "med", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#193 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "med", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#200 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "small", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#201 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "small", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#202 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "small", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#203 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "small", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#204 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#205 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#206 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#207 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#211 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "vhigh", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#212 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "vhigh", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#213 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "vhigh", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#215 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "small", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#216 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "small", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#217 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "small", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#218 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "small", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#219 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#220 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#221 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#222 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#224 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "small", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#225 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "small", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#226 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "small", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#227 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "small", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#228 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#229 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#230 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#231 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#235 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "low", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#236 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "low", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#237 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "low", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#242 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "med", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#243 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "med", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#244 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "med", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#247 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "small", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#248 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "small", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#249 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "small", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#250 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "small", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#251 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#252 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#253 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#254 target = good with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#258 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "vhigh", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#259 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "vhigh", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#260 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "vhigh", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#262 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "small", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#263 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "small", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#264 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "small", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#265 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "small", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#266 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#267 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#268 target = vgood with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#269 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#273 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "high", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#274 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "high", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#275 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "high", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#279 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "low", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#280 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "low", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#281 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "low", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#286 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "med", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#287 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "med", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#288 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "med", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#292 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "high", doors == "2", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#293 target = unacc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "high", doors == "2", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#294 target = acc with rank:5.787037037037037E-4" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "high", doors == "2", lug_boot == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#92 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "high", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#93 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "high", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#94 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "high", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#127 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#128 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#129 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#208 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "vhigh", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#209 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "vhigh", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#210 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "vhigh", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#232 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "low", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#233 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "low", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#234 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "low", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#239 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#240 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#241 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#255 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "vhigh", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#256 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "vhigh", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#257 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "vhigh", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#270 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "high", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#271 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "high", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#272 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "high", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#276 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "low", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#277 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "low", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#278 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "low", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#283 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "med", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#284 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "med", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#285 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#289 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "high", doors == "4", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#290 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "high", doors == "5more", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#291 target = acc with rank:0.001736111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "high", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#1 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#2 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "low", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#7 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "vhigh", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#8 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "vhigh", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#13 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "med", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#14 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "med", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#20 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#21 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "low", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#27 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "med", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#28 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "med", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#34 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#35 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "low", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#40 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "vhigh", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#41 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "vhigh", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#47 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "high", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#48 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "high", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#53 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "big", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#54 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "big", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#55 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "big", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#56 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "big", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#66 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "3", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#67 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#68 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#77 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "vhigh", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#78 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "vhigh", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#83 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "low", maint == "med", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#98 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#99 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "low", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#105 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "med", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#106 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "med", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#112 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#121 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "vhigh", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#122 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "vhigh", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#133 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "high", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#134 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "med", maint == "high", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#139 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "big", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#140 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "big", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#141 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "big", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#142 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "big", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#156 target = unacc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "med", doors == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#158 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#159 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "low", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#165 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "med", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#166 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "med", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#171 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "high", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#172 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "high", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#181 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#182 target = good with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "low", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (good)");
+end
+
+rule "#188 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "med", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#189 target = acc with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "med", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#199 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#214 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "med", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#223 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "low", maint == "high", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#246 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "low", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#261 target = vgood with rank:0.0023148148148148147" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "med", maint == "med", lug_boot == "big", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (vgood)");
+end
+
+rule "#19 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "low", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#26 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#33 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "vhigh", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#46 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "med", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#104 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#111 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "vhigh", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#164 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "low", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#177 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "vhigh", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#178 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "vhigh", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#179 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "vhigh", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#180 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "vhigh", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#187 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#194 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "med", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#195 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "high", maint == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#196 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "high", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#197 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "high", maint == "med", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#198 target = acc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "4", buying == "high", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (acc)");
+end
+
+rule "#238 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#245 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "vhigh", maint == "high", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#282 target = unacc with rank:0.006944444444444444" 
+	 when
+		 examples.Car(safety == "high", persons == "more", buying == "high", maint == "vhigh", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#57 target = unacc with rank:0.009259259259259259" 
+	 when
+		 examples.Car(safety == "med", persons == "4", buying == "high", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#143 target = unacc with rank:0.009259259259259259" 
+	 when
+		 examples.Car(safety == "med", persons == "more", buying == "high", lug_boot == "small", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#157 target = unacc with rank:0.1111111111111111" 
+	 when
+		 examples.Car(safety == "med", persons == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#295 target = unacc with rank:0.1111111111111111" 
+	 when
+		 examples.Car(safety == "high", persons == "2", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
+rule "#0 target = unacc with rank:0.3333333333333333" 
+	 when
+		 examples.Car(safety == "low", target : target)
+	 then 
+		 System.out.println("Decision on target = "+target +": (unacc)");
+end
+
