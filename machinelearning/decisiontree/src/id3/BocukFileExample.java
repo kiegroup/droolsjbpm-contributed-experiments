@@ -1,6 +1,5 @@
 package id3;
 
-
 public class BocukFileExample {
 
 	public static void main(String[] args) {
@@ -36,6 +35,30 @@ public class BocukFileExample {
 			RulePrinter my_printer = new RulePrinter();
 			my_printer.printer(bocuksTree, null, null);
 		}
+	}
+	
+	public static void processFileExample(Object emptyObject, String drlfile, String datafile, String separator, String target) {
+
+		WorkingMemory simple = new WorkingMemory();
+		
+		try {
+			FactSetFactory.fromFileAsObject(simple, emptyObject.getClass(), datafile, separator);
+			DecisionTreeBuilder bocuk = new DecisionTreeBuilder();
+
+			long dt = System.currentTimeMillis();
+			DecisionTree bocuksTree = bocuk.build(simple, emptyObject.getClass().getName(), target, null);
+			dt = System.currentTimeMillis() - dt;
+			System.out.println("Time" + dt + "\n" + bocuksTree);
+
+			RulePrinter my_printer = new RulePrinter();
+			my_printer.printer(bocuksTree, "examples", "src/rules/examples/"+drlfile);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
 	}
 
 
