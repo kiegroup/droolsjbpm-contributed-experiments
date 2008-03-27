@@ -39,8 +39,9 @@ public class OOFactSet implements FactSet{
 		Method [] element_methods = element_class.getDeclaredMethods();
 		for (Method m: element_methods) {
 			String m_name = m.getName();
-			String return_type_name = m.getReturnType().getName();
-			if (Util.isGetter(m_name) & Util.isSimpleType(return_type_name) ) {
+			//Class<?> return_type_name = ;
+			Class<?>[] returns = {m.getReturnType()};
+			if (Util.isGetter(m_name) & Util.isSimpleType(returns) ) {
 //				if (!Util.isSimpleType(return_type_name))
 //					continue; // in the future we should support classes
 				String field = Util.getAttributeName(m_name);

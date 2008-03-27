@@ -15,6 +15,21 @@ public class WorkingMemory {
 		factsets = new Hashtable<String, FactSet>();
 		domainset = new Hashtable<String, Domain<?>>();
 	}
+	
+	public OOFactSet getFactSet(Class<?> klass) {
+		String element_class = klass.getName();
+		//System.out.println("Get the keys:"+ factsets.keys());
+		//System.out.println("WorkingMemory.get class "+ element_class + " exist? "+ factsets.containsKey(element_class));
+		
+		OOFactSet fs;
+		if (!factsets.containsKey(element_class))
+			fs = create_factset(klass);
+		else
+			fs = (OOFactSet) factsets.get(element_class);//TODO should i cast
+		
+		System.out.println("WorkingMemory.getFactSet(objClass) inserted element new fs "+ klass.getName());
+		return fs;
+	}
 
 	public void insert(Object element) {
 		String element_class = element.getClass().getName();
@@ -23,7 +38,7 @@ public class WorkingMemory {
 		
 		OOFactSet fs;
 		if (!factsets.containsKey(element_class))
-			fs = create_factset(element);
+			fs = create_factset(element.getClass());
 		else
 			fs = (OOFactSet) factsets.get(element_class);//TODO should i cast
 		
@@ -51,26 +66,6 @@ public class WorkingMemory {
 		fs.insert(element, domains, separator);
 		//System.out.println("WorkingMemory.insert(string) inserted element fs.size() "+ fs.getSize());
 	}
-	
-//	public void insert(FactSet fs) {
-//		System.out.println("factset : "+ fs.getSize());
-//		if (!factsets.containsKey(fs.getClassName())) {
-//			for (Domain<?> d : fs.getDomains()) {
-//				System.out.println("Domain"+ d.getName());
-//				if (domainset.containsKey(d.getName()) || domainset.contains(d))
-//					System.out.println("Already exist domain bla?????");
-//				else
-//					domainset.put(d.getName(), d);
-//				
-//				//System.out.println("WorkingMemory.create_factset field "+ field + " fielddomain name "+fieldDomain.getName()+" return_type_name: "+return_type_name+".");
-//				
-//				
-//			}
-//			factsets.put(fs.getClassName(), fs);
-//		} else {
-//			System.out.println("Already exist bla?????");
-//		}
-//	}
 
 	
 	/* factset workingmemory.createnew_factset(class) 
@@ -84,20 +79,19 @@ public class WorkingMemory {
 	 *			newfs.adddomain(d)=> why do you add this the factset? 
 	 *								 we said that the domains should be independent from the factset
 	 */
-	private OOFactSet create_factset(Object element) {
+	private OOFactSet create_factset(Class<?> classObj) {
 		//System.out.println("WorkingMemory.create_factset element "+ element );
 		
-		Class<?> element_class = element.getClass();
-		OOFactSet newfs = new OOFactSet(element_class);
+		OOFactSet newfs = new OOFactSet(classObj);
 
-		Method [] element_methods = element_class.getDeclaredMethods();
+		Method [] element_methods = classObj.getDeclaredMethods();
 		for( Method m: element_methods) {
 			
 			
 			String m_name = m.getName();
-			String return_type_name = m.getReturnType().getName();
+			Class<?>[] returns = {m.getReturnType()};
 			//System.out.println("WorkingMemory.create_factset m "+ m + " method name "+m_name+" return_type_name: "+return_type_name+".");
-			if (Util.isGetter(m_name) & Util.isSimpleType(return_type_name)) {
+			if (Util.isGetter(m_name) & Util.isSimpleType(returns)) {
 				String field = Util.getAttributeName(m_name);
 				/*
 				 * when u first read the element
@@ -123,7 +117,7 @@ public class WorkingMemory {
 			}
 		}
 		
-		factsets.put(element_class.getName(), newfs);
+		factsets.put(classObj.getName(), newfs);
 		return newfs;
 	}
 	

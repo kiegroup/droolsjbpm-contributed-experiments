@@ -21,12 +21,12 @@ public class BocukObjectExample {
 		facts.add(new RestaurantOld(true, true, true, true, "Full", 1,   false,   false,  "Burger",  "30-60",  true));
 
 		WorkingMemory simple = new WorkingMemory();
-
+		OOFactSet fs = simple.getFactSet(arest.getClass());
 
 		for(Object r: facts) {
 			try {
-				simple.insert(r);
-
+				//simple.insert(element)
+				fs.insert(r);
 			} catch (Exception e) {
 				System.out.println("Inserting element "+ r + " and "+ e);
 			}
