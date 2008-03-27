@@ -1,10 +1,6 @@
 package examples;
 
-import id3.DecisionTree;
-import id3.DecisionTreeBuilder;
-import id3.FactSetFactory;
-import id3.RulePrinter;
-import id3.WorkingMemory;
+import id3.BocukFileExample;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -18,6 +14,7 @@ public class NurseryExample {
 	
 	
 	public static final void main(final String[] args) throws Exception {
+		
 
 		int action = 1; /* create the drl */
 		//int action = 2; /* parse the drl */
@@ -25,7 +22,8 @@ public class NurseryExample {
 		String drlFile = new String("nurseries"+".drl");
 		switch (action) {
 		case 1:
-			readNursery(drlFile);
+			Object nurse = new Nursery();
+			BocukFileExample.processFileExample(nurse, drlFile, "../data/nursery/nursery.data.txt", ",", "classnursery");
 			
 			break;
 		case 2:
@@ -63,46 +61,7 @@ public class NurseryExample {
 
 	}	
 	
-	public static void readNursery(String file) {
-		
-		/*
-		 * | class values 
-		 * 		unacc, acc, good, vgood
-		 * | attributes
-		 * 		buying: vhigh, high, med, low. 
-		 * 		maint: vhigh, high, med, low. 
-		 * 		doors: 2, 3, 4, 5, more. 
-		 * 		persons: 2, 4, more. 
-		 * 		lug_boot: small, med, big.
-		 * 		safety: low, med, high.
-		 */
-
-		Nursery emptyCar = new Nursery();
-		String filename = "../data/nursery/nursery.data.txt";
-		String separator = ",";	
-		WorkingMemory simple = new WorkingMemory();
-		
-		//FactSetFactory.readObjectData(simple, filename, separator, emptyCar);
-		
-		try {
-			FactSetFactory.fromFileAsObject(simple, emptyCar.getClass(), filename, separator);
-			DecisionTreeBuilder bocuk = new DecisionTreeBuilder();
-
-			long dt = System.currentTimeMillis();
-			DecisionTree bocuksTree = bocuk.build(simple, emptyCar.getClass().getName(), "classnursery", null);
-			dt = System.currentTimeMillis() - dt;
-			System.out.println("Time" + dt + "\n" + bocuksTree);
-
-			RulePrinter my_printer = new RulePrinter();
-			my_printer.printer(bocuksTree, "examples", "src/rules/examples/"+file);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
-	}
+	
 
 
 }
