@@ -1,10 +1,10 @@
 package examples;
 
-rule "#5 will_wait = true with rank:0.0" 
+rule "#5 will_wait = false with rank:0.0" 
 	 when
 		 examples.Restaurant(patrons == "Full", hungry == true, type == "French", will_wait : will_wait)
 	 then 
-		 System.out.println("Decision on will_wait = "+will_wait +": (true)");
+		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
 end
 
 rule "#1 will_wait = false with rank:0.09090909090909091" 

@@ -18,35 +18,22 @@ import org.drools.rule.Package;
 import dt.memory.WorkingMemory;
 import dt.tools.FileProcessor;
 
-public class CarExample {
-
+public class GolfExample {
 	public static final void main(final String[] args) throws Exception {
 
-		/*
-		 * | class values 
-		 * 		unacc, acc, good, vgood
-		 * | attributes
-		 * 		buying: vhigh, high, med, low. 
-		 * 		maint: vhigh, high, med, low. 
-		 * 		doors: 2, 3, 4, 5, more. 
-		 * 		persons: 2, 4, more. 
-		 * 		lug_boot: small, med, big.
-		 * 		safety: low, med, high.
-		 */
-		String drlFile = new String("cars" + ".drl");
-
+		String drlFile = new String("golf" + ".drl");
 		WorkingMemory simple = new WorkingMemory();
-
-		Object car = new Car();
-
 		/* create the drl */
-		List<Object> my_objects = FileProcessor.processFileExmID3(simple,
-				car, drlFile, "../data/car/car.data.txt", ",");
+		Object golf = new Golf();
+		List<Object> my_objects = FileProcessor.processFileExmC45(simple,
+				golf, drlFile, "../data/golf/golf.data.txt", ",");
 
 		/* parse the drl */
+		boolean parse_w_drools = false;
+		if (parse_w_drools) {
 		//read in the source 
 		// TODO give an exception of the file does not exist
-		final Reader source = new InputStreamReader(Car.class
+		final Reader source = new InputStreamReader(Golf.class
 				.getResourceAsStream(drlFile));
 
 		final PackageBuilder builder = new PackageBuilder();
@@ -75,7 +62,7 @@ public class CarExample {
 
 			final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(
 					session);
-			logger.setFileName("log/cars");
+			logger.setFileName("log/golf");
 
 			Iterator<Object> it_obj = my_objects.iterator();
 			while (it_obj.hasNext()) {
@@ -98,14 +85,14 @@ public class CarExample {
 			//        
 			//        while(my_it.hasNext()) {
 			//        	Object o = my_it.next();
-			//        	System.out.println("Object " + o);
+			//        	//System.out.println("Object " + o);
 			//        }
 			logger.writeToDisk();
 
 			session.dispose();
 		}
+		}
 		System.out.println("Happy ending");
 
 	}
-
 }

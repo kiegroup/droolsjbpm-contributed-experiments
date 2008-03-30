@@ -1,20 +1,27 @@
 package examples;
 
-import id3.ReadingSeq;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class Car implements Externalizable{
+import dt.memory.DomainSpec;
 
+public class Car implements Externalizable{
+	@DomainSpec(readingSeq = 0)
 	private String buying;		//"vhigh", "high", "med", "low"
+	@DomainSpec(readingSeq = 1)
 	private String maint;		//"vhigh", "high", "med", "low"
+	@DomainSpec(readingSeq = 2)
 	private String doors;		//"2", "3", "4", "5more"
+	@DomainSpec(readingSeq = 3)
 	private String persons;		//"2", "4", "more"
+	@DomainSpec(readingSeq = 4)
 	private String lug_boot;	//"small", "med", "big"
+	@DomainSpec(readingSeq = 5)
 	private String safety; 		//"low", "med", "high"
+	@DomainSpec(readingSeq = 6, target = true)
 	private String target; 		//"unacc", "acc", "good", "vgood"
 	
 	
@@ -25,7 +32,7 @@ public class Car implements Externalizable{
 		return buying;
 	}
 
-	@ReadingSeq(0)
+	//@DomainSpec(readingSeq = 0)
 	public void setBuying(String buying) {
 		this.buying = buying;
 	}
@@ -33,7 +40,7 @@ public class Car implements Externalizable{
 	public String getMaint() {
 		return maint;
 	}
-	@ReadingSeq(1)
+	//@DomainSpec(readingSeq =1)
 	public void setMaint(String maint) {
 		this.maint = maint;
 	}
@@ -41,7 +48,7 @@ public class Car implements Externalizable{
 	public String getDoors() {
 		return doors;
 	}
-	@ReadingSeq(2)
+	//@DomainSpec(readingSeq =2)
 	public void setDoors(String doors) {
 		this.doors = doors;
 	}
@@ -49,7 +56,7 @@ public class Car implements Externalizable{
 	public String getPersons() {
 		return persons;
 	}
-	@ReadingSeq(3)
+	//@DomainSpec(readingSeq =3)
 	public void setPersons(String persons) {
 		this.persons = persons;
 	}
@@ -57,7 +64,7 @@ public class Car implements Externalizable{
 	public String getLug_boot() {
 		return lug_boot;
 	}
-	@ReadingSeq(4)
+	//@DomainSpec(readingSeq =4)
 	public void setLug_boot(String lug_boot) {
 		this.lug_boot = lug_boot;
 	}
@@ -65,7 +72,7 @@ public class Car implements Externalizable{
 	public String getSafety() {
 		return safety;
 	}
-	@ReadingSeq(5)
+	//@DomainSpec(readingSeq =5)
 	public void setSafety(String safety) {
 		this.safety = safety;
 	}
@@ -73,7 +80,7 @@ public class Car implements Externalizable{
 	public String getTarget() {
 		return target;
 	}
-	@ReadingSeq(6)
+	//@DomainSpec(readingSeq =6)
 	public void setTarget(String carClass) {
 		this.target = carClass;
 	}
@@ -95,12 +102,12 @@ public class Car implements Externalizable{
 	
 	public String toString() {
 		String out = "Car(buy:" +getBuying() + 
-						" doors"+getDoors()+ 
-						" lug_boot"+getLug_boot()+ 
-						" maint"+getMaint()+
-						" persons"+getPersons()+
-						" safety"+getSafety()+
-						" target"+getTarget();
+						" doors:"+getDoors()+ 
+						" lug_boot:"+getLug_boot()+ 
+						" maint:"+getMaint()+
+						" persons:"+getPersons()+
+						" safety:"+getSafety()+
+						" target:"+getTarget();
 		return out;
 	}
 

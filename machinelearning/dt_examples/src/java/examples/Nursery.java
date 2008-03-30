@@ -1,39 +1,47 @@
 package examples;
 
-import id3.ReadingSeq;
+import dt.memory.DomainSpec;
 
 
 public class Nursery {
-
+	@DomainSpec(readingSeq =0)
 	private String parents; 	//"usual","pretentious", "great_pret"
+	@DomainSpec(readingSeq =1)
 	private String has_nurs; 	//"proper","less_proper", "improper", "critical", "very_crit"
-	private String form; 		//"complete","completed", "incomplete", "foster"
+	@DomainSpec(readingSeq =2)
 	private String children; 	//"1", "2", "3","more"
+	@DomainSpec(readingSeq =3)
+	private String form; 		//"complete","completed", "incomplete", "foster"
+	@DomainSpec(readingSeq =4)
 	private String housing; 	//"convenient","less_conv", "critical"
+	@DomainSpec(readingSeq =5)
 	private String finance; 	//"convenient","inconv"
+	@DomainSpec(readingSeq =6)
 	private String social; 		//"nonprob","slightly_prob", "problematic"
+	@DomainSpec(readingSeq =7)
 	private String health; 		//"recommended","priority", "not_recom"
+	@DomainSpec(readingSeq =8, target = true)
 	private String classnursery; //"not_recom", "recommend", "very_recom", "priority","spec_prior"
 	
 	
 	public String getParents() {
 		return parents;
 	}
-	@ReadingSeq(0)
+	
 	public void setParents(String parents) {
 		this.parents = parents;
 	}
 	public String getHas_nurs() {
 		return has_nurs;
 	}
-	@ReadingSeq(1)
+	//@DomainSpec(readingSeq =1)
 	public void setHas_nurs(String has_nurs) {
 		this.has_nurs = has_nurs;
 	}
 	public String getForm() {
 		return form;
 	}
-	@ReadingSeq(2)
+	//@DomainSpec(readingSeq =2)
 	public void setForm(String form) {
 		this.form = form;
 	}
@@ -41,7 +49,7 @@ public class Nursery {
 		return children;
 	}
 	
-	@ReadingSeq(3)
+	//@DomainSpec(readingSeq =3)
 	public void setChildren(String children) {
 		this.children = children;
 	}
@@ -49,7 +57,7 @@ public class Nursery {
 		return housing;
 	}
 	
-	@ReadingSeq(4)
+	//@DomainSpec(readingSeq =4)
 	public void setHousing(String housing) {
 		this.housing = housing;
 	}
@@ -59,7 +67,7 @@ public class Nursery {
 		return finance;
 	}
 	
-	@ReadingSeq(5)
+	//@DomainSpec(readingSeq =5)
 	public void setFinance(String finance) {
 		this.finance = finance;
 	}
@@ -67,14 +75,14 @@ public class Nursery {
 		return social;
 	}
 	
-	@ReadingSeq(6)
+	//@DomainSpec(readingSeq =6)
 	public void setSocial(String social) {
 		this.social = social;
 	}
 	public String getHealth() {
 		return health;
 	}
-	@ReadingSeq(7)
+	//@DomainSpec(readingSeq =7)
 	public void setHealth(String health) {
 		this.health = health;
 	}
@@ -82,7 +90,7 @@ public class Nursery {
 		return classnursery;
 	}
 	
-	@ReadingSeq(8)
+	//@DomainSpec(readingSeq =8)
 	public void setClassnursery(String classnursery) {
 		this.classnursery = classnursery;
 	}

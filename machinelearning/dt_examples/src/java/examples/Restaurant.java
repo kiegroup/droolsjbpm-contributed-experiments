@@ -1,5 +1,7 @@
 package examples;
 
+import dt.memory.DomainSpec;
+
 public class Restaurant {
 	
 
@@ -13,6 +15,7 @@ public class Restaurant {
 	private boolean reservation; //yesno
 	private String type; 		//",new String[]{"French","Italian","Thai","Burger"});
 	private String wait_estimate;	//",new String[]{"0-10","10-30","30-60",">60"});
+	@DomainSpec(target =true, readingSeq = 0)
 	private boolean will_wait; 	//yesno
 	
 	
