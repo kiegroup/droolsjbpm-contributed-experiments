@@ -142,13 +142,13 @@ public class FactSetFactory {
 
 		ArrayList<Domain<?>> domains = new ArrayList<Domain<?>>();
 		NumericDomain height = new NumericDomain("height");
-		height.setContinuous();
+		height.setDiscrete(false);
 
 		NumericDomain width = new NumericDomain("width");
-		height.setContinuous();
+		height.setDiscrete(false);
 
 		NumericDomain aratio = new NumericDomain("aratio");
-		height.setContinuous();
+		height.setDiscrete(false);
 		domains.add(height);
 		domains.add(width);
 		domains.add(aratio);
@@ -236,13 +236,14 @@ public class FactSetFactory {
 		return false;
 	}
 
-	public static void fromFileAsObject(WorkingMemory wm, Class<?> klass, String filename, String separator)
+	public static List<Object> fromFileAsObject(WorkingMemory wm, Class<?> klass, String filename, String separator)
 			throws IOException {
+		List<Object> obj_read = new ArrayList<Object>();
 		OOFactSet fs = wm.getFactSet(klass);
 		Collection<Domain<?>> domains = fs.getDomains();
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				FactSetFactory.class.getResourceAsStream(filename)));// "../data/"
+				klass.getResourceAsStream(filename)));// "../data/"
 		// +
 		String line;
 		while ((line = reader.readLine()) != null) {
@@ -255,9 +256,11 @@ public class FactSetFactory {
 				break;
 			Object element = ObjectReader.read(klass, domains, line, separator);
 			//System.out.println("New object "+ element);
+			obj_read.add(element);
 			fs.insert(element);
+			
 		}
-		return;
+		return obj_read;
 	}
 
 }

@@ -1,8 +1,10 @@
 package id3;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 public class WorkingMemory {
@@ -79,15 +81,58 @@ public class WorkingMemory {
 	 *			newfs.adddomain(d)=> why do you add this the factset? 
 	 *								 we said that the domains should be independent from the factset
 	 */
+	
 	private OOFactSet create_factset(Class<?> classObj) {
+		//System.out.println("WorkingMemory.create_factset element "+ element );
+		
+		OOFactSet newfs = new OOFactSet(classObj);
+		
+		Field [] element_fields = classObj.getDeclaredFields();
+		for( Field f: element_fields) {
+			String f_name = f.getName();
+			Class<?>[] f_class = {f.getType()};
+			System.out.println("WHat is this f: " +f.getType()+" the name "+f_name+" class "+ f.getClass() + " and the name"+ f.getClass().getName());
+			if (Util.isSimpleType(f_class)) {
+				
+				Annotation[] annotations = f.getAnnotations();
+				
+				// iterate over the annotations to locate the MaxLength constraint if it exists
+				DomainSpec spec = null;
+				for (Annotation a : annotations) {
+				    if (a instanceof DomainSpec) {
+				        spec = (DomainSpec)a; // here it is !!!
+				        break;
+				    }
+				}
+				
+				Domain<?> fieldDomain;
+				if (!domainset.containsKey(f_name))
+					fieldDomain = DomainFactory.createDomainFromClass(f.getType(), f_name);
+				else
+					fieldDomain = domainset.get(f_name);
+				
+				//System.out.println("WorkingMemory.create_factset field "+ field + " fielddomain name "+fieldDomain.getName()+" return_type_name: "+return_type_name+".");
+				if (spec != null) {
+					fieldDomain.setReadingSeq(spec.readingSeq());
+					fieldDomain.setDiscrete(spec.discrete());
+				}
+				domainset.put(f_name, fieldDomain);
+				newfs.addDomain(f_name, fieldDomain);
+		
+			}
+		}		
+		factsets.put(classObj.getName(), newfs);
+		return newfs;
+	}
+	
+	private OOFactSet create_factset_(Class<?> classObj) {
 		//System.out.println("WorkingMemory.create_factset element "+ element );
 		
 		OOFactSet newfs = new OOFactSet(classObj);
 
 		Method [] element_methods = classObj.getDeclaredMethods();
 		for( Method m: element_methods) {
-			
-			
+
 			String m_name = m.getName();
 			Class<?>[] returns = {m.getReturnType()};
 			//System.out.println("WorkingMemory.create_factset m "+ m + " method name "+m_name+" return_type_name: "+return_type_name+".");
@@ -101,6 +146,7 @@ public class WorkingMemory {
 				 * otherwise you create a new domain for that attribute
 				 * Domain attributeSpec = dataSetSpec.getDomain(attr_name);
 				 */
+				
 				Domain<?> fieldDomain;
 				if (!domainset.containsKey(field))
 					fieldDomain = DomainFactory.createDomainFromClass(m.getReturnType(), field);
@@ -121,9 +167,10 @@ public class WorkingMemory {
 		return newfs;
 	}
 	
-	/* TODO: iterator */ 
-	public Collection<FactSet> getFactsets() {
-		return factsets.values();
+	/* TODO: is there a better way of doing this iterator? */ 
+	public Iterator<FactSet> getFactsets() {
+		return factsets.values().iterator();
+		//return factsets.values();
 	}
 
 	public Domain<?> getDomain(String field) {

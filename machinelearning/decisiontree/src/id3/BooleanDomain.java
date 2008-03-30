@@ -8,6 +8,7 @@ public class BooleanDomain implements Domain<Boolean> {
 	private String fName;
 	private ArrayList<Boolean> fValues;
 	private boolean constant;
+	private int readingSeq;
 
 
 	public BooleanDomain(String _name) {
@@ -77,6 +78,21 @@ public class BooleanDomain implements Domain<Boolean> {
 	public String toString() {
 		String out = fName;
 		return out;
+	}
+
+	public void setReadingSeq(int readingSeq) {
+		this.readingSeq = readingSeq;
+		
+	}
+	
+	public int getReadingSeq() {
+		return this.readingSeq;
+		
+	}
+
+	public void setDiscrete(boolean disc) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

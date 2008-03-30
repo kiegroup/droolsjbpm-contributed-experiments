@@ -17,8 +17,148 @@ public class ObjectReader {
 	
 	private static final boolean DEBUG = false;
 
+	public static Object read(Class<?> element_class,
+			Collection<Domain<?>> domains, String data, String separator) {
+
+		// System.out.println("BOK BOK domains: "+ domains.size());
+		Object element = null;
+		try {
+			// element = Class.forName(element_class.getName());
+
+			element = element_class.newInstance();
+
+			Method[] element_methods = element_class.getDeclaredMethods();
+
+			if (data.endsWith("."))
+				data = data.substring(0, data.length() - 1);
+			List<String> attributeValues = Arrays.asList(data.split(separator));
+
+			for (Method m : element_methods) {
+				String m_name = m.getName();
+				Class<?>[] param_type_name = m.getParameterTypes();
+				if (Util.isSetter(m_name) & Util.isSimpleType(param_type_name)) {
+					// if (!Util.isSimpleType(return_type_name))
+					// continue; // in the future we should support classes
+					/*
+					 * Annotation[] annotations = m.getAnnotations();
+					 *  // iterate over the annotations to locate the MaxLength
+					 * constraint if it exists DomainSpec spec = null; for
+					 * (Annotation a : annotations) { if (a instanceof
+					 * DomainSpec) { spec = (DomainSpec)a; // here it is !!!
+					 * break; } } if (DEBUG) System.out.println("What annotation
+					 * i found: "+ spec + " for method "+ m); String fieldString =
+					 * attributeValues.get(spec.readingSeq());
+					 * 
+					 */
+
+					String field = Util.getAttributeName(m_name);
+
+					Iterator<Domain<?>> domain_it = domains.iterator();
+					// Iterator<String> value_it = attributeValues.iterator();
+					while (domain_it.hasNext()) {
+						Domain<?> attr_domain = domain_it.next();
+						// String name = attr_domain.getName();
+						if (field.equalsIgnoreCase(attr_domain.getName())) {
+
+							String fieldString = attributeValues
+									.get(attr_domain.getReadingSeq());
+							Object fieldValue = attr_domain
+									.readString(fieldString);
+
+							if (attr_domain instanceof NumericDomain) {
+								if (param_type_name[0].getName()
+										.equalsIgnoreCase("int")) {
+									fieldValue = ((Number) fieldValue)
+											.intValue();
+
+								} else if (param_type_name[0].getName()
+										.equalsIgnoreCase("float")) {
+									fieldValue = ((Number) fieldValue)
+											.floatValue();
+
+								} else if (!param_type_name[0].getName()
+										.equalsIgnoreCase("double")) {
+									System.out
+											.println("What the hack, which type of number is this??");
+									fieldValue = ((Number) fieldValue)
+											.doubleValue();
+									System.exit(0);
+								}
+							} else if (attr_domain instanceof LiteralDomain) {
+								if (param_type_name[0].getName()
+										.equalsIgnoreCase("java.lang.String")) {
+								} else {
+									System.out
+											.println("What the hack, which type of string is this?? "
+													+ fieldValue);
+									System.exit(0);
+								}
+							} else if (attr_domain instanceof BooleanDomain) {
+								if (param_type_name[0].getName()
+										.equalsIgnoreCase("boolean")) {
+								} else {
+									System.out
+											.println("What the hack, which type of boolean is this?? "
+													+ fieldValue);
+									System.exit(0);
+								}
+							} else {
+								System.out
+										.println("What the hack, which type of object is this?? "
+												+ fieldValue);
+								System.exit(0);
+							}
+
+							// String fieldValue = fieldString;
+
+							try {
+
+								if (DEBUG)
+									System.out.println("ObjectReader.read obj "
+											+ element.getClass()
+											+ " fielddomain name "
+											+ attr_domain.getName()
+											+ " value: " + fieldValue);
+								if (DEBUG)
+									System.out
+											.println("ObjectReader.read method "
+													+ m
+													+ " the parameter type:"
+													+ fieldValue.getClass());
+								m.invoke(element, fieldValue);
+
+							} catch (IllegalArgumentException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IllegalAccessException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (InvocationTargetException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							break;
+						}
+
+					}
+				}
+			}
+
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return element;
+
+	}
 	//read(Class<?> element_class, Collection<Domain<?>> collection, String data, String separator)
-	public static Object read(Class<?> element_class, Collection<Domain<?>> domains, String data, String separator) {
+	public static Object read_(Class<?> element_class, Collection<Domain<?>> domains, String data, String separator) {
 
 		Object element= null;
 		try {
@@ -48,15 +188,15 @@ public class ObjectReader {
 				Annotation[] annotations = m.getAnnotations();
 				
 				// iterate over the annotations to locate the MaxLength constraint if it exists
-				ReadingSeq sequence = null;
+				DomainSpec spec = null;
 				for (Annotation a : annotations) {
-				    if (a instanceof ReadingSeq) {
-				        sequence = (ReadingSeq)a; // here it is !!!
+				    if (a instanceof DomainSpec) {
+				        spec = (DomainSpec)a; // here it is !!!
 				        break;
 				    }
 				}
-				if (DEBUG) System.out.println("What annotation i found: "+ sequence + " for method "+ m);
-				String fieldString = attributeValues.get(sequence.value());
+				if (DEBUG) System.out.println("What annotation i found: "+ spec + " for method "+ m);
+				String fieldString = attributeValues.get(spec.readingSeq());
 				String field = Util.getAttributeName(m_name);
 				
 				Iterator<Domain<?>> domain_it = domains.iterator();
@@ -65,8 +205,40 @@ public class ObjectReader {
 					Domain<?> attr_domain = domain_it.next();
 					//String name = attr_domain.getName();
 					if (field.equalsIgnoreCase(attr_domain.getName())) {
-						//String fieldValue =  attr_domain.readString(fieldString);
-						String fieldValue = fieldString;
+						
+						Object fieldValue =  attr_domain.readString(fieldString);
+						
+						if (attr_domain instanceof NumericDomain) {
+							if (param_type_name[0].getName().equalsIgnoreCase("int")) {
+								fieldValue = ((Number)fieldValue).intValue();
+
+							} else if (param_type_name[0].getName().equalsIgnoreCase("float")) {
+								fieldValue = ((Number)fieldValue).floatValue();
+
+							} else if (!param_type_name[0].getName().equalsIgnoreCase("double")) {
+								System.out.println("What the hack, which type of number is this??");
+								fieldValue = ((Number)fieldValue).doubleValue();
+								System.exit(0);
+							} 
+						} else if (attr_domain instanceof LiteralDomain) {
+							if (param_type_name[0].getName().equalsIgnoreCase("java.lang.String")) {
+							} else {
+								System.out.println("What the hack, which type of string is this?? " + fieldValue);
+								System.exit(0);
+							}
+						} else if (attr_domain instanceof BooleanDomain) {
+							if (param_type_name[0].getName().equalsIgnoreCase("boolean")) {
+							} else {
+								System.out.println("What the hack, which type of boolean is this?? " + fieldValue);
+								System.exit(0);
+							}
+						} else {
+							System.out.println("What the hack, which type of object is this?? " + fieldValue);
+							System.exit(0);
+						}
+							
+						
+						// String fieldValue = fieldString;
 						
 						try {
 							

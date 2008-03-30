@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 public class DecisionTreeBuilderMT {
@@ -44,7 +45,9 @@ public class DecisionTreeBuilderMT {
 //		**OPT		List<FactSet> facts = new ArrayList<FactSet>();
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		FactSet klass_fs = null;
-		for (FactSet fs: wm.getFactsets()) {
+		Iterator<FactSet> it_fs= wm.getFactsets(); 
+		while (it_fs.hasNext()) {
+			FactSet fs = it_fs.next();
 			if (fs instanceof OOFactSet) {
 				if (klass.isAssignableFrom(((OOFactSet)fs).getFactClass())) {
 //					**OPT		facts.add(fs);
@@ -96,7 +99,9 @@ public class DecisionTreeBuilderMT {
 //		**OPT		List<FactSet> facts = new ArrayList<FactSet>();
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		FactSet klass_fs = null;
-		for (FactSet fs: wm.getFactsets()) {
+		Iterator<FactSet> it_fs= wm.getFactsets(); 
+		while (it_fs.hasNext()) {
+			FactSet fs = it_fs.next();
 			if (klass == fs.getClassName()) {
 //				**OPT		facts.add(fs);
 				fs.assignTo(facts); // adding all facts of fs to "facts"
@@ -178,7 +183,7 @@ public class DecisionTreeBuilderMT {
 		}
 		/* let's get the statistics of the results */
 		List<?> targetValues = dt.getPossibleValues(dt.getTarget());	
-		Hashtable<Object, Integer> stats = dt.getStatistics(facts, dt.getTarget(), targetValues);
+		Hashtable<Object, Integer> stats = dt.getStatistics(facts, dt.getTarget());//,targetValues
 
 		int winner_vote = 0;
 		int num_supporters = 0;
@@ -211,7 +216,7 @@ public class DecisionTreeBuilderMT {
 		}
 
 		/* id3 starts */
-		String chosenAttribute = attributeWithGreatestGain(dt, facts, attributeNames);
+		String chosenAttribute = attributeWithGreatestGain(dt, facts, stats, attributeNames);
 
 		System.out.println(Util.ntimes("*", 20)+" 1st best attr: "+ chosenAttribute);
 
@@ -264,9 +269,9 @@ public class DecisionTreeBuilderMT {
 	}
 
 	//String chooseAttribute(List<FactSet> facts, List<String> attrs) {
-	public String attributeWithGreatestGain(DecisionTree dt, List<Fact> facts, List<String> attrs) {
+	public String attributeWithGreatestGain(DecisionTree dt, List<Fact> facts, Hashtable<Object, Integer> facts_in_class, List<String> attrs) {
 
-		double dt_info = dt.getInformation(facts);
+		double dt_info = dt.getInformation(facts_in_class, facts.size());
 		double greatestGain = 0.0;
 		String attributeWithGreatestGain = attrs.get(0);
 		for (String attr : attrs) {
@@ -294,11 +299,13 @@ public class DecisionTreeBuilderMT {
 	}
 
 	public void testEntropy(DecisionTree dt, List<Fact> facts) {
-		double initial_info = dt.getInformation(facts); //entropy value
+		Hashtable<Object, Integer> stats = dt.getStatistics(facts, dt.getTarget());
+		
+		double initial_info = dt.getInformation(stats, facts.size()); //entropy value
 
 		System.out.println("initial_information: "+ initial_info);
 
-		String first_attr = attributeWithGreatestGain(dt, facts, dt.getAttributes());
+		String first_attr = attributeWithGreatestGain(dt, facts, stats, dt.getAttributes());
 
 		System.out.println("best attr: "+ first_attr);
 	}

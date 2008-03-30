@@ -1,4 +1,5 @@
 package id3;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -72,4 +73,5 @@ public class Fact {
 		}
 		return out;
 	}
+	
 }

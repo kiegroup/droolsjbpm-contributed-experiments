@@ -8,7 +8,7 @@ public interface Domain<T> {
 	void setConstant();
 	
 	boolean isDiscrete();
-	//void setConstant();
+	void setDiscrete(boolean disc);
 	
 	boolean contains(T value);
 
@@ -22,6 +22,9 @@ public interface Domain<T> {
 	
 	String toString();
 	boolean isPossible(Object value) throws Exception;
+	
+	void setReadingSeq(int readingSeq);
+	int getReadingSeq();
 }
 
 

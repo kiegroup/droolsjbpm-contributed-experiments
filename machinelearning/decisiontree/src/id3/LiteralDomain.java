@@ -9,28 +9,29 @@ public class LiteralDomain implements Domain<String> {
 	private String fName;
 	private List<String> fValues;
 	private boolean constant;
-	//private boolean discrete;
+	private boolean discrete;
+	private int readingSeq;
 
 
 	public LiteralDomain(String _name) {
 		fName = _name.trim();
 		fValues = new ArrayList<String>();
-		//discrete = true;
+		discrete = true;
 	}
 	
 	public LiteralDomain(String _name, String[] possibleValues) {
 		fName = _name;
 		fValues = Arrays.asList(possibleValues);
-		//discrete = true;
+		discrete = true;
 	}
 	
-//	public void setContinuous() {
-//		discrete = false;
-//	}
+	public void setDiscrete(boolean d) {
+		this.discrete = d;
+	}
 
 	
 	public boolean isDiscrete() {
-		return true;
+		return this.discrete;
 	}
 
 	public String getName() {
@@ -84,6 +85,16 @@ public class LiteralDomain implements Domain<String> {
 		if (constant && !fValues.contains(value))
 			return false;
 		return true;
+	}
+	
+	public void setReadingSeq(int readingSeq) {
+		this.readingSeq = readingSeq;
+		
+	}
+	
+	public int getReadingSeq() {
+		return this.readingSeq;
+		
 	}
 	
 	public String toString() {

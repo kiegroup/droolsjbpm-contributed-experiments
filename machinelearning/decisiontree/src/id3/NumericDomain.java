@@ -9,6 +9,7 @@ public class NumericDomain implements Domain<Number> {
 	private ArrayList<Number> fValues;
 	private boolean constant;
 	private boolean discrete;
+	private int readingSeq;
 
 
 	public NumericDomain(String _name) {
@@ -16,8 +17,8 @@ public class NumericDomain implements Domain<Number> {
 		fValues = new ArrayList<Number>();
 		discrete = true;
 	}
-	public void setContinuous() {
-		discrete = false;
+	public void setDiscrete(boolean d) {
+		this.discrete = d;
 	}
 	
 	public boolean isDiscrete() {
@@ -141,6 +142,16 @@ public class NumericDomain implements Domain<Number> {
 		//System.exit(0);
 		
 		return false;
+	}
+	
+	public void setReadingSeq(int readingSeq) {
+		this.readingSeq = readingSeq;
+		
+	}
+	
+	public int getReadingSeq() {
+		return this.readingSeq;
+		
 	}
 	
 	public String toString() {
