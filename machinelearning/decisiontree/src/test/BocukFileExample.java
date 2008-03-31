@@ -1,6 +1,5 @@
 package test;
 
-import java.util.List;
 
 import dt.DecisionTree;
 import dt.builder.IDTreeBuilder;

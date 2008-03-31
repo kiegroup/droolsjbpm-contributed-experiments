@@ -41,6 +41,10 @@ public class Fact {
 		values.put(its_domain.getName(), value);
 	}
 
+	public Domain<?> getDomain(String field_name) {
+		return fields.get(field_name);
+	}
+	
 	public Object getFieldValue(String field_name) {
 		return values.get(field_name);
 	}

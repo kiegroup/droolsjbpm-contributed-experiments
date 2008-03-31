@@ -227,7 +227,7 @@ public class DecisionTreeBuilderMT {
 		}
 
 		/* id3 starts */
-		String chosenAttribute = attributeWithGreatestGain(dt, facts, stats, attributeNames);
+		String chosenAttribute = Entropy.chooseAttribute(dt, facts, stats, attributeNames);
 
 		System.out.println(Util.ntimes("*", 20)+" 1st best attr: "+ chosenAttribute);
 
@@ -279,23 +279,23 @@ public class DecisionTreeBuilderMT {
 		return currentNode;
 	}
 
-	//String chooseAttribute(List<FactSet> facts, List<String> attrs) {
-	public String attributeWithGreatestGain(DecisionTree dt, List<Fact> facts, Hashtable<Object, Integer> facts_in_class, List<String> attrs) {
-
-		double dt_info = dt.getInformation(facts_in_class, facts.size());
-		double greatestGain = 0.0;
-		String attributeWithGreatestGain = attrs.get(0);
-		for (String attr : attrs) {
-			double gain = dt_info - dt.getGain(facts, attr);
-			System.out.println("Attribute: "+attr +" the gain: "+gain);
-			if (gain > greatestGain) {
-				greatestGain = gain;
-				attributeWithGreatestGain = attr;
-			}
-		}
-
-		return attributeWithGreatestGain;
-	}
+//	//String chooseAttribute(List<FactSet> facts, List<String> attrs) {
+//	public String attributeWithGreatestGain(DecisionTree dt, List<Fact> facts, Hashtable<Object, Integer> facts_in_class, List<String> attrs) {
+//
+//		double dt_info = dt.getInformation(facts_in_class, facts.size());
+//		double greatestGain = 0.0;
+//		String attributeWithGreatestGain = attrs.get(0);
+//		for (String attr : attrs) {
+//			double gain = dt_info - dt.getGain(facts, attr);
+//			System.out.println("Attribute: "+attr +" the gain: "+gain);
+//			if (gain > greatestGain) {
+//				greatestGain = gain;
+//				attributeWithGreatestGain = attr;
+//			}
+//		}
+//
+//		return attributeWithGreatestGain;
+//	}
 
 	public Hashtable<Object, List<Fact> > splitFacts(List<Fact> facts, String attributeName, 
 			List<?> attributeValues) {		
@@ -307,18 +307,6 @@ public class DecisionTreeBuilderMT {
 			factLists.get(f.getFieldValue(attributeName)).add(f);
 		}
 		return factLists;
-	}
-
-	public void testEntropy(DecisionTree dt, List<Fact> facts) {
-		Hashtable<Object, Integer> stats = dt.getStatistics(facts, dt.getTarget());
-		
-		double initial_info = dt.getInformation(stats, facts.size()); //entropy value
-
-		System.out.println("initial_information: "+ initial_info);
-
-		String first_attr = attributeWithGreatestGain(dt, facts, stats, dt.getAttributes());
-
-		System.out.println("best attr: "+ first_attr);
 	}
 	
 	public int getNumCall() {

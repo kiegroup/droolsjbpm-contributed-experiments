@@ -1,5 +1,6 @@
 package dt.memory;
 
+import java.util.Comparator;
 import java.util.List;
 
 public interface Domain<T> {
@@ -25,6 +26,10 @@ public interface Domain<T> {
 	
 	void setReadingSeq(int readingSeq);
 	int getReadingSeq();
+	
+	Comparator<Fact> factComparator();
+	
+	public Domain<T> clone();
 }
 
 

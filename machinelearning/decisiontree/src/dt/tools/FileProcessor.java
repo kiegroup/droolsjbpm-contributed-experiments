@@ -4,7 +4,6 @@ import java.util.List;
 
 import dt.DecisionTree;
 import dt.builder.C45TreeBuilder;
-import dt.builder.DecisionTreeBuilder;
 import dt.builder.IDTreeBuilder;
 import dt.memory.FactSetFactory;
 import dt.memory.WorkingMemory;
@@ -14,10 +13,10 @@ public class FileProcessor {
 
 		try {
 			List<Object> obj_read=FactSetFactory.fromFileAsObject(simple, emptyObject.getClass(), datafile, separator);
-			DecisionTreeBuilder bocuk = new IDTreeBuilder();
+			IDTreeBuilder bocuk = new IDTreeBuilder();
 
 			long dt = System.currentTimeMillis();
-			String target_attr = Util.getTargetAnnotation(emptyObject.getClass());
+			String target_attr = ObjectReader.getTargetAnnotation(emptyObject.getClass());
 			
 			DecisionTree bocuksTree = bocuk.build(simple, emptyObject.getClass().getName(), target_attr, null);
 			dt = System.currentTimeMillis() - dt;
@@ -44,7 +43,7 @@ public class FileProcessor {
 			C45TreeBuilder bocuk = new C45TreeBuilder();
 
 			long dt = System.currentTimeMillis();
-			String target_attr = Util.getTargetAnnotation(emptyObject.getClass());
+			String target_attr = ObjectReader.getTargetAnnotation(emptyObject.getClass());
 			
 			DecisionTree bocuksTree = bocuk.build(simple, emptyObject.getClass().getName(), target_attr, null);
 			dt = System.currentTimeMillis() - dt;

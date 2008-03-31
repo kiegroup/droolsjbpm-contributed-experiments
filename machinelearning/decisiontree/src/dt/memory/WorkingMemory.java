@@ -108,9 +108,10 @@ public class WorkingMemory {
 				}
 				
 				Domain<?> fieldDomain;
-				if (!domainset.containsKey(f_name))
+				if (!domainset.containsKey(f_name)) {
 					fieldDomain = DomainFactory.createDomainFromClass(f.getType(), f_name);
-				else
+					domainset.put(f_name, fieldDomain);
+				} else
 					fieldDomain = domainset.get(f_name);
 				
 				//System.out.println("WorkingMemory.create_factset field "+ field + " fielddomain name "+fieldDomain.getName()+" return_type_name: "+return_type_name+".");
@@ -118,7 +119,7 @@ public class WorkingMemory {
 					fieldDomain.setReadingSeq(spec.readingSeq());
 					fieldDomain.setDiscrete(spec.discrete());
 				}
-				domainset.put(f_name, fieldDomain);
+				
 				newfs.addDomain(f_name, fieldDomain);
 		
 			}

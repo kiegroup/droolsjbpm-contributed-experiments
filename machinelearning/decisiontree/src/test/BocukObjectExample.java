@@ -46,6 +46,6 @@ public class BocukObjectExample {
 		System.out.println("Time"+dt+"\n"+bocuksTree);
 		
 		RulePrinter my_printer = new RulePrinter();
-		my_printer.printer(bocuksTree,"id3" , new String("src/id3/rules"+".drl"));
+		my_printer.printer(bocuksTree,"test" , new String("../dt_learning/src/test/rules"+".drl"));
 	}
 }

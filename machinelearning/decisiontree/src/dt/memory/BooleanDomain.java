@@ -1,6 +1,7 @@
 package dt.memory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class BooleanDomain implements Domain<Boolean> {
@@ -16,6 +17,14 @@ public class BooleanDomain implements Domain<Boolean> {
 		fValues = new ArrayList<Boolean>();
 		fValues.add(Boolean.TRUE);
 		fValues.add(Boolean.FALSE);
+		readingSeq = -1;
+	}
+
+	public Domain<Boolean> clone() {
+		BooleanDomain dom = new BooleanDomain(fName);
+		dom.constant = constant;
+		dom.readingSeq = readingSeq;
+		return dom;
 	}
 	
 	public boolean isDiscrete() {
@@ -93,6 +102,12 @@ public class BooleanDomain implements Domain<Boolean> {
 	public void setDiscrete(boolean disc) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Comparator<Fact> factComparator() {
+		// TODO Auto-generated method stub
+		System.out.println("BooleanDomain.factComparator() can not be continuous what is going on? ");
+		return null;
 	}
 
 }

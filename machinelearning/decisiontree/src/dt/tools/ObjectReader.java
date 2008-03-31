@@ -161,6 +161,30 @@ public class ObjectReader {
 		return element;
 
 	}
+	
+	public static String getTargetAnnotation(Class<? extends Object> classObj) {
+		
+		Field [] element_fields = classObj.getDeclaredFields();
+		for( Field f: element_fields) {
+			String f_name = f.getName();
+			Class<?>[] f_class = {f.getType()};
+			if (Util.isSimpleType(f_class)) {
+				Annotation[] annotations = f.getAnnotations();
+				
+				// iterate over the annotations to locate the MaxLength constraint if it exists
+				DomainSpec spec = null;
+				for (Annotation a : annotations) {
+				    if (a instanceof DomainSpec) {
+				        spec = (DomainSpec)a; // here it is !!!
+				        if (spec.target())
+				        	return f_name;
+				    }
+				}
+			}
+		}
+		return null;
+	}
+
 	//read(Class<?> element_class, Collection<Domain<?>> collection, String data, String separator)
 	public static Object read_(Class<?> element_class, Collection<Domain<?>> domains, String data, String separator) {
 
@@ -284,7 +308,7 @@ public class ObjectReader {
 		//level++;
 
 		// Get a handle to the class of the object.
-		cl = (classobj instanceof Class) ? (Class) classobj : classobj
+		cl = (classobj instanceof Class) ? (Class<?>) classobj : classobj
 				.getClass();
 
 		// detect when we've reached out limits. This is particularly
@@ -299,7 +323,7 @@ public class ObjectReader {
 		// process each field in turn.
 		fields = cl.getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
-			Class ctype = fields[i].getType();
+			Class<?> ctype = fields[i].getType();
 			int mod;
 			String typeName = null, varName = null;
 

@@ -1,11 +1,5 @@
 package dt.tools;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.Hashtable;
-import java.util.List;
-
-import dt.memory.DomainSpec;
 
 public class Util {
 	
@@ -76,31 +70,8 @@ public class Util {
 		return 2;
 	}
 
-	public static String getTargetAnnotation(Class<? extends Object> classObj) {
-		
-		Field [] element_fields = classObj.getDeclaredFields();
-		for( Field f: element_fields) {
-			String f_name = f.getName();
-			Class<?>[] f_class = {f.getType()};
-			if (Util.isSimpleType(f_class)) {
-				Annotation[] annotations = f.getAnnotations();
-				
-				// iterate over the annotations to locate the MaxLength constraint if it exists
-				DomainSpec spec = null;
-				for (Annotation a : annotations) {
-				    if (a instanceof DomainSpec) {
-				        spec = (DomainSpec)a; // here it is !!!
-				        if (spec.target())
-				        	return f_name;
-				    }
-				}
-			}
-		}
-		return null;
-	}
 
-
-	public static String getSum() {
+	public static String sum() {
 		return "sum";
 	}
 

@@ -1,24 +1,42 @@
 package dt.memory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class NumericDomain implements Domain<Number> {
 
 	private String fName;
 	private ArrayList<Number> fValues;
+	private ArrayList<Fact> representatives;
 	private boolean constant;
 	private boolean discrete;
 	private int readingSeq;
 
+	private Comparator<Fact> fComparator;
 
 	public NumericDomain(String _name) {
 		fName = _name.trim();
 		fValues = new ArrayList<Number>();
 		discrete = true;
+		fComparator = new FactNumericAttributeComparator(_name);
+		readingSeq = -1;
 	}
+
+	public Domain<Number> clone() {
+		NumericDomain dom = new NumericDomain(fName);
+		dom.constant = constant;
+		dom.setDiscrete(discrete);
+		dom.readingSeq = readingSeq;
+		return dom;
+	}
+	
 	public void setDiscrete(boolean d) {
 		this.discrete = d;
+		if (!this.discrete) {
+			representatives = new ArrayList<Fact>();
+		}
 	}
 	
 	public boolean isDiscrete() {
@@ -36,32 +54,14 @@ public class NumericDomain implements Domain<Number> {
 			if (!fValues.contains(value))
 				fValues.add(value);
 		} else {
-			if (fValues.isEmpty()) {
-				fValues.add(value);
-				return;
-			} else if (fValues.size()==1) {
-				if (value.doubleValue() < fValues.get(0).doubleValue()) {
-					Number first = fValues.remove(0);
-					fValues.add(value);
-					fValues.add(first);
-				} else if (value.doubleValue() > fValues.get(0).doubleValue()) {
-					fValues.add(value);
-				}	
-				return;
-			} else {
-				if (value.doubleValue() > fValues.get(1).doubleValue()) {
-					fValues.remove(1);
-					fValues.add(1, value);
-					return;
-				}
-				if (value.doubleValue() < fValues.get(0).doubleValue()) {
-					fValues.remove(0);
-					fValues.add(0, value);	
-					return;
-				}
-			}
+			
 		}
 		
+	}
+	public void addRepresentative(Fact f) {
+		if (!representatives.contains(f))
+			representatives.add(f);
+		Collections.sort(representatives, this.factComparator());
 	}
 
 	public boolean contains(Number value) {
@@ -77,6 +77,10 @@ public class NumericDomain implements Domain<Number> {
 	public List<Number> getValues() {
 		return fValues;
 	}
+	public List<Fact> getRepresentatives() {
+		return representatives;
+	}
+	
 	
 	public int hashCode() {
 		return fName.hashCode();
@@ -158,7 +162,9 @@ public class NumericDomain implements Domain<Number> {
 		String out = fName;
 		return out;
 	}
-	
 
+	public Comparator<Fact> factComparator() {
+		return fComparator;
+	}
 
 }

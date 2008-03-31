@@ -2,6 +2,7 @@ package dt.memory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class LiteralDomain implements Domain<String> {
@@ -17,6 +18,15 @@ public class LiteralDomain implements Domain<String> {
 		fName = _name.trim();
 		fValues = new ArrayList<String>();
 		discrete = true;
+		readingSeq = -1;
+	}
+	
+	public Domain<String> clone() {
+		LiteralDomain dom = new LiteralDomain(fName);
+		dom.constant = constant;
+		dom.discrete = discrete;
+		dom.readingSeq = readingSeq;
+		return dom;
 	}
 	
 	public LiteralDomain(String _name, String[] possibleValues) {
@@ -100,6 +110,12 @@ public class LiteralDomain implements Domain<String> {
 	public String toString() {
 		String out = fName;
 		return out;
+	}
+
+	public Comparator<Fact> factComparator() {
+		// TODO wee need groupings to be able to discretize the LiteralDomain
+		System.out.println("LiteralDomain.factComparator() is not ready ");
+		return null;
 	}
 
 }
