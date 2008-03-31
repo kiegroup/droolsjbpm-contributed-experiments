@@ -60,7 +60,7 @@ public class RulePrinter {
 		}
 		
 		int i = 0;
-		Collections.sort(rules, Rule.getRankComparator());
+		//Collections.sort(rules, Rule.getRankComparator());
 		for( Rule rule: rules) {
 			i++;
 			System.out.println("//rule " +i + " write to drl \n"+ rule +"\n");
@@ -75,6 +75,8 @@ public class RulePrinter {
 	}
 	
 	private void dfs(TreeNode my_node) {
+		System.out.println("How many guys there of "+my_node.getDomain().getName() +"  : "+my_node.getDomain().getValues().size());
+		
 		NodeValue node_value = new NodeValue(my_node);
 		nodes.push(node_value);
 		
@@ -169,8 +171,8 @@ public class RulePrinter {
 				out.close();
 				//System.out.println("I wrote "+ toWrite);
 			} catch (IOException e) {
-				System.out.println("No I cannot write to the file");
-				System.exit(0);
+				System.out.println("No I cannot write to the file (appending) e:"+ e);
+				/* TODO */
 			}
 
 		} else {
@@ -182,7 +184,8 @@ public class RulePrinter {
 				out.close();
 				System.out.println("I wrote "+ toWrite);
 			} catch (IOException e) {
-				System.out.println("No I cannot write to the file");
+				System.out.println("No I cannot write to the file (creating new file) e:"+ e);
+				/* TODO */
 			}
 		}
 	}
@@ -267,20 +270,18 @@ class Rule {
 
 		return out;
 	}
-	
-
-
 
 	public static Comparator<Rule> getRankComparator() {
 		return new RuleComparator();
 	}
 	
 	private static class RuleComparator implements Comparator<Rule>{
+		// this will sort from best rank to least rank
 		public int compare(Rule r1, Rule r2) {
 			if (r1.getRank() < r2.getRank())
-				return -1;
+				return 1; // normally -1
 			else if (r1.getRank() > r2.getRank())
-				return 1;
+				return -1; // normally 1
 			else
 				return 0;
 		}	
@@ -327,8 +328,14 @@ class NodeValue {
 		
 		if (node.getDomain().isDiscrete())
 			return node.getDomain() + " == "+ value; 
-		else
-			return node.getDomain() + " <= "+ value;
+		else {
+			int size = node.getDomain().getValues().size();
+			System.out.println("How many guys there of "+node.getDomain().getName() +" and the value "+nodeValue+" : "+size);
+			if (node.getDomain().getValues().lastIndexOf(nodeValue) == size-1)
+				return node.getDomain() + " > "+ node.getDomain().getValues().get(size-2);
+			else
+				return node.getDomain() + " <= "+ value;
+		}
 	}
 		
 }

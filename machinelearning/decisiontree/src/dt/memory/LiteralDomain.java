@@ -12,6 +12,7 @@ public class LiteralDomain implements Domain<String> {
 	private boolean constant;
 	private boolean discrete;
 	private int readingSeq;
+	private Comparator<Fact> fComparator;
 
 
 	public LiteralDomain(String _name) {
@@ -19,6 +20,7 @@ public class LiteralDomain implements Domain<String> {
 		fValues = new ArrayList<String>();
 		discrete = true;
 		readingSeq = -1;
+		fComparator = new FactLiteralAttributeComparator(_name);
 	}
 	
 	public Domain<String> clone() {
@@ -26,6 +28,7 @@ public class LiteralDomain implements Domain<String> {
 		dom.constant = constant;
 		dom.discrete = discrete;
 		dom.readingSeq = readingSeq;
+		
 		return dom;
 	}
 	
@@ -65,6 +68,8 @@ public class LiteralDomain implements Domain<String> {
 		} else {
 			if (!fValues.contains(value))
 				fValues.add(value);
+			//Collections.sort(fValues, sComparator);
+			/* you have to sort these values or add them in sorted order*/
 		}
 		
 	}
@@ -122,9 +127,14 @@ public class LiteralDomain implements Domain<String> {
 	}
 
 	public Comparator<Fact> factComparator() {
-		// TODO wee need groupings to be able to discretize the LiteralDomain
-		System.out.println("LiteralDomain.factComparator() is not ready ");
-		return null;
+		return fComparator;
+	}
+	public void setIndices(List<Integer> split_indices) {
+		// TODO Auto-generated method stub
+		
+	}
+	public List<Integer> getIndices() {
+		return null; //indices;
 	}
 
 }

@@ -1,5 +1,9 @@
 package dt.tools;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 
 public class Util {
 	
@@ -73,6 +77,29 @@ public class Util {
 
 	public static String sum() {
 		return "sum";
+	}
+	
+	public static void insert(List<Object> list, Object key, Comparator<Object> c) {
+		int insertion_point_1 = Collections.binarySearch(list, key, c);
+		if (insertion_point_1 <0)
+			list.add(-(insertion_point_1+1), key);
+		else {
+			System.out.println("Util.insert() It exits ???");
+		}
+		
+	}
+	public static void insert(List list, Object key) {
+//		if (list.isEmpty())
+//			list.add(key);
+		int insertion_point_1 = Collections.binarySearch(list, key);
+//		if (list.isEmpty())
+//			System.out.println(Util.ntimes("*", 10)+Util.ntimes("BOK", 5) +" \n What the fuck index is when it is empty "+ insertion_point_1);
+		if (insertion_point_1 <0)
+			list.add(-(insertion_point_1+1), key);
+		else {
+			System.out.println("Util.insert() It exits ???");
+		}
+		
 	}
 
 

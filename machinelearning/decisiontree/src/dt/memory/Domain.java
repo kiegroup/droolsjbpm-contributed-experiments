@@ -31,6 +31,8 @@ public interface Domain<T> {
 	Comparator<Fact> factComparator();
 	
 	public Domain<T> clone();
+	void setIndices(List<Integer> split_indices);
+	List<Integer> getIndices();
 	
 }
 

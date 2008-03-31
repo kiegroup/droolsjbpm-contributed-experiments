@@ -3,6 +3,7 @@ package dt.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Entropy implements InformationMeasure {
 		String attributeWithGreatestGain = attrs.get(0);
 		Domain attrDomain = dt.getDomain(attributeWithGreatestGain);
 		Domain bestDomain = null; 
-
+		List<Integer> split_indices = null; 
 		Domain<?> targetDomain = dt.getDomain(dt.getTarget());
 		for (String attr : attrs) {
 			System.out.println("Which attribute to try: "+ attr);
@@ -38,22 +39,26 @@ public class Entropy implements InformationMeasure {
 			} else {
 				/* 1. sort the values */
 				Collections.sort(facts, facts.get(0).getDomain(attr).factComparator());
-				
 				List<Fact> splits = getSplitPoints(facts, dt.getTarget());
 				
 				attrDomain = dt.getDomain(attr).clone();
 				attrDomain.addPseudoValue(facts.get(facts.size()-1).getFieldValue(attr));
-				System.out.println("entropy.chooseContAttribute(1)*********** hey the new values to split: "+ attrDomain.getValues().get(0));				
-				
+				System.out.println("entropy.chooseContAttribute(1)*********** num of split for "+
+						attr+": "+ attrDomain.getValues().size()+ " ("+ attrDomain.getValues().get(0)+")");				
+				split_indices = new ArrayList<Integer>();
+				System.out.println("entropy.chooseContAttribute(BOK) size "+split_indices.size());
 				gain = dt_info - info_contattr(facts, attrDomain, targetDomain, 
-												facts_in_class, splits);
-				System.out.println("entropy.chooseContAttribute(2)*********** hey the new values to split: "+ attrDomain.getValues().size());				
+												facts_in_class, split_indices, splits);
+				System.out.println("entropy.chooseContAttribute(2)*********** num of split for "+
+						attr+": "+ attrDomain.getValues().size());				
 			}
 			
 			if (gain > greatestGain) {				
 				greatestGain = gain;
 				attributeWithGreatestGain = attr;
 				bestDomain = attrDomain;
+				if (!bestDomain.isDiscrete())
+					bestDomain.setIndices(split_indices);
 			}
 		}
 
@@ -88,13 +93,19 @@ public class Entropy implements InformationMeasure {
 	public static double info_contattr(List<Fact> facts,
 			Domain splitDomain, Domain<?> targetDomain, 
 			Hashtable<Object, Integer> facts_in_class, 
+			List<Integer> split_indices,
 			List<Fact> split_facts) {
+	
 		String splitAttr = splitDomain.getName();
 		List<?> splitValues = splitDomain.getValues();
 		String targetAttr = targetDomain.getName();
 		List<?> targetValues = targetDomain.getValues();
-		
-		System.out.println("What is the attributeToSplit? " + splitAttr);
+		System.out.println("entropy.info_cont() attributeToSplit? " + splitAttr);
+		int f_i=0;
+		for(Fact f: facts) {
+			System.out.println("entropy.info_cont() SORTING: "+f_i+" attr "+splitAttr+ " "+ f );
+			f_i++;
+		}
 
 		if (facts.size() <= 1) {
 			System.out
@@ -120,15 +131,17 @@ public class Entropy implements InformationMeasure {
 		facts_at_attribute.setTargetDistForAttr(key1, facts_in_class);
 		facts_at_attribute.setSumForAttr(key1, facts.size());
 		
-		double best_sum = +100000.0;
+		double best_sum = -100000.0;
 		Object value_to_split = splitValues.get(0);
-		int split_index, index = 1;
-
+		int split_index =1, index = 1;
 		Iterator<Fact> f_ite = facts.iterator();
 		Fact f1 = f_ite.next();
+		Comparator<Fact> targetComp = f1.getDomain(targetAttr).factComparator();
+		System.out.println("\nentropy.info_cont() SEARCHING: "+split_index+" attr "+splitAttr+ " "+ f1 );
 		while (f_ite.hasNext()) {/* 2. Look for potential cut-points. */
 
 			Fact f2 = f_ite.next();
+			System.out.print("entropy.info_cont() SEARCHING: "+(index+1)+" attr "+splitAttr+ " "+ f2 );
 			Object targetKey = f2.getFieldValue(targetAttr);
 			
 			// System.out.println("My key: "+ targetKey.toString());
@@ -145,12 +158,13 @@ public class Entropy implements InformationMeasure {
 			 * two cutpoints of interest: 1.85 and 5 (mid-way between the points
 			 * where the classes change from A to B or vice versa).
 			 */
-			if (f1.getFieldValue(targetAttr) != f2.getFieldValue(targetAttr)) {
+			
+			if ( targetComp.compare(f1, f2)!=0) {
 				// the cut point
 				Number cp_i = (Number) f1.getFieldValue(splitAttr);
 				Number cp_i_next = (Number) f2.getFieldValue(splitAttr);
 
-				Number cut_point = (cp_i.doubleValue() + cp_i_next.doubleValue()) / 2;
+				Number cut_point = (Double)(cp_i.doubleValue() + cp_i_next.doubleValue()) / 2;
 				
 				/*
 				 * 3. Evaluate your favourite disparity measure 
@@ -158,21 +172,27 @@ public class Entropy implements InformationMeasure {
 				 * and calculate its gain 
 				 */
 				double sum = calc_info_attr(facts_at_attribute);
+				//System.out.println("**entropy.info_contattr() FOUND: "+ sum + " best sum "+best_sum + 
+				System.out.println("  **Try "+ sum + " best sum "+best_sum + 
+				" value ("+ f1.getFieldValue(splitAttr) +"-|"+ value_to_split+"|-"+ f2.getFieldValue(splitAttr)+")");
 				
-				if (sum < best_sum) {
+				if (sum > best_sum) {
 					best_sum = sum;
 					value_to_split = cut_point;
-					System.out.println("Entropy.info_contattr() hacking: "+ sum + " best sum "+best_sum + 
-							" new split value "+ value_to_split);
+					System.out.println(Util.ntimes("?", 10)+"** FOUND: target ("+ f1.getFieldValue(targetAttr) +"-|T|-"+ f2.getFieldValue(targetAttr)+")");
 					split_index = index;
 				}
 			} else {}		
 			f1 = f2;
 			index++;
 		}
-		splitDomain.addValue(value_to_split);
-		
-		System.out.println("*********** hey the new values to split: "+ splitValues.size());
+		splitDomain.addPseudoValue(value_to_split);
+		Util.insert(split_indices, Integer.valueOf(split_index));
+		System.out.println("entropy.info_contattr(BOK_last) split_indices.size "+split_indices.size());
+		for(Integer i : split_indices)
+			System.out.println("entropy.info_contattr(FOUNDS) split_indices "+i + " the fact "+facts.get(i));
+		System.out.println("entropy.chooseContAttribute(1.5)*********** num of split for "+
+				splitAttr+": "+ splitDomain.getValues().size());
 		return best_sum;
 	}
 	

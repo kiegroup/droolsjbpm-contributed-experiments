@@ -63,18 +63,27 @@ public class BooleanDomain implements Domain<Boolean> {
 	}
 	
 	public Object readString(String data) {
-		if (isValid(data))
-			return Boolean.parseBoolean(data);
-		else 
+		System.out.print("What is the data : "+ data);
+		if (isValid(data)) {
+			if (data.trim().equalsIgnoreCase("true"))
+				return Boolean.TRUE;
+			else if ((data.trim().equalsIgnoreCase("false")))
+				return Boolean.FALSE;
+			else
+				return Boolean.parseBoolean(data);
+		}else 
 			return null;
 	}
 	
 	public boolean isValid(String string) {
 		try{
 			Boolean.parseBoolean(string);
+			//System.out.println("parse the boolean ");
 			return true;
 		}
 		catch (Exception e){
+			System.out.println("Can not parse the boolean "+e);
+			System.exit(0);
 			return false;
 		}
 	}
@@ -110,6 +119,14 @@ public class BooleanDomain implements Domain<Boolean> {
 		// TODO Auto-generated method stub
 		System.out.println("BooleanDomain.factComparator() can not be continuous what is going on? ");
 		return null;
+	}
+
+	public void setIndices(List<Integer> split_indices) {
+		// TODO Auto-generated method stub	
+	}
+	
+	public List<Integer> getIndices() {
+		return null; //indices;
 	}
 
 }

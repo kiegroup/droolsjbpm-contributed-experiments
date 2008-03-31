@@ -64,22 +64,14 @@ public class ObjectReader {
 						// String name = attr_domain.getName();
 						if (field.equalsIgnoreCase(attr_domain.getName())) {
 
-							String fieldString = attributeValues
-									.get(attr_domain.getReadingSeq());
-							Object fieldValue = attr_domain
-									.readString(fieldString);
+							String fieldString = attributeValues.get(attr_domain.getReadingSeq());
+							Object fieldValue = attr_domain.readString(fieldString);
 
 							if (attr_domain instanceof NumericDomain) {
-								if (param_type_name[0].getName()
-										.equalsIgnoreCase("int")) {
-									fieldValue = ((Number) fieldValue)
-											.intValue();
-
-								} else if (param_type_name[0].getName()
-										.equalsIgnoreCase("float")) {
-									fieldValue = ((Number) fieldValue)
-											.floatValue();
-
+								if (param_type_name[0].getName().equalsIgnoreCase("int")) {
+									fieldValue = ((Number) fieldValue).intValue();
+								} else if (param_type_name[0].getName().equalsIgnoreCase("float")) {
+									fieldValue = ((Number) fieldValue).floatValue();
 								} else if (!param_type_name[0].getName()
 										.equalsIgnoreCase("double")) {
 									System.out
@@ -89,8 +81,8 @@ public class ObjectReader {
 									System.exit(0);
 								}
 							} else if (attr_domain instanceof LiteralDomain) {
-								if (param_type_name[0].getName()
-										.equalsIgnoreCase("java.lang.String")) {
+								if (param_type_name[0].getName().equalsIgnoreCase("java.lang.String")) {
+									//fieldValue = ((Number) fieldValue).floatValue();
 								} else {
 									System.out
 											.println("What the hack, which type of string is this?? "
@@ -98,17 +90,18 @@ public class ObjectReader {
 									System.exit(0);
 								}
 							} else if (attr_domain instanceof BooleanDomain) {
-								if (param_type_name[0].getName()
-										.equalsIgnoreCase("boolean")) {
+								if (param_type_name[0].getName().equalsIgnoreCase("boolean")) {
+//									if ((Boolean) fieldValue) {
+//										System.out.println("What the hack, true"+ fieldValue);
+//										System.exit(0);
+//									}						
+									fieldValue = ((Boolean) fieldValue).booleanValue();
 								} else {
-									System.out
-											.println("What the hack, which type of boolean is this?? "
-													+ fieldValue);
+									System.out.println("What the hack, which type of boolean is this?? "+ fieldValue);
 									System.exit(0);
 								}
 							} else {
-								System.out
-										.println("What the hack, which type of object is this?? "
+								System.out.println("What the hack, which type of object is this?? "
 												+ fieldValue);
 								System.exit(0);
 							}

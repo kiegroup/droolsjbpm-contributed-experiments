@@ -9,18 +9,20 @@ public class NumericDomain implements Domain<Number> {
 
 	private String fName;
 	private ArrayList<Number> fValues;
-	private ArrayList<Fact> representatives;
+	private ArrayList<Integer> indices;
 	private boolean constant;
 	private boolean discrete;
 	private int readingSeq;
 
 	private Comparator<Fact> fComparator;
+	private Comparator<Number> nComparator;
 
 	public NumericDomain(String _name) {
 		fName = _name.trim();
 		fValues = new ArrayList<Number>();
 		discrete = true;
 		fComparator = new FactNumericAttributeComparator(_name);
+		nComparator = new NumberComparator();
 		readingSeq = -1;
 	}
 
@@ -35,7 +37,7 @@ public class NumericDomain implements Domain<Number> {
 	public void setDiscrete(boolean d) {
 		this.discrete = d;
 		if (!this.discrete) {
-			representatives = new ArrayList<Fact>();
+			indices = new ArrayList<Integer>();
 		}
 	}
 	
@@ -63,15 +65,12 @@ public class NumericDomain implements Domain<Number> {
 		if (discrete) {
 			return;
 		} else {
+			
 			if (!fValues.contains(value))
 				fValues.add(value);
+			Collections.sort(fValues, nComparator);
 		}
 		
-	}
-	public void addRepresentative(Fact f) {
-		if (!representatives.contains(f))
-			representatives.add(f);
-		Collections.sort(representatives, this.factComparator());
 	}
 
 	public boolean contains(Number value) {
@@ -86,9 +85,6 @@ public class NumericDomain implements Domain<Number> {
 
 	public List<Number> getValues() {
 		return fValues;
-	}
-	public List<Fact> getRepresentatives() {
-		return representatives;
 	}
 	
 	
@@ -175,6 +171,15 @@ public class NumericDomain implements Domain<Number> {
 
 	public Comparator<Fact> factComparator() {
 		return fComparator;
+	}
+
+	public void setIndices(List<Integer> split_indices) {
+		indices.clear();
+		indices.addAll(split_indices);
+	}
+
+	public List<Integer> getIndices() {
+		return indices;
 	}
 
 }

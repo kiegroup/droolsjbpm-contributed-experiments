@@ -187,7 +187,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		System.out.println(Util.ntimes("*", 20) + " 1st best attr: "+ choosenDomain.getName());
 
 		TreeNode currentNode = new TreeNode(choosenDomain);
-
+			
 		Hashtable<Object, List<Fact>> filtered_facts = FactProcessor.splitFacts(facts, choosenDomain);
 
 		dt.FACTS_READ += facts.size();
