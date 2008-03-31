@@ -54,7 +54,17 @@ public class NumericDomain implements Domain<Number> {
 			if (!fValues.contains(value))
 				fValues.add(value);
 		} else {
-			
+			return;
+		}
+		
+	}
+
+	public void addPseudoValue(Number value) {
+		if (discrete) {
+			return;
+		} else {
+			if (!fValues.contains(value))
+				fValues.add(value);
 		}
 		
 	}

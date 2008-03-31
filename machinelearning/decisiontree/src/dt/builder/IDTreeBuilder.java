@@ -187,8 +187,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		/* the majority */
 
 		List<?> attributeValues = dt.getPossibleValues(chosenAttribute);
-		Hashtable<Object, List<Fact> > filtered_facts = 
-			FactProcessor.splitFacts_disc(facts, chosenAttribute, attributeValues);
+		Hashtable<Object, List<Fact> > filtered_facts = FactProcessor.splitFacts_disc(facts, dt.getDomain(chosenAttribute));
 		dt.FACTS_READ += facts.size();
 		
 		 

@@ -16,6 +16,7 @@ public interface Domain<T> {
 	String getName();
 
 	void addValue(T value);
+	void addPseudoValue(T fieldValue);
 	
 	List<T> getValues();
 	
@@ -30,6 +31,7 @@ public interface Domain<T> {
 	Comparator<Fact> factComparator();
 	
 	public Domain<T> clone();
+	
 }
 
 

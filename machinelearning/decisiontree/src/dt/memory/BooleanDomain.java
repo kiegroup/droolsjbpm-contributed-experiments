@@ -40,8 +40,10 @@ public class BooleanDomain implements Domain<Boolean> {
 	}
 
 	public void addValue(Boolean value) {
-		// TODO Auto-generated method stub
-		
+		return;	
+	}
+	public void addPseudoValue(Boolean value) {
+		return;
 	}
 
 	public List<Boolean> getValues() {

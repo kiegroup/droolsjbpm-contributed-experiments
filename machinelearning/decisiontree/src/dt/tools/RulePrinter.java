@@ -110,7 +110,6 @@ public class RulePrinter {
 		Rule newRule = new Rule(nodes.size());// (nodes, leaves) //if more than one leaf
 		newRule.setObject(getRuleObject().toString());
 		Iterator<NodeValue> it = nodes.iterator();
-
 		while (it.hasNext()) {
 			
 			NodeValue current = it.next();
@@ -320,10 +319,16 @@ class NodeValue {
 		this.nodeValue = nodeValue;
 	}
 	public String toString() {
+		String value;
 		if (node.getDomain() instanceof LiteralDomain)
-			return node.getDomain() + " == "+ "\""+nodeValue+ "\""; 
+			value = "\""+nodeValue+ "\""; 
 		else
-			return node.getDomain() + " == "+ nodeValue;
+			value = nodeValue + "";
+		
+		if (node.getDomain().isDiscrete())
+			return node.getDomain() + " == "+ value; 
+		else
+			return node.getDomain() + " <= "+ value;
 	}
 		
 }

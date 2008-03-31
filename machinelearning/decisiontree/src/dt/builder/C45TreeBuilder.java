@@ -188,13 +188,8 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 
 		TreeNode currentNode = new TreeNode(choosenDomain);
 
-		Hashtable<Object, List<Fact>> filtered_facts = null;
+		Hashtable<Object, List<Fact>> filtered_facts = FactProcessor.splitFacts(facts, choosenDomain);
 
-		if (choosenDomain.isDiscrete()) {	
-			filtered_facts = FactProcessor.splitFacts_disc(facts, choosenDomain.getName(), choosenDomain.getValues());
-		} else {
-			filtered_facts = FactProcessor.splitFacts_cont(facts, choosenDomain);
-		}
 		dt.FACTS_READ += facts.size();
 
 		for (Object value : filtered_facts.keySet()) {
@@ -206,13 +201,11 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 
 			if (filtered_facts.get(value).isEmpty()) {
 				/* majority !!!! */
-				LeafNode majorityNode = new LeafNode(dt.getDomain(dt
-						.getTarget()), winner);
+				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
 				majorityNode.setRank(0.0);
 				currentNode.addNode(value, majorityNode);
 			} else {
-				TreeNode newNode = c45(dt, filtered_facts.get(value),
-						attributeNames_copy);
+				TreeNode newNode = c45(dt, filtered_facts.get(value), attributeNames_copy);
 				currentNode.addNode(value, newNode);
 			}
 		}

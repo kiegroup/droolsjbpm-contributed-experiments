@@ -51,12 +51,21 @@ public class LiteralDomain implements Domain<String> {
 	public void addValue(String value) {
 		if (constant)
 			return;
-		//if (discrete) {
-		if (!fValues.contains(value))
+		if (discrete) {
+			if (!fValues.contains(value))
 			fValues.add(value);
-//		} else {
-//			fValues.add(value);
-//		}
+		} else {
+			return;
+		}
+		
+	}
+	public void addPseudoValue(String value) {
+		if (discrete) {
+			return;
+		} else {
+			if (!fValues.contains(value))
+				fValues.add(value);
+		}
 		
 	}
 
