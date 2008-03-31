@@ -19,8 +19,8 @@ import org.drools.rule.Package;
 import dt.DecisionTree;
 import dt.builder.IDTreeBuilder;
 import dt.memory.WorkingMemory;
+import dt.tools.ObjectReader;
 import dt.tools.RulePrinter;
-import dt.tools.Util;
 
 public class RestaurantExample {
 	public static final void main(final String[] args) throws Exception {
@@ -134,7 +134,7 @@ public class RestaurantExample {
 		IDTreeBuilder bocuk = new IDTreeBuilder();
 
 		long dt = System.currentTimeMillis();
-		String target_attr = Util.getTargetAnnotation(arest.getClass());
+		String target_attr = ObjectReader.getTargetAnnotation(arest.getClass());
 		DecisionTree bocuksTree = bocuk.build(wm, k, target_attr, null);
 		dt = System.currentTimeMillis() - dt;
 		System.out.println("Time" + dt + "\n" + bocuksTree);

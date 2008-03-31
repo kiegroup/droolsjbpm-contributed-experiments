@@ -630,282 +630,282 @@ rule "#307 classnursery = priority with rank:7.716049382716049E-5"
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#395 classnursery = spec_prior with rank:7.716049382716049E-5" 
+rule "#395 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
-end
-
-rule "#396 classnursery = priority with rank:7.716049382716049E-5" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#397 classnursery = priority with rank:7.716049382716049E-5" 
+rule "#396 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#397 classnursery = very_recom with rank:7.716049382716049E-5" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#398 classnursery = priority with rank:7.716049382716049E-5" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#398 classnursery = spec_prior with rank:7.716049382716049E-5" 
+rule "#399 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#399 classnursery = priority with rank:7.716049382716049E-5" 
+rule "#400 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#401 classnursery = very_recom with rank:7.716049382716049E-5" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#402 classnursery = priority with rank:7.716049382716049E-5" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#400 classnursery = priority with rank:7.716049382716049E-5" 
+rule "#423 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#401 classnursery = priority with rank:7.716049382716049E-5" 
+rule "#424 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
-end
-
-rule "#402 classnursery = spec_prior with rank:7.716049382716049E-5" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
-end
-
-rule "#424 classnursery = priority with rank:7.716049382716049E-5" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#425 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#426 classnursery = very_recom with rank:7.716049382716049E-5" 
+rule "#426 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#427 classnursery = priority with rank:7.716049382716049E-5" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
+rule "#427 classnursery = very_recom with rank:7.716049382716049E-5" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
 rule "#428 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#429 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#430 classnursery = very_recom with rank:7.716049382716049E-5" 
+rule "#430 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#431 classnursery = priority with rank:7.716049382716049E-5" 
+rule "#451 classnursery = spec_prior with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+end
+
+rule "#452 classnursery = priority with rank:7.716049382716049E-5" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#453 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#454 classnursery = very_recom with rank:7.716049382716049E-5" 
+rule "#454 classnursery = spec_prior with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#455 classnursery = very_recom with rank:7.716049382716049E-5" 
+rule "#455 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#456 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#457 classnursery = very_recom with rank:7.716049382716049E-5" 
+rule "#457 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#458 classnursery = very_recom with rank:7.716049382716049E-5" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#459 classnursery = very_recom with rank:7.716049382716049E-5" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#460 classnursery = priority with rank:7.716049382716049E-5" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#481 classnursery = priority with rank:7.716049382716049E-5" 
+rule "#458 classnursery = spec_prior with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#482 classnursery = very_recom with rank:7.716049382716049E-5" 
+rule "#482 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#483 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#484 classnursery = priority with rank:7.716049382716049E-5" 
+rule "#484 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#485 classnursery = priority with rank:7.716049382716049E-5" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#485 classnursery = very_recom with rank:7.716049382716049E-5" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
 rule "#486 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#487 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#488 classnursery = priority with rank:7.716049382716049E-5" 
+rule "#488 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#489 classnursery = priority with rank:7.716049382716049E-5" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#510 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "2", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#511 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "2", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#512 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "2", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#513 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#514 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "1", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#515 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "1", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#516 classnursery = very_recom with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "1", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#517 classnursery = priority with rank:7.716049382716049E-5" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
@@ -2072,422 +2072,422 @@ rule "#297 classnursery = priority with rank:1.5432098765432098E-4"
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#377 classnursery = spec_prior with rank:1.5432098765432098E-4" 
+rule "#377 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
-end
-
-rule "#378 classnursery = spec_prior with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
-end
-
-rule "#379 classnursery = spec_prior with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
-end
-
-rule "#380 classnursery = priority with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#385 classnursery = spec_prior with rank:1.5432098765432098E-4" 
+rule "#378 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
-end
-
-rule "#386 classnursery = priority with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#387 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#379 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#388 classnursery = spec_prior with rank:1.5432098765432098E-4" 
+rule "#380 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#389 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#385 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#390 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#386 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#387 classnursery = very_recom with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#388 classnursery = priority with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#391 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#389 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#390 classnursery = very_recom with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#391 classnursery = very_recom with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#392 classnursery = priority with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#392 classnursery = spec_prior with rank:1.5432098765432098E-4" 
+rule "#405 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#406 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#407 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#408 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#408 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
-end
-
-rule "#409 classnursery = very_recom with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#414 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#413 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+end
+
+rule "#414 classnursery = very_recom with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#415 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#416 classnursery = very_recom with rank:1.5432098765432098E-4" 
+rule "#416 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#417 classnursery = priority with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
+rule "#417 classnursery = very_recom with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
 rule "#418 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#419 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#420 classnursery = very_recom with rank:1.5432098765432098E-4" 
+rule "#420 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#421 classnursery = priority with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#435 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#433 classnursery = spec_prior with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+end
+
+rule "#434 classnursery = spec_prior with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+end
+
+rule "#435 classnursery = spec_prior with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
 rule "#436 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#437 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#441 classnursery = spec_prior with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#438 classnursery = very_recom with rank:1.5432098765432098E-4" 
+rule "#442 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#443 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#444 classnursery = very_recom with rank:1.5432098765432098E-4" 
+rule "#444 classnursery = spec_prior with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#445 classnursery = very_recom with rank:1.5432098765432098E-4" 
+rule "#445 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#446 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#447 classnursery = very_recom with rank:1.5432098765432098E-4" 
+rule "#447 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#448 classnursery = very_recom with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#449 classnursery = very_recom with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#450 classnursery = priority with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#463 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#448 classnursery = spec_prior with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
 rule "#464 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#465 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#466 classnursery = very_recom with rank:1.5432098765432098E-4" 
+rule "#466 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#471 classnursery = priority with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#472 classnursery = very_recom with rank:1.5432098765432098E-4" 
+rule "#467 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#472 classnursery = priority with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#473 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#474 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#474 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#475 classnursery = priority with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#475 classnursery = very_recom with rank:1.5432098765432098E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
 rule "#476 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#477 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#478 classnursery = priority with rank:1.5432098765432098E-4" 
+rule "#478 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#479 classnursery = priority with rank:1.5432098765432098E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#492 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "critical", children == "complete", form == "3", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#493 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "critical", children == "complete", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#494 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "critical", children == "complete", form == "2", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#495 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "critical", children == "complete", form == "1", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#500 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "2", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#501 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "2", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#502 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "2", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#503 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "2", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#504 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "1", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#505 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "1", children == "complete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#506 classnursery = very_recom with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "1", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#507 classnursery = priority with rank:1.5432098765432098E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "1", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
@@ -3514,72 +3514,72 @@ rule "#299 classnursery = priority with rank:3.0864197530864197E-4"
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#393 classnursery = spec_prior with rank:3.0864197530864197E-4" 
+rule "#393 classnursery = priority with rank:3.0864197530864197E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#394 classnursery = spec_prior with rank:3.0864197530864197E-4" 
+rule "#394 classnursery = priority with rank:3.0864197530864197E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+end
+
+rule "#421 classnursery = priority with rank:3.0864197530864197E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#422 classnursery = priority with rank:3.0864197530864197E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#423 classnursery = priority with rank:3.0864197530864197E-4" 
+rule "#449 classnursery = spec_prior with rank:3.0864197530864197E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#451 classnursery = priority with rank:3.0864197530864197E-4" 
+rule "#450 classnursery = spec_prior with rank:3.0864197530864197E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
-end
-
-rule "#452 classnursery = priority with rank:3.0864197530864197E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
-end
-
-rule "#479 classnursery = priority with rank:3.0864197530864197E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
 rule "#480 classnursery = priority with rank:3.0864197530864197E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+end
+
+rule "#481 classnursery = priority with rank:3.0864197530864197E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#508 classnursery = priority with rank:3.0864197530864197E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "3", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#509 classnursery = priority with rank:3.0864197530864197E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "inconv", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
@@ -4627,177 +4627,177 @@ rule "#289 classnursery = priority with rank:6.172839506172839E-4"
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#376 classnursery = spec_prior with rank:6.172839506172839E-4" 
+rule "#376 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "critical", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "critical", children == "incomplete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#381 classnursery = spec_prior with rank:6.172839506172839E-4" 
+rule "#381 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "critical", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "critical", children == "completed", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#382 classnursery = spec_prior with rank:6.172839506172839E-4" 
+rule "#382 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "critical", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "critical", children == "foster", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#383 classnursery = spec_prior with rank:6.172839506172839E-4" 
+rule "#383 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "3", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#384 classnursery = spec_prior with rank:6.172839506172839E-4" 
+rule "#384 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "less_conv", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "less_conv", form == "more", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#405 classnursery = priority with rank:6.172839506172839E-4" 
+rule "#404 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "critical", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "critical", children == "incomplete", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+end
+
+rule "#409 classnursery = priority with rank:6.172839506172839E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "critical", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#410 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "critical", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "critical", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#411 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "critical", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "3", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#412 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "less_conv", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#413 classnursery = priority with rank:6.172839506172839E-4" 
+rule "#432 classnursery = spec_prior with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "less_conv", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "critical", children == "incomplete", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#434 classnursery = priority with rank:6.172839506172839E-4" 
+rule "#437 classnursery = spec_prior with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "critical", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "critical", children == "completed", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#439 classnursery = priority with rank:6.172839506172839E-4" 
+rule "#438 classnursery = spec_prior with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "critical", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "critical", children == "foster", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#440 classnursery = priority with rank:6.172839506172839E-4" 
+rule "#439 classnursery = spec_prior with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "critical", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "3", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#441 classnursery = priority with rank:6.172839506172839E-4" 
+rule "#440 classnursery = spec_prior with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "less_conv", form == "more", classnursery : classnursery)
 	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+		 System.out.println("Decision on classnursery = "+classnursery +": (spec_prior)");
 end
 
-rule "#442 classnursery = priority with rank:6.172839506172839E-4" 
+rule "#463 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "less_conv", form == "more", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
-end
-
-rule "#462 classnursery = priority with rank:6.172839506172839E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "critical", children == "incomplete", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
-end
-
-rule "#467 classnursery = priority with rank:6.172839506172839E-4" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "critical", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "critical", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#468 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "critical", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "critical", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#469 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "critical", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#470 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "less_conv", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "3", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
+end
+
+rule "#471 classnursery = priority with rank:6.172839506172839E-4" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "less_conv", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#491 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "critical", children == "incomplete", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "critical", children == "incomplete", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#496 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "critical", children == "completed", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "critical", children == "completed", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#497 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "critical", children == "foster", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "critical", children == "foster", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#498 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "3", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "3", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
 rule "#499 classnursery = priority with rank:6.172839506172839E-4" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "less_conv", form == "more", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "less_conv", form == "more", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
@@ -5131,37 +5131,37 @@ rule "#308 classnursery = very_recom with rank:0.0012345679012345679"
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
-rule "#403 classnursery = priority with rank:0.0012345679012345679" 
+rule "#403 classnursery = very_recom with rank:0.0012345679012345679" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "problematic", housing == "convenient", finance == "convenient", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "pretentious", housing == "convenient", finance == "convenient", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#431 classnursery = very_recom with rank:0.0012345679012345679" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "usual", housing == "convenient", finance == "convenient", classnursery : classnursery)
+	 then 
+		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
+end
+
+rule "#459 classnursery = priority with rank:0.0012345679012345679" 
+	 when
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "great_pret", housing == "convenient", finance == "convenient", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#432 classnursery = very_recom with rank:0.0012345679012345679" 
+rule "#490 classnursery = very_recom with rank:0.0012345679012345679" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "nonprob", housing == "convenient", finance == "convenient", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#461 classnursery = very_recom with rank:0.0012345679012345679" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "slightly_prob", housing == "convenient", finance == "convenient", classnursery : classnursery)
-	 then 
-		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
-end
-
-rule "#489 classnursery = very_recom with rank:0.0012345679012345679" 
-	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "nonprob", housing == "convenient", finance == "convenient", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "pretentious", housing == "convenient", finance == "convenient", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
 
 rule "#518 classnursery = very_recom with rank:0.0012345679012345679" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "slightly_prob", housing == "convenient", finance == "convenient", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "usual", housing == "convenient", finance == "convenient", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (very_recom)");
 end
@@ -5770,28 +5770,28 @@ end
 
 rule "#375 classnursery = priority with rank:0.007407407407407408" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "nonprob", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "nonprob", parents == "great_pret", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#404 classnursery = priority with rank:0.007407407407407408" 
+rule "#460 classnursery = priority with rank:0.007407407407407408" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "great_pret", social == "slightly_prob", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "pretentious", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#433 classnursery = priority with rank:0.007407407407407408" 
+rule "#461 classnursery = priority with rank:0.007407407407407408" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "pretentious", social == "problematic", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "problematic", parents == "usual", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end
 
-rule "#490 classnursery = priority with rank:0.007407407407407408" 
+rule "#462 classnursery = priority with rank:0.007407407407407408" 
 	 when
-		 examples.Nursery(health == "recommended", has_nurs == "less_proper", parents == "usual", social == "problematic", classnursery : classnursery)
+		 examples.Nursery(health == "recommended", has_nurs == "less_proper", social == "slightly_prob", parents == "great_pret", classnursery : classnursery)
 	 then 
 		 System.out.println("Decision on classnursery = "+classnursery +": (priority)");
 end

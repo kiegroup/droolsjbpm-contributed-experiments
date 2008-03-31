@@ -44,7 +44,7 @@ end
 
 rule "#6 will_wait = false with rank:0.18181818181818182" 
 	 when
-		 examples.Restaurant(patrons == "Full", hungry == false, will_wait : will_wait)
+		 examples.Restaurant(hungry == false, patrons == "Full", will_wait : will_wait)
 	 then 
 		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
 end
