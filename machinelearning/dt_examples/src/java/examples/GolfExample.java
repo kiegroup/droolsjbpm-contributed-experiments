@@ -25,8 +25,8 @@ public class GolfExample {
 		WorkingMemory simple = new WorkingMemory();
 		/* create the drl */
 		Object golf = new Golf();
-		List<Object> my_objects = FileProcessor.processFileExmC45(simple,
-				golf, drlFile, "../data/golf/golf.data.txt", ",");
+		//List<Object> my_objects = FileProcessor.processFileExmC45(simple,golf, drlFile, "../data/golf/golf.data.txt", ",");
+		List<Object> my_objects = FileProcessor.processFileExmC45(simple,golf, drlFile, "../data/golf/golf.data.txt", ",");
 
 		/* parse the drl */
 		boolean parse_w_drools = false;

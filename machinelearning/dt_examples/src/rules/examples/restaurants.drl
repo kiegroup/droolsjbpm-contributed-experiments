@@ -1,58 +1,58 @@
 package examples;
 
-rule "#5 will_wait = false with rank:0.0" 
+rule "#7 will_wait = true classifying 3.0 num of facts with rank:0.2727272727272727" 
 	 when
-		 examples.Restaurant(patrons == "Full", hungry == true, type == "French", will_wait : will_wait)
-	 then 
-		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
-end
-
-rule "#1 will_wait = false with rank:0.09090909090909091" 
-	 when
-		 examples.Restaurant(patrons == "Full", hungry == true, type == "Italian", will_wait : will_wait)
-	 then 
-		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
-end
-
-rule "#2 will_wait = true with rank:0.09090909090909091" 
-	 when
-		 examples.Restaurant(patrons == "Full", hungry == true, type == "Burger", will_wait : will_wait)
+		 examples.Restaurant(patrons == "Some", will_wait : will_wait)
 	 then 
 		 System.out.println("Decision on will_wait = "+will_wait +": (true)");
 end
 
-rule "#3 will_wait = true with rank:0.09090909090909091" 
-	 when
-		 examples.Restaurant(patrons == "Full", hungry == true, type == "Thai", fri_sat == true, will_wait : will_wait)
-	 then 
-		 System.out.println("Decision on will_wait = "+will_wait +": (true)");
-end
-
-rule "#4 will_wait = false with rank:0.09090909090909091" 
-	 when
-		 examples.Restaurant(patrons == "Full", hungry == true, type == "Thai", fri_sat == false, will_wait : will_wait)
-	 then 
-		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
-end
-
-rule "#0 will_wait = false with rank:0.18181818181818182" 
+rule "#0 will_wait = false classifying 2.0 num of facts with rank:0.18181818181818182" 
 	 when
 		 examples.Restaurant(patrons == "None", will_wait : will_wait)
 	 then 
 		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
 end
 
-rule "#6 will_wait = false with rank:0.18181818181818182" 
+rule "#6 will_wait = false classifying 2.0 num of facts with rank:0.18181818181818182" 
 	 when
-		 examples.Restaurant(hungry == false, patrons == "Full", will_wait : will_wait)
+		 examples.Restaurant(patrons == "Full", hungry == false, will_wait : will_wait)
 	 then 
 		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
 end
 
-rule "#7 will_wait = true with rank:0.2727272727272727" 
+rule "#1 will_wait = false classifying 1.0 num of facts with rank:0.09090909090909091" 
 	 when
-		 examples.Restaurant(patrons == "Some", will_wait : will_wait)
+		 examples.Restaurant(patrons == "Full", hungry == true, type == "Italian", will_wait : will_wait)
+	 then 
+		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
+end
+
+rule "#2 will_wait = true classifying 1.0 num of facts with rank:0.09090909090909091" 
+	 when
+		 examples.Restaurant(patrons == "Full", hungry == true, type == "Burger", will_wait : will_wait)
 	 then 
 		 System.out.println("Decision on will_wait = "+will_wait +": (true)");
+end
+
+rule "#3 will_wait = true classifying 1.0 num of facts with rank:0.09090909090909091" 
+	 when
+		 examples.Restaurant(patrons == "Full", hungry == true, type == "Thai", fri_sat == true, will_wait : will_wait)
+	 then 
+		 System.out.println("Decision on will_wait = "+will_wait +": (true)");
+end
+
+rule "#4 will_wait = false classifying 1.0 num of facts with rank:0.09090909090909091" 
+	 when
+		 examples.Restaurant(patrons == "Full", hungry == true, type == "Thai", fri_sat == false, will_wait : will_wait)
+	 then 
+		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
+end
+
+rule "#5 will_wait = false classifying 0.0 num of facts with rank:-1.0" 
+	 when
+		 examples.Restaurant(patrons == "Full", hungry == true, type == "French", will_wait : will_wait)
+	 then 
+		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
 end
 

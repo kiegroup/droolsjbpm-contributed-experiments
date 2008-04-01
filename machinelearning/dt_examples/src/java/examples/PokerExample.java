@@ -26,6 +26,7 @@ public class PokerExample {
 		WorkingMemory simple = new WorkingMemory();
 		/* create the drl */
 		Object nurse = new Poker();
+		
 		List<Object> my_objects = FileProcessor.processFileExmC45(simple,
 				nurse, drlFile, "../data/poker/poker-hand-training-true.data.txt", ",");
 

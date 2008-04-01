@@ -6,27 +6,27 @@ import dt.memory.DomainSpec;
 public class Poker {
 	@DomainSpec(readingSeq = 0)
 	private int s1; // 'Suit of card #1': Ordinal (1-4) representing {Hearts, Spades, Diamonds, Clubs}
-	@DomainSpec(readingSeq = 1)
+	@DomainSpec(readingSeq = 1, discrete=false)
 	private int c1; // 'Rank of card #1': Numerical (1-13) representing (Ace, 2, 3, ... , Queen, King)
 
 	@DomainSpec(readingSeq = 2)
 	private int s2; // 'Suit of card #2': Ordinal (1-4) representing {Hearts, Spades, Diamonds, Clubs}
-	@DomainSpec(readingSeq = 3)
+	@DomainSpec(readingSeq = 3, discrete=false)
 	private int c2; // 'Rank of card #2': Numerical (1-13) representing (Ace, 2, 3, ... , Queen, King)
 
 	@DomainSpec(readingSeq = 4)
 	private int s3; // 'Suit of card #3': Ordinal (1-4) representing {Hearts, Spades, Diamonds, Clubs}
-	@DomainSpec(readingSeq = 5)
+	@DomainSpec(readingSeq = 5, discrete=false)
 	private int c3; // 'Rank of card #3': Numerical (1-13) representing (Ace, 2, 3, ... , Queen, King)
 
 	@DomainSpec(readingSeq = 6)
 	private int s4; // 'Suit of card #4': Ordinal (1-4) representing {Hearts, Spades, Diamonds, Clubs}
-	@DomainSpec(readingSeq = 7)
+	@DomainSpec(readingSeq = 7, discrete=false)
 	private int c4; // 'Rank of card #4': Numerical (1-13) representing (Ace, 2, 3, ... , Queen, King)
 
 	@DomainSpec(readingSeq = 8)
 	private int s5; // 'Suit of card #5': Ordinal (1-4) representing {Hearts, Spades, Diamonds, Clubs}
-	@DomainSpec(readingSeq = 9)
+	@DomainSpec(readingSeq = 9, discrete=false)
 	private int c5; // 'Rank of card #5': Numerical (1-13) representing (Ace, 2, 3, ... , Queen, King)
 
 	@DomainSpec(readingSeq = 10, target = true)

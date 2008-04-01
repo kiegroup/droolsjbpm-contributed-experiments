@@ -140,8 +140,9 @@ public class RestaurantExample {
 		System.out.println("Time" + dt + "\n" + bocuksTree);
 
 		RulePrinter my_printer = new RulePrinter();
+		boolean sort_via_rank = true;
 		my_printer
-				.printer(bocuksTree, "examples", "src/rules/examples/" + file);
+				.printer(bocuksTree, "examples", "src/rules/examples/" + file, sort_via_rank);
 
 		return facts;
 	}
