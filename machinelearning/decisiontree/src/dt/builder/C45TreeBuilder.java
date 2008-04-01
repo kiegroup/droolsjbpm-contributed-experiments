@@ -11,6 +11,7 @@ import dt.DecisionTree;
 import dt.LeafNode;
 import dt.TreeNode;
 
+import dt.memory.FactTargetDistribution;
 import dt.memory.WorkingMemory;
 import dt.memory.Fact;
 import dt.memory.FactSet;
@@ -39,8 +40,9 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 
 	MyThread helper;
 	private int FUNC_CALL = 0;
-	private int num_fact_processed = 0;
-
+	protected int num_fact_processed = 0;
+	private ArrayList<Fact> unclassified_facts;
+	
 	/*
 	 * treebuilder.execute(workingmemory, classtoexecute, attributestoprocess)
 	 * 
@@ -50,9 +52,18 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 	 * internalprocess(attributestoprocess)
 	 */
 
-	public DecisionTree build(WorkingMemory wm, Class<?> klass,
-			String targetField, Collection<String> workingAttributes) {
+	public int getNum_fact_processed() {
+		return num_fact_processed;
+	}
 
+	public void setNum_fact_processed(int num_fact_processed) {
+		this.num_fact_processed = num_fact_processed;
+	}
+
+	public DecisionTree build(WorkingMemory wm, Class<?> klass,
+			String targetField, List<String> workingAttributes) {
+		
+		unclassified_facts = new ArrayList<Fact>();
 		DecisionTree dt = new DecisionTree(klass.getName());
 		// **OPT List<FactSet> facts = new ArrayList<FactSet>();
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -94,8 +105,8 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 	}
 
 	public DecisionTree build(WorkingMemory wm, String klass,
-			String targetField, Collection<String> workingAttributes) {
-
+			String targetField, List<String> workingAttributes) {
+		unclassified_facts = new ArrayList<Fact>();
 		DecisionTree dt = new DecisionTree(klass);
 		// **OPT List<FactSet> facts = new ArrayList<FactSet>();
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -116,7 +127,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 
 		if (workingAttributes != null)
 			for (String attr : workingAttributes) {
-				System.out.println("Bok degil " + attr);
+				//System.out.println("Bok degil " + attr);
 				dt.addDomain(klass_fs.getDomain(attr));
 			}
 		else
@@ -143,8 +154,27 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		}
 		/* let's get the statistics of the results */
 		// List<?> targetValues = dt.getPossibleValues(dt.getTarget());
-		Hashtable<Object, Integer> stats = dt.getStatistics(facts, dt
-				.getTarget());// targetValues
+		//Hashtable<Object, Integer> stats_ = dt.getStatistics(facts, dt.getTarget());// targetValues
+		
+		//FactTargetDistribution stats = dt.getDistribution(facts);
+		
+		FactTargetDistribution stats = new FactTargetDistribution(dt.getDomain(dt.getTarget()));
+		stats.calculateDistribution(facts);
+	
+		stats.evaluateMajority();
+//		
+//		Object winner1 = stats.getThe_winner_target_class();
+//		for (Object looser: stats.getTargetClasses()) {
+//			System.out.println(" the target class = "+ looser);
+//			if (!winner1.equals(looser) && stats.getVoteFor(looser)>0) {
+//				System.out.println(" the num of supporters = "+ stats.getVoteFor(looser));
+//				System.out.println(" but the guys "+ stats.getSupportersFor(looser));
+//				System.out.println("How many bok: "+stats.getSupportersFor(looser).size());
+//				//unclassified_facts.addAll(stats.getSupportersFor(looser));
+//			} else
+//				System.out.println(Util.ntimes("DANIEL", 5)+ "how many times not matching?? not a looser "+ looser );
+//		}
+		/*
 		Collection<Object> targetValues = stats.keySet();
 		int winner_vote = 0;
 		int num_supporters = 0;
@@ -159,24 +189,29 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 				winner = key;
 			}
 		}
+		*
 
 		/* if all elements are classified to the same value */
-		if (num_supporters == 1) {
-			// *OPT* return new
-			// LeafNode(facts.get(0).getFact(0).getFieldValue(target));
-			LeafNode classifiedNode = new LeafNode(
-					dt.getDomain(dt.getTarget()), winner);
+		if (stats.getNum_supported_target_classes() == 1) {
+
+			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 			classifiedNode.setRank((double) facts.size()/(double) num_fact_processed);
+			classifiedNode.setNumSupporter(facts.size());
+			
 			return classifiedNode;
 		}
 
 		/* if there is no attribute left in order to continue */
 		if (attributeNames.size() == 0) {
 			/* an heuristic of the leaf classification */
-			LeafNode noAttributeLeftNode = new LeafNode(dt.getDomain(dt
-					.getTarget()), winner);
-			noAttributeLeftNode.setRank((double) winner_vote
-					/ (double) num_fact_processed);
+			Object winner = stats.getThe_winner_target_class();
+			LeafNode noAttributeLeftNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
+			noAttributeLeftNode.setRank((double) stats.getVoteFor(winner)/ (double) num_fact_processed);
+			noAttributeLeftNode.setNumSupporter(stats.getVoteFor(winner));
+			
+			/* we need to know how many guys cannot be classified and who these guys are */
+			FactProcessor.splitUnclassifiedFacts(unclassified_facts, stats);
+			
 			return noAttributeLeftNode;
 		}
 
@@ -190,6 +225,12 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 			
 		Hashtable<Object, List<Fact>> filtered_facts = FactProcessor.splitFacts(facts, choosenDomain);
 
+		for (Object value : filtered_facts.keySet()) {
+			if (filtered_facts.get(value).isEmpty()){
+				@SuppressWarnings("unused")
+				boolean bok = true;
+			}
+		}
 		dt.FACTS_READ += facts.size();
 
 		for (Object value : filtered_facts.keySet()) {
@@ -201,8 +242,9 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 
 			if (filtered_facts.get(value).isEmpty()) {
 				/* majority !!!! */
-				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
-				majorityNode.setRank(0.0);
+				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
+				majorityNode.setRank(-1.0); // classifying nothing
+				majorityNode.setNumSupporter(filtered_facts.get(value).size());
 				currentNode.addNode(value, majorityNode);
 			} else {
 				TreeNode newNode = c45(dt, filtered_facts.get(value), attributeNames_copy);

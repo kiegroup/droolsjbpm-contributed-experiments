@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -178,6 +179,29 @@ public class ObjectReader {
 		return null;
 	}
 
+	public static List<String> getWorkingAttributes(Class<? extends Object> classObj) {
+		Field [] element_fields = classObj.getDeclaredFields();
+		ArrayList<String> attributes = new ArrayList<String>(element_fields.length) ;
+		for( Field f: element_fields) {
+			String f_name = f.getName();
+			Class<?>[] f_class = {f.getType()};
+			if (Util.isSimpleType(f_class)) {
+				Annotation[] annotations = f.getAnnotations();
+				
+				// iterate over the annotations to locate the MaxLength constraint if it exists
+				DomainSpec spec = null;
+				for (Annotation a : annotations) {
+				    if (a instanceof DomainSpec) {
+				        spec = (DomainSpec)a; // here it is !!!
+				        if (!spec.ignore())
+				        	attributes.add(f_name);
+				    }
+				}
+			}
+		}
+		return attributes;
+	}
+	
 	//read(Class<?> element_class, Collection<Domain<?>> collection, String data, String separator)
 	public static Object read_(Class<?> element_class, Collection<Domain<?>> domains, String data, String separator) {
 
@@ -455,7 +479,4 @@ public class ObjectReader {
 			throw new IOException("field assignment failure:" + e);
 		}
 	}
-
-	
-
 }

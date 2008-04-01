@@ -63,11 +63,15 @@ public class BooleanDomain implements Domain<Boolean> {
 	}
 	
 	public Object readString(String data) {
-		System.out.print("What is the data : "+ data);
+		//System.out.print("What is the data : "+ data);
 		if (isValid(data)) {
 			if (data.trim().equalsIgnoreCase("true"))
 				return Boolean.TRUE;
 			else if ((data.trim().equalsIgnoreCase("false")))
+				return Boolean.FALSE;
+			else if (data.trim().equalsIgnoreCase("1"))
+				return Boolean.TRUE;
+			else if (data.trim().equalsIgnoreCase("0"))
 				return Boolean.FALSE;
 			else
 				return Boolean.parseBoolean(data);

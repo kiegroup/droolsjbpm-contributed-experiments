@@ -23,7 +23,8 @@ public class FileProcessor {
 			System.out.println("Time" + dt + "\n" + bocuksTree);
 
 			RulePrinter my_printer = new RulePrinter();
-			my_printer.printer(bocuksTree, "examples", "src/rules/examples/"+drlfile);
+			boolean sort_via_rank = true;
+			my_printer.printer(bocuksTree, "examples", "src/rules/examples/"+drlfile, sort_via_rank);
 			
 			return obj_read;
 			
@@ -45,12 +46,15 @@ public class FileProcessor {
 			long dt = System.currentTimeMillis();
 			String target_attr = ObjectReader.getTargetAnnotation(emptyObject.getClass());
 			
-			DecisionTree bocuksTree = bocuk.build(simple, emptyObject.getClass().getName(), target_attr, null);
+			List<String> workingAttributes= ObjectReader.getWorkingAttributes(emptyObject.getClass());
+			
+			DecisionTree bocuksTree = bocuk.build(simple, emptyObject.getClass().getName(), target_attr, workingAttributes);
 			dt = System.currentTimeMillis() - dt;
 			System.out.println("Time" + dt + "\n" + bocuksTree);
 
-			RulePrinter my_printer = new RulePrinter();
-			my_printer.printer(bocuksTree, "examples", "src/rules/examples/"+drlfile);
+			RulePrinter my_printer = new RulePrinter(bocuk.getNum_fact_processed());
+			boolean sort_via_rank = true;
+			my_printer.printer(bocuksTree, "examples", "src/rules/examples/"+drlfile, sort_via_rank);
 			
 			return obj_read;
 			

@@ -26,6 +26,10 @@ public class FactDistribution {
 		
 	}
 	
+	public FactDistribution clone() {
+		return this.clone();
+	}
+	
 	public void setTotal(int size) {
 		this.total_num = size;	
 	}
@@ -48,6 +52,11 @@ public class FactDistribution {
 	public void setTargetDistForAttr(Object attr_value, Hashtable<Object, Integer> targetDist) {
 		for (Object target: targetDist.keySet())
 			facts_at_attr.get(attr_value).put(target,targetDist.get(target));
+	}
+	
+	public void setTargetDistForAttr(Object attr_value, FactTargetDistribution targetDist) {
+		for (Object target: targetDist.getTargetClasses())
+			facts_at_attr.get(attr_value).put(target,targetDist.getVoteFor(target));
 	}
 
 	public void change(Object attrValue, Object targetValue, int i) {

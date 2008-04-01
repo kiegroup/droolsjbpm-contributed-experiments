@@ -6,6 +6,7 @@ import java.util.List;
 
 import dt.memory.Domain;
 import dt.memory.Fact;
+import dt.memory.FactTargetDistribution;
 import dt.tools.Util;
 
 public class DecisionTree {
@@ -74,6 +75,15 @@ public class DecisionTree {
 		FACTS_READ += facts.size();
 		// *OPT* }
 		// *OPT* }
+		return facts_in_class;
+	}
+	
+	// *OPT* public double getInformation(List<FactSet> facts) {
+	public FactTargetDistribution getDistribution(List<Fact> facts) {
+		
+		FactTargetDistribution facts_in_class = new FactTargetDistribution(getDomain(getTarget()));
+		facts_in_class.calculateDistribution(facts);
+		FACTS_READ += facts.size();
 		return facts_in_class;
 	}
 

@@ -8,10 +8,12 @@ public class LeafNode extends TreeNode {
 	//represents leaf nodes with the target value
 	private Object targetValue;
 	private double rank;
+	private int num_facts_classified;
 
 	public LeafNode(Domain<?> targetDomain, Object value){
 		super(targetDomain);
 		this.targetValue = value;
+		num_facts_classified = 0;
 	}
 	
 	public void addNode(Object attributeValue, TreeNode node) {
@@ -42,5 +44,14 @@ public class LeafNode extends TreeNode {
 		buf.append(Util.ntimes("\t",depth+1));
 		buf.append("DECISION -> " +targetValue.toString()+"\n");
 		return buf.toString();
+	}
+
+	public void setNumSupporter(int size) {
+		this.num_facts_classified= size;
+		
+	}
+	
+	public int getNum_facts_classified() {
+		return this.num_facts_classified;
 	}
 }

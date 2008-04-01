@@ -6,6 +6,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD})
 public @interface DomainSpec {
 	    int readingSeq();
+	    boolean ignore() default false;
 	    boolean target() default false;
 	    boolean discrete() default true;
 	    String[] values() default {"bok"};

@@ -22,7 +22,22 @@ public class RulePrinter {
 	private Stack<NodeValue> nodes;
 	
 	private Object ruleObject;
+	
+	private boolean ONLY_ACTIVE = true;
+	private int num_facts; 
 	//private RuleComparator rule_comp = new RuleComparator();
+	
+	
+	public RulePrinter(int num_facts) {
+		ruleText = new ArrayList<String>();
+		//rule_list = new ArrayList<ArrayList<NodeValue>>();
+		rules = new ArrayList<Rule>();
+		
+		/* most important */
+		nodes = new Stack<NodeValue>();
+		
+		this.num_facts = num_facts;
+	}
 	
 	public RulePrinter() {
 		ruleText = new ArrayList<String>();
@@ -33,17 +48,10 @@ public class RulePrinter {
 		nodes = new Stack<NodeValue>();
 	}
 	
-	public void printer(DecisionTree dt, String packageName, String outputFile) {//, PrintStream object
+	public void printer(DecisionTree dt, String packageName, String outputFile, boolean sort) {//, PrintStream object
 		ruleObject = dt.getName();
 		dfs(dt.getRoot());
-		
-//		int j = 0;
-//		for( String rule: ruleText) {
-//			j++;
-//			System.out.println("Rule " +j + " suggests that \n"+ rule +".\n");
-//		}
-		
-		//String outputFile = new String("src/id3/rules"+".drl");
+	
 		if (outputFile!=null) {
 			if (packageName != null)
 				write("package " + packageName +";\n\n", false, outputFile);
@@ -54,20 +62,36 @@ public class RulePrinter {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-//			write("/* \n", false, outputFile);
-//			write(" * Spitting the rules= \n", true, outputFile);
-//			write(" */ \n", true, outputFile);
 		}
 		
+		if (sort)
+			Collections.sort(rules, Rule.getRankComparator());
+		
+		int total_num_facts=0;
 		int i = 0;
-		//Collections.sort(rules, Rule.getRankComparator());
 		for( Rule rule: rules) {
 			i++;
-			System.out.println("//rule " +i + " write to drl \n"+ rule +"\n");
-			if (outputFile!=null) {
-				write(rule.toString(), true, outputFile);
-				write("\n", true, outputFile);
+			if (ONLY_ACTIVE) {
+				if (rule.getRank() >= 0) {
+					System.out.println("//Active rules " +i + " write to drl \n"+ rule +"\n");
+					if (outputFile!=null) {
+						write(rule.toString(), true, outputFile);
+						write("\n", true, outputFile);
+					}
+				}
+
+			} else {
+				System.out.println("//rule " +i + " write to drl \n"+ rule +"\n");
+				if (outputFile!=null) {
+					write(rule.toString(), true, outputFile);
+					write("\n", true, outputFile);
+				}
 			}
+			total_num_facts += rule.getPopularity();
+		}
+		if (outputFile!=null) {
+			write("//THE END: Total number of facts correctly classified= "+ total_num_facts, true, outputFile);
+			write("\n", true, outputFile); // EOF
 		}
 	}
 	public Object getRuleObject() {
@@ -195,6 +219,7 @@ class Rule {
 	private int id;
 	private String attr_obj;
 	private double rank;
+	private double popularity;
 	private ArrayList<NodeValue> conditions;
 	private ArrayList<NodeValue>  actions;
 	
@@ -213,6 +238,7 @@ class Rule {
 	public void addAction(NodeValue current) {
 		actions.add(new NodeValue(current.getNode(), current.getNodeValue()));
 		rank = ((LeafNode)current.getNode()).getRank();
+		popularity = ((LeafNode)current.getNode()).getNum_facts_classified();
 	}
 	public void setObject(String obj) {
 		attr_obj= obj;
@@ -231,6 +257,13 @@ class Rule {
 		this.id= id;
 	}
 	
+	public double getPopularity() {
+		return popularity;
+	}
+
+	public void setPopularity(double popularity) {
+		this.popularity = popularity;
+	}
 	
 	
 	public String toString() {
@@ -243,8 +276,9 @@ class Rule {
 				System.out.println( "Goodbye: " + message ); 
 		end
 		 */
-		
+			
 		String out = ""; //"rule \"#"+getId()+" "+decision+" rank:"+rank+"\" \n";
+
 		out += "\t when";
 		out += "\n\t\t "+getObject() +"("+ "";
 		for (NodeValue cond: conditions) {
@@ -263,8 +297,9 @@ class Rule {
 		
 		out += "\t then ";
 		out += "\n\t\t System.out.println(\"Decision on "+decision+"= \"+" + decision + "+\": ("+action+")\");\n";
-		
-		out = "rule \"#"+getId()+" "+decision+ "= "+action+" with rank:"+rank+"\" \n" + out;
+		if (getRank() <0)
+			out += "\n\t\t System.out.println(\"But no matching fact found = DOES not fire on\");\n";
+		out = "rule \"#"+getId()+" "+decision+ "= "+action+" classifying "+getPopularity()+" num of facts with rank:"+getRank() +"\" \n" + out;
 		
 		out += "end\n";
 

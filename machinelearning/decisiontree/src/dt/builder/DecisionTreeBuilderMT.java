@@ -39,6 +39,8 @@ public class DecisionTreeBuilderMT {
 	MyThread helper;
 	private int FUNC_CALL = 0;
 	private int num_fact_processed = 0;
+	
+	private List<Fact> unclassified_facts;
 
 	/* 
 	 * treebuilder.execute(workingmemory, classtoexecute, attributestoprocess)
@@ -52,6 +54,7 @@ public class DecisionTreeBuilderMT {
 
 	public DecisionTree build(WorkingMemory wm, Class<?> klass, String targetField, Collection<String> workingAttributes) {
 
+		unclassified_facts = new ArrayList<Fact>();
 		DecisionTree dt = new DecisionTree(klass.getName());
 //		**OPT		List<FactSet> facts = new ArrayList<FactSet>();
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -106,6 +109,7 @@ public class DecisionTreeBuilderMT {
 
 	public DecisionTree build(WorkingMemory wm, String klass, String targetField, Collection<String> workingAttributes) {
 
+		unclassified_facts = new ArrayList<Fact>();
 		DecisionTree dt = new DecisionTree(klass);
 //		**OPT		List<FactSet> facts = new ArrayList<FactSet>();
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -215,6 +219,7 @@ public class DecisionTreeBuilderMT {
 			//*OPT*			return new LeafNode(facts.get(0).getFact(0).getFieldValue(target));
 			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
 			classifiedNode.setRank((double)facts.size()/(double)num_fact_processed);
+			classifiedNode.setNumSupporter(facts.size());
 			return classifiedNode;
 		}
 
@@ -223,6 +228,7 @@ public class DecisionTreeBuilderMT {
 			/* an heuristic of the leaf classification*/
 			LeafNode noAttributeLeftNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
 			noAttributeLeftNode.setRank((double)winner_vote/(double)num_fact_processed);
+			noAttributeLeftNode.setNumSupporter(winner_vote);
 			return noAttributeLeftNode;
 		}
 

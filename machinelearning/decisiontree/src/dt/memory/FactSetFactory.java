@@ -1,6 +1,8 @@
 package dt.memory;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -244,9 +246,15 @@ public class FactSetFactory {
 		OOFactSet fs = wm.getFactSet(klass);
 		Collection<Domain<?>> domains = fs.getDomains();
 		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				klass.getResourceAsStream(filename)));// "../data/"
-		// +
+		File file =new File(filename);
+		if(!file.exists()){
+			System.out.println("where is the file ? "+ filename);
+			System.exit(0);
+		}
+		BufferedReader reader; 
+
+		reader = new BufferedReader(new FileReader(filename));	
+		
 		String line;
 		while ((line = reader.readLine()) != null) {
 			// Fact newFact = fromString(line,domains,separator);

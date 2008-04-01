@@ -40,7 +40,8 @@ public class BocukFileExample {
 			//System.out.println(bocuksTree);
 
 			RulePrinter my_printer = new RulePrinter();
-			my_printer.printer(bocuksTree, null, null);
+			boolean sort_via_rank = true;
+			my_printer.printer(bocuksTree, null, null, sort_via_rank);
 		}
 	}
 

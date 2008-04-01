@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Util {
 	
+	public static boolean DEBUG = false;
+	
 	public static String ntimes(String s,int n){
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < n; i++) {

@@ -51,7 +51,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 	internalprocess(attributestoprocess)
 	 */
 
-	public DecisionTree build(WorkingMemory wm, Class<?> klass, String targetField, Collection<String> workingAttributes) {
+	public DecisionTree build(WorkingMemory wm, Class<?> klass, String targetField, List<String> workingAttributes) {
 
 		DecisionTree dt = new DecisionTree(klass.getName());
 //		**OPT		List<FactSet> facts = new ArrayList<FactSet>();
@@ -94,7 +94,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 	}
 
 	
-	public DecisionTree build(WorkingMemory wm, String klass, String targetField, Collection<String> workingAttributes) {
+	public DecisionTree build(WorkingMemory wm, String klass, String targetField, List<String> workingAttributes) {
 
 		DecisionTree dt = new DecisionTree(klass);
 //		**OPT		List<FactSet> facts = new ArrayList<FactSet>();
@@ -165,6 +165,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 			//*OPT*			return new LeafNode(facts.get(0).getFact(0).getFieldValue(target));
 			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
 			classifiedNode.setRank((double)facts.size()/(double)num_fact_processed);
+			classifiedNode.setNumSupporter(facts.size());
 			return classifiedNode;
 		}
 
@@ -173,6 +174,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 			/* an heuristic of the leaf classification*/
 			LeafNode noAttributeLeftNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
 			noAttributeLeftNode.setRank((double)winner_vote/(double)num_fact_processed);
+			noAttributeLeftNode.setNumSupporter(winner_vote);
 			return noAttributeLeftNode;
 		}
 
@@ -205,7 +207,8 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 			if (filtered_facts.get(value).isEmpty()) {
 				/* majority !!!! */
 				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
-				majorityNode.setRank(0.0);
+				majorityNode.setRank(-1.0);
+				majorityNode.setNumSupporter(filtered_facts.get(value).size());
 				currentNode.addNode(value, majorityNode);
 			} else {
 				TreeNode newNode = id3(dt, filtered_facts.get(value), attributeNames_copy);
