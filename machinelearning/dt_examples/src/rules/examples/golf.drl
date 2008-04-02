@@ -14,6 +14,13 @@ rule "#1 decision = Play classifying 3.0 num of facts with rank:0.21428571428571
 		 System.out.println("Decision on decision = "+decision +": (Play)");
 end
 
+rule "#3 decision = Don't Play classifying 3.0 num of facts with rank:0.21428571428571427" 
+	 when
+		 examples.Golf(outlook == "sunny", humidity > 77.5, decision : decision)
+	 then 
+		 System.out.println("Decision on decision = "+decision +": (Don't Play)");
+end
+
 rule "#0 decision = Don't Play classifying 2.0 num of facts with rank:0.14285714285714285" 
 	 when
 		 examples.Golf(outlook == "rain", windy == true, decision : decision)
@@ -28,10 +35,5 @@ rule "#4 decision = Play classifying 2.0 num of facts with rank:0.14285714285714
 		 System.out.println("Decision on decision = "+decision +": (Play)");
 end
 
-rule "#3 decision = Don't Play classifying 0.0 num of facts with rank:-1.0" 
-	 when
-		 examples.Golf(outlook == "sunny", humidity > 77.5, decision : decision)
-	 then 
-		 System.out.println("Decision on decision = "+decision +": (Don't Play)");
-end
-
+//THE END: Total number of facts correctly classified= 14 over 14
+//with 5 number of rules over 5 total number of rules 

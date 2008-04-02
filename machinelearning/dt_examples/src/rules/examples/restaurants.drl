@@ -49,10 +49,4 @@ rule "#4 will_wait = false classifying 1.0 num of facts with rank:0.090909090909
 		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
 end
 
-rule "#5 will_wait = false classifying 0.0 num of facts with rank:-1.0" 
-	 when
-		 examples.Restaurant(patrons == "Full", hungry == true, type == "French", will_wait : will_wait)
-	 then 
-		 System.out.println("Decision on will_wait = "+will_wait +": (false)");
-end
-
+//THE END: Total number of facts correctly classified= 11

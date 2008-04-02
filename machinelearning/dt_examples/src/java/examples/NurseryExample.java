@@ -27,7 +27,7 @@ public class NurseryExample {
 		/* create the drl */
 		Object nurse = new Nursery();
 		List<Object> my_objects = FileProcessor.processFileExmID3(simple,
-				nurse, drlFile, "../data/nursery/nursery.data.txt", ",");
+				nurse, drlFile, "data/nursery/nursery.data.txt", ",");
 
 		/* parse the drl */
 		//read in the source 

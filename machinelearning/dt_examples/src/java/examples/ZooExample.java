@@ -1,6 +1,5 @@
 package examples;
 
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Iterator;
@@ -18,24 +17,22 @@ import org.drools.rule.Package;
 import dt.memory.WorkingMemory;
 import dt.tools.FileProcessor;
 
-public class PokerExample {
-
+public class ZooExample {
 	public static final void main(final String[] args) throws Exception {
 
-		String drlFile = new String("poker_hands" + ".drl");
+		String drlFile = new String("zoo" + ".drl");
 		WorkingMemory simple = new WorkingMemory();
 		/* create the drl */
-		Object nurse = new Poker();
+		Object animal = new Zoo();
 		
-		List<Object> my_objects = FileProcessor.processFileExmC45(simple,
-				nurse, drlFile, "data/poker/poker-hand-training-true.data.txt", ",");
+		List<Object> my_objects = FileProcessor.processFileExmC45(simple,animal, drlFile, "data/zoo/zoo.data", ",");
 
 		/* parse the drl */
-		boolean parse_w_drools = true;
+		boolean parse_w_drools = false;
 		if (parse_w_drools) {
 		//read in the source 
 		// TODO give an exception of the file does not exist
-		final Reader source = new InputStreamReader(Poker.class
+		final Reader source = new InputStreamReader(Zoo.class
 				.getResourceAsStream(drlFile));
 
 		final PackageBuilder builder = new PackageBuilder();
@@ -64,7 +61,7 @@ public class PokerExample {
 
 			final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(
 					session);
-			logger.setFileName("log/pokers");
+			logger.setFileName("log/golf");
 
 			Iterator<Object> it_obj = my_objects.iterator();
 			while (it_obj.hasNext()) {
@@ -97,5 +94,4 @@ public class PokerExample {
 		System.out.println("Happy ending");
 
 	}
-
 }

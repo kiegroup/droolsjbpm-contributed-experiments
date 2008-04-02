@@ -41,7 +41,7 @@ public class CarExample {
 
 		/* create the drl */
 		List<Object> my_objects = FileProcessor.processFileExmID3(simple,
-				car, drlFile, "../data/car/car.data.txt", ",");
+				car, drlFile, "data/car/car.data.txt", ",");
 
 		/* parse the drl */
 		//read in the source 

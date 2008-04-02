@@ -139,7 +139,7 @@ public class RestaurantExample {
 		dt = System.currentTimeMillis() - dt;
 		System.out.println("Time" + dt + "\n" + bocuksTree);
 
-		RulePrinter my_printer = new RulePrinter();
+		RulePrinter my_printer = new RulePrinter(bocuk.getNum_fact_processed());
 		boolean sort_via_rank = true;
 		my_printer
 				.printer(bocuksTree, "examples", "src/rules/examples/" + file, sort_via_rank);

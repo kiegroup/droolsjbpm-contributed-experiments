@@ -1,0 +1,74 @@
+package examples;
+
+rule "#0 type = 1 classifying 41.0 num of facts with rank:0.40594059405940597" 
+	 when
+		 examples.Zoo(milk == true, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (1)");
+end
+
+rule "#1 type = 2 classifying 20.0 num of facts with rank:0.19801980198019803" 
+	 when
+		 examples.Zoo(milk == false, feathers == true, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (2)");
+end
+
+rule "#2 type = 4 classifying 13.0 num of facts with rank:0.12871287128712872" 
+	 when
+		 examples.Zoo(milk == false, feathers == false, backbone == true, fins == true, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (4)");
+end
+
+rule "#7 type = 7 classifying 8.0 num of facts with rank:0.07920792079207921" 
+	 when
+		 examples.Zoo(milk == false, feathers == false, backbone == false, airborne == false, predator == true, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (7)");
+end
+
+rule "#6 type = 6 classifying 6.0 num of facts with rank:0.0594059405940594" 
+	 when
+		 examples.Zoo(milk == false, feathers == false, backbone == false, airborne == true, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (6)");
+end
+
+rule "#3 type = 5 classifying 4.0 num of facts with rank:0.039603960396039604" 
+	 when
+		 examples.Zoo(milk == false, feathers == false, backbone == true, fins == false, aquatic == true, breathes == true, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (5)");
+end
+
+rule "#5 type = 3 classifying 4.0 num of facts with rank:0.039603960396039604" 
+	 when
+		 examples.Zoo(milk == false, feathers == false, backbone == true, fins == false, aquatic == false, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (3)");
+end
+
+rule "#12 type = 7 classifying 2.0 num of facts with rank:0.019801980198019802" 
+	 when
+		 examples.Zoo(milk == false, feathers == false, backbone == false, airborne == false, predator == false, aquatic == false, breathes == true, domestic == false, eggs == true, fins == false, hair == false, legs <= 3.0, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (7)");
+end
+
+rule "#13 type = 6 classifying 2.0 num of facts with rank:0.019801980198019802" 
+	 when
+		 examples.Zoo(milk == false, feathers == false, backbone == false, airborne == false, predator == false, aquatic == false, breathes == true, domestic == false, eggs == true, fins == false, hair == false, legs > 3.0, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (6)");
+end
+
+rule "#4 type = 3 classifying 1.0 num of facts with rank:0.009900990099009901" 
+	 when
+		 examples.Zoo(milk == false, feathers == false, backbone == true, fins == false, aquatic == true, breathes == false, type : type)
+	 then 
+		 System.out.println("Decision on type = "+type +": (3)");
+end
+
+//THE END: Total number of facts correctly classified= 101 over 101
+//with 10 number of rules over 16 total number of rules 
