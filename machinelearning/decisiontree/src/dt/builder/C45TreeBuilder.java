@@ -11,6 +11,7 @@ import dt.DecisionTree;
 import dt.LeafNode;
 import dt.TreeNode;
 
+import dt.memory.FactDistribution;
 import dt.memory.FactTargetDistribution;
 import dt.memory.WorkingMemory;
 import dt.memory.Fact;
@@ -83,7 +84,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		}
 		dt.FACTS_READ += facts.size();
 
-		num_fact_processed = facts.size();
+		setNum_fact_processed(facts.size());
 
 		if (workingAttributes != null)
 			for (String attr : workingAttributes) {
@@ -123,7 +124,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 			}
 		}
 		dt.FACTS_READ += facts.size();
-		num_fact_processed = facts.size();
+		setNum_fact_processed(facts.size());
 
 		if (workingAttributes != null)
 			for (String attr : workingAttributes) {
@@ -158,44 +159,15 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		
 		//FactTargetDistribution stats = dt.getDistribution(facts);
 		
-		FactTargetDistribution stats = new FactTargetDistribution(dt.getDomain(dt.getTarget()));
+		FactDistribution stats = new FactDistribution(dt.getDomain(dt.getTarget()));
 		stats.calculateDistribution(facts);
-	
 		stats.evaluateMajority();
-//		
-//		Object winner1 = stats.getThe_winner_target_class();
-//		for (Object looser: stats.getTargetClasses()) {
-//			System.out.println(" the target class = "+ looser);
-//			if (!winner1.equals(looser) && stats.getVoteFor(looser)>0) {
-//				System.out.println(" the num of supporters = "+ stats.getVoteFor(looser));
-//				System.out.println(" but the guys "+ stats.getSupportersFor(looser));
-//				System.out.println("How many bok: "+stats.getSupportersFor(looser).size());
-//				//unclassified_facts.addAll(stats.getSupportersFor(looser));
-//			} else
-//				System.out.println(Util.ntimes("DANIEL", 5)+ "how many times not matching?? not a looser "+ looser );
-//		}
-		/*
-		Collection<Object> targetValues = stats.keySet();
-		int winner_vote = 0;
-		int num_supporters = 0;
-		Object winner = null;
-		for (Object key : targetValues) {
-
-			int num_in_class = stats.get(key).intValue();
-			if (num_in_class > 0)
-				num_supporters++;
-			if (num_in_class > winner_vote) {
-				winner_vote = num_in_class;
-				winner = key;
-			}
-		}
-		*
 
 		/* if all elements are classified to the same value */
 		if (stats.getNum_supported_target_classes() == 1) {
 
 			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
-			classifiedNode.setRank((double) facts.size()/(double) num_fact_processed);
+			classifiedNode.setRank((double) facts.size()/(double) getNum_fact_processed());
 			classifiedNode.setNumSupporter(facts.size());
 			
 			return classifiedNode;

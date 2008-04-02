@@ -45,7 +45,7 @@ public class BocukObjectExample {
 		dt = System.currentTimeMillis() - dt;
 		System.out.println("Time"+dt+"\n"+bocuksTree);
 		
-		RulePrinter my_printer = new RulePrinter();
+		RulePrinter my_printer = new RulePrinter(bocuk.getNum_fact_processed());
 		boolean sort_via_rank = true;
 		my_printer.printer(bocuksTree,"test" , new String("../dt_learning/src/test/rules"+".drl"), sort_via_rank);
 	}

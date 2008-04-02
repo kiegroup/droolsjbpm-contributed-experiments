@@ -14,7 +14,9 @@ import dt.LeafNode;
 import dt.TreeNode;
 import dt.memory.Domain;
 import dt.memory.Fact;
+import dt.memory.FactDistribution;
 import dt.memory.FactSet;
+import dt.memory.FactTargetDistribution;
 import dt.memory.OOFactSet;
 import dt.memory.WorkingMemory;
 import dt.tools.Util;
@@ -197,27 +199,15 @@ public class DecisionTreeBuilderMT {
 			throw new RuntimeException("Nothing to classify, factlist is empty");
 		}
 		/* let's get the statistics of the results */
-		List<?> targetValues = dt.getPossibleValues(dt.getTarget());	
-		Hashtable<Object, Integer> stats = dt.getStatistics(facts, dt.getTarget());//,targetValues
-
-		int winner_vote = 0;
-		int num_supporters = 0;
-		Object winner = null;		
-		for (Object key: targetValues) {
-
-			int num_in_class = stats.get(key).intValue();
-			if (num_in_class>0)
-				num_supporters ++;
-			if (num_in_class > winner_vote) {
-				winner_vote = num_in_class;
-				winner = key;
-			}
-		}
+		FactDistribution stats = new FactDistribution(dt.getDomain(dt.getTarget()));
+		stats.calculateDistribution(facts);
+		
+		stats.evaluateMajority();
 
 		/* if all elements are classified to the same value */
-		if (num_supporters == 1) {
+		if (stats.getNum_supported_target_classes() == 1) {
 			//*OPT*			return new LeafNode(facts.get(0).getFact(0).getFieldValue(target));
-			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
+			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 			classifiedNode.setRank((double)facts.size()/(double)num_fact_processed);
 			classifiedNode.setNumSupporter(facts.size());
 			return classifiedNode;
@@ -226,9 +216,10 @@ public class DecisionTreeBuilderMT {
 		/* if  there is no attribute left in order to continue */
 		if (attributeNames.size() == 0) {
 			/* an heuristic of the leaf classification*/
+			Object winner = stats.getThe_winner_target_class();
 			LeafNode noAttributeLeftNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
-			noAttributeLeftNode.setRank((double)winner_vote/(double)num_fact_processed);
-			noAttributeLeftNode.setNumSupporter(winner_vote);
+			noAttributeLeftNode.setRank((double)stats.getVoteFor(winner)/(double)num_fact_processed);
+			noAttributeLeftNode.setNumSupporter(stats.getVoteFor(winner));
 			return noAttributeLeftNode;
 		}
 
@@ -259,7 +250,7 @@ public class DecisionTreeBuilderMT {
 
 			if (filtered_facts.get(value).isEmpty()) {
 				/* majority !!!! */
-				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
+				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 				majorityNode.setRank(0.0);
 				currentNode.addNode(value, majorityNode);
 			} else {

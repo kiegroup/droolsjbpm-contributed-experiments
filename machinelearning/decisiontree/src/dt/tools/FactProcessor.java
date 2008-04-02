@@ -8,6 +8,7 @@ import java.util.List;
 
 import dt.memory.Domain;
 import dt.memory.Fact;
+import dt.memory.FactDistribution;
 import dt.memory.FactTargetDistribution;
 
 public class FactProcessor {
@@ -101,7 +102,7 @@ public class FactProcessor {
 	}
 
 	public static void splitUnclassifiedFacts(
-			List<Fact> unclassified_facts, FactTargetDistribution stats) {
+			List<Fact> unclassified_facts, FactDistribution stats) {
 		
 		Object winner = stats.getThe_winner_target_class();
 		System.out.println(Util.ntimes("DANIEL", 2)+ " lets get unclassified daniel winner "+winner +" num of sup "  +stats.getVoteFor(winner));

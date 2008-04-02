@@ -12,6 +12,8 @@ import dt.DecisionTree;
 import dt.LeafNode;
 import dt.TreeNode;
 
+import dt.memory.FactDistribution;
+import dt.memory.FactTargetDistribution;
 import dt.memory.WorkingMemory;
 import dt.memory.Fact;
 import dt.memory.FactSet;
@@ -72,7 +74,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		}
 		dt.FACTS_READ += facts.size();
 		
-		num_fact_processed = facts.size();
+		setNum_fact_processed(facts.size());
 			
 		if (workingAttributes != null)
 			for (String attr: workingAttributes) {
@@ -112,7 +114,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 			}
 		}
 		dt.FACTS_READ += facts.size();
-		num_fact_processed = facts.size(); 
+		setNum_fact_processed(facts.size());
 			
 		if (workingAttributes != null)
 			for (String attr: workingAttributes) {
@@ -143,27 +145,15 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		}
 		/* let's get the statistics of the results */
 		//List<?> targetValues = dt.getPossibleValues(dt.getTarget());	
-		Hashtable<Object, Integer> stats = dt.getStatistics(facts, dt.getTarget());//targetValues
-		Collection<Object> targetValues = stats.keySet();
+		FactDistribution stats = new FactDistribution(dt.getDomain(dt.getTarget()));
+		stats.calculateDistribution(facts);
 		
-		int winner_vote = 0;
-		int num_supporters = 0;
-		Object winner = null;		
-		for (Object key: targetValues) {
-
-			int num_in_class = stats.get(key).intValue();
-			if (num_in_class>0)
-				num_supporters ++;
-			if (num_in_class > winner_vote) {
-				winner_vote = num_in_class;
-				winner = key;
-			}
-		}
+		stats.evaluateMajority();
 
 		/* if all elements are classified to the same value */
-		if (num_supporters == 1) {
+		if (stats.getNum_supported_target_classes() == 1) {
 			//*OPT*			return new LeafNode(facts.get(0).getFact(0).getFieldValue(target));
-			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
+			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 			classifiedNode.setRank((double)facts.size()/(double)num_fact_processed);
 			classifiedNode.setNumSupporter(facts.size());
 			return classifiedNode;
@@ -172,9 +162,10 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		/* if  there is no attribute left in order to continue */
 		if (attributeNames.size() == 0) {
 			/* an heuristic of the leaf classification*/
+			Object winner = stats.getThe_winner_target_class();
 			LeafNode noAttributeLeftNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
-			noAttributeLeftNode.setRank((double)winner_vote/(double)num_fact_processed);
-			noAttributeLeftNode.setNumSupporter(winner_vote);
+			noAttributeLeftNode.setRank((double)stats.getVoteFor(winner)/(double)num_fact_processed);
+			noAttributeLeftNode.setNumSupporter(stats.getVoteFor(winner));
 			return noAttributeLeftNode;
 		}
 
@@ -206,7 +197,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 			
 			if (filtered_facts.get(value).isEmpty()) {
 				/* majority !!!! */
-				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
+				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 				majorityNode.setRank(-1.0);
 				majorityNode.setNumSupporter(filtered_facts.get(value).size());
 				currentNode.addNode(value, majorityNode);
@@ -221,5 +212,13 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 
 	public int getNumCall() {
 		return FUNC_CALL;
+	}
+
+
+	public int getNum_fact_processed() {
+		return num_fact_processed;
+	}
+	public void setNum_fact_processed(int num_fact_processed) {
+		this.num_fact_processed = num_fact_processed;
 	}
 }

@@ -39,13 +39,12 @@ public class RulePrinter {
 		this.num_facts = num_facts;
 	}
 	
-	public RulePrinter() {
-		ruleText = new ArrayList<String>();
-		//rule_list = new ArrayList<ArrayList<NodeValue>>();
-		rules = new ArrayList<Rule>();
-		
-		/* most important */
-		nodes = new Stack<NodeValue>();
+	public int getNum_facts() {
+		return num_facts;
+	}
+
+	public void setNum_facts(int num_facts) {
+		this.num_facts = num_facts;
 	}
 	
 	public void printer(DecisionTree dt, String packageName, String outputFile, boolean sort) {//, PrintStream object
@@ -68,11 +67,12 @@ public class RulePrinter {
 			Collections.sort(rules, Rule.getRankComparator());
 		
 		int total_num_facts=0;
-		int i = 0;
+		int i = 0, active_i = 0;
 		for( Rule rule: rules) {
 			i++;
 			if (ONLY_ACTIVE) {
 				if (rule.getRank() >= 0) {
+					active_i++;
 					System.out.println("//Active rules " +i + " write to drl \n"+ rule +"\n");
 					if (outputFile!=null) {
 						write(rule.toString(), true, outputFile);
@@ -81,16 +81,20 @@ public class RulePrinter {
 				}
 
 			} else {
+				if (rule.getRank() >= 0) {
+					active_i++;
+				}
 				System.out.println("//rule " +i + " write to drl \n"+ rule +"\n");
 				if (outputFile!=null) {
 					write(rule.toString(), true, outputFile);
 					write("\n", true, outputFile);
 				}
 			}
-			total_num_facts += rule.getPopularity();
+			total_num_facts += rule.getPopularity();		
 		}
 		if (outputFile!=null) {
-			write("//THE END: Total number of facts correctly classified= "+ total_num_facts, true, outputFile);
+			write("//THE END: Total number of facts correctly classified= "+ total_num_facts + " over "+ getNum_facts() , true, outputFile);
+			write("\n//with " + active_i + " number of rules over "+i+" total number of rules ", true, outputFile);
 			write("\n", true, outputFile); // EOF
 		}
 	}

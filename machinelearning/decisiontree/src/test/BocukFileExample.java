@@ -39,7 +39,7 @@ public class BocukFileExample {
 			System.out.println("Time"+dt + " facts read: "+bocuksTree.getNumRead() + " num call: "+ bocuk.getNumCall() );
 			//System.out.println(bocuksTree);
 
-			RulePrinter my_printer = new RulePrinter();
+			RulePrinter my_printer = new RulePrinter(bocuk.getNum_fact_processed());
 			boolean sort_via_rank = true;
 			my_printer.printer(bocuksTree, null, null, sort_via_rank);
 		}

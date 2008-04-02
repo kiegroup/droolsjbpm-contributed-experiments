@@ -12,4 +12,6 @@ public interface DecisionTreeBuilder {
 
 	DecisionTree build(WorkingMemory simple, String klass_name, String target_attr,List<String> workingAttributes);
 
+	int getNum_fact_processed();
+	void setNum_fact_processed(int num);
 }
