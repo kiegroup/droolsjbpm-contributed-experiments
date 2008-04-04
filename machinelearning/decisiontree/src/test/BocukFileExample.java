@@ -1,10 +1,14 @@
 package test;
 
 
+import java.util.List;
+
 import dt.DecisionTree;
+import dt.builder.C45TreeBuilder;
 import dt.builder.IDTreeBuilder;
 import dt.memory.FactSetFactory;
 import dt.memory.WorkingMemory;
+import dt.tools.ObjectReader;
 import dt.tools.RulePrinter;
 
 public class BocukFileExample {
@@ -44,7 +48,7 @@ public class BocukFileExample {
 			my_printer.printer(bocuksTree, null, null, sort_via_rank);
 		}
 	}
-
+	
 
 }
 

@@ -26,6 +26,7 @@ public class RulePrinter {
 	private boolean ONLY_ACTIVE = true;
 	private int num_facts; 
 	//private RuleComparator rule_comp = new RuleComparator();
+	private int max_num_rules;
 	
 	
 	public RulePrinter(int num_facts) {
@@ -39,6 +40,18 @@ public class RulePrinter {
 		this.num_facts = num_facts;
 	}
 	
+	
+	public RulePrinter(int num_facts, int max_num_rules) {
+		ruleText = new ArrayList<String>();
+		//rule_list = new ArrayList<ArrayList<NodeValue>>();
+		rules = new ArrayList<Rule>();
+		
+		/* most important */
+		nodes = new Stack<NodeValue>();
+		
+		this.num_facts = num_facts;
+		this.max_num_rules = max_num_rules;
+	}
 	public int getNum_facts() {
 		return num_facts;
 	}
@@ -90,7 +103,9 @@ public class RulePrinter {
 					write("\n", true, outputFile);
 				}
 			}
-			total_num_facts += rule.getPopularity();		
+			total_num_facts += rule.getPopularity();	
+			if (i == getMax_num_rules())
+				break;
 		}
 		if (outputFile!=null) {
 			write("//THE END: Total number of facts correctly classified= "+ total_num_facts + " over "+ getNum_facts() , true, outputFile);
@@ -103,7 +118,7 @@ public class RulePrinter {
 	}
 	
 	private void dfs(TreeNode my_node) {
-		System.out.println("How many guys there of "+my_node.getDomain().getName() +"  : "+my_node.getDomain().getValues().size());
+		//System.out.println("How many guys there of "+my_node.getDomain().getName() +"  : "+my_node.getDomain().getValues().size());
 		
 		NodeValue node_value = new NodeValue(my_node);
 		nodes.push(node_value);
@@ -216,6 +231,16 @@ public class RulePrinter {
 				/* TODO */
 			}
 		}
+	}
+
+
+	public int getMax_num_rules() {
+		return max_num_rules;
+	}
+
+
+	public void setMax_num_rules(int max_num_rules) {
+		this.max_num_rules = max_num_rules;
 	}
 }
 
@@ -369,7 +394,7 @@ class NodeValue {
 			return node.getDomain() + " == "+ value; 
 		else {
 			int size = node.getDomain().getValues().size();
-			System.out.println("How many guys there of "+node.getDomain().getName() +" and the value "+nodeValue+" : "+size);
+			//System.out.println("How many guys there of "+node.getDomain().getName() +" and the value "+nodeValue+" : "+size);
 			if (node.getDomain().getValues().lastIndexOf(nodeValue) == size-1)
 				return node.getDomain() + " > "+ node.getDomain().getValues().get(size-2);
 			else

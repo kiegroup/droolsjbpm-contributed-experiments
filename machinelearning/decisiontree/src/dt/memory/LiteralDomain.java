@@ -136,5 +136,9 @@ public class LiteralDomain implements Domain<String> {
 	public List<Integer> getIndices() {
 		return null; //indices;
 	}
+	
+	public void addIndex(int index) {
+		// TODO Auto-generated method stub	
+	}
 
 }

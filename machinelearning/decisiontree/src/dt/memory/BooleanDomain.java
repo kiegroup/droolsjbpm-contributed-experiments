@@ -132,5 +132,9 @@ public class BooleanDomain implements Domain<Boolean> {
 	public List<Integer> getIndices() {
 		return null; //indices;
 	}
+	
+	public void addIndex(int index) {
+		// TODO Auto-generated method stub	
+	}
 
 }

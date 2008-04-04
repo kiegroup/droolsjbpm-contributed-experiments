@@ -145,6 +145,44 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 
 		return dt;
 	}
+	
+	public DecisionTree build_test(WorkingMemory wm, String klass,
+			String targetField, List<String> workingAttributes) {
+		unclassified_facts = new ArrayList<Fact>();
+		DecisionTree dt = new DecisionTree(klass);
+		// **OPT List<FactSet> facts = new ArrayList<FactSet>();
+		ArrayList<Fact> facts = new ArrayList<Fact>();
+		FactSet klass_fs = null;
+		Iterator<FactSet> it_fs = wm.getFactsets();
+		while (it_fs.hasNext()) {
+			FactSet fs = it_fs.next();
+			if (klass == fs.getClassName()) {
+				// **OPT facts.add(fs);
+				fs.assignTo(facts); // adding all facts of fs to "facts"
+
+				klass_fs = fs;
+				break;
+			}
+		}
+		dt.FACTS_READ += facts.size();
+		setNum_fact_processed(facts.size());
+
+		if (workingAttributes != null)
+			for (String attr : workingAttributes) {
+				//System.out.println("Bok degil " + attr);
+				dt.addDomain(klass_fs.getDomain(attr));
+			}
+		else
+			for (Domain<?> d : klass_fs.getDomains())
+				dt.addDomain(d);
+
+		dt.setTarget(targetField);
+
+		ArrayList<String> attrs = new ArrayList<String>(dt.getAttributes());
+		Collections.sort(attrs);
+
+		return dt;
+	}
 
 	private TreeNode c45(DecisionTree dt, List<Fact> facts,
 			List<String> attributeNames) {

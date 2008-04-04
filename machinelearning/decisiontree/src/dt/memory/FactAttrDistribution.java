@@ -7,27 +7,48 @@ import java.util.List;
 import dt.tools.Util;
 
 public class FactAttrDistribution {
-	String attr_sum = Util.sum();
 	
-	Hashtable<Object, FactTargetDistribution> facts_at_attr;
+	private String attr_sum = Util.sum();
+	private Domain<?> domain; // domain of the attr 
+	private Hashtable<Object, FactTargetDistribution> facts_at_attr;
 
 	private int total_num;
 	
-	public FactAttrDistribution(List<?> attributeValues, Domain<?>  targetDomain) {
+	public FactAttrDistribution(Domain<?> attributeDomain, Domain<?>  targetDomain) {
+		this.domain = attributeDomain;
+		List<?> attributeValues = this.domain.getValues();
 		facts_at_attr = new Hashtable<Object, FactTargetDistribution>(attributeValues.size());
 		
 		for (Object attr : attributeValues) {
 			facts_at_attr.put(attr, new FactTargetDistribution(targetDomain));
-//			for (Object t : targetDomain.getValues()) {
-//				facts_at_attr.get(attr).put(t, 0);
-//			}
-//			facts_at_attr.get(attr).put(attr_sum, 0);
 		}
 		
 	}
 	
-	public FactAttrDistribution clone() {
-		return this.clone();
+	public FactAttrDistribution(FactAttrDistribution copy) {
+		this.domain = copy.getDomain();
+		this.facts_at_attr = new Hashtable<Object, FactTargetDistribution>(copy.getNumAttributes());
+		
+		for (Object attr : copy.getAttributes()) {
+			FactTargetDistribution attr_x = new FactTargetDistribution(copy.getAttrFor(attr));
+			facts_at_attr.put(attr, attr_x);
+		}
+		this.total_num = copy.getTotal();
+		
+	}
+	
+//	public FactAttrDistribution clone() {
+//		FactAttrDistribution temp = new FactAttrDistribution(this);
+//		return this.clone();
+//	}
+	
+	private Domain<?> getDomain() {
+		return this.domain;
+	}
+
+	public void clear() {
+		this.facts_at_attr.clear();
+		// all for each?
 	}
 	
 	public void setTotal(int size) {
@@ -49,15 +70,11 @@ public class FactAttrDistribution {
 		facts_at_attr.get(attr_value).setSum(total);
 	}
 	
-//	public void setTargetDistForAttr(Object attr_value, Hashtable<Object, Integer> targetDist) {
-//		for (Object target: targetDist.keySet())
-//			facts_at_attr.get(attr_value).put(target,targetDist.get(target));
-//	}
 	
 	public void setTargetDistForAttr(Object attr_value, FactTargetDistribution targetDist) {
 		
 		//facts_at_attr.put(attr_value, targetDist);
-		/* TODO should i make a close */
+		/* TODO should i make a clone */
 		FactTargetDistribution old = facts_at_attr.get(attr_value);		
 		old.setDistribution(targetDist);
 	
@@ -67,19 +84,24 @@ public class FactAttrDistribution {
 		facts_at_attr.get(attrValue).change(targetValue, i);
 		
 		facts_at_attr.get(attrValue).change(attr_sum, i);
-/*		int num_1 = facts_at_attr.get(attrValue).get(targetValue).intValue();
-		num_1 += i;
-		facts_at_attr.get(attrValue).put(targetValue, num_1);
-		
-		int total_num_1 = facts_at_attr.get(attrValue).get(attr_sum).intValue();
-		total_num_1 += i;
-		facts_at_attr.get(attrValue).put(attr_sum, total_num_1);
-		*/
 		
 	}
 
 	public Collection<Object> getAttributes() {
 		return facts_at_attr.keySet();
+	}
+	
+	public int getNumAttributes() {
+		return facts_at_attr.keySet().size();
+	}
+	
+	public String toString() {
+		String out = "FAD: attr: "+domain.getName()+" total num: "+ this.getTotal() + "\n" ;
+		for (Object attr : this.getAttributes()) {
+			FactTargetDistribution ftd = facts_at_attr.get(attr);
+			out += ftd ;
+		}
+		return out;
 	}
 	
 

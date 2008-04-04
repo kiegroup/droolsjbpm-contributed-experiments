@@ -32,7 +32,9 @@ public interface Domain<T> {
 	
 	public Domain<T> clone();
 	void setIndices(List<Integer> split_indices);
+	
 	List<Integer> getIndices();
+	void addIndex(int index);
 	
 }
 

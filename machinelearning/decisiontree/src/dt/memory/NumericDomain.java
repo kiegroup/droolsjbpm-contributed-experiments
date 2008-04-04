@@ -177,6 +177,10 @@ public class NumericDomain implements Domain<Number> {
 		indices.clear();
 		indices.addAll(split_indices);
 	}
+	
+	public void addIndex(int index) {
+		indices.add(index);
+	}
 
 	public List<Integer> getIndices() {
 		return indices;
