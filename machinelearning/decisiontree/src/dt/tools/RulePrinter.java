@@ -26,7 +26,7 @@ public class RulePrinter {
 	private boolean ONLY_ACTIVE = true;
 	private int num_facts; 
 	//private RuleComparator rule_comp = new RuleComparator();
-	private int max_num_rules;
+	private int max_num_rules = -1;
 	
 	
 	public RulePrinter(int num_facts) {
@@ -40,18 +40,6 @@ public class RulePrinter {
 		this.num_facts = num_facts;
 	}
 	
-	
-	public RulePrinter(int num_facts, int max_num_rules) {
-		ruleText = new ArrayList<String>();
-		//rule_list = new ArrayList<ArrayList<NodeValue>>();
-		rules = new ArrayList<Rule>();
-		
-		/* most important */
-		nodes = new Stack<NodeValue>();
-		
-		this.num_facts = num_facts;
-		this.max_num_rules = max_num_rules;
-	}
 	public int getNum_facts() {
 		return num_facts;
 	}
@@ -60,10 +48,35 @@ public class RulePrinter {
 		this.num_facts = num_facts;
 	}
 	
-	public void printer(DecisionTree dt, String packageName, String outputFile, boolean sort) {//, PrintStream object
+	public int getMax_num_rules() {
+		return max_num_rules;
+	}
+
+	public void setMax_num_rules(int max_num_rules) {
+		this.max_num_rules = max_num_rules;
+	}
+	
+	public void printer(DecisionTree dt, boolean sort, boolean print) {//, PrintStream object
 		ruleObject = dt.getName();
 		dfs(dt.getRoot());
+		
+		if (sort)
+			Collections.sort(rules, Rule.getRankComparator());
+		if (print)
+			System.out.println(printRules());
+	}
 	
+	public String printRules() {
+		String out = "";
+		int i = 0;
+		for( Rule rule: rules) {
+			i++;
+			out += ("Rule " +i + " rank("+rule.getRank()+")"+" suggests that \n"+ rule.toPrint() +".\n");
+		}
+		return out;
+	}
+	
+	public void write2file(String packageName, String outputFile) {
 		if (outputFile!=null) {
 			if (packageName != null)
 				write("package " + packageName +";\n\n", false, outputFile);
@@ -76,9 +89,7 @@ public class RulePrinter {
 				}
 		}
 		
-		if (sort)
-			Collections.sort(rules, Rule.getRankComparator());
-		
+		System.out.println("//Num of rules " +rules.size()+"\n");
 		int total_num_facts=0;
 		int i = 0, active_i = 0;
 		for( Rule rule: rules) {
@@ -104,7 +115,7 @@ public class RulePrinter {
 				}
 			}
 			total_num_facts += rule.getPopularity();	
-			if (i == getMax_num_rules())
+			if (getMax_num_rules()>0 && i >= getMax_num_rules())
 				break;
 		}
 		if (outputFile!=null) {
@@ -135,19 +146,15 @@ public class RulePrinter {
 			return;
 		}
 		
-		Hashtable<Object,TreeNode> children = my_node.getChildren();
-		for (Object attributeValue : children.keySet()) {
+		//Hashtable<Object,TreeNode> children = my_node.getChildrenKeys();
+		for (Object attributeValue : my_node.getChildrenKeys()) {
 			//System.out.println("Domain: "+ my_node.getDomain().getName() + " the value:"+ attributeValue);
 			node_value.setNodeValue(attributeValue);		
-			TreeNode child = children.get(attributeValue);
+			TreeNode child = my_node.getChild(attributeValue);
 			dfs(child);
 			nodes.pop();
 		}
 		return;
-		
-		
-			
-		
 	}
 	
 	private Rule spitRule(Stack<NodeValue> nodes) {
@@ -232,16 +239,6 @@ public class RulePrinter {
 			}
 		}
 	}
-
-
-	public int getMax_num_rules() {
-		return max_num_rules;
-	}
-
-
-	public void setMax_num_rules(int max_num_rules) {
-		this.max_num_rules = max_num_rules;
-	}
 }
 
 class Rule {
@@ -256,7 +253,9 @@ class Rule {
 		conditions = new ArrayList<NodeValue>(numCond);
 		actions = new ArrayList<NodeValue>(1);
 	}
-
+	public void setRank(double r) {
+		this.rank = r;
+	}
 	public double getRank() {
 		return rank;
 	}
@@ -266,7 +265,7 @@ class Rule {
 	}
 	public void addAction(NodeValue current) {
 		actions.add(new NodeValue(current.getNode(), current.getNodeValue()));
-		rank = ((LeafNode)current.getNode()).getRank();
+		this.setRank(((LeafNode)current.getNode()).getRank());
 		popularity = ((LeafNode)current.getNode()).getNum_facts_classified();
 	}
 	public void setObject(String obj) {
@@ -294,6 +293,22 @@ class Rule {
 		this.popularity = popularity;
 	}
 	
+	public String toPrint() {
+
+		String out = "if ";
+		for (NodeValue cond: conditions) {
+			out += cond + " & ";
+		}
+		out = out.substring(0, out.length()-2);
+		
+		String action = "";
+		for (NodeValue act: actions) {
+			action += act.getNodeValue() + " & ";
+		}
+		action = action.substring(0, action.length()-3);
+		out += "then DECISION("+action +")";
+		return out;	
+	}
 	
 	public String toString() {
 		/*		 
@@ -395,10 +410,15 @@ class NodeValue {
 		else {
 			int size = node.getDomain().getValues().size();
 			//System.out.println("How many guys there of "+node.getDomain().getName() +" and the value "+nodeValue+" : "+size);
-			if (node.getDomain().getValues().lastIndexOf(nodeValue) == size-1)
-				return node.getDomain() + " > "+ node.getDomain().getValues().get(size-2);
-			else
+			if (node.getDomain().getValues().lastIndexOf(nodeValue) == 0)
 				return node.getDomain() + " <= "+ value;
+			else if (node.getDomain().getValues().lastIndexOf(nodeValue) == size-1)
+				return node.getDomain() + " > "+ node.getDomain().getValues().get(size-2);
+			else {
+				//find the one before him
+				int current = node.getDomain().getValues().lastIndexOf(nodeValue);
+				return  node.getDomain().getValues().get(current-1) +" < "+node.getDomain() + " <= "+ value;
+			}
 		}
 	}
 		

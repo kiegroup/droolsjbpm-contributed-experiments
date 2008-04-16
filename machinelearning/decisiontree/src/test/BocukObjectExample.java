@@ -27,7 +27,8 @@ public class BocukObjectExample {
 		facts.add(new RestaurantOld(true, true, true, true, "Full", 1,   false,   false,  "Burger",  "30-60",  true));
 
 		WorkingMemory simple = new WorkingMemory();
-		OOFactSet fs = simple.getFactSet(arest.getClass());
+		boolean only_discrete = true;
+		OOFactSet fs = simple.getFactSet(arest.getClass(), only_discrete);
 
 		for(Object r: facts) {
 			try {
@@ -45,8 +46,10 @@ public class BocukObjectExample {
 		dt = System.currentTimeMillis() - dt;
 		System.out.println("Time"+dt+"\n"+bocuksTree);
 		
-		RulePrinter my_printer = new RulePrinter(bocuk.getNum_fact_processed());
+		RulePrinter my_printer = new RulePrinter(bocuk.getNum_fact_trained());
 		boolean sort_via_rank = true;
-		my_printer.printer(bocuksTree,"test" , new String("../dt_learning/src/test/rules"+".drl"), sort_via_rank);
+		boolean print = true;
+		my_printer.printer(bocuksTree, sort_via_rank, print);
+		my_printer.write2file("test" , new String("../dt_learning/src/test/rules"+".drl"));
 	}
 }

@@ -7,7 +7,8 @@ import java.util.List;
 
 public class Util {
 	
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
+	public static boolean DEBUG_TEST = true;
 	
 	public static String ntimes(String s,int n){
 		StringBuffer buf = new StringBuffer();
@@ -80,7 +81,7 @@ public class Util {
 	public static String sum() {
 		return "sum";
 	}
-	
+
 	public static void insert(List<Object> list, Object key, Comparator<Object> c) {
 		int insertion_point_1 = Collections.binarySearch(list, key, c);
 		if (insertion_point_1 <0)

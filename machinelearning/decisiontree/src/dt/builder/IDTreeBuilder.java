@@ -34,14 +34,14 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		TreeNode result = null;
 		@Override
 		public void run() {
-			result = builder.id3(dt, facts, attributeNames);
+			result = builder.train(dt, facts, attributeNames);
 			currentNode.addNode(value, result);
 		}
 	}
 	
 	MyThread helper;
 	private int FUNC_CALL = 0;
-	private int num_fact_processed = 0;
+	private int num_fact_trained = 0;
 	
 	/* 
 	 * treebuilder.execute(workingmemory, classtoexecute, attributestoprocess)
@@ -74,7 +74,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		}
 		dt.FACTS_READ += facts.size();
 		
-		setNum_fact_processed(facts.size());
+		setNum_fact_trained(facts.size());
 			
 		if (workingAttributes != null)
 			for (String attr: workingAttributes) {
@@ -89,7 +89,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		ArrayList<String> attrs = new ArrayList<String>(dt.getAttributes());
 		Collections.sort(attrs);
 
-		TreeNode root = id3(dt, facts, attrs);
+		TreeNode root = train(dt, facts, attrs);
 		dt.setRoot(root);
 
 		return dt;
@@ -114,7 +114,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 			}
 		}
 		dt.FACTS_READ += facts.size();
-		setNum_fact_processed(facts.size());
+		setNum_fact_trained(facts.size());
 			
 		if (workingAttributes != null)
 			for (String attr: workingAttributes) {
@@ -130,14 +130,14 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		ArrayList<String> attrs = new ArrayList<String>(dt.getAttributes());
 		Collections.sort(attrs);
 
-		TreeNode root = id3(dt, facts, attrs);
+		TreeNode root = train(dt, facts, attrs);
 		dt.setRoot(root);
 
 		return dt;
 	}
 	//*OPT*	private TreeNode decisionTreeLearning(List<FactSet> facts,
 	//*OPT*										  List<String> attributeNames) {
-	private TreeNode id3(DecisionTree dt, List<Fact> facts, List<String> attributeNames) {
+	public TreeNode train(DecisionTree dt, List<Fact> facts, List<String> attributeNames) {
 		
 		FUNC_CALL  ++;
 		if (facts.size() == 0) {
@@ -154,7 +154,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		if (stats.getNum_supported_target_classes() == 1) {
 			//*OPT*			return new LeafNode(facts.get(0).getFact(0).getFieldValue(target));
 			LeafNode classifiedNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
-			classifiedNode.setRank((double)facts.size()/(double)num_fact_processed);
+			classifiedNode.setRank((double)facts.size()/(double)num_fact_trained);
 			classifiedNode.setNumSupporter(facts.size());
 			return classifiedNode;
 		}
@@ -164,7 +164,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 			/* an heuristic of the leaf classification*/
 			Object winner = stats.getThe_winner_target_class();
 			LeafNode noAttributeLeftNode = new LeafNode(dt.getDomain(dt.getTarget()), winner);
-			noAttributeLeftNode.setRank((double)stats.getVoteFor(winner)/(double)num_fact_processed);
+			noAttributeLeftNode.setRank((double)stats.getVoteFor(winner)/(double)num_fact_trained);
 			noAttributeLeftNode.setNumSupporter(stats.getVoteFor(winner));
 			return noAttributeLeftNode;
 		}
@@ -202,7 +202,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 				majorityNode.setNumSupporter(filtered_facts.get(value).size());
 				currentNode.addNode(value, majorityNode);
 			} else {
-				TreeNode newNode = id3(dt, filtered_facts.get(value), attributeNames_copy);
+				TreeNode newNode = train(dt, filtered_facts.get(value), attributeNames_copy);
 				currentNode.addNode(value, newNode);
 			}
 		}
@@ -215,10 +215,16 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 	}
 
 
-	public int getNum_fact_processed() {
-		return num_fact_processed;
+	public int getNum_fact_trained() {
+		return num_fact_trained;
 	}
-	public void setNum_fact_processed(int num_fact_processed) {
-		this.num_fact_processed = num_fact_processed;
+	public void setNum_fact_trained(int num_fact_processed) {
+		this.num_fact_trained = num_fact_processed;
+	}
+
+
+	public List<Integer> test(DecisionTree dt, List<Fact> facts) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

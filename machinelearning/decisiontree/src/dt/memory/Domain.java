@@ -11,18 +11,20 @@ public interface Domain<T> {
 	boolean isDiscrete();
 	void setDiscrete(boolean disc);
 	
-	boolean contains(T value);
-
 	String getName();
 
 	void addValue(T value);
 	void addPseudoValue(T fieldValue);
+	
+	T getClass(Object value);
 	
 	List<T> getValues();
 	
 	Object readString(String data);
 	
 	String toString();
+	
+	boolean contains(T value) throws Exception;
 	boolean isPossible(Object value) throws Exception;
 	
 	void setReadingSeq(int readingSeq);

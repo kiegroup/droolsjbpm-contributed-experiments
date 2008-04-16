@@ -29,6 +29,9 @@ public class Entropy implements InformationMeasure {
 		List<Integer> split_indices = null; 
 		Domain<?> targetDomain = dt.getDomain(dt.getTarget());
 		for (String attr : attrs) {
+			if (attr.equalsIgnoreCase("c2"))
+				Util.DEBUG = false;
+			
 //			if (attr.equalsIgnoreCase(targetDomain.getName()))
 //				continue;
 			System.out.println("Which attribute to try: "+ attr);
@@ -47,19 +50,24 @@ public class Entropy implements InformationMeasure {
 				Discretizer visitor = new Discretizer(targetDomain, facts, facts_in_class);
 				attrDomain = dt.getDomain(attr).clone();
 				split_indices = visitor.findSplits(attrDomain);
-				int index = 0;
-				for (Integer i: split_indices) {
-					System.out.print("Split indices:"+ i);
-					System.out.print(" domain "+attrDomain.getValues().get(index));
-					System.out.print(","+attrDomain.getIndices().get(index));
-					System.out.println(" fact "+visitor.getSortedFact(i));
-					index++;
+				if (Util.DEBUG)	{
+					int index = 0;
+					for (Integer i: split_indices) {
+						System.out.print("Split indices:"+ i);
+						System.out.print(" domain "+attrDomain.getValues().get(index));
+						System.out.print(","+attrDomain.getIndices().get(index));
+						System.out.println(" fact "+visitor.getSortedFact(i));
+						index++;
+					}
 				}
-				gain = dt_info - calc_info_contattr(visitor.getSortedFacts(), attrDomain, targetDomain, split_indices);
-			
+				if (split_indices.size()==1) {
+					gain = 0.0;
+				} else {
+					gain = dt_info - calc_info_contattr(visitor.getSortedFacts(), attrDomain, targetDomain, split_indices);
+				}
 			}
 			
-			System.out.println(Util.ntimes("\n",3)+Util.ntimes("?",10)+" ATTR TRIAL "+attr + " the gain "+gain + " info "+ dt_info );
+			if (Util.DEBUG)	System.out.println("\nATTR TRIAL "+Util.ntimes("?",10)+attr + " the gain "+gain + " info "+ dt_info );
 			
 			if (gain > greatestGain) {				
 				greatestGain = gain;
@@ -70,6 +78,9 @@ public class Entropy implements InformationMeasure {
 				
 				System.out.println(Util.ntimes("\n",3)+Util.ntimes("!",10)+" NEW BEST "+attributeWithGreatestGain + " the gain "+greatestGain );
 			}
+			
+			if (attr.equalsIgnoreCase("c2"))
+				Util.DEBUG = false;
 		}
 
 		return bestDomain;
@@ -104,10 +115,18 @@ public class Entropy implements InformationMeasure {
 		List<?> targetValues = targetDomain.getValues();
 		if (Util.DEBUG) {
 			System.out.println("entropy.info_cont() attributeToSplit? " + splitAttr);
-			int f_i=0;
-			for(Fact f: facts) {
-				System.out.println("entropy.info_cont() SORTING: "+f_i+" attr "+splitAttr+ " "+ f );
-				f_i++;
+			
+			Fact fact_ = facts.get(begin_index);
+			Comparator<Fact> targetComp_ = fact_.getDomain(targetAttr).factComparator();
+			Comparator<Fact> attrComp_ = fact_.getDomain(splitAttr).factComparator();
+			System.out.println("entropy.info_cont() SORTING: "+0+" attr "+splitAttr+ " "+ fact_ );
+			for(int index =begin_index+1; index < end_index; index ++) {
+				Fact fact_2= facts.get(index);
+				//System.out.println("test != " + attrComp_.compare(fact_, fact_2) +" of "+ fact_.getFieldValue(splitAttr)+ " and "+ fact_2.getFieldValue(splitAttr));
+				if ( targetComp_.compare(fact_, fact_2)!=0 && attrComp_.compare(fact_, fact_2)!=0) {
+					System.out.println("entropy.info_cont() SORTING: "+index+" attr "+splitAttr+ " "+ fact_2 );
+				}
+				fact_ = fact_2;
 			}
 		}
 		/* initialize the distribution */
@@ -267,12 +286,13 @@ public class Entropy implements InformationMeasure {
 		Domain<?> targetDomain = dt.getDomain(target);
 		for (String attr : attrs) {
 			double gain = 0;
-			if (!dt.getDomain(attr).isDiscrete()) {
-				System.err.println("Ignoring the attribute:" +attr+ " the id3 can not classify continuous attributes");
-				continue;
-			} else {
-				gain = dt_info - info_attr(facts, dt.getDomain(attr), targetDomain);
-			}
+//			if (!dt.getDomain(attr).isDiscrete()) {
+//				System.err.println("Ignoring the attribute:" +attr+ " the id3 can not classify continuous attributes");
+//				continue;
+//			} else {
+//				gain = dt_info - info_attr(facts, dt.getDomain(attr), targetDomain);
+//			}
+			gain = dt_info - info_attr(facts, dt.getDomain(attr), targetDomain);
 			if (Util.DEBUG)	System.out.println("Attribute: " + attr + " the gain: " + gain);
 			if (gain > greatestGain) {
 				greatestGain = gain;
@@ -320,11 +340,12 @@ public class Entropy implements InformationMeasure {
 
 		List<?> splitValues = splitDomain.getValues();
 		String targetAttr = targetDomain.getName();
+		if (Util.DEBUG) {
+			System.out.println("Numof classes in domain "+ splitDomain.getValues().size());
+			System.out.println("Numof splits in domain "+ splitDomain.getIndices().size());
 		
-		System.out.println("Numof classes in domain "+ splitDomain.getValues().size());
-		System.out.println("Numof splits in domain "+ splitDomain.getIndices().size());
-		
-		System.out.println("Numof splits in indices "+ split_indices.size());
+			System.out.println("Numof splits in indices "+ split_indices.size());
+		}
 		FactAttrDistribution facts_at_attribute = new FactAttrDistribution(splitDomain, targetDomain);
 		facts_at_attribute.setTotal(facts.size());
 		
@@ -362,14 +383,14 @@ public class Entropy implements InformationMeasure {
 			//double sum_attr = 0.0;
 			if (total_num_attr > 0) {
 				double prob = (double) total_num_attr / (double) fact_size;
-				System.out.print("{("+total_num_attr +"/"+fact_size +":"+prob +")* [");
+				if (Util.DEBUG)	System.out.print("{("+total_num_attr +"/"+fact_size +":"+prob +")* [");
 				double info =  calc_info(facts_of_attribute.getAttrFor(attr));
 				
 				sum += prob * info;
-				System.out.print("]} ");
+				if (Util.DEBUG)	System.out.print("]} ");
 			}
 		}
-		System.out.println("\n == "+sum);
+		if (Util.DEBUG)	System.out.println("\n == "+sum);
 		return sum;
 	}
 
@@ -389,17 +410,15 @@ public class Entropy implements InformationMeasure {
 		String out =" ";
 		for (Object key : targetValues) {
 			int num_in_class = facts_in_class.getVoteFor(key);
-			// System.out.println("num_in_class : "+ num_in_class + " key "+ key+ " and the total num "+ total_num_facts);
-			
+
 			if (num_in_class > 0) {
 				prob = (double) num_in_class / (double) total_num_facts;
 				/* TODO what if it is a sooo small number ???? */
-				out += "("+num_in_class+ "/"+total_num_facts+":"+prob+")" +"*"+ Util.log2(prob) + " + ";
+				if (Util.DEBUG)	out += "("+num_in_class+ "/"+total_num_facts+":"+prob+")" +"*"+ Util.log2(prob) + " + ";
 				sum -=  prob * Util.log2(prob);
-			// System.out.println("prob "+ prob +" and the plog(p)"+plog2p+"where the sum: "+sum);
 			}
 		}
-		System.out.print(out +"= " +sum);
+		if (Util.DEBUG)	System.out.print(out +"= " +sum);
 		return sum;
 	}
 	

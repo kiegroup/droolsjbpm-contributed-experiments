@@ -1,6 +1,7 @@
 package dt.memory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -46,6 +47,10 @@ public class BooleanDomain implements Domain<Boolean> {
 		return;
 	}
 
+	public Boolean getClass(Object value) {
+		return (Boolean)value;
+	}
+	
 	public List<Boolean> getValues() {
 		return fValues;
 	}

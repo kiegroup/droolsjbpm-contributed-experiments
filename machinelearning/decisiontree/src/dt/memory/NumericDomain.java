@@ -25,6 +25,15 @@ public class NumericDomain implements Domain<Number> {
 		nComparator = new NumberComparator();
 		readingSeq = -1;
 	}
+	
+	public NumericDomain(String _name, boolean discrete) {
+		fName = _name.trim();
+		fValues = new ArrayList<Number>();
+		this.discrete = discrete;
+		fComparator = new FactNumericAttributeComparator(_name);
+		nComparator = new NumberComparator();
+		readingSeq = -1;
+	}
 
 	public Domain<Number> clone() {
 		NumericDomain dom = new NumericDomain(fName);
@@ -68,17 +77,51 @@ public class NumericDomain implements Domain<Number> {
 			
 			if (!fValues.contains(value))
 				fValues.add(value);
+			/* you can add to the correct position = using binary search */
 			Collections.sort(fValues, nComparator);
 		}
 		
 	}
+	
+	public Number getClass(Object value) {
+		if (discrete) {
+			return (Number)value;
+		} else {
+			Number num_value = (Number)value;
+			
+			int insertion_point = Collections.binarySearch(fValues, num_value, nComparator);
+			/*
+			 * index of the search key, if it is contained in the list; otherwise, (-(insertion point) - 1). 
+			 * The insertion point is defined as the point at which the key would be inserted into the list: 
+			 * the index of the first element greater than the key, or list.size(), if all elements in the 
+			 * list are less than the specified key. Note that this guarantees that the return value will be >= 0 
+			 * if and only if the key is found.
+			 */
+			if (insertion_point >= 0) {
+				return fValues.get(insertion_point);
+			} else {
+				return fValues.get(-(insertion_point) -1);
+			}
+		}
+		
+	}
 
-	public boolean contains(Number value) {
-		for(Number n: fValues) {
-			if (value.intValue() == n.intValue() ||
-				value.doubleValue() == n.doubleValue() ||
-				value.floatValue() == n.floatValue())
-				return true;
+	public boolean contains(Number value) throws Exception {
+		if (discrete) {
+			for(Number n: fValues) {
+				if (nComparator.compare(n, value) == 0)
+					return true;
+			}
+		} else {
+			if (fValues.isEmpty() || fValues.size()==1)
+				throw new Exception("Numerical domain "+fName+" is constant and not discrete but bounds are not set: possible values size: "+ fValues.size());
+			
+			// they must be sorted 
+			return (nComparator.compare((Number)value, fValues.get(0)) >= 0 && nComparator.compare((Number)value, fValues.get(fValues.size()-1)) <= 0);
+			
+			/* should i check if the value is in one of the intervals
+			 * this is necessary only if the intervals are unbroken 
+			 */
 		}
 		return false;
 	}
@@ -126,32 +169,11 @@ public class NumericDomain implements Domain<Number> {
 			return false;
 		//System.exit(0);
 		if (constant) {
-			//System.out.println("NumericDomain.isPossible() constant "+ value+ " ?");
-			//System.exit(0);
-			
-			if (discrete) {
-				if (fValues.contains(value))
-					return true;
-				
-				//System.out.println("NumericDomain.isPossible() constant && discrete "+ value+ " ?");
-				//System.exit(0);
-			} else {
-				if (fValues.isEmpty() || fValues.size()==1)
-					throw new Exception("Numerical domain "+fName+" is constant and not discrete but bounds are not set: possible values size: "+ fValues.size());
-				if (((Number)value).doubleValue() >= fValues.get(0).doubleValue() && 
-					((Number)value).doubleValue() <= fValues.get(1).doubleValue()) {
-					return true;	
-				}
-				//System.out.println("NumericDomain.isPossible() "+ value+ " ?");
-			}
+			return this.contains((Number)value);
 		} else {
 			return true;
 		}
 		
-		//System.out.println("NumericDomain.isPossible() end "+ value+ " ?");
-		//System.exit(0);
-		
-		return false;
 	}
 	
 	public void setReadingSeq(int readingSeq) {

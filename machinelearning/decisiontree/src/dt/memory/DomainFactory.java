@@ -6,8 +6,8 @@ public class DomainFactory {
 		
 	}
 	
-	public static NumericDomain createNumericDomain(String name) {
-		return new NumericDomain(name);
+	public static NumericDomain createNumericDomain(String name, boolean discrete) {
+		return new NumericDomain(name, discrete);
 	}
 
 	public static LiteralDomain createLiteralDomain(String name) {
@@ -19,20 +19,21 @@ public class DomainFactory {
 			if (c.getName().equalsIgnoreCase("boolean")) {
 				System.out.println("Yuuuupiii boolean");
 				return createBooleanDomain(domainName);
-			} else if (c.getName().equalsIgnoreCase("int") || 
-					 c.getName().equalsIgnoreCase("double") || 
-					 c.getName().equalsIgnoreCase("float")) {
+			} else if (c.getName().equalsIgnoreCase("int")) {
+				return createNumericDomain(domainName, true);
+			}else if (c.getName().equalsIgnoreCase("double") || c.getName().equalsIgnoreCase("float")) {
 				System.out.println("Yuuuupiii number");
-				return createNumericDomain(domainName);
+				return createNumericDomain(domainName, false);
 			} else
 				return createComplexDomain(c,"kicimi ye simple: "+domainName);
 		else if (c.isAssignableFrom(String.class)) {
 			System.out.println("Yuuuupiii string");
 			return createLiteralDomain(domainName);
-		} else if (c.isAssignableFrom(Integer.class) || 
-			c.isAssignableFrom(Double.class)  ||
-			c.isAssignableFrom(Float.class)) {
-			return createNumericDomain(domainName);
+		} else if (c.isAssignableFrom(Integer.class)) {
+			return createNumericDomain(domainName, true);
+		}
+		else if (c.isAssignableFrom(Double.class)  || c.isAssignableFrom(Float.class)) {
+			return createNumericDomain(domainName, false);
 		} else if (c.isAssignableFrom(Boolean.class))
 			return createBooleanDomain(domainName);
 		else

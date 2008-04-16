@@ -141,6 +141,10 @@ public class RestaurantOld {
 		this.will_wait = will_wait;
 	}
 	
+	public void p() {
+		System.out.println(this.hashCode());
+	}
+	
 	
 
 }

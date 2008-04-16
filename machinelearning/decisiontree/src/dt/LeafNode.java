@@ -1,6 +1,9 @@
 package dt;
 
+import java.util.Comparator;
+
 import dt.memory.Domain;
+import dt.memory.Fact;
 import dt.tools.Util;
 
 
@@ -34,6 +37,31 @@ public class LeafNode extends TreeNode {
 
 	public void setRank(double rank) {
 		this.rank = rank;
+	}
+	
+	public Integer evaluate(Fact f) {
+		
+		Domain<?> target_domain = this.getDomain();
+		Fact pseudo_f = new Fact();
+		try {
+			pseudo_f.add(target_domain, this.getValue());
+			Comparator<Fact> targetComp = target_domain.factComparator();
+			if (targetComp.compare(f, pseudo_f) == 0 ) {
+				return Integer.valueOf(1);
+			} else {
+				return Integer.valueOf(0);
+			}
+		} catch (Exception e) {
+			
+			System.out.println(Util.ntimes("\n", 10)+"Unknown situation at leafnode: " + this.getValue() + " @ "+ target_domain);
+			e.printStackTrace();
+			// Unknown
+			System.exit(0);
+			return Integer.valueOf(2);
+		}
+		
+		
+		
 	}
 	
 	public String toString(){

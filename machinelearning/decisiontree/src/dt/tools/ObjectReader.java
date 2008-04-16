@@ -22,6 +22,7 @@ public class ObjectReader {
 	
 	private static final boolean DEBUG = false;
 
+	
 	public static Object read(Class<?> element_class,
 			Collection<Domain<?>> domains, String data, String separator) {
 

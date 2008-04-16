@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import dt.memory.Domain;
+import dt.memory.Fact;
+import dt.tools.Util;
 
 public class DecisionTree {
 
@@ -24,12 +26,20 @@ public class DecisionTree {
 	/* all attributes that can be used during classification */
 	private ArrayList<String> attrsToClassify;
 
+	public DecisionTree() {
+
+		this.domainSet = new Hashtable<String, Domain<?>>();
+		this.attrsToClassify = new ArrayList<String>();
+	}
 	public DecisionTree(String klass) {
 		this.className = klass;
 		this.domainSet = new Hashtable<String, Domain<?>>();
 		this.attrsToClassify = new ArrayList<String>();
 	}
 
+	public void setClassName(String klass) {
+		this.className = klass;
+	}
 
 	public void setTarget(String targetField) {
 		target = targetField;
@@ -77,10 +87,15 @@ public class DecisionTree {
 	public long getNumRead() {
 		return FACTS_READ;
 	}
+	
+	public Integer test(Fact f) {
+		return this.getRoot().evaluate(f);
+	}
 
 	@Override
 	public String toString() {
-		return "Facts scanned " + FACTS_READ + "\n" + root.toString();
+		String out = "Facts scanned " + FACTS_READ + "\n";
+		return out + root.toString();
 	}
 
 	/*

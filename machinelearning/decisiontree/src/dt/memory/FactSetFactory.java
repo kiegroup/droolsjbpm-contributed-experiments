@@ -204,23 +204,23 @@ public class FactSetFactory {
 			wm.insert(line, klass, separator, domains);
 		}
 	}
-
+/*
 	public static boolean readObjectData(WorkingMemory simple, String filename,
 			String separator, Object nullObj) {
-		/*
-		 * | class values
-		 * 
-		 * unacc, acc, good, vgood
-		 *  | attributes
-		 * 
-		 * buying: vhigh, high, med, low. 
-		 * maint: vhigh, high, med, low. 
-		 * doors: 2, 3, 4, 5, more. 
-		 * persons: 2, 4, more. 
-		 * lug_boot: small, med, big.
-		 * safety: low, med, high.
-		 * 
-		 */
+//		 *
+//		 * | class values
+//		 * 
+//		 * unacc, acc, good, vgood
+//		 *  | attributes
+//		 * 
+//		 * buying: vhigh, high, med, low. 
+//		 * maint: vhigh, high, med, low. 
+//		 * doors: 2, 3, 4, 5, more. 
+//		 * persons: 2, 4, more. 
+//		 * lug_boot: small, med, big.
+//		 * safety: low, med, high.
+//		 * 
+//		 *
 		// String[] attr_order = {"buying", "maint", "doors", "persons", "lug_boot", "safety"
 		// String filename = "../data/car/car.data.txt";
 		// String separator = ",";
@@ -239,11 +239,12 @@ public class FactSetFactory {
 
 		return false;
 	}
+*/
 
-	public static List<Object> fromFileAsObject(WorkingMemory wm, Class<?> klass, String filename, String separator)
+	public static List<Object> fromFileAsObject(WorkingMemory wm, Class<?> klass, String filename, String separator, boolean all_discrete)
 			throws IOException {
 		List<Object> obj_read = new ArrayList<Object>();
-		OOFactSet fs = wm.getFactSet(klass);
+		OOFactSet fs = wm.getFactSet(klass, all_discrete);
 		Collection<Domain<?>> domains = fs.getDomains();
 		
 		File file =new File(filename);

@@ -24,6 +24,7 @@ public class Discretizer {
 	private int maxDepth = 1;
 	private Domain binaryDomain;
 	
+	
 	Discretizer(Domain<?> _targetDomain, List<Fact> _facts, FactTargetDistribution _facts_in_class) {
 		this.facts = new ArrayList<Fact>(_facts.size());
 		facts.addAll(_facts);
@@ -61,8 +62,9 @@ public class Discretizer {
 		SplitPoint last_point = new SplitPoint(facts.size()-1, (Number) facts.get(facts.size()-1).getFieldValue(splitAttr));
 		split_indices.add(last_point);
 		
-		find_a_split(0, facts.size(), getMaxDepth(), distribution, split_indices);
-		Collections.sort(split_indices, Discretizer.getSplitComparator());
+		SplitPoint foundPoint = find_a_split(0, facts.size(), getMaxDepth(), distribution, split_indices);
+		if (foundPoint != null)
+			Collections.sort(split_indices, Discretizer.getSplitComparator());
 		
 		List<Integer> splits = new ArrayList<Integer>(split_indices.size());
 		for (SplitPoint sp: split_indices) {
@@ -87,29 +89,46 @@ public class Discretizer {
 			List<SplitPoint> split_points) {
 		
 		if (facts.size() <= 1) {
-			System.out.println("fact.size <=1 returning 0.0....");
+			if (Util.DEBUG) System.out.println("fact.size <=1 returning 0.0....");
 			return null;
 		}
 		facts_in_class.evaluateMajority();
 		if (facts_in_class.getNum_supported_target_classes()==1) {
-			System.out.println("getNum_supported_target_classes=1 returning 0.0....");
+			if (Util.DEBUG) System.out.println("getNum_supported_target_classes=1 returning 0.0....");
 			return null; //?
 		}
 
 		if (depth == 0) {
-			System.out.println("depth == 0  returning 0.0....");
+			if (Util.DEBUG) System.out.println("depth == 0  returning 0.0....");
 			return null;
 		}
 		
 		String targetAttr = targetDomain.getName();
 		List<?> targetValues = targetDomain.getValues();
-		if (Util.DEBUG) {
-			System.out.println("Discretizer.find_a_split() attributeToSplit? " + splitAttr);
-			for(int index =begin_index; index < end_index; index ++) {
-				Fact f= facts.get(index);
-				System.out.println("entropy.info_cont() SORTING: "+index+" attr "+splitAttr+ " "+ f );
+
+		if (Util.DEBUG)	System.out.println("Discretizer.find_a_split() attributeToSplit? " + splitAttr);
+		int num_split_points = 0;
+		
+		Fact fact_ = facts.get(begin_index);
+		Comparator<Fact> targetComp_ = fact_.getDomain(targetAttr).factComparator();
+		Comparator<Fact> attrComp_ = fact_.getDomain(splitAttr).factComparator();
+		if (Util.DEBUG) System.out.println("Discretizer.find_a_split() SORTING: "+0+" attr "+splitAttr+ " "+ fact_ );
+		for(int index =begin_index+1; index < end_index; index ++) {
+			Fact fact_2= facts.get(index);
+			//System.out.println("test != " + attrComp_.compare(fact_, fact_2) +" of "+ fact_.getFieldValue(splitAttr)+ " and "+ fact_2.getFieldValue(splitAttr));
+
+			if ( targetComp_.compare(fact_, fact_2)!=0 && attrComp_.compare(fact_, fact_2)!=0) {
+				num_split_points++;
+				
+				if (Util.DEBUG) System.out.println("Discretizer.find_a_split() SORTING: "+index+" attr "+splitAttr+ " "+ fact_2 );
+				//break; //you can check if there is at least one  
 			}
+			fact_ = fact_2;
 		}
+		if (num_split_points ==0) {
+			return null; //there is no possible split point
+		}
+		
 		/* initialize the distribution */
 		Object key0 = Integer.valueOf(0);
 		Object key1 = Integer.valueOf(1);
@@ -117,9 +136,7 @@ public class Discretizer {
 //		keys.add(key0);
 //		keys.add(key1);
 		
-		
-		
-		FactAttrDistribution facts_at_attribute = new FactAttrDistribution(binaryDomain, targetDomain);
+		FactAttrDistribution facts_at_attribute = new FactAttrDistribution(getBinaryDomain(), targetDomain);
 		facts_at_attribute.setTotal(facts.size());
 		facts_at_attribute.setTargetDistForAttr(key1, facts_in_class);
 		facts_at_attribute.setSumForAttr(key1, facts.size());
@@ -134,11 +151,12 @@ public class Discretizer {
 		
 		Fact f1 = f_ite.next();
 		Comparator<Fact> targetComp = f1.getDomain(targetAttr).factComparator();
+		Comparator<Fact> attrComp = f1.getDomain(splitAttr).factComparator();
+		
 		if (Util.DEBUG)	System.out.println("\nentropy.info_cont() SEARCHING: "+begin_index+" attr "+splitAttr+ " "+ f1 );
 		while (f_ite.hasNext() && index<end_index) {/* 2. Look for potential cut-points. */
 
 			Fact f2 = f_ite.next();
-			if (Util.DEBUG) System.out.println("entropy.info_cont() SEARCHING: "+(index)+" attr "+splitAttr+ " "+ f2 );
 			
 			Object targetKey = f1.getFieldValue(targetAttr);
 			
@@ -157,7 +175,10 @@ public class Discretizer {
 			 * where the classes change from A to B or vice versa).
 			 */
 			
-			if ( targetComp.compare(f1, f2)!=0) {
+			if ( targetComp.compare(f1, f2)!=0 && attrComp.compare(f1, f2)!=0) {
+				
+				if (Util.DEBUG) System.out.println("entropy.info_cont() SEARCHING: "+(index)+" attr "+splitAttr+ " "+ f2 );
+				
 				// the cut point
 				Number cp_i = (Number) f1.getFieldValue(splitAttr);
 				Number cp_i_next = (Number) f2.getFieldValue(splitAttr);
@@ -210,6 +231,9 @@ public class Discretizer {
 		return bestPoint;
 	}
 	
+	private Domain<?> getBinaryDomain() {
+		return binaryDomain;
+	}
 	public static Comparator<SplitPoint> getSplitComparator() {
 		return new SplitComparator();
 	}

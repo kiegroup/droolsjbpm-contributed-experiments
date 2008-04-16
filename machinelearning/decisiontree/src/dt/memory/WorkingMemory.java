@@ -20,14 +20,14 @@ public class WorkingMemory {
 		domainset = new Hashtable<String, Domain<?>>();
 	}
 	
-	public OOFactSet getFactSet(Class<?> klass) {
+	public OOFactSet getFactSet(Class<?> klass, boolean all_discrete) {
 		String element_class = klass.getName();
 		//System.out.println("Get the keys:"+ factsets.keys());
 		//System.out.println("WorkingMemory.get class "+ element_class + " exist? "+ factsets.containsKey(element_class));
 		
 		OOFactSet fs;
 		if (!factsets.containsKey(element_class))
-			fs = create_factset(klass);
+			fs = create_factset(klass, all_discrete);
 		else
 			fs = (OOFactSet) factsets.get(element_class);//TODO should i cast
 		
@@ -35,14 +35,14 @@ public class WorkingMemory {
 		return fs;
 	}
 
-	public void insert(Object element) {
+	public void insert(Object element, boolean only_discrete) {
 		String element_class = element.getClass().getName();
 		//System.out.println("Get the keys:"+ factsets.keys());
 		//System.out.println("WorkingMemory.get class "+ element_class + " exist? "+ factsets.containsKey(element_class));
 		
 		OOFactSet fs;
 		if (!factsets.containsKey(element_class))
-			fs = create_factset(element.getClass());
+			fs = create_factset(element.getClass(), only_discrete);
 		else
 			fs = (OOFactSet) factsets.get(element_class);//TODO should i cast
 		
@@ -84,7 +84,7 @@ public class WorkingMemory {
 	 *								 we said that the domains should be independent from the factset
 	 */
 	
-	private OOFactSet create_factset(Class<?> classObj) {
+	private OOFactSet create_factset(Class<?> classObj, boolean all_discrete) {
 		//System.out.println("WorkingMemory.create_factset element "+ element );
 		
 		OOFactSet newfs = new OOFactSet(classObj);
@@ -96,8 +96,14 @@ public class WorkingMemory {
 			System.out.println("WHat is this f: " +f.getType()+" the name "+f_name+" class "+ f.getClass() + " and the name"+ f.getClass().getName());
 			if (Util.isSimpleType(f_class)) {
 				
-				Annotation[] annotations = f.getAnnotations();
+				Domain<?> fieldDomain;
+				if (!domainset.containsKey(f_name)) {
+					fieldDomain = DomainFactory.createDomainFromClass(f.getType(), f_name);
+					domainset.put(f_name, fieldDomain);
+				} else
+					fieldDomain = domainset.get(f_name);
 				
+				Annotation[] annotations = f.getAnnotations();			
 				// iterate over the annotations to locate the MaxLength constraint if it exists
 				DomainSpec spec = null;
 				for (Annotation a : annotations) {
@@ -107,18 +113,19 @@ public class WorkingMemory {
 				    }
 				}
 				
-				Domain<?> fieldDomain;
-				if (!domainset.containsKey(f_name)) {
-					fieldDomain = DomainFactory.createDomainFromClass(f.getType(), f_name);
-					domainset.put(f_name, fieldDomain);
-				} else
-					fieldDomain = domainset.get(f_name);
-				
-				//System.out.println("WorkingMemory.create_factset field "+ field + " fielddomain name "+fieldDomain.getName()+" return_type_name: "+return_type_name+".");
 				if (spec != null) {
 					fieldDomain.setReadingSeq(spec.readingSeq());
-					fieldDomain.setDiscrete(spec.discrete());
+					if (!all_discrete) fieldDomain.setDiscrete(spec.discrete());
 				}
+				/* 
+				 * ID3 would 
+				 * if it is integer and the annotation saying that the field is continuous
+				 * 		ignore the domain 
+				 * if it is double / float and the annotation saying that the field is continuous
+				 * 		ignore the domain if it has more than 10 values ?
+				 * if it is string and the annotation saying that the field is continuous
+				 * 		what to do??
+				 */
 				
 				newfs.addDomain(f_name, fieldDomain);
 		
@@ -127,7 +134,7 @@ public class WorkingMemory {
 		factsets.put(classObj.getName(), newfs);
 		return newfs;
 	}
-	
+
 	private OOFactSet create_factset_(Class<?> classObj) {
 		//System.out.println("WorkingMemory.create_factset element "+ element );
 		
@@ -169,6 +176,10 @@ public class WorkingMemory {
 		factsets.put(classObj.getName(), newfs);
 		return newfs;
 	}
+	
+//	public Iterator<Domain<?>> getDomains() {
+//		return domainset.values().iterator();
+//	}
 	
 	/* TODO: is there a better way of doing this iterator? */ 
 	public Iterator<FactSet> getFactsets() {
