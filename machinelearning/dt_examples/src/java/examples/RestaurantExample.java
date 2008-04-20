@@ -94,7 +94,7 @@ public class RestaurantExample {
 	}
 
 	public static List<Object> produceRestaurants(WorkingMemory wm, String file) {
-
+		boolean only_discrete = true;
 		Restaurant arest = new Restaurant(true, false, false, true, "Full", 1,
 				false, false, "Thai", "30-60", false);
 		Class<?> k = arest.getClass();
@@ -124,7 +124,7 @@ public class RestaurantExample {
 
 		for (Object r : facts) {
 			try {
-				wm.insert(r);
+				wm.insert(r, only_discrete);
 
 			} catch (Exception e) {
 				System.out.println("Inserting element " + r + " and " + e);
@@ -139,11 +139,12 @@ public class RestaurantExample {
 		dt = System.currentTimeMillis() - dt;
 		System.out.println("Time" + dt + "\n" + bocuksTree);
 
-		RulePrinter my_printer = new RulePrinter(bocuk.getNum_fact_processed());
+		RulePrinter my_printer = new RulePrinter(bocuk.getNum_fact_trained());
 		boolean sort_via_rank = true;
-		my_printer
-				.printer(bocuksTree, "examples", "src/rules/examples/" + file, sort_via_rank);
-
+		boolean print = true;
+		my_printer.printer(bocuksTree, sort_via_rank, print);
+		my_printer.write2file("examples", "src/rules/examples/" + file);
+		
 		return facts;
 	}
 }

@@ -26,10 +26,10 @@ public class GolfExample {
 		/* create the drl */
 		Object golf = new Golf();
 		
-		List<Object> my_objects = FileProcessor.processFileExmC45(simple,golf, drlFile, "data/golf/golf.data.txt", ",");
+		List<Object> my_objects = FileProcessor.processFileExmC45(simple,golf, drlFile, "data/golf/golf.data.txt", ",", -1);
 
 		/* parse the drl */
-		boolean parse_w_drools = true;
+		boolean parse_w_drools = false;
 		if (parse_w_drools) {
 		//read in the source 
 		// TODO give an exception of the file does not exist
@@ -53,7 +53,7 @@ public class GolfExample {
 		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage(pkg);
 
-		boolean load_to_drools = true;
+		boolean load_to_drools = false;
 		if (load_to_drools) {
 			/* feeding the object to Drools working memory */
 			final StatefulSession session = ruleBase.newStatefulSession();

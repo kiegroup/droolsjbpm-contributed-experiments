@@ -25,13 +25,39 @@ public class PokerExample {
 		String drlFile = new String("poker_hands" + ".drl");
 		WorkingMemory simple = new WorkingMemory();
 		/* create the drl */
-		Object nurse = new Poker();
+		Object poker = new Poker();
 		
-		List<Object> my_objects = FileProcessor.processFileExmC45(simple,
-				nurse, drlFile, "data/poker/poker-hand-training-true.data.txt", ",");
-
+		boolean create_drl = true;
+		List<Object> my_objects = null;
+		if (create_drl) {
+			my_objects = FileProcessor.processFileExmC45(simple,
+				poker, drlFile, "data/poker/poker-hand-training-true.data.txt", ",", -1);
+		}
+		// 500  +
+		// 1000 +
+		// 2500 +
+		// 3000 +
+		
+		// 3250 +
+		// 3300 +
+		// 3310 +
+		
+		// 3315 +
+		// 3316 +
+		// 3317 -
+		// 3320 -
+		// 3322 -
+		// 3323 -
+		// 3324 -
+		// 3325 -
+		// 3400 -
+		// 3500 - 
+		
+		// 3750 -
+		// 4000 - 
+		// 5000 -
 		/* parse the drl */
-		boolean parse_w_drools = true;
+		boolean parse_w_drools = false;
 		if (parse_w_drools) {
 		//read in the source 
 		// TODO give an exception of the file does not exist

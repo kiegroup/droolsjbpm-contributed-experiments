@@ -25,7 +25,7 @@ public class ZooExample {
 		/* create the drl */
 		Object animal = new Zoo();
 		
-		List<Object> my_objects = FileProcessor.processFileExmC45(simple,animal, drlFile, "data/zoo/zoo.data", ",");
+		List<Object> my_objects = FileProcessor.processFileExmC45(simple,animal, drlFile, "data/zoo/zoo.data", ",", -1);
 
 		/* parse the drl */
 		boolean parse_w_drools = false;
