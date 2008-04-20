@@ -1,4 +1,5 @@
 package dt;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Hashtable;
 
@@ -7,7 +8,7 @@ import dt.memory.Fact;
 import dt.tools.Util;
 
 
-public class TreeNode {
+public class TreeNode implements Serializable{
 	
 	private Domain<?> domain;
 	private Hashtable<Object, TreeNode> children;

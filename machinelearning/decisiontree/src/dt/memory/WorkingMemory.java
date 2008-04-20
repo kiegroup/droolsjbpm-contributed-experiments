@@ -1,15 +1,17 @@
 package dt.memory;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
 import dt.tools.Util;
 
-public class WorkingMemory {
+public class WorkingMemory implements Serializable{ //TODO do not serialize the wm
 	
 	private Hashtable<String, FactSet> factsets;
 
@@ -18,6 +20,33 @@ public class WorkingMemory {
 	public WorkingMemory() {
 		factsets = new Hashtable<String, FactSet>();
 		domainset = new Hashtable<String, Domain<?>>();
+	}
+	
+	public List<Fact> getFacts(Class<?> klass) {
+		Iterator<FactSet> it_fs = this.getFactsets();
+		List<Fact> facts = new ArrayList<Fact>();
+		FactSet klass_fs = null;
+		while (it_fs.hasNext()) {
+			FactSet fs = it_fs.next();
+			if (fs instanceof OOFactSet) {
+				if (klass.isAssignableFrom(((OOFactSet) fs).getFactClass())) {
+					// **OPT facts.add(fs);
+					fs.assignTo(facts); // adding all facts of fs to "facts
+				}
+			} else if (klass.getName().equalsIgnoreCase(fs.getClassName())) {
+				fs.assignTo(facts); // adding all facts of fs to "facts"
+
+				klass_fs = fs;
+				break;
+			}
+			if (klass.getName() == fs.getClassName()) {
+				klass_fs = fs;
+			}
+		}
+		
+//		for (Domain<?> d : klass_fs.getDomains())
+//			domains.add(d);
+		return facts;
 	}
 	
 	public OOFactSet getFactSet(Class<?> klass, boolean all_discrete) {

@@ -1,8 +1,9 @@
 package dt.memory;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class NumberComparator implements Comparator<Number> {
+public class NumberComparator implements Comparator<Number>, Serializable {
 	public NumberComparator() {
 	}
 

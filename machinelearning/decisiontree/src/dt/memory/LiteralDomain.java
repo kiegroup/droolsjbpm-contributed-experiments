@@ -168,5 +168,34 @@ public class LiteralDomain implements Domain<String> {
 	public void addIndex(int index) {
 		// TODO Auto-generated method stub	
 	}
+	
+	@Override
+	public boolean equals(Object d_obj) {
+		Domain<?>d = (Domain<?>)d_obj;
+		if (!this.getName().equals(d.getName())) {
+			return false;
+		} 
+		else { 
+			if (this.discrete) {
+				return (this.fValues.size() == d.getValues().size());
+			} else if (this.fValues.size() != d.getValues().size()) {
+					return false;
+				} else {
+					List<String> dValues = ((LiteralDomain) d).getValues();
+					for (int i = 0 ; i < this.fValues.size() ; i++)
+						if (!this.fValues.get(i).equals(dValues.get(i)))
+							return false;
+				}
+		} 
+		
+		return true;
+	}
+	
+	
+	public int compare(Object v1, Object v2) {
+		String s1 = (String) v1;
+		String s2 = (String) v2;
+		return s1.equals(s2) ? 0 : 1;
+	}
 
 }

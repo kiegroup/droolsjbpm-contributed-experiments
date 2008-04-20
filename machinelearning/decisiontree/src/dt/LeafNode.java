@@ -12,13 +12,34 @@ public class LeafNode extends TreeNode {
 	private Object targetValue;
 	private double rank;
 	private int num_facts_classified;
+	
+	private Fact pseudo_f;
 
 	public LeafNode(Domain<?> targetDomain, Object value){
 		super(targetDomain);
 		this.targetValue = value;
 		num_facts_classified = 0;
+		
+		this.pseudo_f = new Fact();
+		this.setPseudoFact();
+	}
+	public void setTargetValue(Object value) {
+		this.targetValue = value;
+		this.pseudo_f = new Fact();
+		this.setPseudoFact();
 	}
 	
+	public void setPseudoFact() {
+		try {
+			pseudo_f.add(this.getDomain(), this.getValue());
+		} catch (Exception e) {
+			System.out.println(Util.ntimes("\n", 10)+"Unknown situation at leafnode: " + this.getValue() + " @ "+ this.getDomain());
+			e.printStackTrace();
+			// Unknown
+			System.exit(0);
+
+		}
+	}
 	public void addNode(Object attributeValue, TreeNode node) {
 		throw new RuntimeException("cannot add Node to a leaf node");
 	}
@@ -42,25 +63,13 @@ public class LeafNode extends TreeNode {
 	public Integer evaluate(Fact f) {
 		
 		Domain<?> target_domain = this.getDomain();
-		Fact pseudo_f = new Fact();
-		try {
-			pseudo_f.add(target_domain, this.getValue());
-			Comparator<Fact> targetComp = target_domain.factComparator();
-			if (targetComp.compare(f, pseudo_f) == 0 ) {
-				return Integer.valueOf(1);
-			} else {
-				return Integer.valueOf(0);
-			}
-		} catch (Exception e) {
-			
-			System.out.println(Util.ntimes("\n", 10)+"Unknown situation at leafnode: " + this.getValue() + " @ "+ target_domain);
-			e.printStackTrace();
-			// Unknown
-			System.exit(0);
-			return Integer.valueOf(2);
-		}
 		
-		
+		Comparator<Fact> targetComp = target_domain.factComparator();
+		if (targetComp.compare(f, this.pseudo_f) == 0 ) {
+			return Integer.valueOf(1); 	//correct
+		} else {
+			return Integer.valueOf(0);	// mistake
+		}		
 		
 	}
 	

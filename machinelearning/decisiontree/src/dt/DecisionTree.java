@@ -1,14 +1,21 @@
 package dt;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import dt.memory.Domain;
 import dt.memory.Fact;
-import dt.tools.Util;
 
-public class DecisionTree {
+public class DecisionTree implements Serializable{
+
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public long FACTS_READ = 0;
 

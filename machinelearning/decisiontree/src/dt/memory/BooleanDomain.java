@@ -141,5 +141,17 @@ public class BooleanDomain implements Domain<Boolean> {
 	public void addIndex(int index) {
 		// TODO Auto-generated method stub	
 	}
+	
+	@Override
+	public boolean equals(Object d_obj) {
+		Domain<?>d = (Domain<?>)d_obj;
+		return (this.getName().equals(d.getName()));
+	}
+	
+	public int compare(Object v1, Object v2) {
+		Boolean b1 = (Boolean) v1;
+		Boolean b2 = (Boolean) v2;
+		return b1.equals(b2) ? 0 : 1;
+	}
 
 }

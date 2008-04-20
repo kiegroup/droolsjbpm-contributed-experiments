@@ -6,9 +6,10 @@ import java.util.List;
 
 
 public class Util {
-	
-	public static boolean DEBUG = false;
-	public static boolean DEBUG_TEST = true;
+	public static boolean RUN = true;
+	public static boolean DEBUG = true;
+	public static boolean DEBUG_RETRAIN = true;
+	public static boolean DEBUG_TEST = false;
 	
 	public static String ntimes(String s,int n){
 		StringBuffer buf = new StringBuffer();

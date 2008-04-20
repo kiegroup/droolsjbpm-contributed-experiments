@@ -1,16 +1,18 @@
 package dt.memory;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Set;
 
 
-public class Fact {
+public class Fact implements Serializable{
 
 	private Hashtable<String, Domain<?>> fields;
-	private Hashtable<String, Object> values;
+	private HashMap<String, Object> values;
 
 	public Fact() {
-		this.values = new Hashtable<String, Object>();
+		this.values = new HashMap<String, Object>();
 		this.fields = new Hashtable<String, Domain<?>>();
 		/* while creating the fact i should add the possible keys, the valid domains */
 	}
@@ -19,7 +21,7 @@ public class Fact {
 		this.fields = new Hashtable<String, Domain<?>>();
 		for (Domain<?> d: domains)
 			this.fields.put(d.getName(), d);
-		this.values = new Hashtable<String, Object>();
+		this.values = new HashMap<String, Object>();
 		//this.attributes. of the keys are only these domains
 		/* while creating the fact i should add the possible keys, the valid domains */
 	}

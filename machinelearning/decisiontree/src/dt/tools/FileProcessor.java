@@ -83,16 +83,26 @@ public class FileProcessor {
 			List<Object> obj_read=FactSetFactory.fromFileAsObject(simple, emptyObject.getClass(), datafile, separator, all_discrete);
 			
 
-			long dt = System.currentTimeMillis();
+			long st = System.currentTimeMillis();
 			String target_attr = ObjectReader.getTargetAnnotation(emptyObject.getClass());
 			
 			List<String> workingAttributes= ObjectReader.getWorkingAttributes(emptyObject.getClass());
 			
 			C45TreeBuilder bocuk = new C45TreeBuilder(simple);
-			DecisionTree bocuksTree = bocuk.build(emptyObject.getClass(), target_attr, workingAttributes);
-			dt = System.currentTimeMillis() - dt;
-//			System.out.println("Time" + dt + "\n" + bocuksTree);
-//
+			bocuk.init(target_attr, workingAttributes);
+			DecisionTree bocuksTree = bocuk.build(emptyObject.getClass());
+			long train_time = System.currentTimeMillis();
+			
+			System.out.println("\nTime to build" + (train_time-st));
+			
+			System.out.println(Util.ntimes("\n", 1)+Util.ntimes("$", 5)+" TESTING "+Util.ntimes("\n", 1));
+			List<Integer> evaluation = bocuk.test(bocuksTree, bocuk.getFacts());//.subList(339, 340));
+			long test_time = System.currentTimeMillis();
+			System.out.println("Time to test" + (test_time-train_time) + "\n" );
+			System.out.println("TESTING results: Mistakes "+ evaluation.get(0));
+			System.out.println("TESTING results: Corrects "+ evaluation.get(1));
+			System.out.println("TESTING results: Unknown "+ evaluation.get(2));
+			
 //			RulePrinter my_printer  = new RulePrinter(bocuk.getNum_fact_trained());
 //			if (max_rules >0)
 //				my_printer.setMax_num_rules(max_rules);
@@ -111,4 +121,27 @@ public class FileProcessor {
 
 		
 	}
+	
+	
+	public static List<Object> test_process(WorkingMemory simple, Object emptyObject, String datafile, String separator) {
+
+		try {
+			long st = System.currentTimeMillis();
+			boolean all_discrete = false;
+			List<Object> obj_read=FactSetFactory.fromFileAsObject(simple, emptyObject.getClass(), datafile, separator, all_discrete);
+			long process_time = System.currentTimeMillis();
+			
+			System.out.println("\nTime to process_objects " + (process_time-st));
+//			
+			return obj_read;
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+		
+	}
+	
 }

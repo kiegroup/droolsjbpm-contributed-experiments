@@ -1,8 +1,9 @@
 package dt.memory;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class FactNumericAttributeComparator implements Comparator<Fact> {
+public class FactNumericAttributeComparator implements Comparator<Fact>, Serializable {
 	private String attr_name;
 
 	public FactNumericAttributeComparator(String _attr_name) {

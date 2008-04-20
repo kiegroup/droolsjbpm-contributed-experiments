@@ -34,7 +34,8 @@ public class Entropy implements InformationMeasure {
 			
 //			if (attr.equalsIgnoreCase(targetDomain.getName()))
 //				continue;
-			System.out.println("Which attribute to try: "+ attr);
+			if (Util.RUN)	System.out.println("Which attribute to try: "+ attr);
+			
 			double gain = 0;
 			if (dt.getDomain(attr).isDiscrete()) {
 				/* */
@@ -76,7 +77,9 @@ public class Entropy implements InformationMeasure {
 //				if (!bestDomain.isDiscrete())
 //					bestDomain.setIndices(split_indices);
 				
-				System.out.println(Util.ntimes("\n",3)+Util.ntimes("!",10)+" NEW BEST "+attributeWithGreatestGain + " the gain "+greatestGain );
+				if (Util.RUN)	
+					System.out.println(Util.ntimes("\n",3)+Util.ntimes("!",10)+" NEW BEST "+attributeWithGreatestGain + " the gain "+greatestGain );
+
 			}
 			
 			if (attr.equalsIgnoreCase("c2"))

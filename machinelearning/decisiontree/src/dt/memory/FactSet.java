@@ -1,8 +1,9 @@
 package dt.memory;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public interface FactSet {
+public interface FactSet extends Serializable {
 
 	String getClassName();
 	

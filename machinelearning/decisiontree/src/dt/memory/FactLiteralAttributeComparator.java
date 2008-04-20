@@ -1,10 +1,11 @@
 package dt.memory;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import dt.tools.Util;
 
-public class FactLiteralAttributeComparator  implements Comparator<Fact> {
+public class FactLiteralAttributeComparator  implements Comparator<Fact>, Serializable {
 	private String attr_name;
 
 	public FactLiteralAttributeComparator(String _attr_name) {

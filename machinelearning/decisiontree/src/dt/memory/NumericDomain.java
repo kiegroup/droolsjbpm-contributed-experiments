@@ -190,6 +190,13 @@ public class NumericDomain implements Domain<Number> {
 		String out = fName;
 		return out;
 	}
+	
+	public int compare(Object v1, Object v2) {
+		Number n1 = (Number) v1;
+		Number n2 = (Number) v2;
+		return nComparator.compare(n1, n2);
+	}
+	
 
 	public Comparator<Fact> factComparator() {
 		return fComparator;
@@ -206,6 +213,28 @@ public class NumericDomain implements Domain<Number> {
 
 	public List<Integer> getIndices() {
 		return indices;
+	}
+	
+	@Override
+	public boolean equals(Object d_obj) {
+		Domain<?>d = (Domain<?>)d_obj;
+		if (!this.getName().equals(d.getName())) {
+			return false;
+		} 
+		else { 
+			if (this.discrete) {
+				return (this.fValues.size() == d.getValues().size());
+			} else if (this.fValues.size() != d.getValues().size()) {
+					return false;
+				} else {
+					List<Number> dValues = ((NumericDomain) d).getValues();
+					for (int i = 0 ; i < this.fValues.size() ; i++)
+						if (!this.fValues.get(i).equals(dValues.get(i)))
+							return false;
+				}
+		} 
+		
+		return true;
 	}
 
 }

@@ -1,9 +1,10 @@
 package dt.memory;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-public interface Domain<T> {
+public interface Domain<T> extends Serializable {
 	
 	boolean isConstant();
 	void setConstant();
@@ -37,6 +38,9 @@ public interface Domain<T> {
 	
 	List<Integer> getIndices();
 	void addIndex(int index);
+	
+	
+	int compare(Object o1, Object o2);
 	
 }
 
