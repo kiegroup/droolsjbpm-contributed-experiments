@@ -2,7 +2,6 @@ package dt.builder;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -38,11 +37,11 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 	}
 
 	MyThread helper;
-	private int FUNC_CALL = 0;
+	protected int FUNC_CALL = 0;
 	protected int num_fact_trained = 0;
 	private ArrayList<Fact> facts;
 	private ArrayList<Fact> training_facts;
-	private ArrayList<Fact> unclassified_facts;
+	protected ArrayList<Fact> unclassified_facts;
 	
 	private WorkingMemory global_wm;
 	private List<Domain<?>> domains;
@@ -138,6 +137,10 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		
 	}
 	
+	public String getTarget() {
+		return this.target;
+	}
+	
 	public void setTarget(String targetField) {
 		this.target = targetField;
 		//attrsToClassify.remove(target);
@@ -152,7 +155,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		//if (!attribute.equals(this.target))
 			attributes.add(attribute);
 	}
-	private void init_dt(DecisionTree dt, String targetField) {
+	public void init_dt(DecisionTree dt, String targetField) {
 		dt.setTarget(targetField);
 		for (Domain<?> d : domains) {
 			dt.addDomain(d);	
@@ -185,8 +188,6 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		
 		training_facts.addAll(facts);
 		dt.FACTS_READ += training_facts.size();
-		/* you must set this when the training called the first time */
-		setNum_fact_trained(training_facts.size());
 
 		//while ()
 		TreeNode root = train(dt, training_facts, attrs);
@@ -242,8 +243,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 			}
 		}
 		dt.FACTS_READ += facts.size();
-
-		setNum_fact_trained(facts.size());
+		this.add_to_training(facts);
 
 		if (workingAttributes != null)
 			for (String attr : workingAttributes) {
@@ -275,10 +275,8 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		ArrayList<String> attrs = new ArrayList<String>(dt.getAttributes());
 		Collections.sort(attrs);
 		
-		training_facts.addAll(first_facts);
+		this.add_to_training(first_facts);	/* you must set this when the training called the first time */
 		dt.FACTS_READ += first_facts.size();
-		/* you must set this when the training called the first time */
-		setNum_fact_trained(training_facts.size());
 
 		//while ()
 		TreeNode root = train(dt, training_facts, attrs);
@@ -349,8 +347,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		for (Object value : filtered_facts.keySet()) {
 			/* split the last two class at the same time */
 
-			ArrayList<String> attributeNames_copy = new ArrayList<String>(
-					attributeNames);
+			ArrayList<String> attributeNames_copy = new ArrayList<String>(attributeNames);
 			attributeNames_copy.remove(choosenDomain.getName());
 
 			if (filtered_facts.get(value).isEmpty()) {
@@ -374,10 +371,10 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		ArrayList<String> attrs = new ArrayList<String>(dt.getAttributes());
 		Collections.sort(attrs);
 		
-		training_facts.addAll(new_facts);
+		
+		this.add_to_training(new_facts);	/* you must set this when the training called the first time */
 		dt.FACTS_READ += new_facts.size();
-		/* you must set this when the training called the first time */
-		setNum_fact_trained(training_facts.size());
+
 		System.out.println(Util.ntimes("\n", 10)+"How facts are u training? "+ training_facts.size());
 		//while ()
 		TreeNode root = re_train(dt, dt.getRoot(), training_facts, attrs);
@@ -479,17 +476,17 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 							((LeafNode)childNode).setTargetValue(value);
 							//currentNode.
 						}
-					} 
-					
-						
-					
+					} 	
 				} else {
-					if (childNode == null) {
-						TreeNode newNode = train(dt, filtered_facts.get(value), attributeNames_copy);
-						currentNode.addNode(value, newNode);
+					 
+					if (childNode == null) { // there was no node assigned for that object value
+						childNode = train(dt, filtered_facts.get(value), attributeNames_copy);
+						currentNode.addNode(value, childNode);
 					}
-					TreeNode newNode = re_train(dt, childNode, filtered_facts.get(value), attributeNames_copy);
+					else {
+						TreeNode newNode = re_train(dt, childNode, filtered_facts.get(value), attributeNames_copy);
 					//currentNode.addNode(value, newNode);
+					}
 				}
 			}
 			
@@ -573,12 +570,18 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 	public int getNumCall() {
 		return FUNC_CALL;
 	}
-
 	public int getNum_fact_trained() {
-		return num_fact_trained;
+		return training_facts.size();
 	}
+//	public int getNum_fact_trained() {
+//		return num_fact_trained;
+//	}
+//
+//	public void setNum_fact_trained(int num_fact_processed) {
+//		this.num_fact_trained = num_fact_processed;
+//	}
 
-	public void setNum_fact_trained(int num_fact_processed) {
-		this.num_fact_trained = num_fact_processed;
+	public void add_to_training(List<Fact> new_facts) {
+		this.training_facts.addAll(new_facts);
 	}
 }

@@ -17,5 +17,4 @@ public interface DecisionTreeBuilder extends Serializable{
 	public List<Integer> test(DecisionTree dt, List<Fact> facts);
 	//DecisionTree build(WorkingMemory simple, String klass_name, String target_attr,List<String> workingAttributes);
 	int getNum_fact_trained();
-	void setNum_fact_trained(int num);
 }

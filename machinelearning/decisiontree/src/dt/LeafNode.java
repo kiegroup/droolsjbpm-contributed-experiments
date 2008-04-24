@@ -40,6 +40,11 @@ public class LeafNode extends TreeNode {
 
 		}
 	}
+	
+//	public int hashCode() {
+//		return super.hashCode() ^ targetValue.hashCode() ;//should i add the children
+//	}
+	
 	public void addNode(Object attributeValue, TreeNode node) {
 		throw new RuntimeException("cannot add Node to a leaf node");
 	}

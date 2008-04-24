@@ -56,7 +56,7 @@ public class BooleanDomain implements Domain<Boolean> {
 	}
 	
 	public int hashCode() {
-		return fName.hashCode();
+		return fName.hashCode(); // ^ fValues.hashCode();
 	}
 
 	public boolean isConstant() {
@@ -152,6 +152,11 @@ public class BooleanDomain implements Domain<Boolean> {
 		Boolean b1 = (Boolean) v1;
 		Boolean b2 = (Boolean) v2;
 		return b1.equals(b2) ? 0 : 1;
+	}
+
+	public int hashcode() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -8,6 +8,10 @@ import java.util.Set;
 
 public class Fact implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Hashtable<String, Domain<?>> fields;
 	private HashMap<String, Object> values;
 
@@ -66,17 +70,23 @@ public class Fact implements Serializable{
 		Fact other = (Fact) o;
 		return fields.equals(other.fields); //TODO work on the equals() fnc
 	}
-
+	
 	public int hashCode() {
-		return fields.hashCode();
+		return values.hashCode();
 	}
 
 	public String toString() {
-		String out = "";
-		for (String key: fields.keySet())
-		{
-			out += fields.get(key) +"="+values.get(key)+",";
-		}
+		String out = this.hashCode() + "";
+		
+//		String out = "";
+//		for (String key: fields.keySet())
+//		{
+//			out += "-"+values.get(key);
+//		}
+//		for (String key: fields.keySet())
+//		{
+//			out += fields.get(key) +"="+values.get(key)+",";
+//		}
 		return out;
 	}
 	

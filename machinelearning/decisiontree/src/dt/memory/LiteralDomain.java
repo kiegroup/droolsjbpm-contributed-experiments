@@ -2,7 +2,6 @@ package dt.memory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -113,10 +112,6 @@ public class LiteralDomain implements Domain<String> {
 	public List<String> getValues() {
 		return fValues;
 	}
-	
-	public int hashCode() {
-		return fName.hashCode();
-	}
 
 	public boolean isConstant() {
 		return this.constant;
@@ -198,4 +193,7 @@ public class LiteralDomain implements Domain<String> {
 		return s1.equals(s2) ? 0 : 1;
 	}
 
+	public int hashCode() {
+		return fName.hashCode() ^ fValues.hashCode();
+	}
 }

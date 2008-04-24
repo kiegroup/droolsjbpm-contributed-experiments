@@ -22,9 +22,9 @@ public class WorkingMemory implements Serializable{ //TODO do not serialize the 
 		domainset = new Hashtable<String, Domain<?>>();
 	}
 	
-	public List<Fact> getFacts(Class<?> klass) {
+	public ArrayList<Fact> getFacts(Class<?> klass) {
 		Iterator<FactSet> it_fs = this.getFactsets();
-		List<Fact> facts = new ArrayList<Fact>();
+		ArrayList<Fact> facts = new ArrayList<Fact>();
 		FactSet klass_fs = null;
 		while (it_fs.hasNext()) {
 			FactSet fs = it_fs.next();

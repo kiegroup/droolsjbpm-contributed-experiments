@@ -132,7 +132,7 @@ public class NumericDomain implements Domain<Number> {
 	
 	
 	public int hashCode() {
-		return fName.hashCode();
+		return fName.hashCode() ^ fValues.hashCode(); //TODO
 	}
 
 	public boolean isConstant() {

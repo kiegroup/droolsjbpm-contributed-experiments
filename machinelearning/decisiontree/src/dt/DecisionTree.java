@@ -2,11 +2,13 @@ package dt;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 import dt.memory.Domain;
 import dt.memory.Fact;
+import dt.tools.Util;
 
 public class DecisionTree implements Serializable{
 
@@ -97,6 +99,17 @@ public class DecisionTree implements Serializable{
 	
 	public Integer test(Fact f) {
 		return this.getRoot().evaluate(f);
+	}
+	
+	public String toString(HashMap <TreeNode, ArrayList<Fact>> _facts) {
+		String out = "Facts scanned " + FACTS_READ + "\n";
+		
+		System.out.println("!!Printing tree: \n"+ Util.ntimes("\n", 3));
+		for (TreeNode obj_node : _facts.keySet())
+			System.out.println("* o.id:"+obj_node.getID()+ " o.d:"+obj_node.getDomain()+ " o.h:"+ obj_node.hashCode()+ " => "+_facts.get(obj_node) );
+		
+		System.out.println("!!Had print tree"+ Util.ntimes("\n", 3));
+		return out + root.toString(_facts);
 	}
 
 	@Override

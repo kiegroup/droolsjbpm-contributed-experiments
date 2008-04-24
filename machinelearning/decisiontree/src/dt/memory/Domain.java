@@ -41,7 +41,7 @@ public interface Domain<T> extends Serializable {
 	
 	
 	int compare(Object o1, Object o2);
-	
+	public int hashCode();
 }
 
 
