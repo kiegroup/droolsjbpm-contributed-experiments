@@ -29,7 +29,8 @@ import dt.tools.Util;
 
 public class IterationMemoryTest {
 	public static final void main(final String[] args) throws Exception {
-		int obj_type= 0;
+		int obj_type= 0;	// default golf
+		int input_tree = 0;	// default read the tree from file
 		WorkingMemory simple = new WorkingMemory();
 		
 		ArrayList<Fact> _facts = null;
@@ -37,7 +38,7 @@ public class IterationMemoryTest {
 		String build_file = "bocuks.iterator", tree_file = "bocuks_new.tree";
 		Object obj;
 		
-		//obj_type= 1;
+		obj_type= 1;
 		switch (obj_type) {
 		case 1:
 			drlFile = new String("poker_hands_" + ".drl");
@@ -72,20 +73,22 @@ public class IterationMemoryTest {
 		}
 		
 		
-		int input_tree = 0;	// read from file
-		//int input_tree = 1;		// train a new tree with some part of the facts
+		//int input_tree = 0;	// read from file
+		//input_tree = 1;		// train a new tree with some part of the facts
 		int[] test_size = {0, _facts.size()}, train_size = {0, _facts.size()};
 		int[] retrain_size = new int[3];
-		boolean retrain_tree = true, test_tree = true, print_tree = true, write_tree = true, test_rules = false, parse_w_drools = false;
+		boolean retrain_tree = true, test_tree = true, print_tree = true, write_tree = false, test_rules = false, parse_w_drools = false;
 		switch (obj_type) {
 		case 1:
-			test_size[1] = 2;
-			train_size[1] = 2;
-			retrain_size [1] = 2;
+			//test_size[1] = 100;
+			train_size[1] = 10000;//25010
+			retrain_size[0] = train_size[1];
+			retrain_size[1] = retrain_size[0]+5000;
+			retrain_size[2] = _facts.size();
 			break;
 		default:
-			test_size[1] = 14;
-			train_size[1] = 4;
+			//test_size[1] = 14;
+			//train_size[1] = 5;
 			retrain_size[0] = train_size[1];
 			retrain_size[1] = retrain_size[0]+4;
 			retrain_size[2] = _facts.size();
@@ -116,7 +119,8 @@ public class IterationMemoryTest {
 //			}
 		}	
 		if (input_tree > 0 || !tree_read || bocukTree==null || bocuk==null) {
-			if (!tree_read)	System.out.println("EXCEPTION:  Could not read the tree so training ");
+			if (!tree_read)	System.out.print("EXCEPTION:  Could not read the tree so ");
+			System.out.println("training, num_facts:"+train_size[1]);
 			
 			bocuk = builder(simple, obj);
 			ArrayList<Fact> training_list = new ArrayList<Fact>(train_size[1]-train_size[0]+1);
@@ -133,12 +137,21 @@ public class IterationMemoryTest {
 			System.out.println("No decision tree found to process returning  ");
 			return;
 		} else {
-			System.out.println("!!My matching facts: \n"+ Util.ntimes("\n", 3));
-			for (TreeNode obj_node : bocuk.getMatchingFacts().keySet())
-				System.out.println("* "+obj_node.toString(1)+ " => "+bocuk.getMatchingFacts().get(obj_node) );
+//			System.out.println("!!My matching facts: \n"+ Util.ntimes("\n", 3));
+//			for (TreeNode obj_node : bocuk.getMatchingFacts().keySet())
+//				System.out.println("* "+obj_node.toString(1)+ " => "+bocuk.getMatchingFacts().get(obj_node) );
 			
-			if (print_tree) 
-				System.out.println("INPUT TREE: "+ bocukTree.toString(bocuk.getMatchingFacts()));
+			if (print_tree) {
+//				System.out.print("INPUT TREE: ");
+//				System.out.println(bocukTree.toString());
+				System.out.println("!!My matching facts: \n"+ Util.ntimes("\n", 3));
+				for (TreeNode obj_node : bocuk.getMatchingFacts().keySet()) {
+					System.out.print("* "+obj_node.toString(1));
+					System.out.println(" => "+bocuk.getMatchingFacts().get(obj_node).size() );
+				}
+				System.out.print("INPUT TREE+ matching_facts: ");
+				System.out.println(bocukTree.toString(bocuk.getMatchingFacts()));
+			}
 		}
 		
 		if (retrain_tree) {
@@ -154,7 +167,7 @@ public class IterationMemoryTest {
 		
 		List<Integer> test_result = null;
 		if (test_tree)	{
-			System.out.println("TEST"+ input_tree);
+			//System.out.println("TEST"+ input_tree);
 			//test_result = evaluation_test(bocuk, bocukTree, 0, bocuk.getNum_fact_trained());
 			//test_result = evaluation_test(bocuk, bocukTree, (int)(bocuk.getNum_fact_trained()*3/5), (int)(bocuk.getNum_fact_trained()*4/5));
 			
@@ -162,8 +175,8 @@ public class IterationMemoryTest {
 			System.out.print("Test results: \tMistakes "+ test_result.get(0));
 			System.out.print("\tCorrects "+ test_result.get(1));
 			System.out.println("\t Unknown "+ test_result.get(2) +" OF "+ (test_size[1]-test_size[0]) + " facts" );
-			if (print_tree)
-				System.out.println("TESTED TREE: "+ bocukTree.toString(bocuk.getMatchingFacts()));
+//			if (print_tree)
+//				System.out.println("TESTED TREE: "+ bocukTree.toString(bocuk.getMatchingFacts()));
 		}
 		
 		if (retrain_tree) {
@@ -177,8 +190,8 @@ public class IterationMemoryTest {
 			write_tree = false;
 		}
 		
-		if (test_tree)	{
-			System.out.println("TEST2"+ input_tree);
+		if (retrain_tree && test_tree)	{
+			//System.out.println("TEST2"+ input_tree);
 			//test_result = evaluation_test(bocuk, bocukTree, 0, bocuk.getNum_fact_trained());
 			//test_result = evaluation_test(bocuk, bocukTree, (int)(bocuk.getNum_fact_trained()*3/5), (int)(bocuk.getNum_fact_trained()*4/5));
 			
@@ -186,8 +199,8 @@ public class IterationMemoryTest {
 			System.out.print("Test results: \tMistakes "+ test_result.get(0));
 			System.out.print("\tCorrects "+ test_result.get(1));
 			System.out.println("\t Unknown "+ test_result.get(2) +" OF "+ (test_size[1]-test_size[0]) + " facts" );
-			if (print_tree)
-				System.out.println("TESTED TREE: "+ bocukTree.toString(bocuk.getMatchingFacts()));
+//			if (print_tree)
+//				System.out.println("TESTED TREE: "+ bocukTree.toString(bocuk.getMatchingFacts()));
 		}
 		
 		if (write_tree) {
@@ -206,6 +219,8 @@ public class IterationMemoryTest {
 		if (parse_w_drools) {
 			drools(drlFile, my_objects);
 		}
+		
+		System.out.println("Happy ending: "+ _facts.size());
 
 	}
 	
@@ -378,7 +393,7 @@ public class IterationMemoryTest {
 
 			session.dispose();
 		}
-		System.out.println("Happy ending");
+		
 	}
 }
 
