@@ -32,7 +32,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		@Override
 		public void run() {
 			result = builder.train(dt, facts, attributeNames);
-			currentNode.addNode(value, result);
+			currentNode.putNode(value, result);
 		}
 	}
 
@@ -329,7 +329,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		/* choosing the attribute for the branching starts */
 //		String chosenAttribute = Entropy.chooseContAttribute(dt, facts, stats, attributeNames);
 //		List<?> categorization = dt.getPossibleValues(chosenAttribute);
-		Domain<?> choosenDomain = Entropy.chooseContAttribute(dt, facts, stats, attributeNames);
+		Domain<?> choosenDomain = Entropy.chooseBothAttribute(dt, facts, stats, attributeNames);
 		if (Util.RUN)	System.out.println(Util.ntimes("*", 20) + " 1st best attr: "+ choosenDomain.getName());
 
 		TreeNode currentNode = new TreeNode(choosenDomain);
@@ -355,10 +355,10 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 				majorityNode.setRank(-1.0); // classifying nothing
 				majorityNode.setNumSupporter(filtered_facts.get(value).size());
-				currentNode.addNode(value, majorityNode);
+				currentNode.putNode(value, majorityNode);
 			} else {
 				TreeNode newNode = train(dt, filtered_facts.get(value), attributeNames_copy);
-				currentNode.addNode(value, newNode);
+				currentNode.putNode(value, newNode);
 			}
 		}
 
@@ -426,7 +426,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 		/* choosing the attribute for the branching starts */
 //		String chosenAttribute = Entropy.chooseContAttribute(dt, facts, stats, attributeNames);
 //		List<?> categorization = dt.getPossibleValues(chosenAttribute);
-		Domain<?> choosenDomain = Entropy.chooseContAttribute(dt, facts, stats, attributeNames);
+		Domain<?> choosenDomain = Entropy.chooseBothAttribute(dt, facts, stats, attributeNames);
 		if (Util.RUN)	System.out.println(Util.ntimes("*", 20) + " 1st best attr: "+ choosenDomain.getName());
 		else if (FUNC_CALL % 100 ==0){
 			System.out.print(".");
@@ -464,7 +464,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 						
 						childNode = majorityNode; // How to set this guy
 						if (childNode == null)
-							currentNode.addNode(value, childNode);
+							currentNode.putNode(value, childNode);
 					}
 					
 					else {
@@ -481,7 +481,7 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 					 
 					if (childNode == null) { // there was no node assigned for that object value
 						childNode = train(dt, filtered_facts.get(value), attributeNames_copy);
-						currentNode.addNode(value, childNode);
+						currentNode.putNode(value, childNode);
 					}
 					else {
 						TreeNode newNode = re_train(dt, childNode, filtered_facts.get(value), attributeNames_copy);
@@ -506,11 +506,11 @@ public class C45TreeBuilder implements DecisionTreeBuilder {
 					LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 					majorityNode.setRank(-1.0); // classifying nothing
 					majorityNode.setNumSupporter(filtered_facts.get(value).size());
-					currentNode.addNode(value, majorityNode);
+					currentNode.putNode(value, majorityNode);
 				} else {
 					
 					TreeNode newNode = train(dt, filtered_facts.get(value), attributeNames_copy);
-					currentNode.addNode(value, newNode);
+					currentNode.putNode(value, newNode);
 				}
 			}
 		}

@@ -18,7 +18,7 @@ import dt.tools.Util;
 public class Entropy implements InformationMeasure {
 	
 	
-	public static Domain<?> chooseContAttribute(DecisionTree dt, List<Fact> facts,
+	public static Domain<?> chooseBothAttribute(DecisionTree dt, List<Fact> facts,
 			FactDistribution facts_in_class, List<String> attrs) {
 
 		double dt_info = calc_info(facts_in_class);

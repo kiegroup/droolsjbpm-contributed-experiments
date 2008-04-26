@@ -34,7 +34,7 @@ public class DecisionTreeBuilderMT {
 		@Override
 		public void run() {
 			result = builder.id3(dt, facts, attributeNames);
-			currentNode.addNode(value, result);
+			currentNode.putNode(value, result);
 		}
 	}
 
@@ -252,13 +252,13 @@ public class DecisionTreeBuilderMT {
 				/* majority !!!! */
 				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 				majorityNode.setRank(0.0);
-				currentNode.addNode(value, majorityNode);
+				currentNode.putNode(value, majorityNode);
 			} else {
 //				TreeNode newNode = id3(dt, filtered_facts.get(value), attributeNames_copy);
 //				currentNode.addNode(value, newNode);
 				if (helper.isAlive()) {
 					TreeNode newNode = id3(dt, filtered_facts.get(value), attributeNames_copy);
-					currentNode.addNode(value, newNode);
+					currentNode.putNode(value, newNode);
 				}
 				else {
 					helper.attributeNames = attributeNames_copy;

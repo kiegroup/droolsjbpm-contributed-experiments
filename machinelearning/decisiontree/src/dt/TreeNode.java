@@ -48,7 +48,7 @@ public class TreeNode implements Serializable{
 	}
 	
 	
-	public void addNode(Object attributeValue, TreeNode node) {
+	public void putNode(Object attributeValue, TreeNode node) {
 		children.put(attributeValue, node);
 	}
 
@@ -135,10 +135,11 @@ public class TreeNode implements Serializable{
 	}
 
 	public String toString(int tab, int depth, StringBuffer buf) {
-		if (depth > 0 && domain != null) {
+		//if (depth > 0 && domain != null) {
+		if (domain != null) {
 			buf.append(Util.ntimes("\t", tab));
 			buf.append(Util.ntimes("***",1));
-			buf.append( domain.getName() + " \n");
+			buf.append( domain.getName() + " n.h:"+this.hashCode()+ " \n");
 			for (Object attributeValue : children.keySet()) {
 				buf.append(Util.ntimes("\t", tab + 1));
 				buf.append("+" + attributeValue );

@@ -2,6 +2,7 @@ package dt.memory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class LiteralDomain implements Domain<String> {
 		} else {
 			String str_value = (String)value;
 			
-			
+			int insertion_point = Collections.binarySearch(fValues, str_value);
 			/*
 			 * index of the search key, if it is contained in the list; otherwise, (-(insertion point) - 1). 
 			 * The insertion point is defined as the point at which the key would be inserted into the list: 
@@ -96,15 +97,16 @@ public class LiteralDomain implements Domain<String> {
 			 * list are less than the specified key. Note that this guarantees that the return value will be >= 0 
 			 * if and only if the key is found.
 			 */
-			/*
-			int insertion_point = Collections.binarySearch(fValues, str_value, sComparator);
 			if (insertion_point >= 0) {
 				return fValues.get(insertion_point);
 			} else {
-				return fValues.get(-(insertion_point));
+				int unfound_insertion_point = -(insertion_point) -1;
+				if (unfound_insertion_point >= fValues.size()) {
+					//System.out.println("insestion point is the size domain "+this);
+					unfound_insertion_point = fValues.size() -1;  
+				}
+				return fValues.get(unfound_insertion_point);
 			}
-			*/
-			return str_value;
 		}
 		
 	}

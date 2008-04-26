@@ -2,6 +2,7 @@ package dt.tools;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +12,8 @@ import dt.memory.Fact;
 import dt.memory.FactDistribution;
 
 public class FactProcessor {
-
+	
+	/* spliting during the training for C45TreeIterator */
 	public static Hashtable<Object, ArrayList<Fact>> splitFacts(ArrayList<Fact> facts, Domain<?> choosenDomain) {
 		if (choosenDomain.isDiscrete()) {	
 			return FactProcessor.splitFacts_disc(facts, choosenDomain);
@@ -108,6 +110,8 @@ public class FactProcessor {
 		
 		return factLists;
 	}
+	
+	/* spliting during the training for C45TreeBuilder */
 	public static Hashtable<Object, List<Fact>> splitFacts(List<Fact> facts, Domain<?> choosenDomain) {
 		if (choosenDomain.isDiscrete()) {	
 			return FactProcessor.splitFacts_disc(facts, choosenDomain);
@@ -116,8 +120,94 @@ public class FactProcessor {
 			return FactProcessor.splitFacts_cont_opt(facts, choosenDomain);
 		}
 	}
+	/* spliting during the re_training (only new facts) for C45TreeIterator */
+	public static Hashtable<Object, ArrayList<Fact>> splitNewFacts(ArrayList<Fact> new_facts, Domain<?> choosenDomain) {
+		if (choosenDomain.isDiscrete()) {	
+			return FactProcessor.splitFacts_disc(new_facts, choosenDomain);
+		} else {
+			Collections.sort(new_facts, choosenDomain.factComparator()); /* hack*/
+			return FactProcessor.splitNewFacts_cont_opt(new_facts, choosenDomain);
+		}
+	}
 	
-	
+	/* it must work */
+	private static Hashtable<Object, ArrayList<Fact>> splitNewFacts_cont_opt(ArrayList<Fact> facts, Domain<?> attributeDomain) {
+		
+		String attributeName = attributeDomain.getName();
+		
+		if (Util.DEBUG) System.out.println("FactProcessor.splitFacts_cont() attr_split "+ attributeName);
+		
+		List<?> splitValues = attributeDomain.getValues();
+		if (Util.DEBUG) {
+			List<Integer> splitIndices = attributeDomain.getIndices();
+			System.out.println("FactProcessor.splitFacts_cont() haniymis benim repsentativelerim: "+ splitValues.size() + " and the split points "+ splitIndices.size());
+			
+			System.out.println("FactProcessor.splitFacts_cont() before splitting "+ facts.size());
+			
+			int index = 0;
+			int split_index = 0;
+			Object attr_key = splitValues.get(split_index);
+			for (Fact f : facts) {
+				
+				if (index == splitIndices.get(split_index).intValue()+1 ) {
+					System.out.print("PRINT* (");
+					attr_key = splitValues.get(split_index+1);
+					split_index++;	
+				} else {
+					System.out.print("PRINT (");
+				}
+				System.out.println(split_index+"): fact "+f);
+				index++;
+			}
+		
+		}
+		
+		Hashtable<Object, ArrayList<Fact>> factLists = new Hashtable<Object, ArrayList<Fact>>(splitValues.size());
+		for (Object v: splitValues) {
+			factLists.put(v, new ArrayList<Fact>());
+		}
+		int begin_index = 0;
+//		Fact fact_ = facts.get(begin_index);
+		Comparator<Fact> attrComp_ = attributeDomain.factComparator();
+		int split_index = 0, last_index = 0 ;
+		Object attr_key = splitValues.get(split_index);
+		Fact pseudo = new Fact();
+		try {
+			pseudo.add(attributeDomain, attr_key);
+			for (Fact f : facts) {
+				
+				if ( attrComp_.compare(f, pseudo) <= 0) {
+					System.out.print("PRINT (");
+				} else {
+					// attrComp_.compare(f, pseudo) > 0
+					System.out.print("PRINT* (");
+					if (Util.DEBUG) {
+						System.out.println("FactProcessor.splitFacts_cont() new category: "+ attr_key );
+						System.out.println(" ("+begin_index+","+last_index+")");
+					}
+					
+					ArrayList<Fact> temp = new ArrayList<Fact>(last_index+1-begin_index+1);
+					temp.addAll(facts.subList(begin_index, last_index+1));
+					factLists.put(attr_key, temp);
+					begin_index = last_index+1;
+					
+					split_index++;
+					attr_key = splitValues.get(split_index);
+					pseudo = new Fact();
+					pseudo.add(attributeDomain, attr_key);
+					
+				}
+					
+				last_index++;
+			
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return factLists;
+	}
 	public static Hashtable<Object, List<Fact>> splitFacts_disc(List<Fact> facts, Domain<?> choosenDomain) {
 		String attributeName = choosenDomain.getName();
 		List<?> attributeValues = choosenDomain.getValues();

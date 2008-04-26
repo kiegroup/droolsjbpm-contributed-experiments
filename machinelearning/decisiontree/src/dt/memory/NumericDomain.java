@@ -100,7 +100,12 @@ public class NumericDomain implements Domain<Number> {
 			if (insertion_point >= 0) {
 				return fValues.get(insertion_point);
 			} else {
-				return fValues.get(-(insertion_point) -1);
+				int unfound_insertion_point = -(insertion_point) -1;
+				if (unfound_insertion_point >= fValues.size()) {
+					//System.out.println("insestion point is the size domain "+this);
+					unfound_insertion_point = fValues.size() -1;  
+				}
+				return fValues.get(unfound_insertion_point);
 			}
 		}
 		
@@ -187,7 +192,10 @@ public class NumericDomain implements Domain<Number> {
 	}
 	
 	public String toString() {
-		String out = fName;
+		String out = fName + "";
+		for (Object v: fValues) {
+			out += "-" + v;
+		}
 		return out;
 	}
 	

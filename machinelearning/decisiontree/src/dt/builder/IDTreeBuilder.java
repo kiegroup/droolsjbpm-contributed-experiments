@@ -35,7 +35,7 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 		@Override
 		public void run() {
 			result = builder.train(dt, facts, attributeNames);
-			currentNode.addNode(value, result);
+			currentNode.putNode(value, result);
 		}
 	}
 	
@@ -200,10 +200,10 @@ public class IDTreeBuilder implements DecisionTreeBuilder {
 				LeafNode majorityNode = new LeafNode(dt.getDomain(dt.getTarget()), stats.getThe_winner_target_class());
 				majorityNode.setRank(-1.0);
 				majorityNode.setNumSupporter(filtered_facts.get(value).size());
-				currentNode.addNode(value, majorityNode);
+				currentNode.putNode(value, majorityNode);
 			} else {
 				TreeNode newNode = train(dt, filtered_facts.get(value), attributeNames_copy);
-				currentNode.addNode(value, newNode);
+				currentNode.putNode(value, newNode);
 			}
 		}
 
