@@ -1,0 +1,24 @@
+package org.drools;
+
+import java.util.List
+import java.util.ArrayList
+
+global List list
+
+rule "collect"
+	salience 10
+    when
+        $p : Person( $likes : likes )
+        $c : ArrayList() from collect( Cheese( type == $likes ) )
+    then
+		list.add( $c );
+end    
+
+rule "accumulate"
+    when
+        $p : Person( $likes : likes )
+        $t : Number() from accumulate( Cheese( type == $likes, $price : price ),
+                                       sum( $price ) )
+    then
+		list.add( $t );
+end   

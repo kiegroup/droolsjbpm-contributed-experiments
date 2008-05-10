@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+	  <version>4.0.8.SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-repository</artifactId>
+  <packaging>jar</packaging>
+  <name>Drools :: Repository</name>
+
+  <build>
+    <finalName>drools-repository</finalName>
+    <pluginManagement>
+      <plugins>
+	    <plugin>
+	      <artifactId>maven-clean-plugin</artifactId>
+	      <configuration>
+	        <filesets>
+	          <fileset>
+	            <directory>./</directory>
+	            <includes>
+	              <include>repository**/*</include>
+				  <include>repository*.xml</include>
+				  <include>repository</include>				
+	            </includes>
+	            <followSymlinks>false</followSymlinks>
+	          </fileset>
+	        </filesets>
+	      </configuration>
+	    </plugin>
+      </plugins>
+    </pluginManagement>       
+  </build>
+
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../m2_repo</url>
+    </repository>
+  </repositories> 
+
+  <dependencies>
+    <!-- Internal dependencies -->
+
+    <!-- External dependencies -->
+    <!-- first the deps for the repo API itself (Jackrabbit based) -->
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>jackrabbit-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.tmatesoft</groupId>
+      <artifactId>svnkit</artifactId>
+    </dependency>  
+    
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>  
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+      </dependency>
+
+        <!-- Logging -->
+		<!-- TODO JBRULES-1254 remove the above, and replace by these:
+        <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <scope>test</scope>
+        </dependency>
+        -->		
+  </dependencies>
+
+</project>

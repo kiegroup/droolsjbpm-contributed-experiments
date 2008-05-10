@@ -1,0 +1,12 @@
+package org.drools.test2;
+
+import org.drools.Person;
+import org.drools.Cheese;
+
+rule "rule2"
+    when
+        Cheese( type : type, price : price -> (price < 3))
+        #Cheese( type : type, price < 3)
+    then
+		insertLogical( new  Person( type ) );
+end

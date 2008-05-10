@@ -1,0 +1,17 @@
+
+<assembly>
+  <id>brms</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  
+  <includeBaseDirectory>false</includeBaseDirectory>
+  
+  <!-- We include the BRMS specifically, as its a single atomic war -->
+  <files>
+	<file>
+		<source>drools-jbrms/target/drools-jbrms.war</source>
+	</file>
+  </files>
+   
+</assembly>

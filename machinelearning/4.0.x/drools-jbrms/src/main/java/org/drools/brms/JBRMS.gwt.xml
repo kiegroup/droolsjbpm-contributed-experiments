@@ -1,0 +1,15 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name='com.google.gwt.user.User'/>
+
+	<!-- Specify the app entry point class.                   -->
+	<!-- <entry-point class='org.drools.brms.client.JBRMS'/> -->
+	<entry-point class='org.drools.brms.client.JBRMSEntryPoint'/>
+  
+	<servlet path="/jbrmsService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />  
+    <servlet path="/asset" class="org.drools.brms.server.files.AssetFileServlet"/>
+    <servlet path="/backup" class="org.drools.brms.server.files.RepositoryBackupServlet"/>    
+    <servlet path="/package" class="org.drools.brms.server.files.PackageDeploymentServlet"/>  
+    
+</module>

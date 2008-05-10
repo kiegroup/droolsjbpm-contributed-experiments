@@ -1,0 +1,26 @@
+<assembly>
+  <id>eclipse3.2</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  
+  <includeBaseDirectory>false</includeBaseDirectory>
+  
+  <fileSets>
+    <fileSet>
+      <includes>
+        <include>LICENSE-ASL-2.0.txt</include>
+        <include>JBossORG-EULA.txt</include>
+        <include>README_DEPENDENCIES.txt</include>
+      </includes>
+    </fileSet>
+      
+    <fileSet>
+      <directory>./target/eclipse3.2</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+         <include>**/**</include>
+      </includes>      
+    </fileSet>
+  </fileSets>
+</assembly>

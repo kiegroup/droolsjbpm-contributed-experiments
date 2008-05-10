@@ -1,0 +1,18 @@
+<projectDescription>
+  <name>drools-jbrms</name>
+  <comment>A rule production system</comment>
+  <projects>
+    <project>drools-compiler</project>
+    <project>drools-core</project>
+    <project>drools-decisiontables</project>
+    <project>drools-repository</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

@@ -1,0 +1,15 @@
+package com.sample
+
+import org.drools.Person
+import org.drools.Cheese
+import org.drools.State
+
+global java.util.List results
+
+rule "MyRule"	
+	when
+		(State() || Cheese())
+		p: Person()
+	then 
+		results.add(p);		
+end

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Solver configuration</title>
+
+  <section>
+    <title>The Solver interface</title>
+
+    <para>Every build-in solver implemented in drools-solver implements the
+    <literal>Solver</literal> interface:</para>
+
+    <programlisting>public interface Solver {
+
+    void setStartingSolution(Solution solution);
+
+    Number getBestScore();
+    Solution getBestSolution();
+    
+    void solve();
+
+    // ...
+
+}</programlisting>
+
+    <para>Solving a planning problem with drools-solver consists out of 4
+    steps:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Build a solver, for example a tabu search solver for any NQueens
+        puzzle.</para>
+      </listitem>
+
+      <listitem>
+        <para>Set a starting solution on the solver, for example a 4 Queens
+        puzzle instance.</para>
+      </listitem>
+
+      <listitem>
+        <para>Solve it.</para>
+      </listitem>
+
+      <listitem>
+        <para>Get the best solution found by the solver.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>A <literal>Solver</literal> should currently directly be accessed
+    from a single thread. Support from accessing it from a different thread,
+    for example to finish solving early or to change the problem facts in
+    real-time, will be added in future releases.</para>
+  </section>
+
+  <section>
+    <title>Building a solver</title>
+
+    <para>You can build a <literal>Solver</literal> instance with the
+    <literal>XmlSolverConfigurer</literal>. Configure it with a solver
+    configuration xml file:</para>
+
+    <programlisting>    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
+    configurer.configure("/org/drools/solver/examples/nqueens/solver/nqueensSolverConfig.xml");
+    Solver solver = configurer.buildSolver();</programlisting>
+
+    <para>A basic solver configuration file looks something like this:</para>
+
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;localSearchSolver&gt;
+    &lt;scoreDrl&gt;/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreCalculator&gt;
+        &lt;scoreCalculatorType&gt;SIMPLE&lt;/scoreCalculatorType&gt;
+    &lt;/scoreCalculator&gt;
+    &lt;finish&gt;
+        &lt;feasableScore&gt;0.0&lt;/feasableScore&gt;
+    &lt;/finish&gt;
+    &lt;selector&gt;
+        &lt;moveFactoryClass&gt;org.drools.solver.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+    &lt;/selector&gt;
+    &lt;accepter&gt;
+        &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
+    &lt;/accepter&gt;
+    &lt;forager&gt;
+        &lt;foragerType&gt;MAX_SCORE_OF_ALL&lt;/foragerType&gt;
+    &lt;/forager&gt;
+&lt;/localSearchSolver&gt;</programlisting>
+
+    <para>This is a tabu search configuration for n queens. We 'll explain the
+    various parts of a configuration later in this manual.</para>
+
+    <para><emphasis role="bold">Drools-solver makes it relatively easy to
+    switch a solver type just by changing the configuration.</emphasis>
+    There's even a benchmark utility which allows you to play out different
+    configurations against each other and report the most appropriate
+    configuration for your problem. You could for example play out tabu search
+    versus simulated annealing, on 4 queens and 64 queens.</para>
+
+    <para>A solver has a single <literal>Random</literal> instance. Some
+    solver configurations use that instance a lot more than others. For
+    example simulated annealing depends highly on random numbers, while tabu
+    search only depends on it to deal with score ties. In any case, during
+    your testing it's advisable to set that <literal>Random</literal>
+    instance, so your tests are reproducible.</para>
+  </section>
+
+  <section>
+    <title>The Solution interface</title>
+
+    <para>A Solver can only solve 1 problem at a time.</para>
+
+    <para>You need to present the problem as a starting
+    <literal>Solution</literal> instance to the solver. Usually you will make
+    that starting solution with a simple filler algorithm. For example for 4
+    queens we use a starting solution with all queens on a different x and on
+    the same y (with y = 0).</para>
+
+    <figure>
+      <title>Starting solution for the 4 queens puzzle</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The starting solution will probably be far from optimal (or even
+    feasible), but that's OK, as it's the solver's job to find a much better
+    solution.</para>
+
+    <para>You need to implement the <literal>Solution</literal>
+    interface:</para>
+
+    <programlisting>public interface Solution {
+
+    Solution cloneSolution();
+
+    Collection&lt;? extends Object&gt; getFacts();
+
+}</programlisting>
+
+    <para>For example:</para>
+
+    <programlisting>public class NQueens implements Solution {
+
+    private List&lt;Queen&gt; queenList;
+
+    // ...
+
+}</programlisting>
+
+    <para>Most solvers use the <literal>cloneSolution()</literal> method to
+    clone the solution each time they encounter a new best solution. The
+    <literal>NQueens</literal> implementation just clones all
+    <literal>Queen</literal> instances:</para>
+
+    <programlisting>    public NQueens cloneSolution() {
+        NQueens clone = new NQueens();
+        List&lt;Queen&gt; clonedQueenList = new ArrayList&lt;Queen&gt;(queenList.size());
+        for (Queen queen : queenList) {
+            clonedQueenList.add(queen.clone());
+        }
+        clone.queenList = clonedQueenList;
+        return clone;
+    }</programlisting>
+
+    <para>The <literal>cloneSolution()</literal> method should clone no more
+    and no less than the parts of the <literal>Solution</literal> that can
+    change during solving. For example, in the lesson schedule example the
+    lessons are cloned, but teachers, groups and timeslots are not cloned
+    because only a lesson's appointed timeslot changes during solving:</para>
+
+    <programlisting>    /**
+     * Clone will only deep copy the lessons
+     */
+    public LessonSchedule cloneSolution() {
+        LessonSchedule clone = new LessonSchedule();
+        clone.timeslotList = timeslotList; // No Deep copy
+        clone.teacherList = teacherList; // No Deep copy
+        clone.groupList = groupList; // No Deep copy
+        List&lt;Lesson&gt; clonedLessonList = new ArrayList&lt;Lesson&gt;(lessonList.size());
+        for (Lesson lesson : lessonList) {
+            clonedLessonList.add(lesson.clone());
+        }
+        clone.lessonList = clonedLessonList;
+        return clone;
+    }</programlisting>
+
+    <para>All Objects returned by the <literal>getFacts()</literal> method
+    will be asserted into the drools working memory. Those facts can be used
+    by the score rules. For example, <literal>NQueens</literal> just returns
+    all <literal>Queen</literal> instances.</para>
+
+    <programlisting>    public Collection&lt;? extends Object&gt; getFacts() {
+        return queenList;
+    }</programlisting>
+  </section>
+
+  <section>
+    <title>Solving a problem</title>
+
+    <para>Solving a problem is quite easy once you have a solver and the
+    starting solution:</para>
+
+    <programlisting>    solver.setStartingSolution(startingSolution);
+    solver.solve();
+    Solution bestSolution = solver.getBestSolution();</programlisting>
+
+    <para>The <literal>solve()</literal> method will take a long time
+    (depending on the problem size and the solver configuration). The solver
+    will remember (actually clone) the best solution it encounters during its
+    solving. Depending on a number factors (including problem size, how long
+    you allow the solver to work, which solver type you use, ...), that best
+    solution will be a feasible or even an optimal solution.</para>
+
+    <figure>
+      <title>Best solution for the 4 queens puzzle (also an optimal
+      solution)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="solvedNQueens04.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="solvedNQueens04.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>After a problem is solved, you can reuse the same solver instance to
+    solve another problem (of the same problem type).</para>
+  </section>
+</section>

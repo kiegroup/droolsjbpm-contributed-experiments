@@ -1,0 +1,53 @@
+package org.drools.test
+
+import org.drools.Person;
+import java.math.BigDecimal;
+
+global java.util.List list;
+
+rule "BigDec"
+
+	when
+		p: Person(bigDecimal < 100.01)
+	then
+		list.add( p );
+end
+
+rule "BigInt"
+	when
+		p: Person(bigInteger < 100.1)
+	then
+		list.add( p );
+end
+
+rule "BigDec2"
+
+	when
+		p: Person(bigDecimal == 42)
+	then
+		list.add( p );
+end
+
+rule "BigInt2"
+	when
+		p: Person(bigInteger == 42)
+	then
+		list.add( p );
+end
+
+rule "BigDec3"
+
+	when
+		p: Person(bigDecimal != 100)
+	then
+		list.add( p );
+end
+
+rule "BigInt3"
+	when
+		p: Person(bigInteger != 100)
+	then
+		list.add( p );
+end
+
+

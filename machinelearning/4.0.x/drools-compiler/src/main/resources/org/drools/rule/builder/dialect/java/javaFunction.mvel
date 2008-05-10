@@ -1,0 +1,17 @@
+package @{package};
+
+@foreach{imports as importEntry}
+import @{importEntry};
+@end{}
+
+@foreach{staticImports as importEntry}
+import static @{importEntry};
+@end{}
+
+public class @{className} {
+    private static final long serialVersionUID  = 400L;
+        
+    public static @{returnType} @{methodName}(@foreach{parameterTypes as type, parameterNames as name}@{type} @{name}@end{","}) throws Exception {
+        @{text}
+    }      
+}
