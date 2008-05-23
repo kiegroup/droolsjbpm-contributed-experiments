@@ -1,0 +1,144 @@
+package org.drools.learner;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Domain {
+	private boolean categorical, fixed;
+	private String fName;
+	private Class<?> fType;// not sure if necessary
+	protected ArrayList<Object> fCategories;
+	
+	public Domain(String _name, Class<?> _type) {
+		this.fName = _name;
+		this.fType = _type;
+		
+		this.categorical = true;	// BY DEFAULT, it is categorical
+		
+		this.fCategories = new ArrayList<Object>(2);
+		
+	}
+	public Domain cheapClone() {
+		Domain dom = new Domain(this.fName, this.fType);
+		//dom.fixed = this.fixed;
+		dom.categorical = this.categorical;
+		//dom.readingSeq = readingSeq;
+		dom.fCategories = this.fCategories;
+		
+		return dom;
+	}
+	
+	
+	public Class<?> getFType() {
+		return this.fType;
+	}
+	
+	public String getFName() {
+		return this.fName;
+	}
+	public void setFixed(boolean _fixed) {
+		this.fixed = _fixed;
+	}
+
+	/** Indicates that this domain cannot be changed after creation */
+	boolean isFixed() {
+		return this.fixed;
+	}
+	
+	public void setCategorical(boolean _cate) {
+		this.categorical = _cate;
+	}
+
+	/** Indicates that this domain has discrete set of values */
+	public boolean isCategorical() {
+		return this.categorical;
+	}
+	
+	public void addCategory(Object value) {
+		if (fixed)	return;
+		if (categorical) {
+			if (!fCategories.contains(value))	fCategories.add(value);
+		} else {
+			return;
+		}
+		
+	}
+
+	public Object getCategory(int idx) {
+		return fCategories.get(idx);
+	}
+	public int getCategoryCount() {
+		return fCategories.size();
+	}
+	
+	public boolean isPossible(Object _value) throws Exception {
+		//System.out.println("Domain.isPossible() start "+ value+ " ?");
+//		since the value is coming from the extractor i dont check the type	
+//		if (_value.getClass()!= this.fType)
+//			return false;
+		//System.exit(0);
+		if (fixed) {// if it is boolean type actually you do not need to check for the contains function {TRUE, FALSE}
+			return this.containsValue(_value);
+		} else {
+			return true;
+		}
+		
+	}
+	
+	public boolean containsValue(Object value) throws Exception {
+		if (categorical) {
+			return this.fCategories.contains(value);
+		} else {
+			if (fCategories.isEmpty() || fCategories.size()==1)
+				throw new Exception(" Domain "+fName+" is constant and not discrete but bounds are not set: possible values size: "+ fCategories.size());
+			
+			// they must be sorted 
+			return (AttributeValueComparator.instance.compare(value, fCategories.get(0)) >= 0 && AttributeValueComparator.instance.compare(value, fCategories.get(getCategoryCount()-1)) <= 0);
+			//return (nComparator.compare((Number)value, fValues.get(0)) >= 0 && nComparator.compare((Number)value, fValues.get(fValues.size()-1)) <= 0);
+			
+			/* should i check if the value is in one of the intervals
+			 * this is necessary only if the intervals are unbroken 
+			 */
+		}
+	}
+	
+	public Object getCategoryOf(Object value) {
+		if (categorical) {
+			return value;
+		} else {
+	
+			int insertion_point = Collections.binarySearch(this.fCategories, value , AttributeValueComparator.instance);
+			/*
+			 * index of the search key, if it is contained in the list; otherwise, (-(insertion point) - 1). 
+			 * The insertion point is defined as the point at which the key would be inserted into the list: 
+			 * the index of the first element greater than the key, or list.size(), if all elements in the 
+			 * list are less than the specified key. Note that this guarantees that the return value will be >= 0 
+			 * if and only if the key is found.
+			 */
+			if (insertion_point >= 0) {
+				return this.fCategories.get(insertion_point);
+			} else {
+				int unfound_insertion_point = -(insertion_point) -1;
+				if (unfound_insertion_point >= this.fCategories.size()) {
+					//System.out.println("insestion point is the size domain "+this);
+					unfound_insertion_point = this.fCategories.size() -1;  
+				}
+				return this.fCategories.get(unfound_insertion_point);
+			}
+		}
+	
+	}
+	
+	public int hashCode() {
+		return fName.hashCode() ^ fCategories.hashCode(); // TODO
+	}
+	
+	public String toString() {
+		String out = fName + "";
+//		for (Object v: fValues) {
+//			out += "-" + v;
+//		}
+		return out;
+	}
+
+}

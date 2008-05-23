@@ -50,7 +50,6 @@ public class PricingRuleDTExample {
 		System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
 		
         return policy.getBasePrice();
-    	
     }
 
 

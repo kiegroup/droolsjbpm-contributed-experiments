@@ -42,6 +42,9 @@ import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.learner.builder.ID3Learner;
+import org.drools.learner.builder.Learner;
+import org.drools.learner.tools.RulePrinter;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
@@ -159,8 +162,7 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl(final Reader reader) throws DroolsParserException,
-                                                      IOException {
+    public void addPackageFromDrl(final Reader reader) throws DroolsParserException, IOException {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
@@ -206,6 +208,24 @@ public class PackageBuilder {
                                                dsl );
         this.results.addAll( parser.getErrors() );
         addPackage( pkg );
+    }
+    
+    /**
+     * Load a learner to load its rule package from DRL source AND/OR AST.
+     * 
+     * @param learner
+     * @throws DroolsParserException
+     * @throws IOException 
+     */
+    public void addPackageFromLearner(final Learner learner) throws DroolsParserException, IOException {
+    	Reader reader = RulePrinter.readRules(learner);
+ /*   	final DrlParser parser = new DrlParser();
+    	final PackageDescr pkg = parser.parse( reader );
+    	this.results.addAll( parser.getErrors() );
+        addPackage( pkg );
+        */
+    	
+    	this.addPackageFromDrl(reader);
     }
 
     /**

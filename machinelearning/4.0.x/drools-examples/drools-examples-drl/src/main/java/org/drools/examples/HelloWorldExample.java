@@ -22,7 +22,8 @@ public class HelloWorldExample {
 
     public static final void main(final String[] args) throws Exception {
         //read in the source
-        final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
+        //final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
+    	final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "Bogus.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
 
@@ -57,7 +58,7 @@ public class HelloWorldExample {
         
         session.fireAllRules();
         
-        logger.writeToDisk();
+       logger.writeToDisk();
         
         session.dispose();
     }
