@@ -38,7 +38,9 @@ public class PokerExample {
 		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		Learner learner = LearnerFactory.createC45(session, obj_class);
+		Learner learner ; 
+		//learner = LearnerFactory.createC45(session, obj_class);
+		learner = LearnerFactory.createC45fromBag(session, obj_class);
 
 		final PackageBuilder builder = new PackageBuilder();
 		//this wil generate the rules, then parse and compile in one step

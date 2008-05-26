@@ -6,9 +6,6 @@ import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.Util;
 
 public class LearnerFactory {
-	
-	//static int TREE_TYPE = ID3;
-	
 	public static Learner createID3(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
 		
 		/*
@@ -25,9 +22,10 @@ public class LearnerFactory {
 		// set to memory type only the discrete domains
 
 		ID3Learner id3 = new ID3Learner();
-		id3.build(mem);//obj_class, target_attr, working_attr
-		
-		Tester.test(id3.getTree(), mem.getClassInstances());
+		SingleTreeBuilder single_builder = new SingleTreeBuilder();
+		single_builder.build(mem, id3);//obj_class, target_attr, working_attr
+		single_builder.test(mem.getClassInstances());
+		//Tester.test(id3, mem.getClassInstances());
 		return id3;
 	}
 	
@@ -39,23 +37,26 @@ public class LearnerFactory {
 		// set to memory type only the discrete domains
 
 		C45Learner c45 = new C45Learner();
-		c45.build(mem);//obj_class, target_attr, working_attr
-		Tester.test(c45.getTree(), mem.getClassInstances());
+		SingleTreeBuilder single_builder = new SingleTreeBuilder();
+		single_builder.build(mem, c45);//obj_class, target_attr, working_attr
+		single_builder.test(mem.getClassInstances());
+		//Tester.test(c45, mem.getClassInstances());
 		return c45;
 	}
 	
-	public static Learner createID3(WorkingMemory wm) {
+	public static Learner createC45fromBag(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
 		
-		/*
-		 * Quesitons:
-		 * 1- which class to work with?
-		 * 2- what is its target attribute?
-		 * 3- what are the objects
-		 */ 
-		//String target_attr = ObjectReader.getTargetAnnotation(arest.getClass());
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, Util.C45);
+		// set to memory type only the discrete domains
 		
-		ID3Learner id3 = new ID3Learner();
-		//id3.build(wm);
-		return id3;
+		
+		C45Learner c45 = new C45Learner();
+		ForestBuilder forest = new ForestBuilder();
+		forest.build(mem, c45);
+		forest.test(mem.getClassInstances());
+		
+		//Tester bla => test(c45, mem.getClassInstances());
+		return c45;
 	}
 }

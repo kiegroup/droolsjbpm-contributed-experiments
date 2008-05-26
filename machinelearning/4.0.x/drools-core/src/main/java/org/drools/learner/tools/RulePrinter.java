@@ -36,7 +36,7 @@ public class RulePrinter {
 			if (Util.DEBUG_RULE_PRINTER) {
 				System.out.println(all_rules);
 			}
-			my_printer.write2File(all_rules, false, "", learner.getTreeType());
+			my_printer.write2File(all_rules, false, "", learner.getDomainType(), 0);
 		}
 		
 		return new StringReader(all_rules);
@@ -141,7 +141,7 @@ public class RulePrinter {
 		return newRule;	
 	}
 	
-	public void write2File(String toWrite, boolean append, String dataFile, int TREE_TYPE)	{  
+	public void write2File(String toWrite, boolean append, String dataFile, int domain_type, int tree_set)	{  
 		
 		String packageFolders = this.getRuleClass().getPackage().getName();
 
@@ -149,16 +149,8 @@ public class RulePrinter {
 		
 		String fileName = (dataFile == null || dataFile == "") ? this.getRuleClass().getSimpleName().toLowerCase(): dataFile; 		
 		
-		switch (TREE_TYPE) {
-		case Util.ID3:
-			fileName += "_id3" + ".drl";
-			break;
-		case Util.C45:
-			fileName += "_c45" + ".drl";
-			break;
-		default:
-			fileName += "_?" + ".drl";
-		}
+		String suffix = Util.getFileSuffix(domain_type, tree_set);
+		fileName += "_"+suffix + ".drl";
 		
 		String dataFileName = "src/main/rules/"+_packageNames+"/"+ fileName; 
 		

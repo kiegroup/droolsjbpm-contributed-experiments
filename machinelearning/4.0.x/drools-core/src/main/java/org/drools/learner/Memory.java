@@ -8,7 +8,9 @@ import org.drools.learner.tools.FeatureNotSupported;
 
 public class Memory {
 	
-	public static Memory createFromWorkingMemory(WorkingMemory _session, Class<?> clazz, int TREE_TYPE) throws FeatureNotSupported {
+	
+	// TODO pass a list of classes, and get all th eobject from that class
+	public static Memory createFromWorkingMemory(WorkingMemory _session, Class<?> clazz, int domain_type) throws FeatureNotSupported {
 		// if mem == null
 		Memory mem = new Memory();
 
@@ -16,7 +18,7 @@ public class Memory {
 
 		mem.setClassToClassify(clazz);
 		// create schema from clazz
-		Schema inst_schema = Schema.createFromClass(clazz, TREE_TYPE);
+		Schema inst_schema = Schema.createFromClass(clazz, domain_type);
 
 		// create a instance list that can hold objects from our schema
 		mem.instances.put(clazz, new InstanceList(inst_schema));

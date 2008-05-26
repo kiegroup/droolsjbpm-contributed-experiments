@@ -1,45 +1,37 @@
 package org.drools.learner.builder;
 
-import org.drools.learner.DecisionTree;
+import org.drools.learner.AttributeValueComparator;
+import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
 import org.drools.learner.tools.Util;
 
-public class Tester {
+public abstract class Tester{
 	
-	/* test the entire set*/
-	public static void test(DecisionTree dt, InstanceList data) {
-		if (dt == null) {
-			System.out.println("The tree is not created");
-			System.exit(0);
-		}
+	private int DOMAIN_TYPE = 0, TREE_SET =0;
+	public abstract void test(DecisionTreeBuilder builder, InstanceList data);
+	
+	public static Integer evaluate (Domain targetDomain, Instance i, Object tree_decision) {	
+		String targetFName = targetDomain.getFName();
 		
-		if (Util.DEBUG_TEST) {
-			System.out.println(Util.ntimes("\n", 2)+Util.ntimes("$", 5)+" TESTING "+Util.ntimes("\n", 2));
-		}
+		Object tattr_value = i.getAttrValue(targetFName);
+		Object i_category = targetDomain.getCategoryOf(tattr_value);
 		
-		Stats evaluation = new Stats(dt.getObjClass());
-		int i = 0;
-		for (Instance instant : data.getInstances()) {
-
-			Integer result = dt.test(instant);
-			if (Util.DEBUG_TEST) {
-				System.out.println(Util.ntimes("#\n", 1)+i+ " <START> TEST: instant="+ instant + " = target "+ result);
-			} else {
-				if (i%1000 ==0)	System.out.print(".");
-			}
-			evaluation.change(result, 1);
-			i ++;
-		}
-		
+		if (AttributeValueComparator.instance.compare(i_category, tree_decision) == 0) {
+			return Integer.valueOf(1); 	//correct
+		} else {
+			return Integer.valueOf(0);	// mistake
+		} 
+	}
+	
+	public void printStats(Stats evaluation) {
 		if (Util.PRINT_STATS) {
 			if (Util.DEBUG_TEST) {
 				evaluation.print2out();
 			}
-			evaluation.print2file("");
+			evaluation.print2file("", this.DOMAIN_TYPE, this.TREE_SET);
 		}
-		return;
 	}
 
 }

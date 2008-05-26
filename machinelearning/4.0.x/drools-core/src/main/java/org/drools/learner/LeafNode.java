@@ -29,17 +29,21 @@ public class LeafNode extends TreeNode {
 		return this.num_intances_classified;
 	}
 	
-	public Integer evaluate(Instance i) {
-		String targetFName = super.getDomain().getFName();
+//	public Integer evaluate(Instance i) {
+//		String targetFName = super.getDomain().getFName();
+//		
+//		Object attr_value = i.getAttrValue(targetFName);
+//		Object i_category = super.getDomain().getCategoryOf(attr_value);
+//		if (AttributeValueComparator.instance.compare(i_category, this.targetCategory) == 0) {
+//			return Integer.valueOf(1); 	//correct
+//		} else {
+//			return Integer.valueOf(0);	// mistake
+//		}			
+//	}
+	
+	public Object voteFor(Instance i) {
 		
-		Object attr_value = i.getAttrValue(targetFName);
-		Object i_category = super.getDomain().getCategoryOf(attr_value);
-		if (AttributeValueComparator.instance.compare(i_category, this.targetCategory) == 0) {
-			return Integer.valueOf(1); 	//correct
-		} else {
-			return Integer.valueOf(0);	// mistake
-		}		
-		
+		return this.targetCategory;
 	}
 	
 	public int hashCode() {

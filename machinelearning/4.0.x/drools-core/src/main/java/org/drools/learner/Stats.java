@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import org.drools.learner.tools.Util;
+
 public class Stats {
 	
 	public static int INCORRECT = 0, CORRECT = 1, UNKNOWN = 2;
@@ -46,13 +48,19 @@ public class Stats {
 		return total_data;
 	}
 	
-	public void print2file(String dataFile) {
+	public void print2file(String dataFile, int domain_type, int tree_set) {
 		
 		String packageFolders = this.stat_class.getPackage().getName();
 
 		String _packageNames = packageFolders.replace('.', '/');
 		
-		String fileName = (dataFile == null || dataFile == "") ? this.stat_class.getSimpleName().toLowerCase()+ ".stats": dataFile; 		
+		String fileName = (dataFile == null || dataFile == "") ? this.stat_class.getSimpleName().toLowerCase() : dataFile; 		
+		
+		
+		String suffix = Util.getFileSuffix(domain_type, tree_set);
+		fileName += "_"+suffix + ".stats";
+		
+
 		
 		String dataFileName = "src/main/rules/"+_packageNames+"/"+ fileName; 
 		try {

@@ -1,85 +1,28 @@
 package org.drools.learner.builder;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.drools.learner.DecisionTree;
 import org.drools.learner.Domain;
-import org.drools.learner.Instance;
-import org.drools.learner.InstanceList;
 import org.drools.learner.LeafNode;
-import org.drools.learner.Memory;
-import org.drools.learner.Stats;
 import org.drools.learner.TreeNode;
 import org.drools.learner.eval.Entropy;
 import org.drools.learner.eval.InformationContainer;
 import org.drools.learner.eval.InstDistribution;
 import org.drools.learner.tools.FeatureNotSupported;
-import org.drools.learner.tools.RulePrinter;
 import org.drools.learner.tools.Util;
 
-public class C45Learner implements Learner{
+public class C45Learner extends Learner{
 	
 	
-	private int data_size;
-	private DecisionTree c45;
-	private InstanceList input_data;
-	protected ArrayList<Instance> missclassified_data;
 	public C45Learner() {
-		this.data_size = 0;
+		super();
+		super.setDomainType(Util.C45);
 	}
 	
-	public void setDataSize(int num) {
-		this.data_size = num;
-		
-		missclassified_data = new ArrayList<Instance>();
-	}
 	
-	public int getDataSize() {
-		return this.data_size;
-	}
-	
-	public void build(Memory wm) {
-		
-		InstanceList class_instances = wm.getClassInstances();
-		input_data = class_instances;
-		if (class_instances.getTargets().size()>1) {
-			//throw new FeatureNotSupported("There is more than 1 target candidates");
-			System.out.println("There is more than 1 target candidates");
-			System.exit(0);
-			// TODO put the feature not supported exception || implement it
-		}
-		
-		if (Util.DEBUG_LEARNER)
-			for (Instance inst: class_instances.getInstances()) {
-				System.out.println("Inst: "+ inst);
-			}
-		
-		this.setDataSize(class_instances.getSize());
-		DecisionTree dt = null; 
-		for (String target: class_instances.getTargets()) {
-			dt = new DecisionTree(class_instances.getSchema(), target);;
-			if (Util.DEBUG_LEARNER) {
-				System.out.println("Num of attributes: "+ dt.getAttrDomains().size());
-			}
-			//System.exit(0);
-			InstDistribution stats_by_class = new InstDistribution(dt.getTargetDomain());
-			stats_by_class.calculateDistribution(class_instances.getInstances());
-			dt.FACTS_READ += class_instances.getSize();
-			
-			TreeNode root = train(dt, stats_by_class);
-			dt.setRoot(root);
-			if (Util.DEBUG_LEARNER) {
-				System.out.println("Result tree\n" + dt);
-			}
-		}
-		this.c45 = dt;
-	}
-	
-	public TreeNode train(DecisionTree dt, InstDistribution data_stats) {//List<Instance> data) {
+	protected TreeNode train(DecisionTree dt, InstDistribution data_stats) {//List<Instance> data) {
 		
 		if (data_stats.getSum() == 0) {
 			throw new RuntimeException("Nothing to classify, factlist is empty");
@@ -167,14 +110,6 @@ public class C45Learner implements Learner{
 		}
 		return currentNode;
 		
-	}
-	
-	public DecisionTree getTree() {
-		return c45;
-	}
-
-	public int getTreeType() {
-		return Util.C45;
 	}
 	
 

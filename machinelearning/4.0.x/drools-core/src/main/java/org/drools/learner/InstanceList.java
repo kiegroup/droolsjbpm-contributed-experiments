@@ -16,7 +16,12 @@ public class InstanceList {
 	
 	public InstanceList(Schema _schema) {
 		this.schema = _schema;
-		this.instances = new ArrayList<Instance>(); // TODO should put a size?? HOW? 
+		this.instances = new ArrayList<Instance>();
+	}
+	
+	public InstanceList(Schema _schema, int size) {
+		this.schema = _schema;
+		this.instances = new ArrayList<Instance>(size); 
 	}
 	
 	public void addFromWorkingMemory(WorkingMemory _session, Object _obj) {
@@ -59,8 +64,24 @@ public class InstanceList {
 		return instances.size();
 	}
 	
+	public Instance getInstance(int index) {
+		return instances.get(index);
+	}
+	
 	public List<Instance> getInstances() {
 		return instances;
+	}
+	
+	public InstanceList getInstances(int[] bag) {
+		if (bag.length > this.getSize()) {
+			System.out.println("Exception: TOO BIG to get Memory.getClassInstancesOf");
+			return null;
+		}
+		InstanceList toReturn = new InstanceList(this.getSchema(), bag.length);
+		for (int j = 0; j< bag.length ; j ++) {
+			toReturn.addAsInstance(this.getInstance(bag[j]));
+		}
+		return toReturn;
 	}
 	
 	public Schema getSchema() {

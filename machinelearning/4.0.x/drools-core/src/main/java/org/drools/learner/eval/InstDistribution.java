@@ -1,6 +1,7 @@
 package org.drools.learner.eval;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -175,7 +176,7 @@ public class InstDistribution extends ClassDistribution{
 		}
 	}
 
-	public void missClassifiedInstances(ArrayList<Instance> missclassification) {
+	public void missClassifiedInstances(HashSet<Instance> missclassification) {
 		Object winner = super.get_winner_class();
 		
 		for (int idx = 0; idx < super.target_attr.getCategoryCount(); idx++) {

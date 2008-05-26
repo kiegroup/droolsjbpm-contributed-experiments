@@ -19,7 +19,7 @@ import org.drools.learner.tools.Util;
  */
 public class Schema {
 
-	public static Schema createFromClass(Class<?> clazz, int TREE_TYPE) throws FeatureNotSupported {
+	public static Schema createFromClass(Class<?> clazz, int domain_type) throws FeatureNotSupported {
 		Schema schema = new Schema(clazz);
 		ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
 		
@@ -55,7 +55,7 @@ public class Schema {
 					throw new FeatureNotSupported("String categorization not supported");
 				}
 				boolean skip = false;
-				switch (TREE_TYPE) {
+				switch (domain_type) {
 				case Util.ID3:	//ID3
 					if (spec.ignore() || !spec.discrete())
 						skip = true;

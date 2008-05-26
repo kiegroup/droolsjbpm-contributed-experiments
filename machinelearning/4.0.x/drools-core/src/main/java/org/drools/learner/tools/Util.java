@@ -3,10 +3,12 @@ package org.drools.learner.tools;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class Util {
 	
 	public static final int ID3 = 1, C45 = 2;
+	public static final int SINGLE = 1, BAG = 2, BOOST = 3;
 
 	//public static final boolean DEBUG = false;
 	public static final boolean DEBUG_TEST = false;
@@ -22,12 +24,19 @@ public class Util {
 	public static final boolean DEBUG_ENTROPY = false;
 
 	public static final boolean DEBUG_DIST = false;
+
+	public static final boolean DEBUG_DECISION_TREE = false;
+
+
 	
 	public static int MAX_NUM_RULES = 1000;
 	public static boolean ONLY_ACTIVE_RULES = true;	/* TODO into global settings */
 	
 	public static boolean SORT_RULES_BY_RANK = true;
 	public static boolean PRINT_RULES = true;
+	
+	private static boolean WITH_REP = true;
+	private static Random BAGGING = new Random(System.currentTimeMillis());
 	
 	
 	public static String ntimes(String s,int n){
@@ -98,6 +107,37 @@ public class Util {
 			return 0;
 	}
 	
+	public static int[] bag_w_rep(int k, int N) {
+		int[] bag = new int[k];
+		int i = 0;
+		while (i<k) {
+			bag[i++] = BAGGING.nextInt(N);
+		}
+		return bag;
+	}
+	
+	public static int[] bag_wo_rep(int k, int N) {
+		int[] bag = new int[k];
+		boolean[] selected = new boolean[N];
+		int i = 0;
+		while (i<k) {
+			int new_i = BAGGING.nextInt(N--);
+			//if (Util.DEBUG)	System.out.print("new_i "+ new_i +"\t");
+			int selected_j=0, j=0;
+			while (j<new_i || selected[j]) {
+				if (selected[j]) {
+					new_i++;
+					selected_j = j;
+				}
+				j++;
+			}
+			selected[j] = true;
+			bag[i] = j;
+			i++;
+		}
+		return bag;
+	}
+	
 	public static Object convertPrimitiveType (Object primitiveValue) {
 		Class klass = primitiveValue.getClass();
 		if  (klass.equals(Boolean.TYPE)) {
@@ -149,6 +189,37 @@ public class Util {
 			}
 		
 		
+	}
+
+	public static String getFileSuffix(int domain_type, int tree_set) {
+		String suffix = "";
+		switch (domain_type) {
+		case Util.ID3:
+			suffix += "id3" ;
+			break;
+		case Util.C45:
+			suffix += "c45";
+			break;
+		default:
+			suffix += "?" ;
+		
+		}
+		
+		switch (tree_set) {
+		case Util.SINGLE:
+			suffix += "_one";
+			break;
+		case Util.BAG:
+			suffix += "_bag";
+			break;
+		case Util.BOOST:
+			suffix += "_boost";
+			break;
+		default:
+			suffix += "_?" ;
+		
+		}
+		return suffix;
 	}
 
 

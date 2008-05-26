@@ -57,7 +57,7 @@ public class TreeNode {
 		return children.get(attr_key);
 	}
 	
-	public Integer evaluate(Instance i) {
+	public Object voteFor(Instance i) {
 		Object attr_value = i.getAttrValue(this.domain.getFName());
 		Object category = domain.getCategoryOf(attr_value);
 		
@@ -81,7 +81,7 @@ public class TreeNode {
 			System.out.print(" @mynode:"+my_node+ "\n");
 			
 		}
-		return my_node.evaluate(i);
+		return my_node.voteFor(i);
 	}
 	
 	public int hashCode() {

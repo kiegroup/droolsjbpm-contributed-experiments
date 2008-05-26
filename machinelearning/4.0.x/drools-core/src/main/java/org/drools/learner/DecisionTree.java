@@ -3,6 +3,8 @@ package org.drools.learner;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.drools.learner.tools.Util;
+
 
 public class DecisionTree {
 	
@@ -16,17 +18,24 @@ public class DecisionTree {
 
 	private TreeNode root;
 	
+	// The id of the tree in the forest
+	private int id;
+	
 	public long FACTS_READ = 0;
 
 	public DecisionTree(Schema inst_schema, String _target) {
 		this.obj_clazz = inst_schema.getObjectClass();
 		
-		System.out.println("The target attribute: "+ _target);
+		if (Util.DEBUG_DECISION_TREE) {
+			System.out.println("The target attribute: "+ _target);
+		}
 		this.target = inst_schema.getAttrDomain(_target);
 		this.attrsToClassify = new ArrayList<Domain>(inst_schema.getAttrNames().size()-1);
 		for (String attr_name : inst_schema.getAttrNames()) {
 			if (!attr_name.equals(_target)) {
-				System.out.println("Adding the attribute: "+ attr_name);
+				if (Util.DEBUG_DECISION_TREE) {
+					System.out.println("Adding the attribute: "+ attr_name);
+				}
 				this.attrsToClassify.add(inst_schema.getAttrDomain(attr_name));
 			}
 		}
@@ -51,9 +60,10 @@ public class DecisionTree {
 		return obj_clazz;
 	}
 
-//	public void setTarget(String _target) {
-//		this.target = _target;
-//	}
+	public void setID(int i) {
+		this.id = i;
+	}
+	
 	public Domain getTargetDomain() {
 		return target;
 	}
@@ -70,8 +80,8 @@ public class DecisionTree {
 		this.root = root;
 	}
 	
-	public Integer test(Instance i) {
-		return this.getRoot().evaluate(i);
+	public Object vote(Instance i) {
+		return this.getRoot().voteFor(i);
 	}
 	
 	@Override

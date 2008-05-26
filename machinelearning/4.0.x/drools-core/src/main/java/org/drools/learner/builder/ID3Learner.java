@@ -1,118 +1,25 @@
 package org.drools.learner.builder;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.drools.learner.DecisionTree;
 import org.drools.learner.Domain;
-import org.drools.learner.Instance;
-import org.drools.learner.InstanceList;
 import org.drools.learner.LeafNode;
-import org.drools.learner.Memory;
 import org.drools.learner.TreeNode;
 import org.drools.learner.eval.Entropy;
 import org.drools.learner.eval.InstDistribution;
-
-
-import org.drools.learner.tools.RulePrinter;
 import org.drools.learner.tools.Util;
 
-public class ID3Learner implements Learner {
-	
-	
-	private int data_size;
-	private DecisionTree id3;
-	private InstanceList input_data;
+public class ID3Learner extends Learner {
 	
 	public ID3Learner() {
-		this.data_size = 0;
+		super();
+		super.setDomainType(Util.ID3);
+		
 	}
 	
-	/* TODO updating the working memory
-	 * (non-Javadoc)
-	 * @see org.drools.learner.Learner#build(org.drools.WorkingMemory)
-	 * 
-		
-		ObjectSet fs = wm.getSet(klass, all_discrete);
-		Collection<Domain<?>> domains = fs.getDomains();
-		Object element = ObjectReader.read(klass, domains, line, separator);
-		fs.insert(element);
-	 */
-	
-	public void setDataSize(int num) {
-		this.data_size = num;
-	}
-	
-	public int getDataSize() {
-		return this.data_size;
-	}
-
-	/* 
-	 * the memory has the information 
-	 * the instances: the objects which the decision tree will work on
-	 * the schema: the definition of the object instance 
-	 * 			(Class<?>) klass, String targetField, List<String> workingAttributes
-	 */
-	public void build(Memory wm) {
-	
-		//ArrayList<String> attrs = new ArrayList<String>(wm.getAttributes());
-		//Collections.sort(attrs);
-		// foreach instanceList
-		this.input_data = wm.getClassInstances();
-		for (Instance inst: input_data.getInstances()) {
-			System.out.println("Inst: "+ inst);
-		}
-		
-		this.setDataSize(input_data.getSize());
-		DecisionTree dt = null; 
-		for (String target: input_data.getTargets()) {
-			dt = new DecisionTree(input_data.getSchema(), target);
-			//dt.setTarget(target);
-			
-			if (Util.DEBUG_LEARNER) {
-				System.out.println("Num of attributes: "+ dt.getAttrDomains().size());
-			}
-			//System.exit(0);
-			InstDistribution stats_by_class = new InstDistribution(dt.getTargetDomain());
-			stats_by_class.calculateDistribution(input_data.getInstances());
-			dt.FACTS_READ += input_data.getSize();
-			
-			TreeNode root = train(dt, stats_by_class);
-			dt.setRoot(root);
-			if (Util.DEBUG_LEARNER) {
-				System.out.println("Result tree\n" + dt);
-			}
-		}
-		id3 = dt;
-	}
-	
-	public Reader readRules() {
-		if (this.id3 == null) {
-			System.out.println("There is tree/rule to process");
-			return null;
-		}
-		
-		RulePrinter my_printer = new RulePrinter();	//bocuk.getNum_fact_trained()
-		boolean sort_via_rank = true;
-		boolean print = true;
-		my_printer.printer(this.id3, sort_via_rank);
-		
-		String all_rules = my_printer.write2string();
-		if (print) {
-			//my_printer.write2file("examples", "src/rules/examples/" + file);
-			if (Util.DEBUG_LEARNER) {
-				System.out.println(all_rules);
-			}
-			my_printer.write2File(all_rules, false, "", Util.ID3 );
-		}
-		
-		return new StringReader(all_rules);
-	}
-	
-	public TreeNode train(DecisionTree dt, InstDistribution data_stats) {//List<Instance> data) {
+	protected TreeNode train(DecisionTree dt, InstDistribution data_stats) {//List<Instance> data) {
 		
 		if (data_stats.getSum() == 0) {
 			throw new RuntimeException("Nothing to classify, factlist is empty");
@@ -183,13 +90,5 @@ public class ID3Learner implements Learner {
 		}
 		return currentNode;
 		
-	}
-
-	public DecisionTree getTree() {
-		return id3;
-	}
-	
-	public int getTreeType() {
-		return Util.ID3;
 	}
 }
