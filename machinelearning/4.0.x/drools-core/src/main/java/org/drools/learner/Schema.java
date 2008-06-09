@@ -2,6 +2,7 @@ package org.drools.learner;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,35 +11,38 @@ import java.util.Set;
 
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.learner.builder.Learner.DomainAlgo;
+import org.drools.learner.tools.ClassAnnotation;
 import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.FieldAnnotation;
+import org.drools.learner.tools.PseudoFieldExtractor;
 import org.drools.learner.tools.Util;
+import org.drools.spi.Extractor;
 
 /*
  * A description of a data set's attributes and their properties.
  */
 public class Schema {
 
-	public static Schema createFromClass(Class<?> clazz, int domain_type) throws FeatureNotSupported {
+	public static Schema createFromClass(Class<?> clazz, DomainAlgo domain_type) throws FeatureNotSupported {
 		Schema schema = new Schema(clazz);
 		ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
-		
+		/*
 		ArrayList<Field> element_fields = new ArrayList<Field>();
 		Util.getAllFields(clazz, element_fields); 
-			//clazz.getDeclaredFields(); //clazz.getFields();
+		*/
+		
+		ArrayList<Field> element_fields = new ArrayList<Field>();
+		/* Apperantly the getMethod function recurse on the superclasses
+		 * i dont need to recurse myself
+		ArrayList<Class<?>> element_classes = new ArrayList<Class<?>>();
+		Util.getAllFields(clazz, element_fields, element_classes); 
+		 */
+		Util.getAllFields(clazz, element_fields); 	//clazz.getDeclaredFields(); //clazz.getFields();
 		for (Field f: element_fields) {
 			String f_name = f.getName();
 			ClassFieldExtractor f_extractor = cache.getExtractor( clazz, f_name, clazz.getClassLoader() );
 			schema.extractorMap.put(f_name, f_extractor);
-			//f_extractor.
-			
-			int f_type = 0; 
-			if (f.getType().isPrimitive() || f.getType() == String.class) {
-				
-				f_type = 1;
-			} else {
-				f_type = 2;
-			}
 
 			Annotation[] annotations = f.getAnnotations();
 			FieldAnnotation spec = null;
@@ -56,11 +60,11 @@ public class Schema {
 				}
 				boolean skip = false;
 				switch (domain_type) {
-				case Util.ID3:	//ID3
+				case ID3:	//ID3
 					if (spec.ignore() || !spec.discrete())
 						skip = true;
 					break;
-				case Util.C45:
+				case C45:
 					if (spec.ignore())
 						skip = true;
 					break;
@@ -93,6 +97,57 @@ public class Schema {
 			 */
 			schema.domainMap.put(f_name, fieldDomain);			
 		}
+		/* Apperantly the getMethod function recurse on the superclasses
+		 * i dont need to recurse myself
+		for (Class<?> c: element_classes) {
+			Annotation[] annotations = c.getAnnotations();
+		*/
+			Annotation[] annotations = clazz.getAnnotations();	// it should get the inherited annotations 
+			ClassAnnotation lab = null;
+			for (Annotation a : annotations) {
+				if (a instanceof ClassAnnotation) {
+					lab= (ClassAnnotation)a; // here it is !!!
+					break;
+				}
+			}
+			
+			if (lab != null && lab.label_element() != "") {
+				// the targetting label is set, put the function that gets that value somewhere
+				
+				try {
+					/* Apperantly the getMethod function recurse on the superclasses
+					 * i dont need to recurse myself
+					Method m =c.getDeclaredMethod(lab.label_element(), null);
+					*/
+					Method m = clazz.getMethod(lab.label_element(), null);
+					
+					Domain fieldDomain = new Domain(lab.label_element(), m.getReturnType());
+					fieldDomain.setArtificial(true);
+					if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class)	{	/* set discrete*/
+//						fieldDomain.setCategorical(true);	// BY DEFAULT it is categorical
+						fieldDomain.addCategory(Boolean.TRUE);
+						fieldDomain.addCategory(Boolean.FALSE);
+						fieldDomain.setFixed(true);					
+					}
+					//else if (m.getReturnType() == String.class)	{	/* BY DEFAULT it is categorical*/}
+					schema.domainMap.put(lab.label_element(), fieldDomain);
+					
+					Extractor m_extractor = new PseudoFieldExtractor(clazz, m);
+						//cache.getExtractor( clazz, lab.label_element(), clazz.getClassLoader() );
+					schema.extractorMap.put(lab.label_element(), m_extractor);
+					schema.clearTargets();
+					schema.addTarget(lab.label_element());
+					//break; // if the ClassAnnotation is found then stop
+					
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		//}
 		
 		return schema;
 	}
@@ -101,7 +156,7 @@ public class Schema {
 	private Class<?> klass;
 	
 	// key: field name
-	private Hashtable<String, ClassFieldExtractor> extractorMap;
+	private Hashtable<String, Extractor> extractorMap;
 
 	// key: field name
 	private Hashtable<String, Domain> domainMap;
@@ -110,7 +165,7 @@ public class Schema {
 	
 	public Schema(Class<?> _klass) {
 		this.klass = _klass;
-		this.extractorMap = new Hashtable<String, ClassFieldExtractor>();
+		this.extractorMap = new Hashtable<String, Extractor>();
 		this.domainMap = new Hashtable<String, Domain>();
 		this.targets = new HashSet<String>();
 	}
@@ -123,6 +178,10 @@ public class Schema {
 		return targets.add(_target);
 	}
 	
+	public void clearTargets() {
+		targets.clear();
+	}
+	
 	public Set<String> getAttrNames() {
 		return this.domainMap.keySet();
 	}
@@ -131,7 +190,7 @@ public class Schema {
 		return this.domainMap.get(attr_name);
 	}
 	
-	public ClassFieldExtractor getAttrExtractor(String attr_name) {
+	public Extractor getAttrExtractor(String attr_name) {
 		return this.extractorMap.get(attr_name);
 	}
 	

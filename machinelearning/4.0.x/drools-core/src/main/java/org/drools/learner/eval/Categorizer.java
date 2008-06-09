@@ -3,17 +3,18 @@ package org.drools.learner.eval;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
-
 import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.InstanceComparator;
 import org.drools.learner.QuantitativeDomain;
-
+import org.drools.learner.tools.LoggerFactory;
+import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
 
 
 public class Categorizer {
+	
+	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Categorizer.class, SimpleLogger.DEFAULT_LEVEL);
 	
 	private ArrayList<Instance> data;
 	private QuantitativeDomain splitDomain;
@@ -36,7 +37,7 @@ public class Categorizer {
 	
 	public Categorizer(InstDistribution _data_in_class) {
 		//List<Instance> _instancese
-		this.data = new ArrayList<Instance>(_data_in_class.getSum());
+		this.data = new ArrayList<Instance>((int)_data_in_class.getSum());
 		this.distribution = _data_in_class;
 		this.targetDomain = _data_in_class.getClassDomain();
 		
@@ -74,16 +75,18 @@ public class Categorizer {
 		return bD;
 	}
 
-	public ArrayList<Instance> getInstances() {
+	public ArrayList<Instance> getSortedInstances() {
 		return data;
 	}
 	
 	private double find_a_split(int begin_index, int size, int depth, 
 								ClassDistribution facts_in_class) {
+
+		if (flog.debug() !=null)
+			flog.debug().log("./n");
 		if (data.size() <= 1 || (size-begin_index)<2) {
-			if (Util.DEBUG_CATEGORIZER) {
-				System.out.println("fact.size <=1 returning 0.0....");
-			}
+			if (flog.warn() !=null)
+				flog.warn().log("fact.size <=1 returning 0.0....");
 			return 0.0;
 		}
 //		if (facts_in_class.getSum() == 0) {
@@ -91,24 +94,21 @@ public class Categorizer {
 //		}
 		facts_in_class.evaluateMajority();		
 		if (facts_in_class.get_num_ideas()==1) {
-			if (Util.DEBUG_CATEGORIZER) {
-				System.out.println("getNum_supported_target_classes=1 returning 0.0....");
-			}
+			if (flog.warn() !=null)
+				flog.warn().log("getNum_supported_target_classes=1 returning 0.0....");
 			return 0.0; //?
 		}
 
 		if (depth == 0) {
-			if (Util.DEBUG_CATEGORIZER) {
-				System.out.println("depth == 0  returning 0.0....");
-			}
+			if (flog.warn() !=null)
+				flog.warn().log("depth == 0  returning 0.0....");
 			return 0.0;
 		}
 		
 		/* initialize the distribution */		
 		CondClassDistribution instances_by_attr = new CondClassDistribution(binaryDomain, this.targetDomain);
-		instances_by_attr.setTotal(data.size());
 		instances_by_attr.setDistForAttrValue(key1, facts_in_class);
-		instances_by_attr.setTotal(data.size());
+		instances_by_attr.setTotal(facts_in_class.getSum());
 		
 		double best_sum = 100000.0;
 
@@ -116,23 +116,20 @@ public class Categorizer {
 		int last_index = size-1;
 		Object last_value = data.get(last_index).getAttrValue(this.splitDomain.getFName());
 		SplitPoint bestPoint = new SplitPoint(last_index, last_value);	
-		//split_points.get(end_index-1);
-		//SplitPoint bestPoint = split_points.get(split_points.size()-1);
 		CondClassDistribution best_distribution = null;//instances_by_attr;
 		Instance i1 = data.get(begin_index), i2; 
 		
-		if (Util.DEBUG_CATEGORIZER)	{
-			System.out.println("\nentropy.info_cont() SEARCHING: "+begin_index+ " until "+size+" attr "+this.splitDomain.getFName()+ " "+ i1 );
-		}
+		if (flog.debug() !=null)
+			flog.debug().log("\nentropy.info_cont() SEARCHING: "+begin_index+ " until "+size+" attr "+this.splitDomain.getFName()+ " "+ i1);
 		for(int index =begin_index+1; index < size; index ++) {
 			i2= data.get(index);
 			
 			/* every time i read a new instance and change the place in the distribution */
-			instances_by_attr.change(key0, i1.getAttrValue(this.targetDomain.getFName()), +1);
-			instances_by_attr.change(key1, i1.getAttrValue(this.targetDomain.getFName()), -1);
-			if (Util.DEBUG_CATEGORIZER) {
-				System.out.println("BOK " +i1+" vs "+i2);
-			}
+			instances_by_attr.change(key0, i1.getAttrValue(this.targetDomain.getFName()), +1.0d * i1.getWeight());	//+1
+			instances_by_attr.change(key1, i1.getAttrValue(this.targetDomain.getFName()), -1.0d * i1.getWeight());	//-1
+		
+			if (flog.debug() !=null)
+				flog.debug().log("Instances " +i1+" vs "+i2);
 			/*
 			 * CATEGORIZATION 2.1. Cut points are points in the sorted list above where the class labels change. 
 			 * Eg. if I had five instances with values for the attribute of interest and labels 
@@ -142,9 +139,9 @@ public class Categorizer {
 			 */
 			if ( targetComp.compare(i1, i2)!=0 && attrComp.compare(i1, i2)!=0) {
 				num_split_points++;
-				if (Util.DEBUG_CATEGORIZER) {
-					System.out.println("entropy.info_cont() SEARCHING: "+(index)+" attr "+this.splitDomain.getFName()+ " "+ i2 );
-				}
+				
+				if (flog.debug() !=null)
+					flog.debug().log("entropy.info_cont() SEARCHING: "+(index)+" attr "+this.splitDomain.getFName()+ " "+ i2);
 				// the cut point
 				Object cp_i = i1.getAttrValue(this.splitDomain.getFName());
 				Object cp_i_next = i2.getAttrValue(this.splitDomain.getFName());
@@ -162,11 +159,10 @@ public class Categorizer {
 				if (sum < best_sum) {
 					best_sum = sum;
 					split_index = index;
-					
-					if (Util.DEBUG_CATEGORIZER) {
-						System.out.println(Util.ntimes("?", 10)+"** FOUND: @"+(index)+" target ("+ i1.getAttrValue(this.targetDomain.getFName()) 
-										+"-|T|-"+ i2.getAttrValue(this.targetDomain.getFName())+")");
-					}
+				
+					if (flog.debug() !=null)
+						flog.debug().log(Util.ntimes("?", 10)+"** FOUND: @"+(index)+" target ("+ i1.getAttrValue(this.targetDomain.getFName()) 
+								+"-|T|-"+ i2.getAttrValue(this.targetDomain.getFName())+")");
 					bestPoint = new SplitPoint(index-1, cut_point);
 					bestPoint.setInformationValue(best_sum);
 					
@@ -179,18 +175,17 @@ public class Categorizer {
 
 		}
 		if (best_distribution != null) {
-			if (Util.DEBUG_CATEGORIZER) {
-				System.out.println("bp:"+ bestPoint);
-			}
+			if (flog.debug() !=null)
+				flog.debug().log("bp:"+ bestPoint);
 		
 			this.splitDomain.addSplitPoint(bestPoint);
 		
 			/* 
 			 * TODO : can we put the conditional class distribution to its correct place instead of the split
 			 */
-			if (Util.DEBUG_CATEGORIZER) {
-				System.out.println("bd:"+ best_distribution.getNumCondClasses());
-			}
+
+			if (flog.debug() !=null)
+				flog.debug().log("bd:"+ best_distribution.getNumCondClasses());
 			double sum1 = find_a_split(begin_index, split_index, depth-1, best_distribution.getDistributionOf(key0));
 
 			double sum2 = find_a_split(split_index, size, depth-1, best_distribution.getDistributionOf(key1));

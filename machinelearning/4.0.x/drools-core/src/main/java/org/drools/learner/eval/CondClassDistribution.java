@@ -12,7 +12,7 @@ public class CondClassDistribution {
 	private Domain cond_attr; // domain of the attr we distribute the instances conditionally
 	private Hashtable<Object, ClassDistribution> cond_quantity_by_class;
 	
-	private int total_num;
+	private double total_num;
 	
 	public CondClassDistribution(Domain attributeDomain, Domain targetDomain) {
 		this.cond_attr = attributeDomain;
@@ -38,11 +38,11 @@ public class CondClassDistribution {
 		
 	}
 	
-	public int getTotal() {
+	public double getTotal() {
 		return this.total_num;	
 	}
 	
-	public void setTotal(int size) {
+	public void setTotal(double size) {
 		this.total_num = size;	
 	}
 	
@@ -61,11 +61,11 @@ public class CondClassDistribution {
 		return cond_attr.getCategoryCount();
 	}
 	
-	public int getTotal_AttrCategory(Object attr_value) {
+	public double getTotal_AttrCategory(Object attr_value) {
 		return cond_quantity_by_class.get(attr_value).getSum();
 	}
 	
-	public void change(Object attr_category, Object target_class, int i) {
+	public void change(Object attr_category, Object target_class, double i) {
 //		System.out.print("The cond_dist: a_cat:"+ attr_category+" t_cat:"+ target_class);
 //		System.out.println(" the nums: "+cond_quantity_by_class.get(attr_category));
 		
@@ -89,13 +89,13 @@ public class CondClassDistribution {
 		
 	}
 	public String toString() {
-		String out = "\nCondClassDist: attr: "+cond_attr.getFName()+" total num: "+ this.getTotal() + "\n" ;
+		StringBuffer sb_out = new StringBuffer("\nCondClassDist: attr: "+cond_attr.getFName()+" total num: "+ this.getTotal() + "\n") ;
 		for (int c_idx = 0; c_idx<cond_attr.getCategoryCount(); c_idx++) {
 			Object attr_category = cond_attr.getCategory(c_idx);
 			ClassDistribution td = cond_quantity_by_class.get(attr_category);
-			out += "(ATTR:"+attr_category+ "=> "+ td +")";
+			sb_out.append("(ATTR:"+attr_category+ "=> "+ td +")");
 		}
-		return out;
+		return sb_out.toString();
 	}	
 
 }

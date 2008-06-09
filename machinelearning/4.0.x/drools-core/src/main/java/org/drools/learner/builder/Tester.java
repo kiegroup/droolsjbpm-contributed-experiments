@@ -9,8 +9,10 @@ import org.drools.learner.tools.Util;
 
 public abstract class Tester{
 	
-	private int DOMAIN_TYPE = 0, TREE_SET =0;
-	public abstract void test(DecisionTreeBuilder builder, InstanceList data);
+	//private static final Logger log = LoggerFactory.getSysOutLogger(LogLevel.ERROR); 
+	//private static final Logger flog = LoggerFactory.getFileLogger(Tester.class, LogLevel.ERROR, Util.log_file);
+	
+	public abstract Stats test(InstanceList data);// String executionSignature
 	
 	public static Integer evaluate (Domain targetDomain, Instance i, Object tree_decision) {	
 		String targetFName = targetDomain.getFName();
@@ -25,12 +27,12 @@ public abstract class Tester{
 		} 
 	}
 	
-	public void printStats(Stats evaluation) {
+	protected void printStats(final Stats evaluation, String executionSignature) {
 		if (Util.PRINT_STATS) {
-			if (Util.DEBUG_TEST) {
-				evaluation.print2out();
-			}
-			evaluation.print2file("", this.DOMAIN_TYPE, this.TREE_SET);
+//			if (flog.debug() !=null)
+//				flog.debug().log(evaluation.print2string());
+			
+			evaluation.print2file(executionSignature);
 		}
 	}
 

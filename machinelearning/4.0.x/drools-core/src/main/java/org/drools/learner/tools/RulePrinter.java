@@ -16,32 +16,28 @@ import org.drools.learner.AttributeValueComparator;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.LeafNode;
 import org.drools.learner.TreeNode;
-import org.drools.learner.builder.Learner;
 
 public class RulePrinter {
 	
-	public static Reader readRules(Learner learner) {
-		if (learner.getTree() == null) {
-			System.out.println("There is tree/rule to process");
-			return null;
-		}
+//	private static final Logger log = LoggerFactory.getSysOutLogger(RulePrinter.class, LogLevel.ERROR);
+//	private static final Logger flog = LoggerFactory.getFileLogger(RulePrinter.class, LogLevel.ERROR, Util.log_file); 
+//	
+	
+	public static Reader readRules(DecisionTree learned_dt) {
 		
 		RulePrinter my_printer = new RulePrinter();	//bocuk.getNum_fact_trained()
 		my_printer.setBoundOnNumRules(Util.MAX_NUM_RULES);
-		my_printer.printer(learner.getTree(), Util.SORT_RULES_BY_RANK);
+		my_printer.printer(learned_dt, Util.SORT_RULES_BY_RANK);
 		
 		String all_rules = my_printer.write2string();
 		if (Util.PRINT_RULES) {
 			//my_printer.write2file("examples", "src/rules/examples/" + file);
-			if (Util.DEBUG_RULE_PRINTER) {
-				System.out.println(all_rules);
-			}
-			my_printer.write2File(all_rules, false, "", learner.getDomainType(), 0);
+			my_printer.write2File(all_rules, false, Util.DRL_DIRECTORY+learned_dt.getSignature());
 		}
 		
 		return new StringReader(all_rules);
 	}
-	
+
 	private Class<?> rule_clazz;	
 	
 	private Stack<NodeValue> nodes;
@@ -50,7 +46,8 @@ public class RulePrinter {
 	//private ArrayList<String> ruleText;
 	
 	
-	private int bound_on_num_rules, num_instances;
+	private int bound_on_num_rules;
+	private double num_instances;
 	
 	//private NumberComparator nComparator;
 	
@@ -62,7 +59,7 @@ public class RulePrinter {
 		//ruleText = new ArrayList<String>();
 		
 		this.bound_on_num_rules = -1;
-		this.num_instances = -1;
+		this.num_instances = -1.0d;
 		
 		//this.nComparator = new NumberComparator();
 	}
@@ -79,7 +76,7 @@ public class RulePrinter {
 		this.bound_on_num_rules = max_num_rules;
 	}
 	
-	public int getNumInstances() {
+	public double getNumInstances() {
 		return this.num_instances;
 	}
 
@@ -141,47 +138,38 @@ public class RulePrinter {
 		return newRule;	
 	}
 	
-	public void write2File(String toWrite, boolean append, String dataFile, int domain_type, int tree_set)	{  
-		
-		String packageFolders = this.getRuleClass().getPackage().getName();
-
-		String _packageNames = packageFolders.replace('.', '/');
-		
-		String fileName = (dataFile == null || dataFile == "") ? this.getRuleClass().getSimpleName().toLowerCase(): dataFile; 		
-		
-		String suffix = Util.getFileSuffix(domain_type, tree_set);
-		fileName += "_"+suffix + ".drl";
-		
-		String dataFileName = "src/main/rules/"+_packageNames+"/"+ fileName; 
-		
-		System.out.println("file:"+ dataFileName);
-		File file =new File(dataFileName);
+	public void write2File(String toWrite, boolean append, String fileSignature) {//DomainType domain_type, int tree_set  
+	
+		//String drlFileName = 
+		if (!fileSignature.endsWith(".drl"))
+			fileSignature += ".drl";
+		System.out.println("file:"+ fileSignature);
+		File file =new File(fileSignature);
 		if (append)
 		{
 			if(!file.exists())
-				System.out.println("File doesnot exit, creating...");
+				//flog.warn("File doesnot exit, creating...");
 			try {
-				BufferedWriter out = new BufferedWriter(new FileWriter(dataFileName, true));
+				BufferedWriter out = new BufferedWriter(new FileWriter(fileSignature, true));
 				out.write(toWrite);
 				out.close();
 				//System.out.println("I wrote "+ toWrite);
 			} catch (IOException e) {
-				System.out.println("No I cannot write to the file (appending) e:"+ e);
+				//flog.error("No I couldnot append to the file e:"+ e);
 				/* TODO */
 			}
 
 		} else {
-			if(file.exists()&& (file.length()>0))
+			if(file.exists()&& (file.length()>0)) {
 				file.delete();
+				//flog.warn("File exits, deleting...");
+			}
 			try {
-				BufferedWriter out = new BufferedWriter(new FileWriter(dataFileName));
+				BufferedWriter out = new BufferedWriter(new FileWriter(fileSignature));
 				out.write(toWrite);
 				out.close();
-				if (Util.DEBUG_RULE_PRINTER) {
-					System.out.println("I wrote "+ toWrite);
-				}
 			} catch (IOException e) {
-				System.out.println("No I cannot write to the file (creating new file) e:"+ e);
+				//flog.error("No I couldnot create the file e:"+ e);
 				/* TODO */
 			}
 		}
@@ -192,29 +180,34 @@ public class RulePrinter {
 		
 		String packageName = this.getRuleClass().getPackage().getName();
 		
-		if (Util.DEBUG_RULE_PRINTER) {
-			System.out.println("Package name: "+ packageName);
-		}
+		//log.debug("Package name: "+ packageName);
+		
 		if (packageName != null)
 			outputBuffer.append("package " + packageName +";\n\n");
 		
 		else {
 			//TODO throw exception
+			//flog.error("RulePrinter write2string packageName="+packageName);
 		}
 		
-		if (Util.DEBUG_RULE_PRINTER) {
-			System.out.println("//Num of rules " +rules.size()+"\n");
-		}
+//		flog.debug(new Object() {
+//			public String toString() {	
+//				String out = "//Num of rules " +rules.size()+"\n //this.getBoundOnNumRules() "+ getBoundOnNumRules();
+//				return out;	
+//			}
+//		});
+	
 		int total_num_facts=0;
 		int i = 0, active_i = 0;
 		for( Rule rule: rules) {
 			i++;
+			//flog.debug("Rule: "+ i);
 			if (Util.ONLY_ACTIVE_RULES) {
 				if (rule.getRank() >= 0) {
 					active_i++;
-					if (Util.DEBUG_RULE_PRINTER) {
-						System.out.println("//Active rules " +i + " write to drl \n"+ rule +"\n");
-					}
+//					if (Util.DEBUG_RULE_PRINTER) {
+//						System.out.println("//Active rules " +i + " write to drl \n"+ rule +"\n");
+//					}
 					outputBuffer.append(rule.toString());
 					outputBuffer.append("\n");
 				}
@@ -223,9 +216,9 @@ public class RulePrinter {
 				if (rule.getRank() >= 0) {
 					active_i++;
 				}
-				if (Util.DEBUG_RULE_PRINTER) {
-					System.out.println("//rule " +i + " write to drl \n"+ rule +"\n");
-				}
+//				if (Util.DEBUG_RULE_PRINTER) {
+//					System.out.println("//rule " +i + " write to drl \n"+ rule +"\n");
+//				}
 				outputBuffer.append(rule.toString());
 				outputBuffer.append("\n");
 			}
@@ -248,7 +241,7 @@ class Rule {
 	private ArrayList<NodeValue>  actions;
 	
 	private double rank;				 // matching ratio
-	private int num_classified_instances;// number of instances matching that rule
+	private double num_classified_instances;// number of instances matching that rule
 	
 	private int id;						 // unique id, need a unique name in the drl file
 	
@@ -285,10 +278,10 @@ class Rule {
 		this.id= id;
 	}
 	
-	private void setNumClassifiedInstances(int dataSize) {
+	private void setNumClassifiedInstances(double dataSize) {
 		this.num_classified_instances = dataSize;	
 	}
-	public int getNumClassifiedInstances() {
+	public double getNumClassifiedInstances() {
 		return this.num_classified_instances;	
 	}
 
@@ -304,39 +297,54 @@ class Rule {
 		rule "Good Bye"
     		dialect "java"
 			when
-				Message( status == Message.GOODBYE, message : message )
+				$m:Message( status == Message.GOODBYE)
 			then
-				System.out.println( "Goodbye: " + message ); 
+				System.out.println( "[getLabel()] Expected value (" + $c.getLabel() + "), Classified as (False)"); 
 		end
 		 */
-			
-		String out = ""; //"rule \"#"+getId()+" "+decision+" rank:"+rank+"\" \n";
+		//"rule \"#"+getId()+" "+decision+" rank:"+rank+"\" \n";
+		StringBuffer sb_out = new StringBuffer("");
+		String obj_ref = "$"+this.getObjectClassName().substring(0, 1).toLowerCase();
 
-		out += "\t when";
-		out += "\n\t\t "+this.getObjectClassName() +"("+ "";
+		sb_out.append("\t when");
+		sb_out.append("\n\t\t "+obj_ref+":"+this.getObjectClassName() +"("+ "");
 		for (NodeValue cond: conditions) {
-			out += cond + ", ";
+			sb_out.append(cond.toString() + ", ");
 		}
 		
-		String action = "";
-		String decision = "";
+		StringBuffer sb_action = new StringBuffer("");
+		StringBuffer sb_field = new StringBuffer("");
+		StringBuffer sb_expected_value = new StringBuffer("");
 		for (NodeValue act: actions) {
-			out += act.getFName() + " : "+act.getFName()+" , ";
-			action += act.getNodeValue() + " , ";
-			decision += act.getFName() + " ";
+			// if the query is on a field then i have to get its value during in the rule 'cause it might be private
+			if (!act.getNode().getDomain().isArtificial())
+				sb_out.append(obj_ref+ "_"+act.getFName() + " : "+act.getFName()+", ");
+			
+			sb_action.append(act.getNodeValue() + " , ");
+			if (!act.getNode().getDomain().isArtificial())
+				sb_field.append(act.getFName() + "");
+			else
+				sb_field.append(act.getFName() + "()");
+			
+			
+			if (!act.getNode().getDomain().isArtificial())
+				sb_expected_value.append(obj_ref+ "_"+act.getFName());//reading the value by the reference of $o_fieldname
+			else
+				sb_expected_value.append(obj_ref+ "."+act.getFName() + "()");// reading the value from the object $o.function()
+			
 		}
-		action = action.substring(0, action.length()-3);
-		out = out.substring(0, out.length()-3) + ")\n";
-		
-		out += "\t then ";
-		out += "\n\t\t System.out.println(\"Decision on "+decision+"= \"+" + decision + "+\": ("+action+")\");\n";
+		sb_action.delete(sb_action.length()-3, sb_action.length()-1);
+		sb_out.delete(sb_out.length()-2, sb_out.length()-1);
+		sb_out.append(")\n");
+		sb_out.append("\t then ");
+		sb_out.append("\n\t\t System.out.println(\"["+sb_field.toString()+ "] Expected value (\" + "+  sb_expected_value.toString()+ " + \"), Classified as ("+sb_action.toString()+")\");\n"); 
 		if (getRank() <0)
-			out += "\n\t\t System.out.println(\"But no matching fact found = DOES not fire on\");\n";
-		out = "rule \"#"+getId()+" "+decision+ "= "+action+" classifying "+this.getNumClassifiedInstances()+" num of facts with rank:"+getRank() +"\" \n" + out;
+			sb_out.append("\n\t\t System.out.println(\"But no matching fact found = DOES not fire on\");\n");
 		
-		out += "end\n";
+		sb_out.insert(0, "rule \"#"+getId()+" "+sb_field.toString()+ "= "+sb_action.toString()+" classifying "+this.getNumClassifiedInstances()+" num of facts with rank:"+getRank() +"\" \n");
+		sb_out.append("end\n");
 
-		return out;
+		return sb_out.toString();
 	}
 	
 	public static Comparator<Rule> getRankComparator() {
@@ -359,6 +367,9 @@ class Rule {
 
 
 class NodeValue {
+	
+	//private static final Logger flog = LoggerFactory.getFileLogger(NodeValue.class, LogLevel.ERROR, Util.log_file); 
+	
 	private TreeNode node;
 	private Object nodeValue;	// should it be Attribute???
 	
@@ -404,9 +415,9 @@ class NodeValue {
 					Object categoryValue = node.getDomain().getCategory(idx);
 					if (nodeValue instanceof Comparable && categoryValue instanceof Comparable) {
 						// TODO ask this to daniel???
-						if (Util.DEBUG_RULE_PRINTER) {
-							System.out.println("NodeValue:"+ nodeValue+ " c-"+nodeValue.getClass() +" & category:"+ categoryValue+ " c-"+categoryValue.getClass());
-						}
+//						if (Util.DEBUG_RULE_PRINTER) {
+//							System.out.println("NodeValue:"+ nodeValue+ " c-"+nodeValue.getClass() +" & category:"+ categoryValue+ " c-"+categoryValue.getClass());
+//						}
 						if ( AttributeValueComparator.instance.compare(nodeValue, categoryValue) == 0 ) {
 							break;
 						}
@@ -431,9 +442,7 @@ class NodeValue {
 			else {
 				//return node.getDomain().getCategory(idx) + " < " + fName+ " <= "+ node.getDomain().getCategory(idx+1);
 				// Why drools does not support category(idx) < domain.name <= category(idx+1)
-				if (Util.DEBUG_RULE_PRINTER) {
-					System.out.println("value "+ value + "=====?????"+   node.getDomain().getCategory(idx+1));
-				}
+				//flog.debug("value "+ value + "=====?????"+   node.getDomain().getCategory(idx+1));
 				
 				return fName+ " <= "+ value; // node.getDomain().getCategory(idx+1);
 			}

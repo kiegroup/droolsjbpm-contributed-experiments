@@ -7,36 +7,26 @@ import java.util.Random;
 
 public class Util {
 	
-	public static final int ID3 = 1, C45 = 2;
-	public static final int SINGLE = 1, BAG = 2, BOOST = 3;
-
-	//public static final boolean DEBUG = false;
-	public static final boolean DEBUG_TEST = false;
-
 	public static final boolean PRINT_STATS = true;
-
+	public static final String DRL_DIRECTORY = "src/main/rules/";
+	/*
+	public static final boolean DEBUG = false;
+	public static final boolean DEBUG_TEST = false;
 	public static final boolean DEBUG_RULE_PRINTER = false;
-
 	public static final boolean DEBUG_LEARNER = false;
-
 	public static final boolean DEBUG_CATEGORIZER = false;
-
 	public static final boolean DEBUG_ENTROPY = false;
-
 	public static final boolean DEBUG_DIST = false;
-
 	public static final boolean DEBUG_DECISION_TREE = false;
-
-
-	
-	public static int MAX_NUM_RULES = 1000;
+	*/
+	public static int MAX_NUM_RULES = 10;
 	public static boolean ONLY_ACTIVE_RULES = true;	/* TODO into global settings */
 	
 	public static boolean SORT_RULES_BY_RANK = true;
 	public static boolean PRINT_RULES = true;
 	
-	private static boolean WITH_REP = true;
 	private static Random BAGGING = new Random(System.currentTimeMillis());
+	//public static String log_file = "testing.log";
 	
 	
 	public static String ntimes(String s,int n){
@@ -55,6 +45,14 @@ public class Util {
 		return Math.log(prob) / Math.log(2);
 	}
 	
+	public static double ln(double prob) {
+		return Math.log(prob);
+	}
+	
+	public static double exp(double prob) {
+		return Math.exp(prob);
+	}
+	
 	/* TODO make this all_fields arraylist as hashmap */
 	public static void getAllFields(Class<?> clazz, ArrayList<Field> all_fields) {
 		if (clazz == Object.class)
@@ -66,6 +64,21 @@ public class Util {
 			all_fields.add(f);
 		}
 		getAllFields(clazz.getSuperclass(), all_fields);
+		
+		return;
+	}
+	
+	/* TODO make this all_fields arraylist as hashmap */
+	public static void getAllFields(Class<?> clazz, ArrayList<Field> all_fields, ArrayList<Class<?>> all_classes) {
+		if (clazz == Object.class)
+			return;
+		all_classes.add(clazz);
+		//Field [] element_fields_ = clazz.getFields();
+		Field [] element_fields = clazz.getDeclaredFields(); //clazz.getFields();
+		for (Field f: element_fields) {
+			all_fields.add(f);
+		}
+		getAllFields(clazz.getSuperclass(), all_fields, all_classes);
 		
 		return;
 	}
@@ -189,37 +202,6 @@ public class Util {
 			}
 		
 		
-	}
-
-	public static String getFileSuffix(int domain_type, int tree_set) {
-		String suffix = "";
-		switch (domain_type) {
-		case Util.ID3:
-			suffix += "id3" ;
-			break;
-		case Util.C45:
-			suffix += "c45";
-			break;
-		default:
-			suffix += "?" ;
-		
-		}
-		
-		switch (tree_set) {
-		case Util.SINGLE:
-			suffix += "_one";
-			break;
-		case Util.BAG:
-			suffix += "_bag";
-			break;
-		case Util.BOOST:
-			suffix += "_boost";
-			break;
-		default:
-			suffix += "_?" ;
-		
-		}
-		return suffix;
 	}
 
 

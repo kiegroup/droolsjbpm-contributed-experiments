@@ -10,8 +10,12 @@ import org.drools.learner.tools.Util;
  * class: categories of the target attribute*/
 public class ClassDistribution {
 	
+	//private static final Logger log = LoggerFactory.getSysOutLogger(LogLevel.ERROR);
+	//protected static final Logger flog = LoggerFactory.getFileLogger(ClassDistribution.class, LogLevel.ERROR, Util.log_file); 
+	
+	
 	protected Domain target_attr;
-	private Hashtable<Object, Integer> quantity_by_class;
+	private Hashtable<Object, Double> quantity_by_class;
 	
 	private String sum_key = Util.sum();
 	private int num_category_ideas;
@@ -20,20 +24,20 @@ public class ClassDistribution {
 	public ClassDistribution(Domain targetDomain) {
 		this.target_attr = targetDomain;
 		
-		this.quantity_by_class =  new Hashtable<Object, Integer>(this.target_attr.getCategoryCount() + 1);		
+		this.quantity_by_class =  new Hashtable<Object, Double>(this.target_attr.getCategoryCount() + 1);		
 		for (int c=0; c<this.target_attr.getCategoryCount(); c++) {
 			Object category = this.target_attr.getCategory(c);
-			quantity_by_class.put(category, 0);			
+			quantity_by_class.put(category, 0.0d);			
 		}
 		
-		quantity_by_class.put(sum_key, 0);
+		quantity_by_class.put(sum_key, 0.0d);
 		
 		num_category_ideas = 0;
 	}
 	
 	public ClassDistribution(ClassDistribution copy_dist) {
 		this.target_attr = copy_dist.getClassDomain();
-		this.quantity_by_class =  new Hashtable<Object, Integer>(this.target_attr.getCategoryCount() + 1);		
+		this.quantity_by_class =  new Hashtable<Object, Double>(this.target_attr.getCategoryCount() + 1);		
 		this.setDistribution(copy_dist);
 		
 		this.num_category_ideas = copy_dist.get_num_ideas();
@@ -41,35 +45,35 @@ public class ClassDistribution {
 		
 	}
 	
-	public void setSum(int sum) {
+	public void setSum(double sum) {
 		quantity_by_class.put(sum_key, sum);
 	}
 	
-	public int getSum() {
-		return quantity_by_class.get(sum_key).intValue();
+	public double getSum() {
+		return quantity_by_class.get(sum_key);
 	}
 	
 	public Domain getClassDomain() {
 		return target_attr;
 	}
 	
-	public void change(Object target_category, int i) {
+	public void change(Object target_category, double i) {
 		/* TODO ????
 		 * if (target_category == sum_key) return;
 		 */
-		int num_1 = quantity_by_class.get(target_category).intValue();
+		double num_1 = quantity_by_class.get(target_category);
 		num_1 += i;
 		quantity_by_class.put(target_category, num_1);
 		
 		//quantity_by_class.put(target_category, quantity_by_class.get(target_category)+i);
 	}
 
-	public int getVoteFor(Object targetCategory) {
-		return quantity_by_class.get(targetCategory).intValue();
+	public double getVoteFor(Object targetCategory) {
+		return quantity_by_class.get(targetCategory);
 	}
 	
 	public void evaluateMajority() {
-		int winner_vote = 0;
+		double winner_vote = 0.0d;
 		int num_ideas = 0;	// the number of target categories that the instances belong to
 		
 		Object winner = null;
@@ -77,7 +81,7 @@ public class ClassDistribution {
 		for (int c=0; c<this.target_attr.getCategoryCount(); c++) {
 			Object category = this.target_attr.getCategory(c);
 			
-			int num_in_class = this.getVoteFor(category);
+			double num_in_class = this.getVoteFor(category);
 			if (num_in_class > 0) {
 				num_ideas++;
 				if (num_in_class > winner_vote) {
@@ -108,13 +112,13 @@ public class ClassDistribution {
 	}
 	
 	public String toString() {
-		String out = "ClassDist: target:"+ this.target_attr.getFName()+ " total: "+ this.getSum() + " & categories:";
+		StringBuffer sb_out = new StringBuffer("ClassDist: target:"+ this.target_attr.getFName()+ " total: "+ this.getSum() + " & categories:");
 		for (int c=0; c<this.target_attr.getCategoryCount(); c++) {
 			Object category = this.target_attr.getCategory(c);
-			out += this.getVoteFor(category) +" @"+category+ ", ";
+			sb_out.append(this.getVoteFor(category) +" @"+category+ ", ");
 		}
 //		out +="\n";
-		return out;
+		return sb_out.toString();
 	}
 
 	public void setDistribution(ClassDistribution targetDist) {

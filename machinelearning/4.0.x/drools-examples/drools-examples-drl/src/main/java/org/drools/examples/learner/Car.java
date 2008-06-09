@@ -1,8 +1,9 @@
 package org.drools.examples.learner;
 
+import org.drools.learner.tools.ClassAnnotation;
 import org.drools.learner.tools.FieldAnnotation;
 
-
+@ClassAnnotation(label_element = "getLabel2")
 public class Car {
 	@FieldAnnotation(readingSeq = 0)
 	private String buying;		//"vhigh", "high", "med", "low"
@@ -16,10 +17,12 @@ public class Car {
 	private String lug_boot;	//"small", "med", "big"
 	@FieldAnnotation(readingSeq = 5)
 	private String safety; 		//"low", "med", "high"
-	@FieldAnnotation(readingSeq = 6, target = true)
+	@FieldAnnotation(readingSeq = 6) //, target = true)
 	private String target; 		//"unacc", "acc", "good", "vgood"
 	
-	
+	public boolean getLabel2() {
+		return (doors.equalsIgnoreCase("5more") && safety.equalsIgnoreCase("med") &&  buying.equalsIgnoreCase("low"));
+	}
 	public Car() {
 
 	}
@@ -77,6 +80,11 @@ public class Car {
 
 	public void setTarget(String carClass) {
 		this.target = carClass;
+	}
+	
+	
+	public boolean getLabel() {
+		return (doors.equalsIgnoreCase("5more"));
 	}
 	
 	

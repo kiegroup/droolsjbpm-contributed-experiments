@@ -5,12 +5,19 @@ import java.util.HashMap;
 
 public class Instance {
 	private HashMap<String, Attribute> attributes;
+	private double weight = 1.0;
 	
 	public Instance() {
 		this.attributes = new HashMap<String, Attribute>(); // TODO should i set a size, HOW?
 	}
 	
+	public void setWeight(double w) {
+		weight = w;
+	}
 	
+	public double getWeight() {
+		return weight;
+	}
 	
 	public void setAttr(String _name, Object _value) {
 		Attribute f_attr = new Attribute();
@@ -31,12 +38,11 @@ public class Instance {
 	}
 
 	public String toString() {
-		String out = this.hashCode() + " ";
-		for (String key: attributes.keySet())
-		{
-			out += key +"="+attributes.get(key)+", ";
+		StringBuffer sb = new StringBuffer(this.hashCode() + " ");
+		for (String key: attributes.keySet()) {
+			sb.append(key +"="+attributes.get(key)+", ");
 		}
-		return out;
+		return sb.toString();
 	}
 	
 

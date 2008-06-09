@@ -9,17 +9,21 @@ import org.drools.learner.Instance;
 import org.drools.learner.InstanceList;
 import org.drools.learner.TreeNode;
 import org.drools.learner.eval.InstDistribution;
-import org.drools.learner.tools.Util;
+import org.drools.learner.tools.LoggerFactory;
+import org.drools.learner.tools.SimpleLogger;
 
 public abstract class Learner {
 	
+	protected static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Learner.class, SimpleLogger.DEFAULT_LEVEL);
+	
+	public static enum DomainAlgo { ID3, C45, WEIGHT }
 	private int data_size;
 	private DecisionTree best_tree;
 	private InstanceList input_data;
 	protected HashSet<Instance> missclassified_data;
 	
 
-	private int DOMAIN_TYPE;
+	private DomainAlgo algorithm;
 	
 	
 	protected abstract TreeNode train(DecisionTree dt, InstDistribution data_stats);
@@ -33,18 +37,15 @@ public abstract class Learner {
 		String target = this.getTargetDomain().getFName();
 		DecisionTree dt = new DecisionTree(input_data.getSchema(), target);
 
-		if (Util.DEBUG_LEARNER) {
-			System.out.println("Num of attributes: "+ dt.getAttrDomains().size());
-		}
+		//flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
+		
 		InstDistribution stats_by_class = new InstDistribution(dt.getTargetDomain());
 		stats_by_class.calculateDistribution(working_instances.getInstances());
 		dt.FACTS_READ += working_instances.getSize();
 
 		TreeNode root = train(dt, stats_by_class);
 		dt.setRoot(root);
-		if (Util.DEBUG_LEARNER) {
-			System.out.println("Result tree\n" + dt);
-		}
+		//flog.debug("Result tree\n" + dt);
 		return dt;
 	}
 	
@@ -62,24 +63,21 @@ public abstract class Learner {
 		for (String target: input_data.getTargets()) {
 			dt = new DecisionTree(input_data.getSchema(), target);
 				
-			if (Util.DEBUG_LEARNER) {
-				System.out.println("Num of attributes: "+ dt.getAttrDomains().size());
-			}
+			//flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
+			
 			InstDistribution stats_by_class = new InstDistribution(dt.getTargetDomain());
 			stats_by_class.calculateDistribution(working_instances.getInstances());
 			dt.FACTS_READ += working_instances.getSize();
 			
 			TreeNode root = train(dt, stats_by_class);
 			dt.setRoot(root);
-			if (Util.DEBUG_LEARNER) {
-				System.out.println("Result tree\n" + dt);
-			}
+			//flog.debug("Result tree\n" + dt);
 		}
 		return dt;
 	}
 	
 	
-	public void setDataSize(int num) {
+	public void setDataSizePerTree(int num) {
 		this.data_size = num;
 		
 		missclassified_data = new HashSet<Instance>();
@@ -93,17 +91,20 @@ public abstract class Learner {
 		return best_tree;
 	}
 
-	public int getDomainType() {
-		return this.DOMAIN_TYPE;
+	public DomainAlgo getDomainAlgo() {
+		return this.algorithm;
 	}
 	
-	public void setDomainType(int type) {
-		this.DOMAIN_TYPE = type;
+	public void setDomainAlgo(DomainAlgo type) {
+		this.algorithm = type;
 	}
 
 	public void setInputData(InstanceList class_instances) {
-		this.input_data = class_instances;
-		
+		this.input_data = class_instances;	
+	}
+	
+	public InstanceList getInputData() {
+		return input_data;
 	}
 
 	public void setBestTree(DecisionTree dt) {

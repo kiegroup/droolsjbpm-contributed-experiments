@@ -9,8 +9,8 @@ import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
-import org.drools.learner.builder.Learner;
-import org.drools.learner.builder.LearnerFactory;
+import org.drools.learner.DecisionTree;
+import org.drools.learner.builder.DecisionTreeFactory;
 import org.drools.learner.tools.ObjectFactory;
 
 public class NurseryExample {
@@ -38,11 +38,11 @@ public class NurseryExample {
 
 		// instantiate a learner for a specific object class and pass session to train
 		//Learner learner = LearnerFactory.createID3(session, obj_class);
-		Learner learner = LearnerFactory.createC45(session, obj_class);
+		DecisionTree dt_builder  = DecisionTreeFactory.createBaggedC45(session, obj_class);
 		
 		final PackageBuilder builder = new PackageBuilder();
 		//this wil generate the rules, then parse and compile in one step
-		builder.addPackageFromLearner( learner );
+		builder.addPackageFromTree( dt_builder );
 		ruleBase.addPackage( builder.getPackage() );
 		/* 
 			final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );

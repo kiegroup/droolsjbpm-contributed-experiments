@@ -11,14 +11,12 @@ import org.drools.learner.eval.Entropy;
 import org.drools.learner.eval.InformationContainer;
 import org.drools.learner.eval.InstDistribution;
 import org.drools.learner.tools.FeatureNotSupported;
-import org.drools.learner.tools.Util;
 
 public class C45Learner extends Learner{
 	
-	
 	public C45Learner() {
 		super();
-		super.setDomainType(Util.C45);
+		super.setDomainAlgo(DomainAlgo.C45);
 	}
 	
 	
@@ -69,9 +67,9 @@ public class C45Learner extends Learner{
 		Entropy.chooseAttribute(best_attr_eval, data_stats, attribute_domains);
 		Domain node_domain = best_attr_eval.domain;
 		
-		if (Util.DEBUG_LEARNER) {
-			System.out.println(Util.ntimes("*", 20)+" 1st best attr: "+ node_domain);
-		}
+		
+		
+		//flog.debug(Util.ntimes("*", 20)+" 1st best attr: "+ node_domain);
 
 		TreeNode currentNode = new TreeNode(node_domain);
 		currentNode.setNumMatch(data_stats.getSum());									//num of matching instances to the leaf node

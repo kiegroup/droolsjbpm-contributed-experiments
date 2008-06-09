@@ -1,9 +1,8 @@
 package org.drools.learner.tools;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
-public class NumberComparator  implements Comparator<Number>, Serializable {
+public class NumberComparator  implements Comparator<Number> {
 	public NumberComparator() {
 	}
 

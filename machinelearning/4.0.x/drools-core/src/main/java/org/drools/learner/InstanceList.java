@@ -7,12 +7,14 @@ import java.util.List;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.Extractor;
 
 
 public class InstanceList {
 
 	private Schema schema;
 	private ArrayList<Instance> instances;
+	private ArrayList<Double> weights;
 	
 	public InstanceList(Schema _schema) {
 		this.schema = _schema;
@@ -30,8 +32,8 @@ public class InstanceList {
 		
 		for (String f_name : schema.getAttrNames()) {
 			Domain f_domain = schema.getAttrDomain(f_name);
-			ClassFieldExtractor f_extractor = schema.getAttrExtractor(f_name);
-
+			//ClassFieldExtractor f_extractor = schema.getAttrExtractor(f_name);
+			Extractor f_extractor = schema.getAttrExtractor(f_name);//Label
 			/* from WorkingMemoryLogger, private String extractDeclarations(final Activation activation,  final WorkingMemory workingMemory) {
 			 * you can cast the WorkingMemory
 			 * final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, handleImpl.getObject() );

@@ -42,9 +42,10 @@ import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.learner.builder.ID3Learner;
-import org.drools.learner.builder.Learner;
+import org.drools.learner.DecisionTree;
+import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.RulePrinter;
+import org.drools.learner.tools.Util;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
@@ -211,22 +212,24 @@ public class PackageBuilder {
     }
     
     /**
-     * Load a learner to load its rule package from DRL source AND/OR AST.
+     * Load the decision tree and its rules.
      * 
      * @param learner
      * @throws DroolsParserException
      * @throws IOException 
      */
-    public void addPackageFromLearner(final Learner learner) throws DroolsParserException, IOException {
-    	Reader reader = RulePrinter.readRules(learner);
+    public void addPackageFromTree(final DecisionTree dt) throws DroolsParserException, IOException {
+    	Reader reader = RulePrinter.readRules(dt);
  /*   	final DrlParser parser = new DrlParser();
     	final PackageDescr pkg = parser.parse( reader );
     	this.results.addAll( parser.getErrors() );
         addPackage( pkg );
         */
-    	
+    	// save the logger
+    	LoggerFactory.dump_buffer(Util.DRL_DIRECTORY+dt.getSignature(), "log");
     	this.addPackageFromDrl(reader);
     }
+
 
     /**
      * Add a ruleflow (.rt) asset to this package.

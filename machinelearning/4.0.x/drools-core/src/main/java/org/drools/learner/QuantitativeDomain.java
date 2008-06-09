@@ -40,6 +40,9 @@ public class QuantitativeDomain extends Domain{
 		
 
 	}
+	public void setFName(String fname) {
+		super.setFName(fname);
+	}
 
 	
 	public boolean isCategorical() {

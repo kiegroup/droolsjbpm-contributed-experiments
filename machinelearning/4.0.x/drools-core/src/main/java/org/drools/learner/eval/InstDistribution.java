@@ -31,14 +31,15 @@ public class InstDistribution extends ClassDistribution{
 	}
 	
 	public void calculateDistribution(List<Instance> instances){
-		int data_size = 0;
+		double data_size = 0.0;
 		String tName = super.getClassDomain().getFName();
 		for (Instance inst : instances) {
-			data_size++;
+			data_size += inst.getWeight();
 			Object target_key = inst.getAttrValue(tName);
-			super.change(target_key, +1);	// add one for vote for the target value : target_key
+			super.change(target_key, inst.getWeight());		// add one for vote for the target value : target_key
+			//super.change(attr_sum, inst.getWeight());		// ?????
+			
 			this.addSupporter(target_key, inst);
-
 		}
 		//super.change(attr_sum, data_size);	// TODO should i write special function for changing the sum 
 		super.setSum(data_size);
@@ -88,7 +89,8 @@ public class InstDistribution extends ClassDistribution{
 	}
 
 	
-	public Hashtable<Object, InstDistribution> splitFromCategorical(Domain splitDomain, Hashtable<Object, InstDistribution> instLists) {
+	public Hashtable<Object, InstDistribution> splitFromCategorical(
+			Domain splitDomain, Hashtable<Object, InstDistribution> instLists) {
 		if (instLists == null)
 			instLists = this.instantiateLists(splitDomain);
 		
@@ -101,8 +103,8 @@ public class InstDistribution extends ClassDistribution{
 			for (Instance inst: this.getSupportersFor(targetCategory)) {
 				Object inst_attr_category = inst.getAttrValue(attrName);
 				
-				instLists.get(inst_attr_category).change(targetCategory, +1);	// add one for vote for the target value : target_key
-				instLists.get(inst_attr_category).change(attr_sum, +1);
+				instLists.get(inst_attr_category).change(targetCategory, inst.getWeight());	// add one for vote for the target value : target_key
+				instLists.get(inst_attr_category).change(attr_sum, inst.getWeight());
 				instLists.get(inst_attr_category).addSupporter(targetCategory, inst);
 				
 			}
@@ -116,32 +118,7 @@ public class InstDistribution extends ClassDistribution{
 		String attributeName = attributeDomain.getFName();
 		String targetName = super.getClassDomain().getFName();
 		
-		if (Util.DEBUG_DIST) {
-			System.out.println("FactProcessor.splitFacts_cont() attr_split "+ attributeName);
-		}
-
-//		if (Util.DEBUG_DISTRIBUTION) {
-//			System.out.println("FactProcessor.splitFacts_cont() haniymis benim repsentativelerim: "+ splitValues.size() + " and the split points "+ splitIndices.size());
-//			
-//			System.out.println("FactProcessor.splitFacts_cont() before splitting "+ facts.size());
-//			
-//			int index = 0;
-//			int split_index = 0;
-//			Object attr_key = splitValues.get(split_index);
-//			for (Fact f : facts) {
-//				
-//				if (index == splitIndices.get(split_index).intValue()+1 ) {
-//					System.out.print("PRINT* (");
-//					attr_key = splitValues.get(split_index+1);
-//					split_index++;	
-//				} else {
-//					System.out.print("PRINT (");
-//				}
-//				System.out.println(split_index+"): fact "+f);
-//				index++;
-//			}
-//		
-//		}
+		//flog.debug("FactProcessor.splitFacts_cont() attr_split "+ attributeName);
 
 		
 		int start_point = 0;
@@ -153,19 +130,17 @@ public class InstDistribution extends ClassDistribution{
 
 			try {
 
-				if (Util.DEBUG_DIST) {
-					System.out.println("FactProcessor.splitFacts_cont() new category: "+ inst_attr_category );
-					System.out.println(" ("+start_point+","+integer_index+")");
-				}
+				//flog.debug("FactProcessor.splitFacts_cont() new category: "+ inst_attr_category+
+				//		" ("+start_point+","+integer_index+")");
 				
 				List<Instance> data_at_category = data.subList(start_point, integer_index+1);
-				for (Instance i: data_at_category) {
+				for (Instance inst: data_at_category) {
 					
-					Object targetCategory = i.getAttrValue(targetName);
+					Object targetCategory = inst.getAttrValue(targetName);
 					
-					instLists.get(inst_attr_category).change(targetCategory, +1);	// add one for vote for the target value : target_key
-					instLists.get(inst_attr_category).change(attr_sum, +1);
-					instLists.get(inst_attr_category).addSupporter(targetCategory, i);
+					instLists.get(inst_attr_category).change(targetCategory, inst.getWeight());	// add one for vote for the target value : target_key
+					instLists.get(inst_attr_category).change(attr_sum, inst.getWeight());
+					instLists.get(inst_attr_category).addSupporter(targetCategory, inst);
 				}
 				start_point = integer_index+1;
 
@@ -181,7 +156,7 @@ public class InstDistribution extends ClassDistribution{
 		
 		for (int idx = 0; idx < super.target_attr.getCategoryCount(); idx++) {
 			Object looser = super.target_attr.getCategory(idx);
-			int num_supp = this.getVoteFor(looser);
+			double num_supp = this.getVoteFor(looser);
 			
 			if ((num_supp > 0) && !winner.equals(looser)) {
 				

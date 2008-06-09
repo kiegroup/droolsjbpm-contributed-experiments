@@ -3,10 +3,11 @@ package org.drools.learner;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.drools.learner.tools.Util;
-
 
 public class DecisionTree {
+	
+	//private static final Logger log = LoggerFactory.getSysOutLogger(LogLevel.ERROR);
+	//private static final Logger flog = LoggerFactory.getFileLogger(DecisionTree.class, LogLevel.ERROR, Util.log_file);
 	
 	private Class<?> obj_clazz;
 	
@@ -21,21 +22,20 @@ public class DecisionTree {
 	// The id of the tree in the forest
 	private int id;
 	
+	private String execution_signature;
 	public long FACTS_READ = 0;
 
 	public DecisionTree(Schema inst_schema, String _target) {
 		this.obj_clazz = inst_schema.getObjectClass();
 		
-		if (Util.DEBUG_DECISION_TREE) {
-			System.out.println("The target attribute: "+ _target);
-		}
+		//flog.debug("The target attribute: "+ _target);
+		
 		this.target = inst_schema.getAttrDomain(_target);
 		this.attrsToClassify = new ArrayList<Domain>(inst_schema.getAttrNames().size()-1);
 		for (String attr_name : inst_schema.getAttrNames()) {
 			if (!attr_name.equals(_target)) {
-				if (Util.DEBUG_DECISION_TREE) {
-					System.out.println("Adding the attribute: "+ attr_name);
-				}
+				//flog.debug("Adding the attribute: "+ attr_name);
+				
 				this.attrsToClassify.add(inst_schema.getAttrDomain(attr_name));
 			}
 		}
@@ -84,12 +84,18 @@ public class DecisionTree {
 		return this.getRoot().voteFor(i);
 	}
 	
+	public void setSignature(String executionSignature) {
+		execution_signature = executionSignature;
+	}
+	
+	public String getSignature() {
+		return execution_signature;
+	}
+	
 	@Override
 	public String toString() {
 		String out = "Facts scanned " + FACTS_READ + "\n";
 		return out + root.toString();
-	}
-	
-	
+	}	
 	
 }

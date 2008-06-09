@@ -5,7 +5,7 @@ import org.drools.learner.tools.Util;
 public class LeafNode extends TreeNode {
 	
 	private Object targetCategory;
-	private int num_intances_classified;
+	private double num_intances_classified;
 	
 	public LeafNode(Domain targetDomain, Object value) {
 		super(targetDomain);
@@ -21,11 +21,11 @@ public class LeafNode extends TreeNode {
 		return targetCategory;
 	}
 	
-	public void setNumClassification(int size) {
+	public void setNumClassification(double size) {
 		this.num_intances_classified= size;
 	}
 	
-	public int getNumClassification() {
+	public double getNumClassification() {
 		return this.num_intances_classified;
 	}
 	

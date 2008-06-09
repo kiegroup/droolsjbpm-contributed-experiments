@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Domain {
-	private boolean categorical, fixed;
+	private boolean categorical, fixed, artificial;
 	private String fName;
 	private Class<?> fType;// not sure if necessary
 	protected ArrayList<Object> fCategories;
@@ -14,6 +14,7 @@ public class Domain {
 		this.fType = _type;
 		
 		this.categorical = true;	// BY DEFAULT, it is categorical
+		this.artificial = false;	// BY DEFAULT, it is a real field, if it is artificial it means there is no field exist but there is method which computes the value
 		
 		this.fCategories = new ArrayList<Object>(2);
 		
@@ -35,6 +36,10 @@ public class Domain {
 	
 	public String getFName() {
 		return this.fName;
+	}
+	
+	protected void setFName(String name) {
+		this.fName = name;
 	}
 	public void setFixed(boolean _fixed) {
 		this.fixed = _fixed;
@@ -134,11 +139,20 @@ public class Domain {
 	}
 	
 	public String toString() {
-		String out = fName + "";
+		StringBuffer sb = new StringBuffer(fName + "");
 //		for (Object v: fValues) {
-//			out += "-" + v;
+//			sb.append("-" + v);
 //		}
-		return out;
+		return sb.toString();
+
+	}
+	
+	// if the field is a artificial field
+	public void setArtificial(boolean b) {
+		this.artificial = b;
+	}
+	public boolean isArtificial() {
+		return this.artificial;
 	}
 
 }

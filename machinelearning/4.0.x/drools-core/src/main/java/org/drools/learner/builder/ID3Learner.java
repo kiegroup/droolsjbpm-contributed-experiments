@@ -15,7 +15,7 @@ public class ID3Learner extends Learner {
 	
 	public ID3Learner() {
 		super();
-		super.setDomainType(Util.ID3);
+		super.setDomainAlgo(DomainAlgo.ID3);
 		
 	}
 	
@@ -62,7 +62,8 @@ public class ID3Learner extends Learner {
 		 * */
 		Domain node_domain = Entropy.chooseAttributeAsCategorical(data_stats, attribute_domains);
 		
-		//System.out.println(Util.ntimes("*", 20)+" 1st best attr: "+ node_domain);
+		if (flog.stat() !=null)
+			flog.stat().log(Util.ntimes("*", 20)+" 1st best attr: "+ node_domain);
 
 		TreeNode currentNode = new TreeNode(node_domain);
 		currentNode.setNumMatch(data_stats.getSum());									//num of matching instances to the leaf node

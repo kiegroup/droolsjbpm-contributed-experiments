@@ -59,8 +59,13 @@ public class ObjectFactory {
 			
 			file =new File("src/main/java/org/drools/examples/learner/"+filename);
 			if(!file.exists()){
+				file =new File("drools-examples/drools-examples-drl/src/main/java/org/drools/examples/learner/"+filename);
+				
 				System.out.println("where is still the file ? "+ file);
-				System.exit(0);
+				if(!file.exists()){
+					System.out.println("where is still still the file ? "+ file);
+					System.exit(0);
+				}
 			}
 		}
 		

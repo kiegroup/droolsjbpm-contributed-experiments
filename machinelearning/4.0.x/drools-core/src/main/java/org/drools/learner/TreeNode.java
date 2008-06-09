@@ -7,6 +7,10 @@ import org.drools.learner.tools.Util;
 
 public class TreeNode {
 	
+	//private static final Logger log = LoggerFactory.getSysOutLogger(TreeNode.class, LogLevel.ERROR);
+	//private static final Logger flog = LoggerFactory.getFileLogger(TreeNode.class);	
+	
+	
 	private Domain domain;
 	private Hashtable<Object, TreeNode> children;
 	/* TODO explain
@@ -17,7 +21,7 @@ public class TreeNode {
 	private double rank, gain, gainRatio;
 	
 	// Number of all instances matching at that node
-	private int num_matching_instances;
+	private double num_matching_instances;
 	
 	public TreeNode(Domain domain) {
 		this.domain = domain;
@@ -33,11 +37,11 @@ public class TreeNode {
 		this.rank = _rank;
 	}
 	
-	public void setNumMatch(int size) {
+	public void setNumMatch(double size) {
 		this.num_matching_instances= size;
 	}
 	
-	public int getNumMatch() {
+	public double getNumMatch() {
 		return this.num_matching_instances;
 	}
 	
@@ -58,29 +62,27 @@ public class TreeNode {
 	}
 	
 	public Object voteFor(Instance i) {
-		Object attr_value = i.getAttrValue(this.domain.getFName());
-		Object category = domain.getCategoryOf(attr_value);
+		final Object attr_value = i.getAttrValue(this.domain.getFName());
+		final Object category = domain.getCategoryOf(attr_value);
 		
-		TreeNode my_node = this.getChild(category);
+		final TreeNode my_node = this.getChild(category);
 		
-		if (Util.DEBUG_TEST) {
-			String out = "\nDomain:"+this.domain.getFName()+"->";
-			for (int idx = 0; idx < this.domain.getCategoryCount(); idx++) {
-				Object value = this.domain.getCategory(idx);
-				out += value+"-";
-			}
-			out =  Util.ntimes("$", 5) + out + " SEARCHING for = "+ attr_value + " in "+ this.domain.getFName();
-			
-			out += "\n KEYS:";
-			for (Object key: this.getChildrenKeys()) {
-				
-				out += " "+key +"% "+this.getChild(key).getDomain() + " :";
-			}
-			System.out.print(out);
-			System.out.print(" @myclass:"+category+ "\n");
-			System.out.print(" @mynode:"+my_node+ "\n");
-			
-		}
+		
+//		flog.debug(new Object() {
+//			public String toString() {
+//				
+//				StringBuffer sb = new StringBuffer(Util.ntimes("$", 5)+"\nDomain:"+domain.getFName()+"->");
+//				for (int idx = 0; idx < domain.getCategoryCount(); idx++) {
+//					sb.append(domain.getCategory(idx)+"-");
+//				}
+//				sb.append(" SEARCHING for = "+ attr_value + " in "+ domain.getFName());
+//				sb.append("\n KEYS:");
+//				for (Object key: getChildrenKeys()) {
+//					sb.append(" "+key +"% "+ getChild(key).getDomain() + " :");
+//				}
+//				return sb.toString();
+//			}
+//		});
 		return my_node.voteFor(i);
 	}
 	

@@ -19,7 +19,7 @@ public class GolfC45ExampleFromDrl {
 	public static final void main(final String[] args) throws Exception {
         //read in the source
         //final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
-    	final Reader source = new InputStreamReader( Restaurant.class.getResourceAsStream( "golf2.drl" ) );
+    	final Reader source = new InputStreamReader( Golf.class.getResourceAsStream( "golf2.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
 

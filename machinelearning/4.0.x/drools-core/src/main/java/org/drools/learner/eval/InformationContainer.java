@@ -8,17 +8,18 @@ import org.drools.learner.Instance;
 public class InformationContainer {
 	
 	public Domain domain;
-	public double gain;
-	public double gain_ratio;
+	public double attribute_eval;
+	//public double gain_ratio;
 	public ArrayList<Instance> sorted_data;
 	
 	public InformationContainer() {
 
 	}
-	public InformationContainer(Domain _domain, double _gain, double _gain_ratio) {
-		this.domain = _domain;
-		this.gain = _gain;
-		this.gain_ratio = _gain_ratio;
-	}
+	
+//	public InformationContainer(Domain _domain, double _attribute_eval, double _gain_ratio) {
+//		this.domain = _domain;
+//		this.attribute_eval = _attribute_eval;
+//		this.gain_ratio = _gain_ratio;
+//	}
 
 }

@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.drools.WorkingMemory;
+import org.drools.learner.builder.Learner.DomainAlgo;
 import org.drools.learner.tools.FeatureNotSupported;
 
 public class Memory {
 	
 	
-	// TODO pass a list of classes, and get all th eobject from that class
-	public static Memory createFromWorkingMemory(WorkingMemory _session, Class<?> clazz, int domain_type) throws FeatureNotSupported {
+	// TODO pass a list of classes, and get all the object from that class
+	public static Memory createFromWorkingMemory(WorkingMemory _session, Class<?> clazz, DomainAlgo domain_type) throws FeatureNotSupported {
 		// if mem == null
 		Memory mem = new Memory();
 

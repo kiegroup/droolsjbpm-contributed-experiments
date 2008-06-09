@@ -7,10 +7,13 @@ import java.util.List;
 import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.QuantitativeDomain;
+import org.drools.learner.tools.LoggerFactory;
+import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
 
 public class Entropy {
 	
+	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Entropy.class, SimpleLogger.DEFAULT_LEVEL);
 	//public Entropy
 	/* 
 	 * - chooses the best attribute,
@@ -43,14 +46,14 @@ public class Entropy {
 				Categorizer visitor = new Categorizer(insts_by_target);
 				visitor.findSplits(trialDomain);
 				
-				// trial domain modified				
+				// trial domain is modified				
 				if (trialDomain.getNumIndices()==1) {
 					gain = 0.0;
 				} else {
-					gain = dt_info - info_contattr(visitor.getInstances(), insts_by_target.getClassDomain(), trialDomain);
+					gain = dt_info - info_contattr(visitor.getSortedInstances(), insts_by_target.getClassDomain(), trialDomain);
 				}
 				attr_domain = trialDomain;
-				sorted_instances = visitor.getInstances();
+				sorted_instances = visitor.getSortedInstances();
 				
 				/*
 				if (Util.DEBUG)	{
@@ -65,7 +68,7 @@ public class Entropy {
 				}			
 				/* */
 			}
-			if (Util.DEBUG_ENTROPY)	System.out.println("Attribute: " + attr_domain + " the gain: " + gain);
+			//flog.debug("Attribute: " + attr_domain + " the gain: " + gain);
 			if (gain > greatestGain) {
 				greatestGain = gain;
 				best_attr = attr_domain;
@@ -76,8 +79,7 @@ public class Entropy {
 		// Clone the best attribute domain cause it is going to be the domain of the treenode
 		eval.domain =  best_attr.cheapClone();
 		eval.sorted_data = best_sorted_instances;
-		eval.gain = greatestGain;
-		//eval.gain_ratio = greatestGain/greatestSplitGain;
+		eval.attribute_eval = greatestGain;
 		return eval.domain;
 	}
 	
@@ -107,7 +109,7 @@ public class Entropy {
 			 * All domains are categorical so i will use them the way they are
 			 */
 			double gain = dt_info - info_attr(insts_by_target, attr_domain);
-			//if (Util.DEBUG)	System.out.println("Attribute: " + attr + " the gain: " + gain);
+			//flog.debug("Attribute: " + attr_domain.getFName() + " the gain: " + gain);
 			if (gain > greatestGain) {
 				greatestGain = gain;
 				best_attr = attr_domain;
@@ -122,17 +124,13 @@ public class Entropy {
 		
 		Domain target_domain = insts_by_target.getClassDomain();
 		
-		if (Util.DEBUG_ENTROPY) {
-			System.out.println("What is the attributeToSplit? " + attr_domain);
-		}
+		//flog.debug("What is the attributeToSplit? " + attr_domain);
 
 		/* initialize the hashtable */
 		CondClassDistribution insts_by_attr = new CondClassDistribution(attr_domain, target_domain);
 		insts_by_attr.setTotal(insts_by_target.getSum());
 		
-		if (Util.DEBUG_ENTROPY) {
-			System.out.println("Cond distribution for "+ attr_domain + " \n"+ insts_by_attr);
-		}
+		//flog.debug("Cond distribution for "+ attr_domain + " \n"+ insts_by_attr);
 		
 		for (int category = 0; category<target_domain.getCategoryCount(); category++) {
 			Object targetCategory = target_domain.getCategory(category); 
@@ -143,10 +141,11 @@ public class Entropy {
 				Object inst_class = inst.getAttrValue(target_domain.getFName());
 				
 				if (!targetCategory.equals(inst_class)) {
-					System.out.println("How the fuck they are not the same ? "+ targetCategory + " " + inst_class);
+					if (flog.error() != null)
+						flog.error().log("How the fuck they are not the same ? "+ targetCategory + " " + inst_class);
 					System.exit(0);
 				}
-				insts_by_attr.change(inst_attr_category, targetCategory, +1);
+				insts_by_attr.change(inst_attr_category, targetCategory, inst.getWeight()); //+1
 				
 			}
 		}
@@ -158,6 +157,7 @@ public class Entropy {
 	/* calculates the information of a quantitative domain given the split indexes of instances 
 	 * a wrapper for the quantitative domain to be able to calculate the stats
 	 * */
+	//public static double info_contattr(InstanceList data, Domain targetDomain, QuantitativeDomain splitDomain) {
 	public static double info_contattr(List<Instance> data, Domain targetDomain, QuantitativeDomain splitDomain) {
 
 		String targetAttr = targetDomain.getFName();
@@ -175,8 +175,7 @@ public class Entropy {
 				split_index++;	
 			}
 			Object targetKey = i.getAttrValue(targetAttr);
-			instances_by_attr.change(attr_key, targetKey, +1);
-
+			instances_by_attr.change(attr_key, targetKey, i.getWeight());	//+1
 			
 			index++;
 		}
@@ -190,29 +189,23 @@ public class Entropy {
 	 */
 	public static double calc_info_attr( CondClassDistribution instances_by_attr) {
 		//Collection<Object> attributeValues = instances_by_attr.getAttributes();
-		int data_size = instances_by_attr.getTotal();
+		double data_size = instances_by_attr.getTotal();
 		double sum = 0.0;
 		if (data_size>0)
 			for (int attr_idx=0; attr_idx<instances_by_attr.getNumCondClasses(); attr_idx++) {
 				Object attr_category = instances_by_attr.getCondClass(attr_idx);
-				int total_num_attr = instances_by_attr.getTotal_AttrCategory(attr_category);
+				double total_num_attr = instances_by_attr.getTotal_AttrCategory(attr_category);
 
 				if (total_num_attr > 0) {
-					double prob = (double) total_num_attr / (double) data_size;
-					if (Util.DEBUG_ENTROPY)	{
-						System.out.print("{("+total_num_attr +"/"+data_size +":"+prob +")* [");
-					}
+					double prob = total_num_attr / data_size;
+					//flog.debug("{("+total_num_attr +"/"+data_size +":"+prob +")* [");
 					double info =  calc_info(instances_by_attr.getDistributionOf(attr_category));
 
 					sum += prob * info;
-					if (Util.DEBUG_ENTROPY)	{
-						System.out.print("]} ");
-					}
+					//flog.debug("]} ");
 				}
 			}
-		if (Util.DEBUG_ENTROPY)	{
-			System.out.println("\n == "+sum);
-		}
+		//flog.debug("\n == "+sum);
 		return sum;
 	}
 	
@@ -225,28 +218,23 @@ public class Entropy {
 	 */
 	public static double calc_info(ClassDistribution quantity_by_class) {
 		
-		int data_size = quantity_by_class.getSum();
+		double data_size = quantity_by_class.getSum();
 		
 		double prob, sum = 0;
-		String out =" ";
 		Domain target_domain = quantity_by_class.getClassDomain();
 		for (int category = 0; category<target_domain.getCategoryCount(); category++) {
 			
 			Object targetCategory = target_domain.getCategory(category);
-			int num_in_class = quantity_by_class.getVoteFor(targetCategory);
+			double num_in_class = quantity_by_class.getVoteFor(targetCategory);
 
 			if (num_in_class > 0) {
-				prob = (double) num_in_class / (double) data_size;
+				prob = num_in_class / data_size;
 				/* TODO what if it is a sooo small number ???? */
-				if (Util.DEBUG_ENTROPY)	{
-					out += "("+num_in_class+ "/"+data_size+":"+prob+")" +"*"+ Util.log2(prob) + " + ";
-				}
+				//flog.debug("("+num_in_class+ "/"+data_size+":"+prob+")" +"*"+ Util.log2(prob) + " + ");
 				sum -=  prob * Util.log2(prob);
 			}
 		}
-		if (Util.DEBUG_ENTROPY)	{
-			System.out.print(out +"= " +sum);
-		}
+		//flog.debug("= " +sum);
 		return sum;
 	}
 

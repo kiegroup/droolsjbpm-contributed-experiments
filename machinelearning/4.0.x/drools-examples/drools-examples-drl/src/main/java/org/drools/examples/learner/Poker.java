@@ -1,9 +1,9 @@
 package org.drools.examples.learner;
 
+import org.drools.learner.tools.ClassAnnotation;
 import org.drools.learner.tools.FieldAnnotation;
 
-
-
+@ClassAnnotation(label_element = "getLabel")
 public class Poker {
 	@FieldAnnotation(readingSeq = 0)
 	private int s1; // 'Suit of card #1': Ordinal (1-4) representing {Hearts, Spades, Diamonds, Clubs}
@@ -30,11 +30,27 @@ public class Poker {
 	@FieldAnnotation(readingSeq = 9, discrete=false)
 	private int c5; // 'Rank of card #5': Numerical (1-13) representing (Ace, 2, 3, ... , Queen, King)
 
-	@FieldAnnotation(readingSeq = 10, target = true)
+	@FieldAnnotation(readingSeq = 10, ignore = true)
 	private int poker_hand;  
+	/*
+	 *0: Nothing in hand; not a recognized poker hand 
+      1: One pair; one pair of equal ranks within five cards
+      2: Two pairs; two pairs of equal ranks within five cards
+      3: Three of a kind; three equal ranks within five cards
+      4: Straight; five cards, sequentially ranked with no gaps
+      5: Flush; five cards with the same suit
+      6: Full house; pair + different rank three of a kind
+      7: Four of a kind; four equal ranks within five cards
+      8: Straight flush; straight + flush
+      9: Royal flush; {Ace, King, Queen, Jack, Ten} + flush
+	 */
 	
 	public Poker() {
 		
+	}
+	
+	public boolean getLabel() {
+		return poker_hand>=4; 
 	}
 	
 	public int getS1() {

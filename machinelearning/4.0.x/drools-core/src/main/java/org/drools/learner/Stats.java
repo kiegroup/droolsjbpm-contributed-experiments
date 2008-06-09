@@ -1,20 +1,16 @@
 package org.drools.learner;
 
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
-
-import org.drools.learner.tools.Util;
 
 public class Stats {
 	
-	public static int INCORRECT = 0, CORRECT = 1, UNKNOWN = 2;
+	public static final int INCORRECT = 0, CORRECT = 1, UNKNOWN = 2;
 	
 	private Class<?> stat_class;
 	private ArrayList<Integer> histogram;
@@ -47,46 +43,61 @@ public class Stats {
 	public int getTotal() {
 		return total_data;
 	}
-	
-	public void print2file(String dataFile, int domain_type, int tree_set) {
+	/*
+	 * fileSignature must contain the folder location
+	 * by default the folder = "src/main/rules/"
+	 */
+	public void print2file(String fileSignature) {
 		
-		String packageFolders = this.stat_class.getPackage().getName();
-
-		String _packageNames = packageFolders.replace('.', '/');
+		//String dataFileName = "src/main/rules/"+_packageNames+"/"+ fileName; 
 		
-		String fileName = (dataFile == null || dataFile == "") ? this.stat_class.getSimpleName().toLowerCase() : dataFile; 		
+		if (!fileSignature.endsWith(".stats"))
+			fileSignature += ".stats";
+		System.out.println("printing stats:"+ fileSignature);
 		
-		
-		String suffix = Util.getFileSuffix(domain_type, tree_set);
-		fileName += "_"+suffix + ".stats";
-		
-
-		
-		String dataFileName = "src/main/rules/"+_packageNames+"/"+ fileName; 
 		try {
-			StatsPrinter.print(this, new FileOutputStream(dataFileName));
+			StatsPrinter.print(this, new FileWriter(fileSignature));
 		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public void print2out() {
-		StatsPrinter.print(this, System.out);
+		try {
+			StatsPrinter.print(this, new PrintWriter(System.out));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
+	}
+	
+	public String print2string() {
+		StringWriter swr = new StringWriter();
+		try {
+			StatsPrinter.print(this, swr);
+			return swr.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 }
 
 class StatsPrinter {
-	public static void print(Stats mystats, OutputStream os) {
-		PrintWriter pwr = new PrintWriter(os);
+	//public static void print(Stats mystats, OutputStream os) {
+	public static void print(Stats mystats, Writer wr) throws IOException {
+		//PrintWriter pwr = new PrintWriter(os);
 		
 		// print the statistics of the results to a file	
-		pwr.println("TESTING results: incorrect "+ mystats.getResult(Stats.INCORRECT));
-		pwr.println("TESTING results: correct "+ mystats.getResult(Stats.CORRECT));
-		pwr.println("TESTING results: unknown "+ mystats.getResult(Stats.UNKNOWN));
-		pwr.println("TESTING results: Total Number "+ mystats.getTotal());
+		wr.write("TESTING results: incorrect "+ mystats.getResult(Stats.INCORRECT)+"\n");
+		wr.write("TESTING results: correct "+ mystats.getResult(Stats.CORRECT)+"\n");
+		wr.write("TESTING results: unknown "+ mystats.getResult(Stats.UNKNOWN)+"\n");
+		wr.write("TESTING results: Total Number "+ mystats.getTotal());
 		
-		pwr.flush();
+		wr.flush();
 	}
 }

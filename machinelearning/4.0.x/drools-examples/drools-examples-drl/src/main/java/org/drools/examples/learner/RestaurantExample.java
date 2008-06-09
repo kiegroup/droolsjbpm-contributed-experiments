@@ -10,8 +10,9 @@ import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
-import org.drools.learner.builder.Learner;
-import org.drools.learner.builder.LearnerFactory;
+import org.drools.learner.DecisionTree;
+import org.drools.learner.builder.DecisionTreeFactory;
+
 
 public class RestaurantExample {
 
@@ -36,11 +37,11 @@ public class RestaurantExample {
 		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		Learner learner = LearnerFactory.createID3(session, Restaurant.class);
+		DecisionTree dt_builder = DecisionTreeFactory.createSingleID3(session, Restaurant.class);
 
 		final PackageBuilder builder = new PackageBuilder();
 		//this wil generate the rules, then parse and compile in one step
-		builder.addPackageFromLearner( learner );
+		builder.addPackageFromTree( dt_builder );
 		ruleBase.addPackage( builder.getPackage() );
 		/* 
 			final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
