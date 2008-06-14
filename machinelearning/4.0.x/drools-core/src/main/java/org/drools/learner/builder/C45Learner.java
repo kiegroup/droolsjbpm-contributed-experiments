@@ -16,7 +16,7 @@ public class C45Learner extends Learner{
 	
 	public C45Learner() {
 		super();
-		super.setDomainAlgo(DomainAlgo.C45);
+		super.setDomainAlgo(DomainAlgo.QUANTITATIVE);
 	}
 	
 	

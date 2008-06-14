@@ -1,7 +1,9 @@
 package org.drools.tutorials.banking;
 
 import java.util.Date;
+import org.drools.learner.tools.ClassAnnotation;
 
+@ClassAnnotation(label_element = "getLabel")
 public class AllocatedCashflow extends TypedCashflow {
     private Account account;
 

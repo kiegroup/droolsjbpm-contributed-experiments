@@ -1,9 +1,15 @@
 package org.drools.learner.tools;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+
+import org.drools.learner.Domain;
+import org.drools.learner.builder.Learner;
+import org.drools.learner.builder.Learner.DataType;
+import org.drools.learner.builder.Learner.DomainAlgo;
 
 public class Util {
 	
@@ -54,7 +60,7 @@ public class Util {
 	}
 	
 	/* TODO make this all_fields arraylist as hashmap */
-	public static void getAllFields(Class<?> clazz, ArrayList<Field> all_fields) {
+	public static void getSuperFields(Class<?> clazz, ArrayList<Field> all_fields) {
 		if (clazz == Object.class)
 			return;
 		
@@ -63,13 +69,136 @@ public class Util {
 		for (Field f: element_fields) {
 			all_fields.add(f);
 		}
-		getAllFields(clazz.getSuperclass(), all_fields);
+		getSuperFields(clazz.getSuperclass(), all_fields);
 		
 		return;
 	}
 	
+	public static void decomposeStructuredFields(ArrayList<Field> element_fields, ArrayList<Field> decomposed_fields) {
+		
+		for (Field f: element_fields) {
+			if (isSimpleType(f.getType()))
+				decomposed_fields.add(f);
+			else {
+				// it is an structured attribute
+				// u need to get its attributes
+				//if the field is a collection of sth => BOK
+				ArrayList<Field> field_structure = new ArrayList<Field>();
+				Util.getSuperFields(f.getType(), field_structure);
+				decomposeStructuredFields(field_structure, decomposed_fields);
+			}
+		}
+		return;
+	}
+	
+	public static boolean isSetter(String m_name) {
+		if (m_name.startsWith("set") || m_name.startsWith("is") )
+			return true;
+		else 
+			return false;
+	}
+
+	public static String getFieldName(String method_name) {
+		if (method_name.startsWith("get") || method_name.startsWith("set"))
+			return method_name.substring(3, method_name.length()).toLowerCase();
+		else if (method_name.startsWith("is"))
+			return method_name.substring(2, method_name.length()).toLowerCase();
+		else 
+			return null;
+	}
+	
+	public static boolean isSimpleMethod(Class<?>[] type_name) {
+		if (type_name.length==1) {
+			return isSimpleType(type_name[0]);
+		}
+		else
+			return false;
+	}
+	
+	public static DataType getDataType(Class<?> type_name) {
+		if (isSimpleType(type_name))
+			return DataType.PRIMITIVE;
+		else {
+			if (isCollectionType(type_name)) {
+				return DataType.COLLECTION;
+			}
+			else 
+				return DataType.STRUCTURED;
+		}
+	}
+	
+	public static boolean isSimpleType(Class<?> type_name) {
+		if (type_name.isPrimitive() || type_name == String.class)
+			return true;
+		else if (type_name == Boolean.class || type_name == Boolean.TYPE ||
+			type_name == Integer.class || type_name == Integer.TYPE ||
+			type_name == Long.class || type_name == Long.TYPE ||
+			type_name == Double.class || type_name == Double.TYPE ||
+			type_name == Float.class || type_name == Float.TYPE ||
+			type_name == String.class)
+			return true;
+		else if (type_name.isEnum()) {
+			return true;
+		} else 
+			return false;
+	}
+	
+	public static boolean isCollectionType(Class<?> type_name) {
+		if (type_name.isArray())
+			return true;
+		else if (type_name.isAssignableFrom(Iterable.class))
+			return true;
+		else 
+			return false;
+	}
+	
+	public static FieldAnnotation getFieldAnnotations(Field f) {
+		Annotation[] annotations = f.getAnnotations();
+		for (Annotation a : annotations) {
+			if (a instanceof FieldAnnotation) {
+				return (FieldAnnotation)a; // here it is !!!
+			}
+		}
+		return null;
+	}
+	
+	public static ClassAnnotation getDecClassAnnotations(Class<?> clazz) {
+		Annotation[] annotations = clazz.getDeclaredAnnotations();	// it should get the inherited annotations 
+		for (Annotation a : annotations) {
+			if (a instanceof ClassAnnotation) {
+				return (ClassAnnotation)a; // here it is !!!
+			}
+		}
+		return null;
+	}
+	public static ClassAnnotation getClassAnnotations(Class<?> clazz) {
+		Annotation[] annotations = clazz.getAnnotations();	// it should get the inherited annotations 
+		for (Annotation a : annotations) {
+			if (a instanceof ClassAnnotation) {
+				return (ClassAnnotation)a; // here it is !!!
+			}
+		}
+		return null;
+	}
+	// to process the type => it must be simple
+	public static void processDomain(Domain fieldDomain, Class<?> clazz_type) {
+		if (clazz_type == Boolean.TYPE || clazz_type == Boolean.class)	{	/* set discrete*/
+//			fieldDomain.setCategorical(true);	// BY DEFAULT it is categorical
+			fieldDomain.addCategory(Boolean.TRUE);
+			fieldDomain.addCategory(Boolean.FALSE);
+			fieldDomain.setFixed(true);
+		} else if (clazz_type.isEnum()) {//f.isEnumConstant()) {
+			Class<?> enum_f = clazz_type;
+			//for (E e:enum_f.getEnumConstants())
+			//fieldDomain.setFixed(true);
+		} else if (clazz_type == String.class) {	
+			/* BY DEFAULT it is categorical*/
+		} 
+		
+	}
+	
 	/* TODO make this all_fields arraylist as hashmap */
-	public static void getAllFields(Class<?> clazz, ArrayList<Field> all_fields, ArrayList<Class<?>> all_classes) {
+	private static void getAllFields(Class<?> clazz, ArrayList<Field> all_fields, ArrayList<Class<?>> all_classes) {
 		if (clazz == Object.class)
 			return;
 		all_classes.add(clazz);
@@ -101,7 +230,7 @@ public class Util {
 		return 0.0;
 	}
 	
-	public static int getType(Class<?>[] type_name) {
+	private static int getType(Class<?>[] type_name) {
 		/*	
 		 * simpletype.contains(type_name)
 		 * how do you get the simple type
@@ -151,7 +280,7 @@ public class Util {
 		return bag;
 	}
 	
-	public static Object convertPrimitiveType (Object primitiveValue) {
+	private static Object convertPrimitiveType (Object primitiveValue) {
 		Class klass = primitiveValue.getClass();
 		if  (klass.equals(Boolean.TYPE)) {
 			return (Boolean)primitiveValue;
@@ -203,8 +332,5 @@ public class Util {
 		
 		
 	}
-
-
-
 }
 

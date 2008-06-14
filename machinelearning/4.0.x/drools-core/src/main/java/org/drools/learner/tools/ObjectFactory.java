@@ -40,7 +40,7 @@ public class ObjectFactory {
 	private ObjectFactory (Class<?> clazz) {
 		this.obj_clazz = clazz;
 		this.clazz_fields = new ArrayList<Field>();
-		Util.getAllFields(clazz, clazz_fields); 
+		Util.getSuperFields(clazz, clazz_fields); 
 		
 		this.field_sequences = getFieldReadingSeqs(clazz, clazz_fields);
 	}
@@ -104,8 +104,8 @@ public class ObjectFactory {
 			for (Method m : element_methods) {
 				String m_name = m.getName();
 				Class<?>[] param_type_name = m.getParameterTypes();
-				if (ObjectFactory.isSetter(m_name) & ObjectFactory.isSimpleType(param_type_name)) {
-					String basicFieldName = ObjectFactory.getFieldName(m_name);
+				if (Util.isSetter(m_name) & Util.isSimpleMethod(param_type_name)) {
+					String basicFieldName = Util.getFieldName(m_name);
 					
 					/* TODO dont use the basic field name as the real field name, there can be a capital/miniscul 
 					 * letter problem
@@ -115,17 +115,14 @@ public class ObjectFactory {
 						if (_f.getName().equalsIgnoreCase(basicFieldName)) {
 							f = _f;
 							break;
-						}
-							
+						}			
 					}
-					
 					if (f == null) {
 						throw new Exception("Field("+basicFieldName+") could not be found for the class("+this.obj_clazz+")");
 					}
 					else {
 						String fieldString = fieldValues.get(this.field_sequences.get(f.getName()));
-						Object fieldValue = readString(f, fieldString.trim());
-						
+						Object fieldValue = readString(f, fieldString.trim());						
 						try {
 							m.invoke(element, fieldValue);
 						} catch (IllegalArgumentException e) {
@@ -255,41 +252,6 @@ public class ObjectFactory {
 	private static Object readDoubleFromString(String data) {
 		return Double.parseDouble(data);
 	}
-	
-	private static boolean isSetter(String m_name) {
-		if (m_name.startsWith("set") || m_name.startsWith("is") )
-			return true;
-		else 
-			return false;
-	}
-
-	private static String getFieldName(String method_name) {
-		if (method_name.startsWith("get") || method_name.startsWith("set"))
-			return method_name.substring(3, method_name.length()).toLowerCase();
-		else if (method_name.startsWith("is"))
-			return method_name.substring(2, method_name.length()).toLowerCase();
-		else 
-			return null;
-	}
-	
-	private static boolean isSimpleType(Class<?>[] type_name) {
-		if (type_name.length==1) {
-			if (type_name[0].isPrimitive() || type_name[0] == String.class)
-				return true;
-			if (type_name[0] == Boolean.class || type_name[0] == Boolean.TYPE ||
-				type_name[0] == Integer.class || type_name[0] == Integer.TYPE ||
-				type_name[0] == Long.class || type_name[0] == Long.TYPE ||
-				type_name[0] == Double.class || type_name[0] == Double.TYPE ||
-				type_name[0] == Float.class || type_name[0] == Float.TYPE ||
-				type_name[0] == String.class)
-				return true;
-			else 
-				return false;
-		}
-		else
-			return false;
-	}
-	
 	
 	
 

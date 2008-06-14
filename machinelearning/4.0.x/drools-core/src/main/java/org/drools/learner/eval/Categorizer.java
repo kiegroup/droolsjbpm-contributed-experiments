@@ -79,6 +79,10 @@ public class Categorizer {
 		return data;
 	}
 	
+	public QuantitativeDomain getSplitDomain() {
+		return this.splitDomain;
+	}
+	
 	private double find_a_split(int begin_index, int size, int depth, 
 								ClassDistribution facts_in_class) {
 

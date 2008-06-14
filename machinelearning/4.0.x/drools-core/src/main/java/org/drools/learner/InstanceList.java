@@ -5,27 +5,44 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractor;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Extractor;
-
-
 public class InstanceList {
 
 	private Schema schema;
 	private ArrayList<Instance> instances;
-	private ArrayList<Double> weights;
+	private InstanceFactory factory;
 	
+	// old constructer
 	public InstanceList(Schema _schema) {
 		this.schema = _schema;
-		this.instances = new ArrayList<Instance>();
+		this.instances = new ArrayList<Instance>(); 
+	}
+	public InstanceList(Schema _schema, WorkingMemory _session) {
+		this.schema = _schema;
+		this.instances = new ArrayList<Instance>(); 
+		this.factory = new InstanceFactory(_session, _schema);
 	}
 	
+	// will be used as copy constructer
 	public InstanceList(Schema _schema, int size) {
 		this.schema = _schema;
-		this.instances = new ArrayList<Instance>(size); 
+		this.instances = new ArrayList<Instance>(size);
+	}
+
+	public void addStructuredInstance(Object _obj) {
+		// create instance and all attributes according to the schema		
+		Instance inst = factory.createInstance(_obj);		
+		System.out.println(inst);
+		if (inst != null )
+			instances.add(inst);
+		else {
+			System.out.println("Couldnot create the instance");
+			System.exit(0);
+		}
 	}
 	
+	// old method
 	public void addFromWorkingMemory(WorkingMemory _session, Object _obj) {
 		// create instance and all attributes according to the schema
 		Instance inst = new Instance();
@@ -55,6 +72,8 @@ public class InstanceList {
 			}
 			
 		}
+		
+		System.out.println("inst:"+ inst);
 		instances.add(inst);
 	}
 	
@@ -96,7 +115,8 @@ public class InstanceList {
 	public Collection<String> getAttributes() {
 		return schema.getAttrNames();
 	}
-
+	
+	
 /*	String getClassName();
 
 	void assignTo(Collection<Instance> c);

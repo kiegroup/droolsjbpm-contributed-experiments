@@ -16,7 +16,11 @@ public abstract class Learner {
 	
 	protected static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Learner.class, SimpleLogger.DEFAULT_LEVEL);
 	
-	public static enum DomainAlgo { ID3, C45, WEIGHT }
+	public static enum DomainAlgo { CATEGORICAL, QUANTITATIVE }
+	public static DomainAlgo DEFAULT_DOMAIN = DomainAlgo.QUANTITATIVE;
+	
+	public static enum DataType {PRIMITIVE, STRUCTURED, COLLECTION}
+	public static DataType DEFAULT_DATA = DataType.PRIMITIVE;
 	private int data_size;
 	private DecisionTree best_tree;
 	private InstanceList input_data;

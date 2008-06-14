@@ -2,6 +2,9 @@ package org.drools.tutorials.banking;
 
 import java.util.Date;
 
+import org.drools.learner.tools.ClassAnnotation;
+
+@ClassAnnotation(label_element = "getLabel")
 public class Cashflow {
 
     private Date   date;
@@ -33,6 +36,10 @@ public class Cashflow {
         this.amount = amount;
     }
 
+    public boolean getLabel() {
+    	Date deadline = new Date(System.currentTimeMillis());
+    	return date.before(deadline) && amount<500.00;
+    }
     public String toString() {
         return "Cashflow[date=" + date + ",amount=" + amount + "]";
     }

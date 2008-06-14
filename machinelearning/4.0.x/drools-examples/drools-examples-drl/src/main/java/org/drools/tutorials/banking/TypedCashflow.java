@@ -2,6 +2,9 @@ package org.drools.tutorials.banking;
 
 import java.util.Date;
 
+import org.drools.learner.tools.ClassAnnotation;
+
+@ClassAnnotation(label_element = "getLabel")
 public class TypedCashflow extends Cashflow {
     public static final int CREDIT = 0;
     public static final int DEBIT  = 1;

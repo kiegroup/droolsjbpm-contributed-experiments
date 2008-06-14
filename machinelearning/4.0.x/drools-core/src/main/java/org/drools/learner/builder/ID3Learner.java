@@ -15,7 +15,7 @@ public class ID3Learner extends Learner {
 	
 	public ID3Learner() {
 		super();
-		super.setDomainAlgo(DomainAlgo.ID3);
+		super.setDomainAlgo(DomainAlgo.CATEGORICAL);
 		
 	}
 	
