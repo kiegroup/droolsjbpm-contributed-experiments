@@ -40,35 +40,42 @@ public class GolfExample {
 			session.insert(r);
 		}
 
-		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 7;
+		DecisionTree decision_tree; int ALGO = 111;
+		/* 
+		 * Single	1xx, Bag 	2xx, Boost 3xx
+		 * ID3 		x1x, C45 	x2x
+		 * Entropy	xx1, Gain	xx2
+		 */
 		switch (ALGO) {
-		case 1:
-			decision_tree  = DecisionTreeFactory.createBaggedC45(session, obj_class);
+		case 111:
+			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
 			break;
-		case 2:
-			decision_tree  = DecisionTreeFactory.createBoostedC45(session, obj_class);
+		case 112:
+			decision_tree  = DecisionTreeFactory.createSingleID3G(session, obj_class);
 			break;
-		case 3:
-			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
-				break;
-		case 4:
-			decision_tree  = DecisionTreeFactory.createBagC45Entropy(session, obj_class);
-				break;		
-		case 5:
-			decision_tree  = DecisionTreeFactory.createBagC45GainRatio(session, obj_class);
-				break;	
-		case 6:
-			decision_tree  = DecisionTreeFactory.createSingleID3(session, obj_class);
-				break;
-		case 7: 
-			decision_tree  = DecisionTreeFactory.createSingleC45Entropy(session, obj_class);
+		case 121: 
+			decision_tree  = DecisionTreeFactory.createSingleC45E(session, obj_class);
 			break;
-		case 8: 
-			decision_tree  = DecisionTreeFactory.createSingleC45GainRatio(session, obj_class);
+		case 122: 
+			decision_tree  = DecisionTreeFactory.createSingleC45G(session, obj_class);
 			break;
+		case 221:
+			decision_tree  = DecisionTreeFactory.createBagC45E(session, obj_class);
+			break;		
+		case 222:
+			decision_tree  = DecisionTreeFactory.createBagC45G(session, obj_class);
+			break;	
+		case 321:
+			decision_tree  = DecisionTreeFactory.createBoostedC45E(session, obj_class);
+			break;
+		case 322:
+			decision_tree  = DecisionTreeFactory.createBoostedC45G(session, obj_class);
+			break;
+//			case 3:
+//			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
+//			break;
 		default:
-			decision_tree  = DecisionTreeFactory.createSingleC45(session, obj_class);
+			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
 		
 		}
 		

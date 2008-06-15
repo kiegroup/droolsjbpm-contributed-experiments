@@ -11,7 +11,7 @@ import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
 
-public class Entropy {
+public class Entropy implements Heuristic{
 	
 	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Entropy.class, SimpleLogger.DEFAULT_LEVEL);
 	//public Entropy
@@ -22,105 +22,64 @@ public class Entropy {
 	 * 
 	 * used by:
 	 * c45Alternator, c45Learner, c45Iterator
-	 */	
-	public static Domain chooseAttribute(InformationContainer eval, InstDistribution insts_by_target, List<Domain> attr_domains) {
-									// List<Instance> instances
-
-		double dt_info = calc_info(insts_by_target);
-		
-		double greatestGain = -1000;
-		ArrayList<Instance> sorted_instances = null, best_sorted_instances = null;
-		Domain best_attr = attr_domains.get(0);
-		for (Domain attr_domain : attr_domains) {
-			/* No need to clone the domain as soon as no need to change the domain
-			 * All domains are categorical so i will use them the way they are
-			 */
-			double gain = 0.0;
-			if (attr_domain.isCategorical()) {
-				gain = dt_info - info_attr(insts_by_target, attr_domain);
-			} else {
-				// the continuous domain
-				
-				QuantitativeDomain trialDomain = QuantitativeDomain.createFromDomain(attr_domain);
-				
-				Categorizer visitor = new Categorizer(insts_by_target);
-				visitor.findSplits(trialDomain);
-				
-				// trial domain is modified				
-				if (trialDomain.getNumIndices()==1) {
-					gain = 0.0;
-				} else {
-					gain = dt_info - info_contattr(visitor.getSortedInstances(), insts_by_target.getClassDomain(), trialDomain);
-				}
-				attr_domain = trialDomain;
-				sorted_instances = visitor.getSortedInstances();
-				
-				/*
-				if (Util.DEBUG)	{
-					int index = 0;
-					for (Integer i: split_indices) {
-						System.out.print("Split indices:"+ i);
-						System.out.print(" domain "+attrDomain.getValues().get(index));
-						System.out.print(","+attrDomain.getIndices().get(index));
-						System.out.println(" fact "+visitor.getSortedFact(i));
-						index++;
-					}
-				}			
-				/* */
-			}
-			//flog.debug("Attribute: " + attr_domain + " the gain: " + gain);
-			if (gain > greatestGain) {
-				greatestGain = gain;
-				best_attr = attr_domain;
-				best_sorted_instances = sorted_instances;
-			}
-		}
-		
-		// Clone the best attribute domain cause it is going to be the domain of the treenode
-		eval.domain =  best_attr.cheapClone();
-		eval.sorted_data = best_sorted_instances;
-		eval.attribute_eval = greatestGain;
-		return eval.domain;
-	}
-	
-//	/* 
-//	 * to choose the best attribute
-//	 * can process categorical, and quantitative attribute domains
-//	 * used by c45Learner, c45Iterator
-//	 */
-//	public static Domain chooseAttribute(InstDistribution insts_by_target, List<Domain> attr_domains) {		
-//		InformationContainer evals = new InformationContainer();
-//		chooseAttribute(evals, insts_by_target, attr_domains);
-//		return evals.domain;
-//	}
-
-	/* 
-	 * to choose the best attribute
-	 * can process only the categorical attribute domains
-	 * used by id3Learner
 	 */
-	public static Domain chooseAttributeAsCategorical(InstDistribution insts_by_target, List<Domain> attr_domains) {
+	protected double data_eval; 
+	protected InstDistribution insts_by_target;
+	protected ArrayList<Instance> sorted_instances;
+	protected Domain domain;
 
-		double dt_info = calc_info(insts_by_target);
-		double greatestGain = -1000;
-		Domain best_attr = attr_domains.get(0);
-		for (Domain attr_domain : attr_domains) {
-			/* No need to clone the domain as soon as no need to change the domain
-			 * All domains are categorical so i will use them the way they are
-			 */
-			double gain = dt_info - info_attr(insts_by_target, attr_domain);
-			//flog.debug("Attribute: " + attr_domain.getFName() + " the gain: " + gain);
-			if (gain > greatestGain) {
-				greatestGain = gain;
-				best_attr = attr_domain;
-			}
-		}
-		// Clone the best attribute domain cause it is going to be the domain of the treenode
-		return best_attr.cheapClone();
+	public Entropy() {
+		//
+	}
+	
+	public void init(InstDistribution _insts_by_target) {
+		insts_by_target = _insts_by_target;
+		data_eval = calc_info(insts_by_target);
+		sorted_instances = null;
+		domain = null;
 	}
 	
 	
-	public static double info_attr(InstDistribution insts_by_target, Domain attr_domain) {
+	public double getEval(Domain attr_domain) {
+		CondClassDistribution insts_by_attr = info_attr(attr_domain);	
+		return data_eval - Entropy.calc_info_attr(insts_by_attr);
+	}
+	
+	public double getEval_cont(Domain attr_domain) {
+		
+		double attribute_eval= 0.0d;
+		QuantitativeDomain trialDomain = QuantitativeDomain.createFromDomain(attr_domain);
+
+		Categorizer visitor = new Categorizer(insts_by_target);
+		visitor.findSplits(trialDomain);
+
+		//	trial domain is modified				
+		if (trialDomain.getNumIndices() > 1) {
+			CondClassDistribution insts_by_attr = info_contattr(visitor); //.getSortedInstances(), trialDomain);
+			attribute_eval = data_eval - Entropy.calc_info_attr(insts_by_attr);
+		}
+		domain = trialDomain;
+		sorted_instances = visitor.getSortedInstances();
+		return attribute_eval;
+	}
+	
+	public double getDataEval() {
+		return data_eval;
+	}
+	
+	public Domain getDomain() {
+		return domain;
+	}
+	
+	public ArrayList<Instance> getSortedInstances() {
+		return sorted_instances;
+	}
+
+	public double getWorstEval() {
+		return -1000;
+	}
+	
+	public CondClassDistribution info_attr(Domain attr_domain) {
 		
 		Domain target_domain = insts_by_target.getClassDomain();
 		
@@ -149,8 +108,8 @@ public class Entropy {
 				
 			}
 		}
-		double sum = calc_info_attr(insts_by_attr);
-		return sum;
+		
+		return insts_by_attr;
 	}
 	
 	
@@ -158,8 +117,11 @@ public class Entropy {
 	 * a wrapper for the quantitative domain to be able to calculate the stats
 	 * */
 	//public static double info_contattr(InstanceList data, Domain targetDomain, QuantitativeDomain splitDomain) {
-	public static double info_contattr(List<Instance> data, Domain targetDomain, QuantitativeDomain splitDomain) {
-
+	public CondClassDistribution info_contattr(Categorizer visitor) {
+		
+		List<Instance> data = visitor.getSortedInstances();
+		QuantitativeDomain splitDomain = visitor.getSplitDomain();
+		Domain targetDomain = insts_by_target.getClassDomain();
 		String targetAttr = targetDomain.getFName();
 		
 		CondClassDistribution instances_by_attr = new CondClassDistribution(splitDomain, targetDomain);
@@ -179,8 +141,10 @@ public class Entropy {
 			
 			index++;
 		}
-		double sum = calc_info_attr(instances_by_attr);
-		return sum;
+		
+		return instances_by_attr;
+//		double sum = calc_info_attr(instances_by_attr);
+//		return sum;
 		
 	}
 	
@@ -222,6 +186,7 @@ public class Entropy {
 		
 		double prob, sum = 0;
 		Domain target_domain = quantity_by_class.getClassDomain();
+		if (data_size > 0)
 		for (int category = 0; category<target_domain.getCategoryCount(); category++) {
 			
 			Object targetCategory = target_domain.getCategory(category);
@@ -237,6 +202,4 @@ public class Entropy {
 		//flog.debug("= " +sum);
 		return sum;
 	}
-
-
 }

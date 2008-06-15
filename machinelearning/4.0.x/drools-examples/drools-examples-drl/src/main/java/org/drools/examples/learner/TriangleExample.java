@@ -10,7 +10,7 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.builder.DecisionTreeFactory;
 import org.drools.learner.tools.ObjectFactory;
 
-public class PokerExample {
+public class TriangleExample {
 	
 	public static final void main(final String[] args) throws Exception {
 		long start_time = System.currentTimeMillis();
@@ -28,8 +28,8 @@ public class PokerExample {
 //		final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
 //		logger.setFileName( "log/poker" );   
 		
-		String inputFile = new String("data/poker/poker-hand-training-true.data.txt");
-		Class<?> obj_class = Poker.class;
+		String inputFile = new String("data/triangle/triangle.data.txt");
+		Class<?> obj_class = Triangle.class;
 		List<Object> facts = ObjectFactory.getObjects(obj_class, inputFile);
 		for (Object r : facts) {
 			session.insert(r);
@@ -72,7 +72,7 @@ public class PokerExample {
 //			break;
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
-		
+
 		}
 		
 		final PackageBuilder builder = new PackageBuilder();
@@ -92,5 +92,7 @@ public class PokerExample {
 
 		session.dispose();
 	}
+	
+	
 
 }

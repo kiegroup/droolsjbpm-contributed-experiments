@@ -38,7 +38,7 @@ public class NurseryExample {
 
 		// instantiate a learner for a specific object class and pass session to train
 		//Learner learner = LearnerFactory.createID3(session, obj_class);
-		DecisionTree dt_builder  = DecisionTreeFactory.createBaggedC45(session, obj_class);
+		DecisionTree dt_builder  = DecisionTreeFactory.createBagC45E(session, obj_class);
 		
 		final PackageBuilder builder = new PackageBuilder();
 		//this wil generate the rules, then parse and compile in one step

@@ -7,16 +7,19 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.Domain;
 import org.drools.learner.LeafNode;
 import org.drools.learner.TreeNode;
-import org.drools.learner.eval.Entropy;
+import org.drools.learner.eval.AttributeChooser;
+import org.drools.learner.eval.Heuristic;
 import org.drools.learner.eval.InstDistribution;
 import org.drools.learner.tools.Util;
 
 public class ID3Learner extends Learner {
 	
-	public ID3Learner() {
+	private AttributeChooser chooser;
+	
+	public ID3Learner(Heuristic hf) {
 		super();
 		super.setDomainAlgo(DomainAlgo.CATEGORICAL);
-		
+		chooser = new AttributeChooser(hf);
 	}
 	
 	protected TreeNode train(DecisionTree dt, InstDistribution data_stats) {//List<Instance> data) {
@@ -60,7 +63,8 @@ public class ID3Learner extends Learner {
 		/* id3 starts: choose the attribute according to the entropy function 
 		 * entrophy function: data, info of the data wrt target domain, info for each attribute 
 		 * */
-		Domain node_domain = Entropy.chooseAttributeAsCategorical(data_stats, attribute_domains);
+		Domain node_domain = chooser.chooseAttributeAsCategorical(data_stats, attribute_domains);
+		
 		
 		if (flog.stat() !=null)
 			flog.stat().log(Util.ntimes("*", 20)+" 1st best attr: "+ node_domain);

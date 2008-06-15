@@ -7,16 +7,20 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.Domain;
 import org.drools.learner.LeafNode;
 import org.drools.learner.TreeNode;
-import org.drools.learner.eval.Entropy;
+import org.drools.learner.eval.AttributeChooser;
+import org.drools.learner.eval.Heuristic;
 import org.drools.learner.eval.InformationContainer;
 import org.drools.learner.eval.InstDistribution;
 import org.drools.learner.tools.FeatureNotSupported;
 
 public class C45Learner extends Learner{
 	
-	public C45Learner() {
+	private AttributeChooser chooser;
+	
+	public C45Learner(Heuristic hf) {
 		super();
 		super.setDomainAlgo(DomainAlgo.QUANTITATIVE);
+		chooser = new AttributeChooser(hf);
 	}
 	
 	
@@ -63,8 +67,9 @@ public class C45Learner extends Learner{
 		
 	
 		InformationContainer best_attr_eval = new InformationContainer();
+		
 		/* choosing the best attribute in order to branch at the current node*/
-		Entropy.chooseAttribute(best_attr_eval, data_stats, attribute_domains);
+		chooser.chooseAttribute(best_attr_eval, data_stats, attribute_domains);
 		Domain node_domain = best_attr_eval.domain;
 		
 		
