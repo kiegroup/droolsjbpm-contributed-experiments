@@ -3,24 +3,28 @@ package org.drools.learner;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.drools.learner.tools.Util;
+
 public class Domain {
 	private boolean categorical, fixed, artificial;
+	//private DataType dataType;
 	private String fName;
-	private Class<?> fType;// not sure if necessary
+	private Class<?> fType, objKlass /*the class that attribute belongs to*/; // , ownerKlass;		// not sure if necessary
 	protected ArrayList<Object> fCategories;
 	
-	public Domain(String _name, Class<?> _type) {
+	public Domain(Class<?> klass, String _name, Class<?> _type) {
 		this.fName = _name;
 		this.fType = _type;
+		this.objKlass = klass;
 		
 		this.categorical = true;	// BY DEFAULT, it is categorical
 		this.artificial = false;	// BY DEFAULT, it is a real field, if it is artificial it means there is no field exist but there is method which computes the value
-		
+		//this.dataType = DataType.PRIMITIVE; // BY DEFAULT it is primitive
 		this.fCategories = new ArrayList<Object>(2);
 		
 	}
 	public Domain cheapClone() {
-		Domain dom = new Domain(this.fName, this.fType);
+		Domain dom = new Domain(this.objKlass, this.fName, this.fType);
 		//dom.fixed = this.fixed;
 		dom.categorical = this.categorical;
 		//dom.readingSeq = readingSeq;
@@ -28,12 +32,14 @@ public class Domain {
 		
 		return dom;
 	}
-	
-	
+
 	public Class<?> getFType() {
 		return this.fType;
 	}
 	
+	public String getFReferenceName() {
+		return Util.getFReference(objKlass, fName);
+	}
 	public String getFName() {
 		return this.fName;
 	}
@@ -57,6 +63,21 @@ public class Domain {
 	/** Indicates that this domain has discrete set of values */
 	public boolean isCategorical() {
 		return this.categorical;
+	}
+	
+	// if the field is a artificial field
+	public void setArtificial(boolean b) {
+		this.artificial = b;
+	}
+	public boolean isArtificial() {
+		return this.artificial;
+	}
+//	public void setOwnerKlass(Class<?> owner_clazz) {
+//		 = owner_clazz;
+//	}
+	
+	public Class<?> getObjKlass() {
+		return objKlass;
 	}
 	
 	public void addCategory(Object value) {
@@ -147,12 +168,11 @@ public class Domain {
 
 	}
 	
-	// if the field is a artificial field
-	public void setArtificial(boolean b) {
-		this.artificial = b;
-	}
-	public boolean isArtificial() {
-		return this.artificial;
-	}
+//	public DataType getDataType() {
+//		return this.dataType;
+//	}
+//	public void setDataType(DataType data_type) {
+//		this.dataType = data_type;
+//	}
 
 }

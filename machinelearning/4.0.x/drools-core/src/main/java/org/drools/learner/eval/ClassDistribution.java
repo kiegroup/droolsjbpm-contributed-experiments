@@ -23,7 +23,7 @@ public class ClassDistribution {
 	
 	public ClassDistribution(Domain targetDomain) {
 		this.target_attr = targetDomain;
-		
+		//System.out.println("(ClassDistribution)target_attr "+ target_attr);
 		this.quantity_by_class =  new Hashtable<Object, Double>(this.target_attr.getCategoryCount() + 1);		
 		for (int c=0; c<this.target_attr.getCategoryCount(); c++) {
 			Object category = this.target_attr.getCategory(c);

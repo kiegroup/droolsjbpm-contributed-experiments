@@ -9,12 +9,17 @@ import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.QuantitativeDomain;
 import org.drools.learner.tools.FeatureNotSupported;
+import org.drools.learner.tools.LoggerFactory;
+import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
 
 /* addition to the ClassDistribution 
  * it keeps the instances themselves by their target value in an hashmap */
 public class InstDistribution extends ClassDistribution{
 	
+	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(InstDistribution.class, SimpleLogger.DEFAULT_LEVEL);
+	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(InstDistribution.class, SimpleLogger.DEFAULT_LEVEL);
+
 	private String attr_sum = Util.sum();
 	private Hashtable<Object, List<Instance>> instance_by_class;
 	
@@ -32,9 +37,14 @@ public class InstDistribution extends ClassDistribution{
 	
 	public void calculateDistribution(List<Instance> instances){
 		double data_size = 0.0;
-		String tName = super.getClassDomain().getFName();
+		String tName = super.getClassDomain().getFReferenceName();
+		if (flog.debug() != null)
+			flog.debug().log("tName : " +tName + "\n");
 		for (Instance inst : instances) {
+			if (flog.debug() != null)
+				flog.debug().log("inst : " +inst + "\n");
 			data_size += inst.getWeight();
+			
 			Object target_key = inst.getAttrValue(tName);
 			super.change(target_key, inst.getWeight());		// add one for vote for the target value : target_key
 			//super.change(attr_sum, inst.getWeight());		// ?????
@@ -95,7 +105,7 @@ public class InstDistribution extends ClassDistribution{
 			instLists = this.instantiateLists(splitDomain);
 		
 		Domain target_domain = super.getClassDomain();
-		String attrName = splitDomain.getFName();
+		String attrName = splitDomain.getFReferenceName();
 		for (int category = 0; category<target_domain.getCategoryCount() ; category++) {
 			Object targetCategory = target_domain.getCategory(category); 
 			//this.calculateDistribution(this.getSupportersFor(targetCategory));
@@ -116,7 +126,7 @@ public class InstDistribution extends ClassDistribution{
 				QuantitativeDomain attributeDomain, Hashtable<Object, InstDistribution> instLists) {
 		
 		String attributeName = attributeDomain.getFName();
-		String targetName = super.getClassDomain().getFName();
+		String targetName = super.getClassDomain().getFReferenceName();
 		
 		//flog.debug("FactProcessor.splitFacts_cont() attr_split "+ attributeName);
 

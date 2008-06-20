@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})
 public @interface FieldAnnotation {
-	    int readingSeq();
+	    int readingSeq() default 0;
 	    boolean ignore() default false;
 	    boolean target() default false;
 	    boolean discrete() default true;

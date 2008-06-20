@@ -86,7 +86,7 @@ public class GlobalCategorizer {
 					/* need to create a fake domain from trial domain 
 					 * with possible number of values = trialDomain.trialDomain.getNumIndices();
 					 */
-					trialDomain.setFName(attr_domain.getFName()+"_fake");	// TODO how do we know whose fake copy is that domain
+					trialDomain.setFName(attr_domain.getFReferenceName()+"_fake");	// TODO how do we know whose fake copy is that domain
 					trialDomain.setCategorical(true);
 					
 					for (Object category: filtered_stats.keySet()) {
@@ -95,7 +95,7 @@ public class GlobalCategorizer {
 						for (int target_cat = 0; target_cat<insts_by_target.getClassDomain().getCategoryCount(); target_cat++) {
 							Object targetCategory = insts_by_target.getClassDomain().getCategory(target_cat); 
 							for (Instance i : category_dist.getSupportersFor(targetCategory)) {
-								i.setAttr(attr_domain.getFName()+"_fake", category);
+								i.setAttr(attr_domain.getFReferenceName()+"_fake", category);
 							}
 						}
 						

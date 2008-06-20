@@ -9,14 +9,14 @@ import org.drools.learner.eval.SplitPoint;
 public class QuantitativeDomain extends Domain{
 	
 	public static QuantitativeDomain createFromDomain(Domain father) {
-		QuantitativeDomain quantitative = new QuantitativeDomain(father.getFName(), father.getFType());
+		QuantitativeDomain quantitative = new QuantitativeDomain(father.getObjKlass(), father.getFName(), father.getFType());
 		//quantitative.setCategories(father.getCategories());
 		
 		return quantitative;
 	}
 	
 	public QuantitativeDomain cheapClone() {
-		QuantitativeDomain qdom = new QuantitativeDomain(super.getFName(), super.getFType());
+		QuantitativeDomain qdom = new QuantitativeDomain(super.getObjKlass(), super.getFName(), super.getFType());
 		if (super.isCategorical()) {
 			System.out.println("QuantitativeDomain.cheapClone() fuck categorical how come QuantitativeDomain cloned " );
 			System.exit(0);
@@ -33,8 +33,8 @@ public class QuantitativeDomain extends Domain{
 
 	private ArrayList<SplitPoint> splits;
 	
-	private QuantitativeDomain(String _fname, Class<?> _ftype) {
-		super(_fname, _ftype);
+	private QuantitativeDomain(Class<?> _obj_klass, String _fname, Class<?> _ftype) {
+		super(_obj_klass, _fname, _ftype);
 		super.setCategorical(false);	 // by deafault it is true, must set it to false
 		this.splits = new ArrayList<SplitPoint>();
 		

@@ -91,11 +91,27 @@ public class Util {
 		return;
 	}
 	
-	public static boolean isSetter(String m_name) {
-		if (m_name.startsWith("set") || m_name.startsWith("is") )
+	public static boolean getterExits(String m_name) {
+		if (m_name.startsWith("set"))
 			return true;
 		else 
 			return false;
+	}
+	
+	public static boolean isSetter(String m_name) {
+		if (m_name.startsWith("set"))
+			return true;
+		else 
+			return false;
+	}
+	
+	public static String getFReference(Class<?> _obj_klass, String fName) {
+		return _obj_klass.getName()+"@"+fName;
+	}
+	
+	public static String getDecReference(Field f) {
+		Class<?> owner_class = f.getDeclaringClass(); // i need the class that the field belongs to boooook
+		return owner_class.getName() + "_"+f.getType().getName() +"_"+f.getName();
 	}
 
 	public static String getFieldName(String method_name) {

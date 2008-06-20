@@ -6,9 +6,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -19,15 +21,15 @@ import org.drools.learner.TreeNode;
 
 public class RulePrinter {
 	
-//	private static final Logger log = LoggerFactory.getSysOutLogger(RulePrinter.class, LogLevel.ERROR);
-//	private static final Logger flog = LoggerFactory.getFileLogger(RulePrinter.class, LogLevel.ERROR, Util.log_file); 
-//	
+	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(RulePrinter.class, SimpleLogger.WARN);
+	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(RulePrinter.class, SimpleLogger.WARN);
+	
 	
 	public static Reader readRules(DecisionTree learned_dt) {
 		
 		RulePrinter my_printer = new RulePrinter();	//bocuk.getNum_fact_trained()
 		my_printer.setBoundOnNumRules(Util.MAX_NUM_RULES);
-		my_printer.printer(learned_dt, Util.SORT_RULES_BY_RANK);
+		my_printer.print(learned_dt, Util.SORT_RULES_BY_RANK);
 		
 		String all_rules = my_printer.write2string();
 		if (Util.PRINT_RULES) {
@@ -48,6 +50,8 @@ public class RulePrinter {
 	
 	private int bound_on_num_rules;
 	private double num_instances;
+
+	private HashMap<String, ArrayList<Field>> attrRelations;
 	
 	//private NumberComparator nComparator;
 	
@@ -84,8 +88,9 @@ public class RulePrinter {
 		this.num_instances = num;
 	}
 	
-	public void printer(DecisionTree dt, boolean sort) {//, PrintStream object
+	public void print(DecisionTree dt, boolean sort) {//, PrintStream object
 		this.rule_clazz = dt.getObjClass();
+		this.attrRelations = dt.getAttrRelationMap();
 		this.num_instances = dt.getRoot().getNumMatch();
 		dfs(dt.getRoot());
 		
@@ -123,16 +128,44 @@ public class RulePrinter {
 	
 	private Rule spitRule(Stack<NodeValue> nodes) {
 		//, Stack<NodeValue> leaves // if more than one leaf
-		Rule newRule = new Rule(nodes.size());// (nodes, leaves) //if more than one leaf
-		newRule.setObjectClass(this.getRuleClass());
+		Rule newRule = new Rule(this.getRuleClass(), nodes.size());// (nodes, leaves) //if more than one leaf
 		Iterator<NodeValue> it = nodes.iterator();
 		while (it.hasNext()) {
 
 			NodeValue current = it.next();
+			if (slog.error() != null)
+				slog.error().log("NodeValue " +current + "\n");
+			
+			if (slog.error() != null)
+				slog.error().log("attrRelations [" +attrRelations.size() + "]\n");
 			if (it.hasNext()) { 
-				newRule.addCondition(current);
+				ArrayList<Field> nodeRelations = attrRelations.get(current.getFReference());
+				
+				if (nodeRelations == null || nodeRelations.isEmpty()) { 
+					// this a direct child add 
+					newRule.addConditionToMain(current);
+					
+				} else {
+					
+					for (Field f:nodeRelations) {	
+						// i need the class that the field belongs to boooook
+						String referenceOfCondition = Util.getDecReference(f);
+						if (slog.error() != null)
+							slog.error().log("[" +referenceOfCondition + "],");
+					}
+					if (slog.error() != null)
+						slog.error().log("\n");
+					newRule.processNodeValue(current, nodeRelations, 0, 1);	//int condition_or_action = condition = 1
+				}
 			} else {
-				newRule.addAction(current);
+
+				ArrayList<Field> nodeRelations = attrRelations.get(current.getFReference());
+				if (nodeRelations == null || nodeRelations.isEmpty()) { 
+					// this a direct child add to reference to the main guy 
+					newRule.addActionToMain(current);
+				} else {
+					newRule.processNodeValue(current, nodeRelations, 0, 2);	//int condition_or_action = action = 2	
+				}
 			}
 		}
 		return newRule;	
@@ -236,38 +269,155 @@ public class RulePrinter {
 
 class Rule {
 	
-	private Class<?> attr_obj;	// object class name
-	private ArrayList<NodeValue> conditions;
-	private ArrayList<NodeValue>  actions;
+	private Class<?> main_obj;	// object class name
+	private ArrayList<Declaration> rule_decs;
+	private ArrayList<AttrReference>  actions;
+	
+	// key: the reference of the declaration, => id of the declaration
+	private HashMap <String, Integer> declarationMap;
+	
+	private int num_declarations; 
 	
 	private double rank;				 // matching ratio
 	private double num_classified_instances;// number of instances matching that rule
 	
 	private int id;						 // unique id, need a unique name in the drl file
+//	private String referenceToMain = main_obj.getName()+"0";
+	private int main_obj_id = 0;
 	
-	
-	Rule(int numCond) {
-		conditions = new ArrayList<NodeValue>(numCond);
-		actions = new ArrayList<NodeValue>(1);
+	Rule(Class<?> obj, int numCond) {
+		num_declarations = 0;
+		rule_decs = new ArrayList<Declaration>(1); //new ArrayList<Declaration>(1);
+		declarationMap = new HashMap<String, Integer>(1);
+		main_obj= obj;
+		String obj_ref = getObjectClassName().toLowerCase();
+		declarationMap.put(obj_ref, num_declarations);
+		
+		rule_decs.add(new Declaration(main_obj, obj_ref, num_declarations));
+		actions = new ArrayList<AttrReference>(1);
 	}
 	
-	public void addCondition(NodeValue current) {
-		NodeValue nv = new NodeValue(current.getNode());
-		nv.setNodeValue(current.getNodeValue());
-		conditions.add(nv);
+	public void addConditionToMain(NodeValue current) {
+		rule_decs.get(main_obj_id).addCondition(current);
 	}
-	public void addAction(NodeValue current) {
-		NodeValue nv = new NodeValue(current.getNode());
-		nv.setNodeValue(current.getNodeValue());
-		actions.add(nv);
+	
+	public void addActionToMain(NodeValue current) {
+		AttrReference aRef = new AttrReference(current);	//D
+		rule_decs.get(main_obj_id).addActionReference(aRef);						//D
+		addAction(aRef);									//D
+		setRuleStats(current);								//D
+	}
+	
+	public void addCondition(NodeValue current, ArrayList<Field> nodeRelations, int rel_id) {
+		if (rel_id == nodeRelations.size()) {	// it must be primitive
+			Field referenceField = nodeRelations.get(nodeRelations.size()-1);			
+			String referenceOfCondition = Util.getDecReference(referenceField);
+			
+			System.out.println("It is primitive, should add a condition to its father "+referenceOfCondition+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+			Declaration dec = rule_decs.get(declarationMap.get(referenceOfCondition));
+			dec.addCondition(current);					//D
+		} else {
+			Field referenceField = nodeRelations.get(rel_id);			
+			String referenceOfCondition = Util.getDecReference(referenceField);
+			System.out.println("referenceOfCondition " +referenceOfCondition + " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1));
+			Declaration the_place_declared = null;
+			
+			if (rel_id ==0 ) {
+				
+				the_place_declared = rule_decs.get(0);
+				System.out.println("The first guy "+referenceField.getName()+" to main declaration (ref?)"+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+				
+			} else {
+				the_place_declared = rule_decs.get(rel_id-1);//declarationMap.get(referenceOfCondition));
+				System.out.println("Continue"+referenceField.getName()+" in "+the_place_declared+ "??? rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+			}
+			
+			if (!the_place_declared.hasReference(referenceField.getName())) {
+				num_declarations++;
+				Declaration new_dec = new Declaration(referenceField.getType(), referenceField.getName(), num_declarations);
+				System.out.println("Create new dec "+referenceOfCondition+" (Main declaration doesnot have a ref"+ referenceField.getName() + ") rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+				
+				the_place_declared.addReference(new_dec);					//D
+				declarationMap.put(referenceOfCondition, num_declarations);
+				rule_decs.add(new_dec);
+			}
+			
+			addCondition(current, nodeRelations, rel_id+1);
+			
+		}
+	}
+	
+	public void processNodeValue(NodeValue current, ArrayList<Field> nodeRelations, int rel_id, int condition_or_action) {
+		if (rel_id == nodeRelations.size()) {	// it must be primitive
+			Field referenceField = nodeRelations.get(nodeRelations.size()-1);			
+			String referenceOfCondition = Util.getDecReference(referenceField);
+			
+			System.out.println("It is primitive, should add a condition to its father "+referenceOfCondition+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+			Declaration dec = rule_decs.get(declarationMap.get(referenceOfCondition));
+			
+			switch (condition_or_action) {
+			case 1: // condition
+				dec.addCondition(current);					//D
+				break;
+			case 2: // action
+				AttrReference aRef = new AttrReference(current);	//D
+				dec.addActionReference(aRef);						//D
+				addAction(aRef);									//D
+				setRuleStats (current);								//D
+				break;
+			}
+			return;
+
+		} else {
+			Field referenceField = nodeRelations.get(rel_id);			
+			String referenceOfCondition = Util.getDecReference(referenceField);
+			System.out.println("referenceOfCondition " +referenceOfCondition + " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1));
+			Declaration the_place_declared = null;
+			
+			if (rel_id ==0 ) {	
+				the_place_declared = rule_decs.get(0);
+				System.out.println("The first guy "+referenceField.getName()+" to main declaration (ref?)"+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+				
+			} else {
+				the_place_declared = rule_decs.get(rel_id-1);//declarationMap.get(referenceOfCondition));
+				System.out.println("Continue"+referenceField.getName()+" in "+the_place_declared+ "??? rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+			}
+			
+			if (!the_place_declared.hasReference(referenceField.getName())) {
+				num_declarations++;
+				Declaration new_dec = new Declaration(referenceField.getType(), referenceField.getName(), num_declarations);
+				System.out.println("Create new dec "+referenceOfCondition+" (Main declaration doesnot have a ref"+ referenceField.getName() + ") rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+				switch (condition_or_action) {
+				case 1: // condition
+					the_place_declared.addReference(new_dec);			//D
+					break;
+				case 2: // action
+					AttrReference aRef = new AttrReference(current);	//D
+					the_place_declared.addActionReference(aRef);		//D
+					break;
+				}
+				declarationMap.put(referenceOfCondition, num_declarations);
+				rule_decs.add(new_dec);
+			}
+			
+			processNodeValue(current, nodeRelations, rel_id+1, condition_or_action);	
+			
+		}
+	}
+	
+	public void addAction(AttrReference aRef) {
+		actions.add(aRef);	
+	}
+	
+	public void setRuleStats (NodeValue current) {
 		this.setRank(((LeafNode)current.getNode()).getRank());
 		this.setNumClassifiedInstances(((LeafNode)current.getNode()).getNumClassification());
 	}
-	public void setObjectClass(Class<?> obj) {
-		attr_obj= obj;
-	}
+	
+
+
 	public String getObjectClassName() {
-		return attr_obj.getSimpleName();
+		return main_obj.getSimpleName();
 	}
 	
 	private int getId() {
@@ -301,41 +451,52 @@ class Rule {
 			then
 				System.out.println( "[getLabel()] Expected value (" + $c.getLabel() + "), Classified as (False)"); 
 		end
+		
+		// complex rule
+		rule "Purchase notification"
+    		salience 10
+
+			when
+				$c : Customer( name == "Bla")
+				$p : Purchase( amount == 1, customer == $c)	    
+			then
+	    		System.out.println( "Customer " + $c.name + " just purchased " + $p.product.name );
+		end
 		 */
 		//"rule \"#"+getId()+" "+decision+" rank:"+rank+"\" \n";
 		StringBuffer sb_out = new StringBuffer("");
-		String obj_ref = "$"+this.getObjectClassName().substring(0, 1).toLowerCase();
-
+		
 		sb_out.append("\t when");
-		sb_out.append("\n\t\t "+obj_ref+":"+this.getObjectClassName() +"("+ "");
-		for (NodeValue cond: conditions) {
-			sb_out.append(cond.toString() + ", ");
+		for (int dec_i =rule_decs.size()-1; dec_i>=0; dec_i--) {
+			Declaration d = rule_decs.get(dec_i);
+			String obj_ref = d.getSymbol(); //"$"+this.getObjectClassName().substring(0, 1).toLowerCase();
+			sb_out.append("\n\t\t "+obj_ref+" : "+d.getDeclaringFTypeCanonicalName()+"("+ "");
+			Iterator<NodeValue> dec_it = d.getConditionIt();
+			while (dec_it.hasNext()) {
+				NodeValue cond = dec_it.next();
+				sb_out.append(cond.toString() + ", ");
+			}
+			
+			Iterator<Reference> ref_it = d.getReferenceIt();
+			while (ref_it.hasNext()) {
+				Reference ref = ref_it.next();
+				sb_out.append(ref.toString() + ", ");
+			}			
+			sb_out.delete(sb_out.length()-2, sb_out.length()-1);
+			sb_out.append(")\n");
 		}
 		
 		StringBuffer sb_action = new StringBuffer("");
 		StringBuffer sb_field = new StringBuffer("");
 		StringBuffer sb_expected_value = new StringBuffer("");
-		for (NodeValue act: actions) {
-			// if the query is on a field then i have to get its value during in the rule 'cause it might be private
-			if (!act.getNode().getDomain().isArtificial())
-				sb_out.append(obj_ref+ "_"+act.getFName() + " : "+act.getFName()+", ");
-			
-			sb_action.append(act.getNodeValue() + " , ");
-			if (!act.getNode().getDomain().isArtificial())
-				sb_field.append(act.getFName() + "");
-			else
-				sb_field.append(act.getFName() + "()");
-			
-			
-			if (!act.getNode().getDomain().isArtificial())
-				sb_expected_value.append(obj_ref+ "_"+act.getFName());//reading the value by the reference of $o_fieldname
-			else
-				sb_expected_value.append(obj_ref+ "."+act.getFName() + "()");// reading the value from the object $o.function()
+		for (AttrReference act: actions) {
+			sb_action.append(act.getValue() + " , ");
+			sb_expected_value.append(act.getVariableName()); 
+			sb_field.append(act.getFName() + "");
 			
 		}
 		sb_action.delete(sb_action.length()-3, sb_action.length()-1);
-		sb_out.delete(sb_out.length()-2, sb_out.length()-1);
-		sb_out.append(")\n");
+		
 		sb_out.append("\t then ");
 		sb_out.append("\n\t\t System.out.println(\"["+sb_field.toString()+ "] Expected value (\" + "+  sb_expected_value.toString()+ " + \"), Classified as ("+sb_action.toString()+")\");\n"); 
 		if (getRank() <0)
@@ -346,6 +507,62 @@ class Rule {
 
 		return sb_out.toString();
 	}
+	
+	
+//	public String toString_() {
+//		/*		 
+//		rule "Good Bye"
+//    		dialect "java"
+//			when
+//				$m:Message( status == Message.GOODBYE)
+//			then
+//				System.out.println( "[getLabel()] Expected value (" + $c.getLabel() + "), Classified as (False)"); 
+//		end
+//		 */
+//		//"rule \"#"+getId()+" "+decision+" rank:"+rank+"\" \n";
+//		StringBuffer sb_out = new StringBuffer("");
+//		String obj_ref = "$"+this.getObjectClassName().substring(0, 1).toLowerCase();
+//
+//		sb_out.append("\t when");
+//		sb_out.append("\n\t\t "+obj_ref+":"+this.getObjectClassName() +"("+ "");
+////		for (NodeValue cond: conditions) {
+////			sb_out.append(cond.toString() + ", ");
+////		}
+//		
+//		StringBuffer sb_action = new StringBuffer("");
+//		StringBuffer sb_field = new StringBuffer("");
+//		StringBuffer sb_expected_value = new StringBuffer("");
+//		for (NodeValue act: actions) {
+//			// if the query is on a field then i have to get its value during in the rule 'cause it might be private
+//			if (!act.getNode().getDomain().isArtificial())
+//				sb_out.append(obj_ref+ "_"+act.getFName() + " : "+act.getFName()+", ");
+//			
+//			sb_action.append(act.getNodeValue() + " , ");
+//			if (!act.getNode().getDomain().isArtificial())
+//				sb_field.append(act.getFName() + "");
+//			else
+//				sb_field.append(act.getFName() + "()");
+//			
+//			
+//			if (!act.getNode().getDomain().isArtificial())
+//				sb_expected_value.append(obj_ref+ "_"+act.getFName());//reading the value by the reference of $o_fieldname
+//			else
+//				sb_expected_value.append(obj_ref+ "."+act.getFName() + "()");// reading the value from the object $o.function()
+//			
+//		}
+//		sb_action.delete(sb_action.length()-3, sb_action.length()-1);
+//		sb_out.delete(sb_out.length()-2, sb_out.length()-1);
+//		sb_out.append(")\n");
+//		sb_out.append("\t then ");
+//		sb_out.append("\n\t\t System.out.println(\"["+sb_field.toString()+ "] Expected value (\" + "+  sb_expected_value.toString()+ " + \"), Classified as ("+sb_action.toString()+")\");\n"); 
+//		if (getRank() <0)
+//			sb_out.append("\n\t\t System.out.println(\"But no matching fact found = DOES not fire on\");\n");
+//		
+//		sb_out.insert(0, "rule \"#"+getId()+" "+sb_field.toString()+ "= "+sb_action.toString()+" classifying "+this.getNumClassifiedInstances()+" num of facts with rank:"+getRank() +"\" \n");
+//		sb_out.append("end\n");
+//
+//		return sb_out.toString();
+//	}
 	
 	public static Comparator<Rule> getRankComparator() {
 		return new RuleComparator();
@@ -365,8 +582,125 @@ class Rule {
 
 }
 
+class Declaration{
+	private int id; 
+	private String dec_ref; 		
+	private Class<?> declared_obj;	// object class name
+//	private ArrayList<RuleNode> conditions;
+	private ArrayList<NodeValue> conditions;
+	private ArrayList<Reference> references;
+	
+	public Declaration(Class<?> obj_class, String name, int dec_id) {
+		id = dec_id;
+		declared_obj = obj_class;
+		dec_ref = name;
+		references = new ArrayList<Reference>();
+		conditions = new ArrayList<NodeValue>();
+	}
+	
+	public String getDeclaringFName() {
+		return dec_ref;
+	}
+	
+	public String getDeclaringFTypeCanonicalName() {
+		return declared_obj.getSimpleName();
+	}
 
-class NodeValue {
+	public void addCondition(NodeValue current) {
+		NodeValue nv = new NodeValue(current.getNode());
+		nv.setNodeValue(current.getNodeValue());
+		conditions.add(nv);
+	}
+	
+	public void addActionReference(AttrReference aRef) {//NodeValue current) {
+		references.add(aRef);
+
+	}
+	
+	public void addReference(Declaration d) {
+		DecReference df = new DecReference(d);
+		references.add(df);
+	}
+	
+	public boolean hasReference(String fName) {
+		for (Reference df : references) {
+			if (df.getFName().equalsIgnoreCase(fName))
+				return true;
+		}
+		return false;
+		
+	}
+	
+	public Iterator<NodeValue> getConditionIt() {
+		return conditions.iterator();
+	}
+	public Iterator<Reference> getReferenceIt() {
+		return references.iterator();
+	}
+	
+	public String getSymbol() {
+		return "$"+dec_ref + "_" + id;
+	}
+	
+}
+
+interface Reference {
+	public String getFName();
+}
+class DecReference implements Reference {
+	
+	private String fName;
+	Declaration toReference;
+	
+	public DecReference (Declaration d) {
+		toReference = d;
+		fName = d.getDeclaringFName();
+	}
+	
+	public String getFName() {
+		return fName;
+	}
+	public void setReference(Declaration _toReference) {
+		toReference = _toReference;
+	}
+	
+	
+	public String toString() {
+		return fName + " == "+ toReference.getSymbol();
+	}
+}
+
+class AttrReference implements Reference {
+	
+	private String fName;
+	private NodeValue real_value;
+	
+	public AttrReference (NodeValue v) {
+		String _fName = v.getFName();
+		if (v.getNode().getDomain().isArtificial()) {
+			_fName = Util.getFieldName(_fName);
+		}
+		fName = _fName;
+		real_value = new NodeValue(v.getNode());
+		real_value.setNodeValue(v.getNodeValue());
+	}
+	public Object getVariableName() {
+		return "$target_label";
+	}
+	public Object getValue() {
+		return real_value.getNodeValue();
+	}
+	public String getFName() {
+		return fName;
+	}
+	
+	public String toString() {
+		return getVariableName()+" : "+ fName ;
+	}
+}
+
+
+class NodeValue { //implements RuleNode {
 	
 	//private static final Logger flog = LoggerFactory.getFileLogger(NodeValue.class, LogLevel.ERROR, Util.log_file); 
 	
@@ -376,9 +710,14 @@ class NodeValue {
 	public NodeValue(TreeNode n) {
 		this.node = n;
 	}
+	public String getFReference() {
+		return node.getDomain().getFReferenceName();
+	}
 	
 	public String getFName() {
-		return node.getDomain().getFName();
+//		String full_name = node.getDomain().getFName();
+//		String fname = full_name.substring(full_name.lastIndexOf('@')+1, full_name.length());
+		return node.getDomain().getFName() ;
 	}
 	
 	public Object getNodeValue() {
@@ -393,9 +732,67 @@ class NodeValue {
 		return node;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public String toString() {
-		String fName = node.getDomain().getFName();
+		
+		String fName = this.getFName();//object class name
+		Class<?> node_obj = node.getDomain().getObjKlass();
+		
+		String value;
+		if (node.getDomain().getFType() == String.class)
+			value = "\""+nodeValue+ "\""; 
+		else
+			value = nodeValue + "";
+		
+		if (node.getDomain().isCategorical())
+			return fName + " == "+ value; 
+		else {
+			
+			int size = node.getDomain().getCategoryCount()-1;
+			//System.out.println("How many guys there of "+node.getDomain().getName() +" and the value "+nodeValue+" : "+size);
+			
+			int idx = size;
+			if (nodeValue instanceof Number) {
+				for (; idx>=0; idx--) {
+					Object categoryValue = node.getDomain().getCategory(idx);
+					if (nodeValue instanceof Comparable && categoryValue instanceof Comparable) {
+						// TODO ask this to daniel???
+//						if (Util.DEBUG_RULE_PRINTER) {
+//							System.out.println("NodeValue:"+ nodeValue+ " c-"+nodeValue.getClass() +" & category:"+ categoryValue+ " c-"+categoryValue.getClass());
+//						}
+						if ( AttributeValueComparator.instance.compare(nodeValue, categoryValue) == 0 ) {
+							break;
+						}
+					} else {
+						System.out.println("Fuck not comparable NodeValue:"+ nodeValue+ " c-"+nodeValue.getClass() +" & category:"+ categoryValue+ " c-"+categoryValue.getClass());
+						System.exit(0);
+					}
+
+				}
+			} else {
+				/* TODO implement the String setting */
+				System.out.println("Fuck not number:"+ nodeValue+ " c-"+nodeValue.getClass());
+				System.exit(0);
+
+			}
+			
+			if (idx == 0)
+				return fName + " <= "+ value;
+			else if (idx == size)
+				// if the category is the last one that the rule is domain.name > category(last-1)
+				return fName+ " > "+ node.getDomain().getCategory(size-1);
+			else {
+				//return node.getDomain().getCategory(idx) + " < " + fName+ " <= "+ node.getDomain().getCategory(idx+1);
+				// Why drools does not support category(idx) < domain.name <= category(idx+1)
+				//flog.debug("value "+ value + "=====?????"+   node.getDomain().getCategory(idx+1));
+				
+				return fName+ " <= "+ value; // node.getDomain().getCategory(idx+1);
+			}
+		}
+	}
+	
+	public String toString_() {
+		
+		String fName = this.getFName();//node.getDomain().getFName();
 		String value;
 		if (node.getDomain().getFType() == String.class)
 			value = "\""+nodeValue+ "\""; 

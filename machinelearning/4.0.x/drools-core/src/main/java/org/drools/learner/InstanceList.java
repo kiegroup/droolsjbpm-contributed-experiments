@@ -5,19 +5,17 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.Extractor;
+import org.drools.learner.tools.LoggerFactory;
+import org.drools.learner.tools.SimpleLogger;
 public class InstanceList {
 
+	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(InstanceList.class, SimpleLogger.WARN);
+	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(InstanceList.class, SimpleLogger.WARN);
+	
 	private Schema schema;
 	private ArrayList<Instance> instances;
 	private InstanceFactory factory;
 	
-	// old constructer
-	public InstanceList(Schema _schema) {
-		this.schema = _schema;
-		this.instances = new ArrayList<Instance>(); 
-	}
 	public InstanceList(Schema _schema, WorkingMemory _session) {
 		this.schema = _schema;
 		this.instances = new ArrayList<Instance>(); 
@@ -31,50 +29,19 @@ public class InstanceList {
 	}
 
 	public void addStructuredInstance(Object _obj) {
+		//the factory will validate the object class during the execution
 		// create instance and all attributes according to the schema		
 		Instance inst = factory.createInstance(_obj);		
-		System.out.println(inst);
-		if (inst != null )
+		
+		if (inst != null ) {
+			// the object is validated and the instance is created
+			//System.out.println(inst);
 			instances.add(inst);
-		else {
-			System.out.println("Couldnot create the instance");
-			System.exit(0);
+		} else {
+			if (slog.warn() != null)
+				slog.warn().log("The object "+_obj.getClass()+" is not related to the structure, couldnot create the instance\n");
+			//System.exit(0);
 		}
-	}
-	
-	// old method
-	public void addFromWorkingMemory(WorkingMemory _session, Object _obj) {
-		// create instance and all attributes according to the schema
-		Instance inst = new Instance();
-		
-		for (String f_name : schema.getAttrNames()) {
-			Domain f_domain = schema.getAttrDomain(f_name);
-			//ClassFieldExtractor f_extractor = schema.getAttrExtractor(f_name);
-			Extractor f_extractor = schema.getAttrExtractor(f_name);//Label
-			/* from WorkingMemoryLogger, private String extractDeclarations(final Activation activation,  final WorkingMemory workingMemory) {
-			 * you can cast the WorkingMemory
-			 * final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, handleImpl.getObject() );
-			 */
-			Object f_value = f_extractor.getValue( (InternalWorkingMemory) _session, _obj);
-			/* TODO instanity checks 
-			 * 1- is this value possible by type?
-			 * 2- does this value exist in the possible set of values (if the domain type is categorical)?
-			 * 
-			 */
-			try {
-				if (f_domain.isPossible(f_value)) {
-					f_domain.addCategory(f_value);
-					inst.setAttr(f_name, f_value);
-				}
-			} catch (Exception e) {
-				System.out.println("Domain: "+f_domain+ " could not add the value "+ f_value);
-				e.printStackTrace();
-			}
-			
-		}
-		
-		System.out.println("inst:"+ inst);
-		instances.add(inst);
 	}
 	
 	public void addAsInstance(Instance inst) {

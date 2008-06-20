@@ -38,8 +38,9 @@ public abstract class Learner {
 
 	
 	public DecisionTree train_tree(InstanceList working_instances) {
-		String target = this.getTargetDomain().getFName();
-		DecisionTree dt = new DecisionTree(input_data.getSchema(), target);
+		String target_reference = this.getTargetDomain().getFReferenceName();
+		//System.out.println("(Learner) target   "+ target_reference);
+		DecisionTree dt = new DecisionTree(input_data.getSchema(), target_reference);
 
 		//flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
 		
@@ -57,6 +58,7 @@ public abstract class Learner {
 		Iterator<String> it_target= input_data.getTargets().iterator();
 		// TODO check if there is a target candidate
 		String target = it_target.next();
+		//System.out.println("(Learner) What is target?? "+ target +" and the domain "+ input_data.getSchema().getAttrDomain(target));
 		return input_data.getSchema().getAttrDomain(target);
 		
 	}

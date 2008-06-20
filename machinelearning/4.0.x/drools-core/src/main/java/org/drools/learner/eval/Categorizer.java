@@ -47,12 +47,12 @@ public class Categorizer {
 			data.addAll(_data_in_class.getSupportersFor(targetCategory));
 		}
 		
-		this.targetComp = new InstanceComparator(targetDomain.getFName());
+		this.targetComp = new InstanceComparator(targetDomain.getFReferenceName());
 	}
 	
 	public void findSplits(QuantitativeDomain attrDomain) {
 		this.splitDomain = attrDomain;
-		this.attrComp = new InstanceComparator(attrDomain.getFName());
+		this.attrComp = new InstanceComparator(attrDomain.getFReferenceName());
 		
 		init_binary_domain();
 		
@@ -60,7 +60,7 @@ public class Categorizer {
 		Collections.sort(this.data, this.attrComp);
 		
 		int last_index = this.data.size()-1;
-		Object last_value = data.get(last_index).getAttrValue(this.splitDomain.getFName());
+		Object last_value = data.get(last_index).getAttrValue(this.splitDomain.getFReferenceName());
 		this.splitDomain.addSplitPoint(new SplitPoint(last_index, last_value));	
 		
 		find_a_split(0, this.data.size(), this.maxDepth, this.distribution);
@@ -69,7 +69,7 @@ public class Categorizer {
 	
 	public static Domain init_binary_domain() {
 		//if (binaryDomain == null) {
-			Domain bD = new Domain("binary", Integer.class); //splitDomain.cheapClone();
+			Domain bD = new Domain(Object.class, "binary", Integer.class); //splitDomain.cheapClone();
 			bD.addCategory(key0);	//addSplitPoint(new SplitPoint(0, key0));
 			bD.addCategory(key1); //addSplitPoint(new SplitPoint(1, key1)); 
 		//}
@@ -119,7 +119,7 @@ public class Categorizer {
 
 		int num_split_points = 0, split_index = begin_index+1;	
 		int last_index = size-1;
-		Object last_value = data.get(last_index).getAttrValue(this.splitDomain.getFName());
+		Object last_value = data.get(last_index).getAttrValue(this.splitDomain.getFReferenceName());
 		SplitPoint bestPoint = new SplitPoint(last_index, last_value);	
 		CondClassDistribution best_distribution = null;//instances_by_attr;
 		Instance i1 = data.get(begin_index), i2; 
@@ -130,8 +130,8 @@ public class Categorizer {
 			i2= data.get(index);
 			
 			/* every time i read a new instance and change the place in the distribution */
-			instances_by_attr.change(key0, i1.getAttrValue(this.targetDomain.getFName()), +1.0d * i1.getWeight());	//+1
-			instances_by_attr.change(key1, i1.getAttrValue(this.targetDomain.getFName()), -1.0d * i1.getWeight());	//-1
+			instances_by_attr.change(key0, i1.getAttrValue(this.targetDomain.getFReferenceName()), +1.0d * i1.getWeight());	//+1
+			instances_by_attr.change(key1, i1.getAttrValue(this.targetDomain.getFReferenceName()), -1.0d * i1.getWeight());	//-1
 		
 			if (flog.debug() !=null)
 				flog.debug().log("Instances " +i1+" vs "+i2);
@@ -148,8 +148,8 @@ public class Categorizer {
 				if (flog.debug() !=null)
 					flog.debug().log("entropy.info_cont() SEARCHING: "+(index)+" attr "+this.splitDomain.getFName()+ " "+ i2);
 				// the cut point
-				Object cp_i = i1.getAttrValue(this.splitDomain.getFName());
-				Object cp_i_next = i2.getAttrValue(this.splitDomain.getFName());
+				Object cp_i = i1.getAttrValue(this.splitDomain.getFReferenceName());
+				Object cp_i_next = i2.getAttrValue(this.splitDomain.getFReferenceName());
 
 				Class<?> fClass = this.splitDomain.getFType();
 				

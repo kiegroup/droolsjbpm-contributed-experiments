@@ -19,6 +19,8 @@ public class Instance {
 		return weight;
 	}
 	
+	// name : _obj_klass+"@"+attr_name
+	// value : its value
 	public void setAttr(String _name, Object _value) {
 		Attribute f_attr = new Attribute();
 		f_attr.setName(_name);

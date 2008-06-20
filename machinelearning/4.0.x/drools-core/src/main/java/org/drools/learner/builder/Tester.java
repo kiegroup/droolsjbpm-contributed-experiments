@@ -15,7 +15,7 @@ public abstract class Tester{
 	public abstract Stats test(InstanceList data);// String executionSignature
 	
 	public static Integer evaluate (Domain targetDomain, Instance i, Object tree_decision) {	
-		String targetFName = targetDomain.getFName();
+		String targetFName = targetDomain.getFReferenceName();
 		
 		Object tattr_value = i.getAttrValue(targetFName);
 		Object i_category = targetDomain.getCategoryOf(tattr_value);

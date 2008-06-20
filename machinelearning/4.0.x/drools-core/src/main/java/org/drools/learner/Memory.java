@@ -9,9 +9,10 @@ import org.drools.learner.builder.Learner.DomainAlgo;
 import org.drools.learner.tools.FeatureNotSupported;
 
 public class Memory {
-	
+
 	// TODO pass a list of classes, and get all the object from that class
-	public static Memory createStructuredFromWorkingMemory(WorkingMemory _session, Class<?> clazz, DomainAlgo domain, DataType data) throws FeatureNotSupported {
+	// by default structured
+	public static Memory createFromWorkingMemory(WorkingMemory _session, Class<?> clazz, DomainAlgo domain, DataType data) throws FeatureNotSupported {
 		// if mem == null
 		Memory mem = new Memory();
 
@@ -21,7 +22,7 @@ public class Memory {
 		// create schema from clazz
 		Schema inst_schema = null;
 		try {
-			inst_schema = Schema.createStructuredSchema(clazz, domain, data);
+			inst_schema = Schema.createSchemaStructure(clazz, domain, data);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,38 +40,9 @@ public class Memory {
 		Iterator<Object> it_object = _session.iterateObjects();	// how can i get the object type nodes
 		while (it_object.hasNext()) {
 			Object obj = it_object.next();
-			if (clazz.isAssignableFrom(obj.getClass()))
-				mem.instances.get(clazz).addStructuredInstance(obj);
-		}
-		//dt.FACTS_READ += facts.size();
-
-		return mem;
-	}
-	
-	// TODO pass a list of classes, and get all the object from that class
-	public static Memory createFromWorkingMemory(WorkingMemory _session, Class<?> clazz, DomainAlgo domain, DataType data) throws FeatureNotSupported {
-		// if mem == null
-		Memory mem = new Memory();
-
-		mem.session = _session;
-
-		mem.setClassToClassify(clazz);
-		// create schema from clazz
-		Schema inst_schema = Schema.createFromClass(clazz, domain, data);
-
-		// create a instance list that can hold objects from our schema
-		mem.instances.put(clazz, new InstanceList(inst_schema));
-
-		/* 
-		 * do they create an ObjectTypeNode for each new inserted object type?
-		 * even if there is no rule exists.
-		 * No probably they do not 
-		 */
-		Iterator<Object> it_object = _session.iterateObjects();	// how can i get the object type nodes
-		while (it_object.hasNext()) {
-			Object obj = it_object.next();
-			if (clazz.isAssignableFrom(obj.getClass()))
-				mem.instances.get(clazz).addFromWorkingMemory(_session, obj);
+			// validating in the the factory during instantiation
+			//if (clazz.isAssignableFrom(obj.getClass()))
+			mem.instances.get(clazz).addStructuredInstance(obj);
 		}
 		//dt.FACTS_READ += facts.size();
 
@@ -100,6 +72,5 @@ public class Memory {
 		return instances.get(this.clazzToClassify);
 	}
 
-	
 	
 }

@@ -95,9 +95,9 @@ public class Entropy implements Heuristic{
 			Object targetCategory = target_domain.getCategory(category); 
 			
 			for (Instance inst: insts_by_target.getSupportersFor(targetCategory)) {
-				Object inst_attr_category = inst.getAttrValue(attr_domain.getFName());
+				Object inst_attr_category = inst.getAttrValue(attr_domain.getFReferenceName());
 				
-				Object inst_class = inst.getAttrValue(target_domain.getFName());
+				Object inst_class = inst.getAttrValue(target_domain.getFReferenceName());
 				
 				if (!targetCategory.equals(inst_class)) {
 					if (flog.error() != null)
@@ -122,7 +122,7 @@ public class Entropy implements Heuristic{
 		List<Instance> data = visitor.getSortedInstances();
 		QuantitativeDomain splitDomain = visitor.getSplitDomain();
 		Domain targetDomain = insts_by_target.getClassDomain();
-		String targetAttr = targetDomain.getFName();
+		String targetAttr = targetDomain.getFReferenceName();
 		
 		CondClassDistribution instances_by_attr = new CondClassDistribution(splitDomain, targetDomain);
 		instances_by_attr.setTotal(data.size());

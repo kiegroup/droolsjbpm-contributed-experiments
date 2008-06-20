@@ -3,7 +3,9 @@ package org.drools.learner.tools;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Stack;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.learner.Domain;
 import org.drools.learner.Schema;
@@ -13,21 +15,18 @@ import org.drools.learner.builder.Learner.DomainAlgo;
 import org.drools.spi.Extractor;
 
 public class ClassVisitor {
+	
+	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(ClassVisitor.class, SimpleLogger.WARN);
+	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(ClassVisitor.class, SimpleLogger.WARN);
+	
+	
 	private static ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
 	
 	private DomainAlgo domain_type = Learner.DEFAULT_DOMAIN;
 	private DataType data_type = Learner.DEFAULT_DATA;
-	
-//	private HashMap<Class<?>, ClassStructure> all_klasses;
-	
-//	// key: field name
-//	private Hashtable<String, Extractor> extractorMap;
-//
-//	// key: field name
-//	private Hashtable<String, Domain> domainMap;
-//
-//	private HashSet<String> targets;
+
 	private Schema class_schema;
+	private Stack<Field> class_relation;
 
 	private boolean TARGET_FOUND;
 	private boolean MULTIPLE_TARGETS = false;
@@ -46,18 +45,12 @@ public class ClassVisitor {
 		this.class_schema = _class_schema;
 	}
 	
-	// new one
 	public void visit() throws FeatureNotSupported {
 //		this.all_klasses = new HashMap<Class<?>,ClassStructure>();
 		TARGET_FOUND = false;
-		getStructuredSuperFields(class_schema.getObjectClass());		
-		return;
-	}
-	
-	public void visit(Class<?> clazz) throws FeatureNotSupported {
-		class_schema = new Schema(clazz);
-//		this.all_klasses = new HashMap<Class<?>,ClassStructure>();
-		getStructuredSuperFields(clazz);		
+		class_relation =  new Stack<Field>();
+		getStructuredSuperFields(class_schema.getObjectClass()/*, null*/);		 
+			
 		return;
 	}
 	
@@ -65,34 +58,39 @@ public class ClassVisitor {
 		return class_schema.getClassStructure();
 	}
 	
-	
-	public void getStructuredSuperFields(Class<?> clazz) throws FeatureNotSupported {
-		System.out.println("On the class "+ clazz);
-		System.out.println(" the structure exists "+ class_schema.getClassStructure().containsKey(clazz));
-		if (clazz.equals(Object.class) || 
-		   (class_schema.getClassStructure().containsKey(clazz) && class_schema.getClassStructure().get(clazz).isDone()))
+	public void getStructuredSuperFields(Class<?> clazz/*, Class<?> owner_clazz*/){
+		if (slog.debug() != null)
+			slog.debug().log("On the class "+ clazz+  " the structure exists "+ class_schema.getClassStructure().containsKey(clazz));
+		if (class_schema.getClassStructure().containsKey(clazz) && class_schema.getClassStructure().get(clazz).isDone())
 			return;
-
+		// process if the parent_klass.equals(Object.class) ?????
 		ClassStructure structure = new ClassStructure(clazz);
 		if (MULTIPLE_TARGETS || !TARGET_FOUND)
 			processClassLabel(structure);
 		class_schema.putStructure(clazz, structure);
+		
 		// get the fields declared in the class
 		Field [] element_fields = clazz.getDeclaredFields(); //clazz.getFields();
 		for (Field f: element_fields) {
-			decomposeField(structure, f);
-		}
-		
+			try {
+				decomposeField(structure, f /*, owner_clazz*/);
+			} catch (FeatureNotSupported e) {
+				if (slog.error() != null)
+					slog.error().log("FeatureNotSupported "+e+")\n");
+				
+			}
+		}	
 		structure.setDone();
-		
 		Class<?> parent_klass = clazz.getSuperclass();
 		structure.setParent(parent_klass);
+		if (parent_klass.equals(Object.class))
+			return;
 		getStructuredSuperFields(parent_klass);
 		
 		return;
 	}
 	
-	public void decomposeField(ClassStructure structure, Field f) throws FeatureNotSupported {
+	public void decomposeField(ClassStructure structure, Field f/*, Class<?> owner_clazz*/) throws FeatureNotSupported {
 		// can get the field annotation
 		// if it is ignored do not do anything
 		FieldAnnotation f_spec = Util.getFieldAnnotations(f);
@@ -119,47 +117,57 @@ public class ClassVisitor {
 			// then continue to next field	
 			
 		}
+		// if there is a getter?
+		//if (Util.isGetter(m_name) & Util.isSimpleType(returns)) {
+		
 		if (!skip_by_annotation) {
-			String f_name= f.getName();
+			String f_name= f.getName();		
 			Class<?> _obj_klass = structure.getOwnerClass();
+			String f_refName = Util.getFReference(_obj_klass, f_name);
 			DataType d_type = Util.getDataType(f.getType());	
 			
 			///////////
 			if (d_type != DataType.COLLECTION) { // TODO 
-				Extractor f_extractor = cache.getExtractor( _obj_klass, f_name , _obj_klass.getClassLoader() );
-				class_schema.putExtractor(f_name, f_extractor);
-				structure.addField(f, d_type);	
-			}
-			
-			///////////
-		
-			switch (d_type) {    
-			case PRIMITIVE:		// domain will be created only for primitive types
-				Domain fieldDomain = new Domain(f_name, f.getType());
-				if (f_spec != null) {
-					fieldDomain.setCategorical(f_spec.discrete());	
-					if ((MULTIPLE_TARGETS || !TARGET_FOUND) && f_spec.target()) {	
-						class_schema.addTarget(f.getName());	
-						TARGET_FOUND = true;
+				if (slog.warn() != null)
+					slog.warn().log("The field "+f_name+" of the obj klass:"+_obj_klass + " and the loader:" + _obj_klass.getClassLoader()+ "\n");
+				try {
+					Extractor f_extractor = cache.getExtractor( _obj_klass, f_name , _obj_klass.getClassLoader() );
+					class_schema.putExtractor(f_refName, f_extractor);
+					structure.addField(f, d_type);	
+					switch (d_type) {    
+					case PRIMITIVE:		// domain will be created only for primitive types
+						Domain fieldDomain = new Domain(_obj_klass, f_name, f.getType());
+						//fieldDomain.setOwner(owner_clazz);
+						if (f_spec != null) {
+							fieldDomain.setCategorical(f_spec.discrete());	
+							if ((MULTIPLE_TARGETS || !TARGET_FOUND) && f_spec.target()) {	
+								class_schema.addTarget(f_refName);	
+								TARGET_FOUND = true;
+							}
+						}
+						Util.processDomain(fieldDomain, f.getType());
+						class_schema.putDomain(f_refName, fieldDomain);
+						for (Field parent_klass: class_relation)
+							class_schema.addParentField(f_refName, parent_klass);
+						break;
+					case STRUCTURED:	// the extractor is necessary for both types of data.	
+						class_relation.push(f);
+						getStructuredSuperFields(f.getType());//recurse on the structured 
+						class_relation.pop();
+						break;
+					default:
+						//throw new Exception("What type of data is this");	
 					}
+				} catch (RuntimeDroolsException  e) {
+					if (slog.warn() != null)
+						slog.warn().log("Exception e:"+ e +" skip\n");
+					if (flog.warn() != null)
+						flog.warn().log("Exception e:"+ e +" skip");
 				}
-				Util.processDomain(fieldDomain, f.getType());
-				
-				class_schema.putDomain(f_name, fieldDomain);
-//				Extractor f_extractor = cache.getExtractor( _obj_klass, f_name , _obj_klass.getClassLoader() );
-//				class_schema.putExtractor(f_name, f_extractor);		
-//				structure.addField(f, d_type);	
-				break;
-			case STRUCTURED:	// the extractor is necessary for both types of data.
-//				ClassFieldExtractor complex_f_extractor = cache.getExtractor( _obj_klass, f_name , _obj_klass.getClassLoader() );
-//				class_schema.putExtractor(f_name, complex_f_extractor);			
-//				structure.addField(f, d_type);		
-				getStructuredSuperFields(f.getType());//recurse on the structured 
-				break;
-			case COLLECTION:
+			} else {	//case COLLECTION:
+				if (slog.warn() != null)
+					slog.warn().log("Case Collection(f_name "+f_name+" What is the obj klass:"+_obj_klass + ")\n");
 				throw new FeatureNotSupported("Can not deal with collections as an attribute");
-			default:
-				//throw new Exception("What type of data is this");	
 			}
 		}
 		return;
@@ -180,22 +188,24 @@ public class ClassVisitor {
 				 * i dont need to recurse myself
 					Method m =c.getDeclaredMethod(lab.label_element(), null);
 				 */
-				Method m = clazz.getMethod(class_label.label_element(), null);
-	
+				Method m = clazz.getMethod(class_label.label_element(), null);	
 				if (Util.isSimpleType(m.getReturnType())) {
-					Domain fieldDomain = new Domain(class_label.label_element(), m.getReturnType());
+					
+					String f_refName = Util.getFReference(clazz, class_label.label_element()); // class.name + "@" + label
+					Domain fieldDomain = new Domain(clazz, class_label.label_element(), m.getReturnType());
 					fieldDomain.setArtificial(true);
-					Class<?> method_class = m.getReturnType();
+					Class<?> method_class = m.getReturnType();	
+					
 					Util.processDomain(fieldDomain, method_class);
 					clazz_structure.addMethod(m);
-					class_schema.putDomain(class_label.label_element(), fieldDomain);
+					class_schema.putDomain(f_refName, fieldDomain);
 
 					Extractor m_extractor = new PseudoFieldExtractor(clazz, m);
 					//cache.getExtractor( clazz, lab.label_element(), clazz.getClassLoader() );
-					class_schema.putExtractor(class_label.label_element(), m_extractor);
+					class_schema.putExtractor(f_refName, m_extractor);
 					if (!MULTIPLE_TARGETS)
 						class_schema.clearTargets();
-					class_schema.addTarget(class_label.label_element());
+					class_schema.addTarget(f_refName);
 					TARGET_FOUND = true;
 					//break; // if the ClassAnnotation is found then stop
 				}
@@ -208,6 +218,11 @@ public class ClassVisitor {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public boolean isTargetFound() {
+		// TODO Auto-generated method stub
+		return TARGET_FOUND;
 	}	
 
 }

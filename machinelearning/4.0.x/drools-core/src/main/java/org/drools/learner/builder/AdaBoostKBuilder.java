@@ -62,7 +62,7 @@ public class AdaBoostKBuilder implements DecisionTreeBuilder{
 				Instance inst_i = class_instances.getInstance(index_i);
 				
 				
-				Object instance_target = inst_i.getAttrValue(_trainer.getTargetDomain().getFName());
+				Object instance_target = inst_i.getAttrValue(_trainer.getTargetDomain().getFReferenceName());
 				Object instance_target_category = _trainer.getTargetDomain().getCategoryOf(instance_target);
 				Object target_category= _trainer.getTargetDomain().getCategory(index_j);
 				

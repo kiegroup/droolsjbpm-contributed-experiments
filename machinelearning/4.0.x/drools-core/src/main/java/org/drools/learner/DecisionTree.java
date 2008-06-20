@@ -1,15 +1,20 @@
 package org.drools.learner;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+
+import org.drools.learner.tools.LoggerFactory;
+import org.drools.learner.tools.SimpleLogger;
 
 
 public class DecisionTree {
 	
-	//private static final Logger log = LoggerFactory.getSysOutLogger(LogLevel.ERROR);
-	//private static final Logger flog = LoggerFactory.getFileLogger(DecisionTree.class, LogLevel.ERROR, Util.log_file);
+	protected static SimpleLogger slog = LoggerFactory.getSysOutLogger(DecisionTree.class, SimpleLogger.DEFAULT_LEVEL);
 	
-	private Class<?> obj_clazz;
+	//private Class<?> obj_clazz;
+	private Schema obj_schema;
 	
 	/* the target attribute */
 	private Domain target;
@@ -26,16 +31,21 @@ public class DecisionTree {
 	public long FACTS_READ = 0;
 
 	public DecisionTree(Schema inst_schema, String _target) {
-		this.obj_clazz = inst_schema.getObjectClass();
-		
-		//flog.debug("The target attribute: "+ _target);
+		this.obj_schema = inst_schema; //inst_schema.getObjectClass();
+
+		if (slog.debug() != null)
+			slog.debug().log("The target attribute: "+ _target+ "\n");
 		
 		this.target = inst_schema.getAttrDomain(_target);
+		
+		if (slog.debug() != null)
+			slog.debug().log("The target domain: "+ target+ "\n");
 		this.attrsToClassify = new ArrayList<Domain>(inst_schema.getAttrNames().size()-1);
 		for (String attr_name : inst_schema.getAttrNames()) {
 			if (!attr_name.equals(_target)) {
 				//flog.debug("Adding the attribute: "+ attr_name);
-				
+				if (slog.debug() != null)
+					slog.debug().log("Adding the attribute: "+ attr_name+ "\n");
 				this.attrsToClassify.add(inst_schema.getAttrDomain(attr_name));
 			}
 		}
@@ -45,7 +55,7 @@ public class DecisionTree {
 	
 	public DecisionTree(DecisionTree parentTree, Domain exceptDomain) {
 		//this.domainSet = new Hashtable<String, Domain<?>>();
-
+		this.obj_schema = parentTree.getSchema();
 		this.target = parentTree.getTargetDomain();
 		this.attrsToClassify = new ArrayList<Domain>(parentTree.getAttrDomains().size()-1);
 		for (Domain attr_domain : parentTree.getAttrDomains()) {
@@ -56,8 +66,16 @@ public class DecisionTree {
 		
 	}
 	
+	private Schema getSchema() {
+		return obj_schema;
+	}
+
 	public Class<?> getObjClass() {
-		return obj_clazz;
+		return obj_schema.getObjectClass();
+	}
+	
+	public HashMap<String, ArrayList<Field>> getAttrRelationMap() {
+		return obj_schema.getAttrRelationMap();
 	}
 
 	public void setID(int i) {

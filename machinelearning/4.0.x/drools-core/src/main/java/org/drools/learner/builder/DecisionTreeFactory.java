@@ -64,7 +64,7 @@ public class DecisionTreeFactory {
 		String executionSignature = org.drools.learner.deprecated.DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
 		
 		/* create the memory */
-		Memory mem = Memory.createStructuredFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
 		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
 		
 		SingleTreeTester tester = new SingleTreeTester(learner.getTree());
@@ -91,7 +91,7 @@ public class DecisionTreeFactory {
 		String executionSignature = org.drools.learner.deprecated.DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
 		
 		/* create the memory */
-		Memory mem = Memory.createStructuredFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
 		forest.build(mem, learner);
 		//forest.clearForest(10);
 
@@ -121,7 +121,7 @@ public class DecisionTreeFactory {
 		String executionSignature = org.drools.learner.deprecated.DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
 		
 		/* create the memory */
-		Memory mem = Memory.createStructuredFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
 		forest.build(mem, learner);
 		//forest.clearForest(10);
 

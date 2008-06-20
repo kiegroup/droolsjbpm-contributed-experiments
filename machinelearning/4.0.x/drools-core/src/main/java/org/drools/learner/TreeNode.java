@@ -9,8 +9,7 @@ public class TreeNode {
 	
 	//private static final Logger log = LoggerFactory.getSysOutLogger(TreeNode.class, LogLevel.ERROR);
 	//private static final Logger flog = LoggerFactory.getFileLogger(TreeNode.class);	
-	
-	
+
 	private Domain domain;
 	private Hashtable<Object, TreeNode> children;
 	/* TODO explain
@@ -62,7 +61,7 @@ public class TreeNode {
 	}
 	
 	public Object voteFor(Instance i) {
-		final Object attr_value = i.getAttrValue(this.domain.getFName());
+		final Object attr_value = i.getAttrValue(this.domain.getFReferenceName());
 		final Object category = domain.getCategoryOf(attr_value);
 		
 		final TreeNode my_node = this.getChild(category);
