@@ -26,10 +26,12 @@ public class AdaBoostBuilder implements DecisionTreeBuilder{
 	
 	private ArrayList<DecisionTree> forest;
 	private ArrayList<Double> classifier_accuracy;
-	//private Learner trainer;
+	
+	private DecisionTreeMerger merger;
 	
 	public AdaBoostBuilder() {
 		//this.trainer = _trainer;
+		merger = new DecisionTreeMerger();
 	}
 	public void build(Memory mem, Learner _trainer) {
 		
@@ -132,8 +134,10 @@ public class AdaBoostBuilder implements DecisionTreeBuilder{
 			
 			
 			else {
-				if (slog.stat() != null)
+				if (slog.stat() != null) {
+					slog.stat().log("\n Boosting ends: ");
 					slog.stat().log("All instances classified correctly TERMINATE, forest size:"+i+ "\n");
+				}
 				// What to do here??
 				FOREST_SIZE = i;
 				classifier_accuracy.add(10.0); // TODO add a very big number
@@ -143,12 +147,18 @@ public class AdaBoostBuilder implements DecisionTreeBuilder{
 			
 			
 			forest.add(dt);
+			// the DecisionTreeMerger will visit the decision tree and add the paths that have not been seen yet to the list
+			merger.add(dt);	
 
 			if (slog.stat() !=null)
 				slog.stat().stat(".");
 
 		}
 		// TODO how to compute a best tree from the forest
+		DecisionTree best = merger.getBest();
+		if (best == null)
+			best = forest.get(0);
+		
 		_trainer.setBestTree(forest.get(0));
 		//this.c45 = dt;
 	}

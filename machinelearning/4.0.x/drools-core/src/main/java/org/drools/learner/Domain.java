@@ -155,8 +155,14 @@ public class Domain {
 	
 	}
 	
+	public boolean isNotJustSelected(Domain exceptDomain) {
+		if (this.objKlass.equals(exceptDomain.getObjKlass()))
+			return !this.getFName().equals(exceptDomain.getFName());
+		return true;
+	}
+	
 	public int hashCode() {
-		return fName.hashCode() ^ fCategories.hashCode(); // TODO
+		return objKlass.hashCode() ^ fName.hashCode() ^ fCategories.hashCode(); // TODO
 	}
 	
 	public String toString() {
@@ -167,12 +173,5 @@ public class Domain {
 		return sb.toString();
 
 	}
-	
-//	public DataType getDataType() {
-//		return this.dataType;
-//	}
-//	public void setDataType(DataType data_type) {
-//		this.dataType = data_type;
-//	}
 
 }

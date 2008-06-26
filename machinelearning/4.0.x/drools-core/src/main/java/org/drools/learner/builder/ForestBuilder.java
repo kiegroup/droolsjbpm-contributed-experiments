@@ -12,7 +12,7 @@ import org.drools.learner.tools.Util;
 public class ForestBuilder implements DecisionTreeBuilder{
 
 	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(ForestBuilder.class, SimpleLogger.DEFAULT_LEVEL);
-	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(ForestBuilder.class, SimpleLogger.DEFAULT_LEVEL);
+	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(ForestBuilder.class, SimpleLogger.DEBUG);
 	
 	private TreeAlgo algorithm = TreeAlgo.BAG; // default bagging, TODO boosting
 	
@@ -23,8 +23,11 @@ public class ForestBuilder implements DecisionTreeBuilder{
 	private ArrayList<DecisionTree> forest;
 	//private Learner trainer;
 	
+	private DecisionTreeMerger merger;
+	
 	public ForestBuilder() {
 		//this.trainer = _trainer;
+		merger = new DecisionTreeMerger();
 	}
 	public void build(Memory mem, Learner _trainer) {
 		
@@ -53,22 +56,33 @@ public class ForestBuilder implements DecisionTreeBuilder{
 			else
 				bag = Util.bag_wo_rep(tree_capacity, N);
 			
-			InstanceList working_instances = class_instances.getInstances(bag);			
-			DecisionTree dt = _trainer.train_tree(working_instances);
+			InstanceList working_instances = class_instances.getInstances(bag);		
 			
+			if (slog.debug() != null)
+				slog.debug().log("\n"+"Training a tree"+"\n");
+			DecisionTree dt = _trainer.train_tree(working_instances);
+			if (slog.debug() != null)
+				slog.debug().log("\n"+"the end"+ "\n");
 			dt.setID(i);
 			forest.add(dt);
+			// the DecisionTreeMerger will visit the decision tree and add the paths that have not been seen yet to the list
+			merger.add(dt);	
 
 			if (slog.stat() !=null)
 				slog.stat().stat(".");
 
 		}
+		
+		//System.exit(0);
 		// TODO how to compute a best tree from the forest
-		_trainer.setBestTree(forest.get(0));
+		DecisionTree best = merger.getBest();
+		if (best == null)
+			best = forest.get(0);
+		_trainer.setBestTree(best);// forest.get(0));
 		
 		//this.c45 = dt;
 	}
-	
+
 	public TreeAlgo getTreeAlgo() {
 		return algorithm; //TreeAlgo.BAG; // default
 	}
@@ -77,3 +91,5 @@ public class ForestBuilder implements DecisionTreeBuilder{
 		return forest;
 	}
 }
+
+

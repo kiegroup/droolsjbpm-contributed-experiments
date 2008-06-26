@@ -16,6 +16,8 @@ public class GainRatio extends Entropy implements Heuristic{
 		double info_gain = super.data_eval - Entropy.calc_info_attr(insts_by_attr);
 	
 		double split_info = GainRatio.split_info(insts_by_attr);
+		
+		System.err.println("(GainRatio) info_gain = "+ info_gain + "/"+ split_info);
 		return info_gain /split_info;
 	}
 
@@ -42,17 +44,22 @@ public class GainRatio extends Entropy implements Heuristic{
 	private static double split_info( CondClassDistribution instances_by_attr) {
 		//Collection<Object> attributeValues = instances_by_attr.getAttributes();
 		double data_size = instances_by_attr.getTotal();
-		double sum = 0.0;
-		if (data_size>0)
+		double sum = 1.0;
+		if (data_size>0) {
 			for (int attr_idx = 0; attr_idx < instances_by_attr.getNumCondClasses(); attr_idx++) {
 				Object attr_category = instances_by_attr.getCondClass(attr_idx);
 				double num_in_attr = instances_by_attr.getTotal_AttrCategory(attr_category);
 
-				if (num_in_attr > 0) {
+				if (num_in_attr > 0.0) {
 					double prob = num_in_attr / data_size;
 					sum -= prob * Util.log2(prob);
 				}
 			}
+		} else {
+			System.err.println("????? data_size = "+ data_size);
+			System.exit(0);
+		}
+			
 		//flog.debug("\n == "+sum);
 		return sum;
 	}

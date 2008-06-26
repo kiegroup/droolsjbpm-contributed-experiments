@@ -46,7 +46,7 @@ public class InstDistribution extends ClassDistribution{
 			data_size += inst.getWeight();
 			
 			Object target_key = inst.getAttrValue(tName);
-			super.change(target_key, inst.getWeight());		// add one for vote for the target value : target_key
+			super.change(target_key, inst.getWeight());		// add inst.getWeight() vote for the target value of the instance : target_key
 			//super.change(attr_sum, inst.getWeight());		// ?????
 			
 			this.addSupporter(target_key, inst);

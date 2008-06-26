@@ -59,9 +59,13 @@ public class DecisionTree {
 		this.target = parentTree.getTargetDomain();
 		this.attrsToClassify = new ArrayList<Domain>(parentTree.getAttrDomains().size()-1);
 		for (Domain attr_domain : parentTree.getAttrDomains()) {
-			if (!attr_domain.getFName().equals(exceptDomain.getFName()))
+			if (attr_domain.isNotJustSelected(exceptDomain))
 				this.attrsToClassify.add(attr_domain);
 		}
+//		System.out.print("New tree ");
+//		for (Domain d:attrsToClassify)
+//			System.out.print("d: "+d);
+//		System.out.println("");
 		//Collections.sort(this.attrsToClassify, new Comparator<Domain>()); // compare the domains by the name
 		
 	}
@@ -77,7 +81,11 @@ public class DecisionTree {
 	public HashMap<String, ArrayList<Field>> getAttrRelationMap() {
 		return obj_schema.getAttrRelationMap();
 	}
-
+	
+	public int getId() {
+		return id;
+	}
+	
 	public void setID(int i) {
 		this.id = i;
 	}

@@ -13,6 +13,9 @@ public class InformationContainer {
 	public ArrayList<Instance> sorted_data;
 	
 	public InformationContainer() {
+		domain = null;
+		attribute_eval = 0.0;
+		sorted_data = null;
 
 	}
 	

@@ -15,6 +15,7 @@ import org.drools.learner.tools.SimpleLogger;
 public abstract class Learner {
 	
 	protected static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Learner.class, SimpleLogger.DEFAULT_LEVEL);
+	protected static SimpleLogger slog = LoggerFactory.getSysOutLogger(Learner.class, SimpleLogger.DEBUG);
 	
 	public static enum DomainAlgo { CATEGORICAL, QUANTITATIVE }
 	public static DomainAlgo DEFAULT_DOMAIN = DomainAlgo.QUANTITATIVE;

@@ -3,8 +3,14 @@ package org.drools.learner.eval;
 import java.util.List;
 
 import org.drools.learner.Domain;
+import org.drools.learner.tools.LoggerFactory;
+import org.drools.learner.tools.SimpleLogger;
 
 public class AttributeChooser {
+	
+	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(AttributeChooser.class, SimpleLogger.WARN);
+	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(AttributeChooser.class, SimpleLogger.WARN);
+	
 	
 	private Heuristic function;
 	
@@ -33,19 +39,27 @@ public class AttributeChooser {
 				attribute_eval = function.getEval(attr_domain);//data_eval - function.info_attr(insts_by_target, attr_domain);
 				container.attribute_eval = attribute_eval;
 				container.domain = attr_domain;
+				if (slog.warn() != null)
+					slog.warn().log("CatAttribute: " + container.domain + " the gain: " + attribute_eval + " greatest "+ greatestEval+ "\n");
+			
+				
 			} else {
 //				the continuous domain
 				attribute_eval = function.getEval_cont(attr_domain);
-				
-//				attr_domain = function.getDomain();
-//				sorted_instances = visitor.getSortedInstances();
-				
 				container.attribute_eval = attribute_eval;
 				container.domain = function.getDomain();
 				container.sorted_data = function.getSortedInstances();
+				if (slog.warn() != null)
+					slog.warn().log("ContAttribute: " + container.domain + " the gain: " + attribute_eval + " greatest "+ greatestEval+ "\n");
+			
+//				attr_domain = function.getDomain();
+//				sorted_instances = visitor.getSortedInstances();
+				
+				
 				
 			}
-//			flog.debug("Attribute: " + attr_domain + " the gain: " + gain);
+			if (slog.warn() != null)
+				slog.warn().log("Attribute: " + container.domain + " the gain: " + attribute_eval + " greatest "+ greatestEval+ "\n");
 			if (attribute_eval > greatestEval) {// TODO implement a comparator
 				greatestEval = attribute_eval;
 				best.domain = container.domain;

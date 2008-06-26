@@ -17,7 +17,7 @@ public class TreeNode {
 	 * gain:
 	 * gainRatio
 	 */
-	private double rank, gain, gainRatio;
+	private double rank, infoMea;
 	
 	// Number of all instances matching at that node
 	private double num_matching_instances;
@@ -58,6 +58,14 @@ public class TreeNode {
 	
 	public TreeNode getChild(Object attr_key) {
 		return children.get(attr_key);
+	}
+	
+	public double getInfoMea() {
+		return infoMea;
+	}
+	
+	public void setInfoMea(double mea) {
+		this.infoMea = mea;
 	}
 	
 	public Object voteFor(Instance i) {

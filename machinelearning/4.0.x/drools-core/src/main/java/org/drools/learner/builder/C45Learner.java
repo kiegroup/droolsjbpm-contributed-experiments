@@ -12,6 +12,7 @@ import org.drools.learner.eval.Heuristic;
 import org.drools.learner.eval.InformationContainer;
 import org.drools.learner.eval.InstDistribution;
 import org.drools.learner.tools.FeatureNotSupported;
+import org.drools.learner.tools.Util;
 
 public class C45Learner extends Learner{
 	
@@ -44,6 +45,7 @@ public class C45Learner extends Learner{
 									(double)this.getDataSize()/* total size of data fed to dt*/);
 			classifiedNode.setNumMatch(data_stats.getSum());						//num of matching instances to the leaf node
 			classifiedNode.setNumClassification(data_stats.getSum());				//num of classified instances at the leaf node
+			//classifiedNode.setInfoMea(mea)
 			return classifiedNode;
 		}
 		
@@ -58,7 +60,7 @@ public class C45Learner extends Learner{
 										(double)this.getDataSize()						/* total size of data fed to dt*/);
 			noAttributeLeftNode.setNumMatch(data_stats.getSum());						//num of matching instances to the leaf node
 			noAttributeLeftNode.setNumClassification(data_stats.getVoteFor(winner));	//num of classified instances at the leaf node
-			
+			//noAttributeLeftNode.setInfoMea(best_attr_eval.attribute_eval);
 			/* we need to know how many guys cannot be classified and who these guys are */
 			data_stats.missClassifiedInstances(missclassified_data);
 			
@@ -72,14 +74,14 @@ public class C45Learner extends Learner{
 		chooser.chooseAttribute(best_attr_eval, data_stats, attribute_domains);
 		Domain node_domain = best_attr_eval.domain;
 		
-		
-		
-		//flog.debug(Util.ntimes("*", 20)+" 1st best attr: "+ node_domain);
+		if (slog.debug() != null)
+			slog.debug().log("\n"+Util.ntimes("*", 20)+" 1st best attr: "+ node_domain);
 
 		TreeNode currentNode = new TreeNode(node_domain);
 		currentNode.setNumMatch(data_stats.getSum());									//num of matching instances to the leaf node
 		currentNode.setRank((double)data_stats.getSum()/
 							(double)this.getDataSize()									/* total size of data fed to dt*/);
+		currentNode.setInfoMea(best_attr_eval.attribute_eval);
 		
 		
 		Hashtable<Object, InstDistribution> filtered_stats = null;
@@ -95,6 +97,8 @@ public class C45Learner extends Learner{
 		for (int c = 0; c<node_domain.getCategoryCount(); c++) {
 			/* split the last two class at the same time */
 			Object category = node_domain.getCategory(c);
+			if (slog.debug() != null)
+				slog.debug().log("{"+ node_domain +":"+category+ "}");
 			
 			/* list of domains except the choosen one (&target domain)*/
 			DecisionTree child_dt = new DecisionTree(dt, node_domain);	
@@ -105,6 +109,7 @@ public class C45Learner extends Learner{
 				majorityNode.setRank(-1.0);		//it does not classify any instance
 				majorityNode.setNumMatch(0);
 				majorityNode.setNumClassification(0);
+				//currentNode.setInfoMea(best_attr_eval.attribute_eval);
 				currentNode.putNode(category, majorityNode);
 			} else {
 				TreeNode newNode = train(child_dt, filtered_stats.get(category));//, attributeNames_copy

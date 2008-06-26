@@ -10,7 +10,8 @@ import java.util.HashMap;
 
 public class LoggerFactory {
 
-	private static BufferedWriter buffer = new BufferedWriter(new StringWriter());
+	private static StringWriter str_writer = new StringWriter();
+	private static BufferedWriter buffer = new BufferedWriter(str_writer);
 	private static HashMap<Class<?>, SimpleLogger> fileLoggers = new HashMap<Class<?>, SimpleLogger>();
 	
 	public static SimpleLogger getUniqueFileLogger(Class<?> klass, int level) {
@@ -43,12 +44,23 @@ public class LoggerFactory {
 		
 		int last_slash = file_sign.lastIndexOf('/');
 		String file_name = file_sign.substring(0, last_slash+1) + directory+file_sign.substring(last_slash)+"."+directory;
-		System.out.println(file_name);
+		System.out.println("file "+ file_name+ " logged ");
+		
 		
 		PrintWriter writer;
 		try {
 			writer = new PrintWriter (new BufferedWriter (new FileWriter (file_name)));
-			writer.write(buffer.toString());
+			buffer.flush();
+//			System.out.println("LOG1: "+ str_writer.getBuffer());	
+//			System.out.println("LOG2: "+ str_writer.getBuffer().toString());
+
+			writer.write(str_writer.getBuffer().toString()); //str_buffer.getBuffer());
+			str_writer.close();
+			buffer.close();
+			writer.flush();
+			// Close the BufferedWriter object and the underlying
+            // StringWriter object.
+			writer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
