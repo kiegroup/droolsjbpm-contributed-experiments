@@ -1,8 +1,0 @@
-package foo;
-
-rule "Generates NPE"
-  when
-    $count : Thing( size > 0 ) from collect( Gizmo( length == 1 ) )
-  then
-    System.out.println("boo");
-end 

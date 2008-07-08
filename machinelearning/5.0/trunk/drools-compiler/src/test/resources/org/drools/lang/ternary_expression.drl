@@ -1,9 +1,0 @@
-package foo
-
-rule rule_one 
-  when
-  	Foo()
-  then
-  	 if (speed > speedLimit ? true : false;)
-     pullEmOver();
-end

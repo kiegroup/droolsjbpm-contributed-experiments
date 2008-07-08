@@ -1,8 +1,0 @@
-declare SomeFact
-    name : String
-    age: Integer
-end
-
-declare AnotherFact
-
-end

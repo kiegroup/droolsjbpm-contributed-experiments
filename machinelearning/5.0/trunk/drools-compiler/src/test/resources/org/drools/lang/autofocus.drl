@@ -1,8 +1,0 @@
-
-rule rule1 
-  auto-focus true
-  when
-  	not Cheese(type == "stilton")
-  then
-	funky();
-end

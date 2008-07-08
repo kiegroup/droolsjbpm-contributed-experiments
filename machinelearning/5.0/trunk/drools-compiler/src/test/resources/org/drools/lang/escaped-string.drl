@@ -1,6 +1,0 @@
-rule "test_Quotes"
-   when
-      InitialFact()
-   then
-      String s = "\"\n\t\\";
-end 

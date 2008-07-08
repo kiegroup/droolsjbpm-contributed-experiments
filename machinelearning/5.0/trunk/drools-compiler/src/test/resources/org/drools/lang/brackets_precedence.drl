@@ -1,7 +1,0 @@
-
-rule simple_rule 
-  when
-	 ( (not Foo(x=="a") or Foo(x=="y") ) and ( Shoes() or Butt() ) )
-  then
-	go wild
-end
