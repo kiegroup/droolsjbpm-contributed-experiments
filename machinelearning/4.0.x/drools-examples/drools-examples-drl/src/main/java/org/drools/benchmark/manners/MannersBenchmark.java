@@ -75,7 +75,7 @@ public class MannersBenchmark {
      * Convert the facts from the <code>InputStream</code> to a list of
      * objects.
      */
-    protected static List getInputObjects(InputStream inputStream) throws IOException {
+    public static List getInputObjects(InputStream inputStream) throws IOException {
         List list = new ArrayList();
 
         BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );

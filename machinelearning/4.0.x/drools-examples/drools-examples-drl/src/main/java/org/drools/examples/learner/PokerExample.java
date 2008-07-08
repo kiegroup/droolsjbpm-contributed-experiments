@@ -36,7 +36,7 @@ public class PokerExample {
 		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 111;
+		DecisionTree decision_tree; int ALGO = 121;
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x

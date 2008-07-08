@@ -3,7 +3,7 @@ package org.drools.examples.learner;
 import org.drools.learner.tools.ClassAnnotation;
 import org.drools.learner.tools.FieldAnnotation;
 
-@ClassAnnotation(label_element = "getLabel")
+@ClassAnnotation(label_element = "getPoker_hand")
 public class Poker {
 	@FieldAnnotation(readingSeq = 0)
 	private int s1; // 'Suit of card #1': Ordinal (1-4) representing {Hearts, Spades, Diamonds, Clubs}

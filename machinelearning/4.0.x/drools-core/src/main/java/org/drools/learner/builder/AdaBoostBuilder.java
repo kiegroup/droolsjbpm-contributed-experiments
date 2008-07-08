@@ -79,18 +79,19 @@ public class AdaBoostBuilder implements DecisionTreeBuilder{
 			DecisionTree dt = _trainer.train_tree(working_instances);
 			dt.setID(i);
 			
-			double error = 0.0;
+			double error = 0.0, sum_weight = 0.0;
 			SingleTreeTester t= new SingleTreeTester(dt);
 			for (int index_i = 0; index_i < NUM_DATA; index_i++) {
 				Integer result = t.test(class_instances.getInstance(index_i));
+				sum_weight += weights[index_i];
 				if (result == Stats.INCORRECT) {
-				
 					error += weights[index_i];
 					if (slog.debug() != null)
 						slog.debug().log("[e:"+error+" w:"+weights[index_i]+ "] ");
 				}
 			}
 			
+			error = error / sum_weight; // forgotton
 			if (error > 0.0f) {
 				double alpha = Util.ln( (1.0d-error)/error ) / 2.0d;
 				
@@ -106,8 +107,8 @@ public class AdaBoostBuilder implements DecisionTreeBuilder{
 						case Stats.INCORRECT:
 							weights[index_i] = weights[index_i] * Util.exp(alpha);
 							break;
-						case Stats.CORRECT:
-							weights[index_i] = weights[index_i] * Util.exp(-1.0d * alpha);
+						case Stats.CORRECT:	// if it is correct do not update
+							//weights[index_i] = weights[index_i] * Util.exp(-1.0d * alpha);
 							break;
 						case Stats.UNKNOWN:
 							if (slog.error() !=null)

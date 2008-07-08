@@ -18,11 +18,15 @@ package org.drools.benchmark.manners;
 
 import java.io.Serializable;
 
+import org.drools.learner.tools.FieldAnnotation;
+
 public class Guest implements Serializable {
+	
+	@FieldAnnotation(ignore = true)
 	private String name;
-
+	@FieldAnnotation(discrete = true)
 	private Sex sex;
-
+	@FieldAnnotation(discrete = true)
 	private Hobby hobby;
 	
 	public Guest() {
