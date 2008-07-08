@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root-container height="662" name="simple" width="694">
+  <node height="40" name="start" width="140" x="150" y="25">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node height="40" name="end" width="140" x="150" y="225"/>
+  <node height="36" name="node1" width="132" x="153" y="120">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+</root-container>

@@ -1,0 +1,13 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.lang.String foo
+global java.lang.Integer bar;
+
+rule baz
+    when
+        Cheese( )
+    then
+
+end    

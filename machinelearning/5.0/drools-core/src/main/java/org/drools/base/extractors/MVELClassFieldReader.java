@@ -1,0 +1,98 @@
+/*
+ * Copyright 2006 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Created on Jun 12, 2007
+ */
+package org.drools.base.extractors;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.InternalReadAccessor;
+import org.mvel.MVEL;
+import org.mvel.compiler.CompiledExpression;
+import org.mvel.compiler.ExpressionCompiler;
+
+/**
+ * A class field extractor that uses MVEL engine to extract the actual value for a given
+ * expression. We use MVEL to resolve nested accessor expressions.
+ *
+ * @author etirelli
+ */
+public class MVELClassFieldReader extends BaseObjectClassFieldReader {
+
+    private static final long serialVersionUID = 400L;
+
+    private CompiledExpression mvelExpression = null;
+    private Map extractors = null;
+
+    public MVELClassFieldReader() {
+    }
+    public MVELClassFieldReader(Class clazz,
+                                   String fieldName,
+                                   ClassLoader classLoader) {
+        super( -1, // index
+               Object.class, // fieldType
+               ValueType.determineValueType( Object.class ) ); // value type
+        this.extractors = new HashMap();
+
+        ExpressionCompiler compiler = new ExpressionCompiler( fieldName );
+        this.mvelExpression = compiler.compile();
+
+        Set inputs = compiler.getParserContextState().getInputs().keySet();
+        for( Iterator it = inputs.iterator(); it.hasNext(); ) {
+            String basefield = (String) it.next();
+
+            InternalReadAccessor extr = ClassFieldAccessorCache.getInstance().getReader(  clazz, basefield, classLoader );
+            this.extractors.put( basefield, extr );
+        }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        mvelExpression  = (CompiledExpression)in.readObject();
+        extractors  = (Map)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(mvelExpression);
+        out.writeObject(extractors);
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
+     */
+    public Object getValue(InternalWorkingMemory workingMemory, Object object) {
+        Map variables = new HashMap();
+        for( Iterator it = this.extractors.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String var = (String) entry.getKey();
+            InternalReadAccessor extr = (InternalReadAccessor) entry.getValue();
+
+            variables.put( var, extr.getValue( workingMemory, object ));
+        }
+        return MVEL.executeExpression( mvelExpression, variables );
+    }
+
+}

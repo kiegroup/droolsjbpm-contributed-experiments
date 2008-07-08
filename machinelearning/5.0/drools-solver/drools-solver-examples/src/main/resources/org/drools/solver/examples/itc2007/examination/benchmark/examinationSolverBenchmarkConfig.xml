@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solverBenchmarkSuite>
+    <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
+    <solvedSolutionFilesDirectory>local/data/itc2007/examination/solved</solvedSolutionFilesDirectory>
+    <sortSolverBenchmarks>true</sortSolverBenchmarks>
+    <!-- solverBenchmarkResultComparator -->
+    
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set1.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set2.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set3.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set4.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set5.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set6.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set7.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set8.xml</inheritedUnsolvedSolutionFile>
+
+    <inheritedLocalSearchSolver>
+        <scoreDrl>/org/drools/solver/examples/itc2007/examination/solver/examinationScoreRules.drl</scoreDrl>
+        <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+        <finish>
+            <!--
+                Official benchmark maximumSecondsSpend allowed on:
+                ge0ffrey's main pc: 429
+                ge0ffrey's old pc: 1152
+            -->
+            <maximumSecondsSpend>429</maximumSecondsSpend>
+        </finish>
+    </inheritedLocalSearchSolver>
+
+    <solverBenchmark>
+        <localSearchSolver>
+            <scoreCalculator>
+                <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+            </scoreCalculator>
+            <selector>
+                <selector>
+                    <topSize>10</topSize>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>500</completeSolutionTabuSize>
+                <completePropertyTabuSize>10</completePropertyTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+</solverBenchmarkSuite>

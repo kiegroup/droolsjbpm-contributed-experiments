@@ -1,0 +1,47 @@
+package com.sample;
+
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.compiler.PackageBuilder;
+import org.drools.rule.Package;
+
+/**
+ * This is a sample file to launch a ruleflow.
+ */
+public class RuleFlowTest {
+
+	public static final void main(String[] args) {
+		try {
+			//load the process
+			RuleBase ruleBase = createKnowledgeBase();
+			// create a new session
+			StatefulSession session = ruleBase.newStatefulSession();
+			// start a new process instance
+			session.startProcess("com.sample.ruleflow");
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
+
+	/**
+	 * Creates the knowledge base by loading the process definition.
+	 */
+	private static RuleBase createKnowledgeBase() throws Exception {
+		// create a builder
+		PackageBuilder builder = new PackageBuilder();
+		// load the process
+		Reader source = new InputStreamReader(
+			RuleFlowTest.class.getResourceAsStream("/ruleflow.rf"));
+		builder.addProcessFromXml(source);
+		// create the knowledge base 
+		Package pkg = builder.getPackage();
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		ruleBase.addPackage(pkg);
+		return ruleBase;
+	}
+
+}

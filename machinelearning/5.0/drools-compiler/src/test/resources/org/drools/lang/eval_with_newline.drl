@@ -1,0 +1,23 @@
+
+rule simple_rule 
+  when
+	Foo()
+	Bar()
+	eval(
+	
+	
+	
+	       abc(
+	       
+	       "foo") + 
+	       5
+	       
+	       
+	       
+	        
+	       )
+  then
+	Kapow
+	Poof
+	
+end

@@ -1,0 +1,16 @@
+package org.drools;
+
+import org.drools.StockTick;
+
+declare StockTick 
+    @role( event )
+end
+
+global java.util.List results;
+
+rule "Check event"
+when
+    $st : StockTick( company == "ACME" )
+then
+    results.add( $st );
+end

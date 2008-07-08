@@ -1,0 +1,20 @@
+package test.dialect.rule.when.end.package.mine;
+
+global java.lang.String rule;
+
+import com.dialect.something.SomeClass
+
+function boolean test() {
+    return true;
+}
+
+rule type1
+  when
+	$id : Something( duration == "foo")
+  then
+  	The.method();
+  	attributes;
+  	rule;
+  	package;
+end
+
