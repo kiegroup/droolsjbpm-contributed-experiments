@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book xmlns:xi="http://www.w3.org/2001/XInclude">
+  <bookinfo>
+    <title>Drools Guvnor</title>
+
+    <releaseinfo>5.0.0.SNAPSHOT</releaseinfo>
+
+    <author>
+      <firstname>Michael</firstname>
+      <surname>Neale</surname>
+    </author>
+
+    <author>
+      <firstname>Fernando</firstname>
+      <surname>Meyer</surname>
+    </author>
+  </bookinfo>
+
+<!--
+  <preface id="preface" revision="2">
+    <title>Preface</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="drools_logo.png" />
+      </imageobject>
+    </mediaobject>
+
+    <para />
+  </preface>
+-->
+ 
+    <xi:include href="Chapter-Guvnor/Chapter-Guvnor.xml" />
+
+  <index/>
+</book>

@@ -1,0 +1,13 @@
+package HelloWorld
+ 
+import org.drools.Message
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "Hello World"
+	when
+		Message() && Cheese()
+	then
+		list.add("hola");
+end

@@ -1,0 +1,4 @@
+<workflows>
+  <workflow name="simple" type="resource" location="simple.xml"/>
+  <workflow name="simple2" type="resource" location="simple2.xml"/>
+</workflows>

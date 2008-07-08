@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-diagram name="websale" width="566" height="541">
+  <node name="Create new web sale order" x="250" y="50" width="200" height="40">
+    <transition>
+      <label x="5" y="-10"/>
+    </transition>
+  </node>
+  <node name="Evaluate web order" x="280" y="125" width="140" height="40">
+    <transition name="ok">
+      <label x="9" y="-10"/>
+    </transition>
+    <transition name="more info needed">
+      <label x="-44" y="-18"/>
+      <bendpoint w1="-114" h1="-35" w2="116" h2="-35"/>
+    </transition>
+  </node>
+  <node name="Fix web order data" x="50" y="125" width="140" height="40">
+    <transition>
+      <label x="5" y="-10"/>
+      <bendpoint w1="109" h1="32" w2="-121" h2="32"/>
+    </transition>
+  </node>
+  <node name="salefork" x="250" y="200" width="200" height="25">
+    <transition name="payment">
+      <label x="12" y="-18"/>
+      <bendpoint w1="145" h1="31" w2="0" h2="-52"/>
+    </transition>
+    <transition name="shipping">
+      <label x="10" y="10"/>
+      <bendpoint w1="-130" h1="34" w2="0" h2="-89"/>
+    </transition>
+  </node>
+  <node name="Wait for money" x="425" y="275" width="140" height="40">
+    <transition>
+      <label x="5" y="-10"/>
+    </transition>
+  </node>
+  <node name="update books" x="425" y="350" width="140" height="40">
+    <transition>
+      <label x="5" y="-10"/>
+      <bendpoint w1="-1" h1="34" w2="144" h2="-33"/>
+    </transition>
+  </node>
+  <node name="ship item" x="150" y="315" width="140" height="40">
+    <transition>
+      <label x="5" y="-10"/>
+      <bendpoint w1="-1" h1="74" w2="-131" h2="-28"/>
+    </transition>
+  </node>
+  <node name="salejoin" x="250" y="425" width="200" height="25">
+    <transition>
+      <label x="5" y="-10"/>
+    </transition>
+  </node>
+  <node name="end" x="280" y="500" width="140" height="40"/>
+</process-diagram>

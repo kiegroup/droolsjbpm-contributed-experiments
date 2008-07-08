@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition 
+  xmlns="urn:jbpm.org:jpdl-3.2"
+  name="simple">
+   <start-state name="start">
+		<transition to="node1"></transition>
+	</start-state>
+   <node name="node1">
+		<action name="Sysout" class="org.drools.SysoutHandler"></action>
+		<transition to="end"></transition>
+	</node>
+
+
+	<end-state name="end"></end-state>
+</process-definition>

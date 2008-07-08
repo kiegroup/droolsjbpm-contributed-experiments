@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition 
+  xmlns="urn:jbpm.org:jpdl-3.2"
+  name="simple">
+   <start-state name="start">
+		<transition to="fork1"></transition>
+	</start-state>
+   <node name="node1">
+		<action name="Sysout" class="org.drools.SysoutHandler"></action>
+		<transition to="join1"></transition>
+	</node>
+
+	<fork name="fork1">
+		<transition to="node1"></transition>
+		<transition to="node2" name="to node2"></transition>
+	</fork>
+
+	<join name="join1">
+		<transition to="end"></transition>
+	</join>
+
+	<node name="node2">
+		<action name="Sysout" class="org.drools.SysoutHandler"></action>
+		<transition to="join1"></transition>
+	</node>
+
+
+	<end-state name="end">
+		<event type="node-enter">
+			<action name="Sysout" class="org.drools.SysoutHandler"></action>
+		</event>
+	</end-state>
+</process-definition>

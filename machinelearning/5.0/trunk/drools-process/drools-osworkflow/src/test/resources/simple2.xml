@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC 
+                 "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN"
+                 "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+  <initial-actions>
+    <action id="1" name="Start Workflow">
+      <results>
+        <unconditional-result old-status="Finished" status="Active" step="1"/>
+      </results>
+    </action>
+  </initial-actions>
+  <steps>
+    <step id="1" name="Stage 1">
+      <actions>
+        <action id="2" name="Finish Stage 1">
+          <restrict-to>
+            <conditions>
+              <condition type="class">
+                <arg name="class.name">
+                   com.opensymphony.workflow.util.StatusCondition
+                </arg>
+                <arg name="status">Active</arg>
+              </condition>
+            </conditions>
+          </restrict-to>
+          <results>
+            <unconditional-result old-status="Finished" split="1" />
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="2" name="Stage 2">
+      <actions>
+        <action id="3" name="Finish Stage 2">
+          <restrict-to>
+            <conditions>
+              <condition type="class">
+                <arg name="class.name">
+                   com.opensymphony.workflow.util.StatusCondition
+                </arg>
+                <arg name="status">Active</arg>
+              </condition>
+            </conditions>
+          </restrict-to>
+          <results>
+            <unconditional-result old-status="Finished" join="1" />
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="3" name="Stage 3">
+      <actions>
+        <action id="4" name="Finish Stage 3">
+          <restrict-to>
+            <conditions>
+              <condition type="class">
+                <arg name="class.name">
+                   com.opensymphony.workflow.util.StatusCondition
+                </arg>
+                <arg name="status">Active</arg>
+              </condition>
+            </conditions>
+          </restrict-to>
+          <results>
+            <unconditional-result old-status="Finished" join="1" />
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="4" name="Stage 4" />
+  </steps>
+  <splits>
+    <split id="1">
+      <unconditional-result old-status="Finished" step="2" status="Active" />
+      <unconditional-result old-status="Finished" step="3" status="Active" />
+    </split>
+  </splits>
+  <joins>
+    <join id="1">
+      <conditions type="AND">
+        <condition type="beanshell">
+          <arg name="script">
+            "Finished".equals(jn.getStep(2).getStatus()) 
+            &amp;&amp; "Finished".equals(jn.getStep(3).getStatus())
+          </arg>
+        </condition>
+      </conditions>
+      <unconditional-result old-status="Finished" status="Active" step="4"/>
+    </join>
+  </joins>
+</workflow>
