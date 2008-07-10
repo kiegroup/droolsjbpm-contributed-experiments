@@ -30,6 +30,8 @@ public class DecisionTree {
 	private String execution_signature;
 	public long FACTS_READ = 0;
 
+	private int validation_error;
+
 	public DecisionTree(Schema inst_schema, String _target) {
 		this.obj_schema = inst_schema; //inst_schema.getObjectClass();
 
@@ -110,6 +112,13 @@ public class DecisionTree {
 		return this.getRoot().voteFor(i);
 	}
 	
+
+	public void setValidationError(int error) {
+		validation_error = error;
+	}	
+	public int getValidationError() {
+		return validation_error;
+	}
 	public void setSignature(String executionSignature) {
 		execution_signature = executionSignature;
 	}
@@ -122,6 +131,6 @@ public class DecisionTree {
 	public String toString() {
 		String out = "Facts scanned " + FACTS_READ + "\n";
 		return out + root.toString();
-	}	
+	}
 	
 }

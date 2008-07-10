@@ -29,6 +29,9 @@ public class LeafNode extends TreeNode {
 		return this.num_intances_classified;
 	}
 	
+	public int getNumLeaves() {
+		return 1;
+	}
 //	public Integer evaluate(Instance i) {
 //		String targetFName = super.getDomain().getFName();
 //		

@@ -45,6 +45,7 @@ public class C45Learner extends Learner{
 									(double)this.getDataSize()/* total size of data fed to dt*/);
 			classifiedNode.setNumMatch(data_stats.getSum());						//num of matching instances to the leaf node
 			classifiedNode.setNumClassification(data_stats.getSum());				//num of classified instances at the leaf node
+			
 			//classifiedNode.setInfoMea(mea)
 			return classifiedNode;
 		}
@@ -61,6 +62,8 @@ public class C45Learner extends Learner{
 			noAttributeLeftNode.setNumMatch(data_stats.getSum());						//num of matching instances to the leaf node
 			noAttributeLeftNode.setNumClassification(data_stats.getVoteFor(winner));	//num of classified instances at the leaf node
 			//noAttributeLeftNode.setInfoMea(best_attr_eval.attribute_eval);
+			
+			
 			/* we need to know how many guys cannot be classified and who these guys are */
 			data_stats.missClassifiedInstances(missclassified_data);
 			
@@ -82,8 +85,10 @@ public class C45Learner extends Learner{
 		currentNode.setRank((double)data_stats.getSum()/
 							(double)this.getDataSize()									/* total size of data fed to dt*/);
 		currentNode.setInfoMea(best_attr_eval.attribute_eval);
-		
-		
+		//what the highest represented class is and what proportion of items at that node actually are that class
+		currentNode.setLabel(data_stats.get_winner_class());
+		currentNode.setNumLabeled(data_stats.getSupportersFor(data_stats.get_winner_class()).size());
+
 		Hashtable<Object, InstDistribution> filtered_stats = null;
 		try {
 			filtered_stats = data_stats.split(best_attr_eval);
@@ -110,9 +115,12 @@ public class C45Learner extends Learner{
 				majorityNode.setNumMatch(0);
 				majorityNode.setNumClassification(0);
 				//currentNode.setInfoMea(best_attr_eval.attribute_eval);
+				
+				majorityNode.setFather(currentNode);
 				currentNode.putNode(category, majorityNode);
 			} else {
 				TreeNode newNode = train(child_dt, filtered_stats.get(category));//, attributeNames_copy
+				newNode.setFather(currentNode);
 				currentNode.putNode(category, newNode);
 			}
 		}

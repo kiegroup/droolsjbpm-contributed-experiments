@@ -2,6 +2,7 @@ package org.drools.learner;
 
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.drools.learner.tools.Util;
 
@@ -11,6 +12,7 @@ public class TreeNode {
 	//private static final Logger flog = LoggerFactory.getFileLogger(TreeNode.class);	
 
 	private Domain domain;
+	private TreeNode father;
 	private Hashtable<Object, TreeNode> children;
 	/* TODO explain
 	 * rank:
@@ -21,8 +23,12 @@ public class TreeNode {
 	
 	// Number of all instances matching at that node
 	private double num_matching_instances;
+	private Object label;
+	private int label_size;
+	private int leaves;
 	
 	public TreeNode(Domain domain) {
+		this.father = null;
 		this.domain = domain;
 		this.children = new Hashtable<Object, TreeNode>();
 		
@@ -67,7 +73,36 @@ public class TreeNode {
 	public void setInfoMea(double mea) {
 		this.infoMea = mea;
 	}
+	public Object getLabel() {
+		return label;
+	}
+
+	public void setLabel(Object get_winner_class) {
+		label = get_winner_class;
+	}
 	
+	public void setNumLabeled(int supportersFor) {
+		label_size = supportersFor;
+	}
+	
+	public int getNumLabeled() {
+		return label_size;
+	}
+	
+	public int getNumLeaves() {
+		return leaves;
+	}
+	
+	public void setNumLeaves(int leaves2) {
+		leaves = leaves2;
+	}
+	
+	public void setFather(TreeNode currentNode) {
+		father = currentNode;
+	}
+	public TreeNode getFather() {
+		return father;
+	}
 	public Object voteFor(Instance i) {
 		final Object attr_value = i.getAttrValue(this.domain.getFReferenceName());
 		final Object category = domain.getCategoryOf(attr_value);
@@ -117,6 +152,7 @@ public class TreeNode {
 		}
 		return buf.toString();
 	}
-	
+
+
 
 }

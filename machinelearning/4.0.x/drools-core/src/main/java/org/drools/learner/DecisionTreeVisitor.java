@@ -91,6 +91,7 @@ public class DecisionTreeVisitor {
 		}
 		return;
 	}
+
 	
 	public int getNumPaths() {
 		return paths.size();
