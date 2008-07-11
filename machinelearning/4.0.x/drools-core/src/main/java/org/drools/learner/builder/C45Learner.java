@@ -66,7 +66,7 @@ public class C45Learner extends Learner{
 			
 			/* we need to know how many guys cannot be classified and who these guys are */
 			data_stats.missClassifiedInstances(missclassified_data);
-			
+			dt.setTrainingError((int) (dt.getTrainingError() + data_stats.getSum()));
 			return noAttributeLeftNode;
 		}
 		
@@ -115,6 +115,7 @@ public class C45Learner extends Learner{
 				majorityNode.setNumMatch(0);
 				majorityNode.setNumClassification(0);
 				//currentNode.setInfoMea(best_attr_eval.attribute_eval);
+				//dt.setTrainingError((int) (dt.getTrainingError() + data_stats.getSum()));
 				
 				majorityNode.setFather(currentNode);
 				currentNode.putNode(category, majorityNode);

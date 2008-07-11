@@ -2,8 +2,10 @@ package org.drools.learner.builder;
 
 import org.drools.WorkingMemory;
 import org.drools.learner.DecisionTree;
+import org.drools.learner.DecisionTreePruner;
 import org.drools.learner.Memory;
 import org.drools.learner.builder.Learner.DataType;
+import org.drools.learner.eval.CrossValidation;
 import org.drools.learner.eval.Entropy;
 import org.drools.learner.eval.GainRatio;
 import org.drools.learner.eval.Heuristic;
@@ -130,6 +132,35 @@ public class DecisionTreeFactory {
 		//forest.test(mem.getClassInstances(), Util.DRL_DIRECTORY+executionSignature);
 		
 		//Tester bla => test(c45, mem.getClassInstances());
+		learner.getTree().setSignature(executionSignature);
+		return learner.getTree();
+	}
+	
+	protected static DecisionTree createSinglePrunnedC45(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
+		DataType data = Learner.DEFAULT_DATA;
+		C45Learner learner = new C45Learner(h);
+		
+		SingleTreeBuilder single_builder = new SingleTreeBuilder();
+		
+		String algo_suffices = org.drools.learner.deprecated.DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), single_builder.getTreeAlgo());
+		String executionSignature = org.drools.learner.deprecated.DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
+		
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
+		
+		CrossValidation validater = new CrossValidation(10, mem.getClassInstances());
+		validater.validate(learner);
+		
+		DecisionTreePruner pruner = new DecisionTreePruner(validater);
+		pruner.prun_to_estimate();
+		
+		
+		
+		SingleTreeTester tester = new SingleTreeTester(learner.getTree());
+		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
+		//Tester.test(c45, mem.getClassInstances());
+		
 		learner.getTree().setSignature(executionSignature);
 		return learner.getTree();
 	}

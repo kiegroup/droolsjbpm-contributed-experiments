@@ -30,7 +30,7 @@ public class DecisionTree {
 	private String execution_signature;
 	public long FACTS_READ = 0;
 
-	private int validation_error;
+	private int validation_error, training_error;
 
 	public DecisionTree(Schema inst_schema, String _target) {
 		this.obj_schema = inst_schema; //inst_schema.getObjectClass();
@@ -118,6 +118,32 @@ public class DecisionTree {
 	}	
 	public int getValidationError() {
 		return validation_error;
+	}
+	
+	public void setTrainingError(int error) {
+		// TODO Auto-generated method stub
+		training_error = error;
+	}
+	public int getTrainingError() {
+		// TODO Auto-generated method stub
+		return training_error;
+	}
+	
+	public int calc_numleaves(TreeNode my_node) {
+		if (my_node instanceof LeafNode) {
+
+			return 1;
+		}
+		int leaves = 0;
+		for (Object child_key: my_node.getChildrenKeys()) {
+			/* split the last two class at the same time */
+			
+			TreeNode child = my_node.getChild(child_key);
+			leaves += calc_numleaves(child);
+			
+		}
+		my_node.setNumLeaves(leaves);
+		return leaves;
 	}
 	public void setSignature(String executionSignature) {
 		execution_signature = executionSignature;
