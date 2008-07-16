@@ -56,6 +56,12 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+// learner packages
+import org.drools.learner.DecisionTree;
+import org.drools.learner.tools.LoggerFactory;
+import org.drools.learner.tools.RulePrinter;
+import org.drools.learner.tools.Util;
+
 import org.drools.process.core.Process;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.ImportDeclaration;
@@ -240,6 +246,25 @@ public class PackageBuilder {
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
         addPackage( pkg );
+    }
+    
+    /**
+     * Load the decision tree and its rules.
+     * 
+     * @param learner
+     * @throws DroolsParserException
+     * @throws IOException 
+     */
+    public void addPackageFromTree(final DecisionTree dt) throws DroolsParserException, IOException {
+    	Reader reader = RulePrinter.readRules(dt);
+ /*   	final DrlParser parser = new DrlParser();
+    	final PackageDescr pkg = parser.parse( reader );
+    	this.results.addAll( parser.getErrors() );
+        addPackage( pkg );
+        */
+    	// save the logger
+    	LoggerFactory.dump_buffer(Util.DRL_DIRECTORY+dt.getSignature(), "log");
+    	this.addPackageFromDrl(reader);
     }
 
     /**

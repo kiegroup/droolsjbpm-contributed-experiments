@@ -1,0 +1,69 @@
+package org.drools.examples.learner;
+
+import org.drools.examples.learner.Car
+
+rule "#0 label2= false  classifying 432.0 num of facts with rank:0.25" 
+	 when
+		 $car_0 : Car(buying == "high", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+end
+
+rule "#4 label2= false  classifying 432.0 num of facts with rank:0.25" 
+	 when
+		 $car_0 : Car(buying == "vhigh", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+end
+
+rule "#6 label2= false  classifying 432.0 num of facts with rank:0.25" 
+	 when
+		 $car_0 : Car(buying == "med", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+end
+
+rule "#5 label2= false  classifying 108.0 num of facts with rank:0.0625" 
+	 when
+		 $car_0 : Car(buying == "low", doors == "4", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+end
+
+rule "#7 label2= false  classifying 108.0 num of facts with rank:0.0625" 
+	 when
+		 $car_0 : Car(buying == "low", doors == "2", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+end
+
+rule "#8 label2= false  classifying 108.0 num of facts with rank:0.0625" 
+	 when
+		 $car_0 : Car(buying == "low", doors == "3", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+end
+
+rule "#1 label2= true  classifying 36.0 num of facts with rank:0.020833333333333332" 
+	 when
+		 $car_0 : Car(buying == "low", doors == "5more", safety == "med", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (true )");
+end
+
+rule "#2 label2= false  classifying 36.0 num of facts with rank:0.020833333333333332" 
+	 when
+		 $car_0 : Car(buying == "low", doors == "5more", safety == "high", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+end
+
+rule "#3 label2= false  classifying 36.0 num of facts with rank:0.020833333333333332" 
+	 when
+		 $car_0 : Car(buying == "low", doors == "5more", safety == "low", $target_label : label2 )
+	 then 
+		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+end
+
+//THE END: Total number of facts correctly classified= 1728 over 1728.0
+//with 9 number of rules over 9 total number of rules 

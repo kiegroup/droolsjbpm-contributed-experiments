@@ -8,15 +8,12 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.StatelessSession;
-import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
+
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
-import org.drools.examples.decisiontable.Driver;
-import org.drools.examples.decisiontable.Policy;
 
 /**
  * This shows off a decision table.

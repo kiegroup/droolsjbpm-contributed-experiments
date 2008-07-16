@@ -9,5 +9,8 @@
 	<classpathentry kind="lib" path="lib/foxtrot-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/jgoodies-forms-1.0.4.jar"/>
 	<classpathentry kind="con" path="DROOLS/Drools"/>
+	<classpathentry kind="src" path="/drools-core"/>
+	<classpathentry kind="src" path="/drools-compiler"/>
+	<classpathentry kind="src" path="/drools-decisiontables"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

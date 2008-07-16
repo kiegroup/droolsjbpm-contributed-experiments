@@ -6,6 +6,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
+
 import org.drools.compiler.PackageBuilder;
 
 public class FibonacciExample {

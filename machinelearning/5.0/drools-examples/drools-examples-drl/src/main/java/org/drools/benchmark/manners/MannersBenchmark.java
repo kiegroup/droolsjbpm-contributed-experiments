@@ -15,9 +15,10 @@ import java.util.StringTokenizer;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.rule.Package;
+
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.rule.Package;
 
 public class MannersBenchmark {
 	/** Number of guests at the dinner (default: 16). */
@@ -73,7 +74,7 @@ public class MannersBenchmark {
 	 * Convert the facts from the <code>InputStream</code> to a list of
 	 * objects.
 	 */
-	protected static List getInputObjects(InputStream inputStream)
+	public static List getInputObjects(InputStream inputStream)
 			throws IOException {
 		List list = new ArrayList();
 
