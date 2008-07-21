@@ -102,14 +102,14 @@ public class CrossValidation implements Estimator{
 					error ++;
 				}
 			}
-			dt.setValidationError(error);
+			dt.setValidationError(Util.division(error, fold_size));
 			dt.calc_num_node_leaves(dt.getRoot());
 			
 			if (slog.error() !=null)
 				slog.error().log("The estimate of : "+(i-1)+" training=" +dt.getTrainingError() +" valid=" + error +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
 		
-			validation_error_estimate += (double)error/(double)k_fold;
-			training_error_estimate += (double)dt.getTrainingError()/(double)k_fold;
+			validation_error_estimate += ((double)error/(double) fold_size)/(double)k_fold;
+			training_error_estimate += ((double)dt.getTrainingError()/(double)(num_instances-fold_size))/(double)k_fold;
 			num_leaves_estimate += (double)dt.getRoot().getNumLeaves()/(double)k_fold;
 
 
@@ -190,7 +190,9 @@ public class CrossValidation implements Estimator{
 //		
 //	}
 	
-	
+	public double getAlphaEstimate() {
+		return alpha_estimate;
+	}
 	private int getFoldSize(int i) {
 		int excess = num_instances % k_fold;
 		return (int) num_instances/k_fold + (i < excess? 1:0);

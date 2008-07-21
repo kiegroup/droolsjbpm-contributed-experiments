@@ -59,6 +59,13 @@ public class Util {
 		return Math.exp(prob);
 	}
 	
+	public static double division(int x, int y) {
+		return (double)x/(double)y;
+	}
+	public static double division(int x, long y) {
+		return (double)x/(double)y;
+	}
+	
 	/* TODO make this all_fields arraylist as hashmap */
 	public static void getSuperFields(Class<?> clazz, ArrayList<Field> all_fields) {
 		if (clazz == Object.class)

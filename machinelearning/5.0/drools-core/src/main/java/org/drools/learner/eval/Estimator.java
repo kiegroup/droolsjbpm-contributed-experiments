@@ -12,4 +12,5 @@ public interface Estimator {
 	public ArrayList<InstanceList> getFold(int id);
 	
 	public double getValidationErrorEstimate();
+	public double getAlphaEstimate();
 }

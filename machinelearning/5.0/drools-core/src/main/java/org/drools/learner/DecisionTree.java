@@ -30,7 +30,7 @@ public class DecisionTree {
 	private String execution_signature;
 	public long FACTS_READ = 0;
 
-	private int validation_error, training_error;
+	private double validation_error, training_error;
 
 	private int num_nonterminal_nodes;
 
@@ -116,17 +116,17 @@ public class DecisionTree {
 	}
 	
 
-	public void setValidationError(int error) {
+	public void setValidationError(double error) {
 		validation_error = error;
 	}	
-	public int getValidationError() {
+	public double getValidationError() {
 		return validation_error;
 	}
 	
-	public void setTrainingError(int error) {
+	public void setTrainingError(double error) {
 		training_error = error;
 	}
-	public int getTrainingError() {
+	public double getTrainingError() {
 		return training_error;
 	}
 	

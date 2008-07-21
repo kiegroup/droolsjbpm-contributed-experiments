@@ -2,68 +2,75 @@ package org.drools.examples.learner;
 
 import org.drools.examples.learner.Car
 
-rule "#0 label2= false  classifying 432.0 num of facts with rank:0.25" 
+rule "#131 target= unacc  classifying 576.0 num of facts with rank:0.3333333333333333" 
 	 when
-		 $car_0 : Car(buying == "high", $target_label : label2 )
+		 $car_0 : Car(safety == "low", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (unacc )");
 end
 
-rule "#4 label2= false  classifying 432.0 num of facts with rank:0.25" 
+rule "#59 target= unacc  classifying 192.0 num of facts with rank:0.1111111111111111" 
 	 when
-		 $car_0 : Car(buying == "vhigh", $target_label : label2 )
+		 $car_0 : Car(safety == "med", persons == "2", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (unacc )");
 end
 
-rule "#6 label2= false  classifying 432.0 num of facts with rank:0.25" 
+rule "#140 target= unacc  classifying 192.0 num of facts with rank:0.1111111111111111" 
 	 when
-		 $car_0 : Car(buying == "med", $target_label : label2 )
+		 $car_0 : Car(safety == "high", persons == "2", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (unacc )");
 end
 
-rule "#5 label2= false  classifying 108.0 num of facts with rank:0.0625" 
+rule "#145 target= unacc  classifying 16.0 num of facts with rank:0.009259259259259259" 
 	 when
-		 $car_0 : Car(buying == "low", doors == "4", $target_label : label2 )
+		 $car_0 : Car(safety == "med", persons == "4", buying == "high", lug_boot == "small", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (unacc )");
 end
 
-rule "#7 label2= false  classifying 108.0 num of facts with rank:0.0625" 
+rule "#172 target= unacc  classifying 16.0 num of facts with rank:0.009259259259259259" 
 	 when
-		 $car_0 : Car(buying == "low", doors == "2", $target_label : label2 )
+		 $car_0 : Car(safety == "med", persons == "more", buying == "high", lug_boot == "small", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (unacc )");
 end
 
-rule "#8 label2= false  classifying 108.0 num of facts with rank:0.0625" 
+rule "#8 target= unacc  classifying 12.0 num of facts with rank:0.006944444444444444" 
 	 when
-		 $car_0 : Car(buying == "low", doors == "3", $target_label : label2 )
+		 $car_0 : Car(safety == "med", persons == "4", buying == "vhigh", maint == "vhigh", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (unacc )");
 end
 
-rule "#1 label2= true  classifying 36.0 num of facts with rank:0.020833333333333332" 
+rule "#20 target= acc  classifying 12.0 num of facts with rank:0.006944444444444444" 
 	 when
-		 $car_0 : Car(buying == "low", doors == "5more", safety == "med", $target_label : label2 )
+		 $car_0 : Car(safety == "med", persons == "4", buying == "low", maint == "high", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (true )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (acc )");
 end
 
-rule "#2 label2= false  classifying 36.0 num of facts with rank:0.020833333333333332" 
+rule "#34 target= acc  classifying 12.0 num of facts with rank:0.006944444444444444" 
 	 when
-		 $car_0 : Car(buying == "low", doors == "5more", safety == "high", $target_label : label2 )
+		 $car_0 : Car(safety == "high", persons == "4", buying == "med", maint == "vhigh", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (acc )");
 end
 
-rule "#3 label2= false  classifying 36.0 num of facts with rank:0.020833333333333332" 
+rule "#41 target= unacc  classifying 12.0 num of facts with rank:0.006944444444444444" 
 	 when
-		 $car_0 : Car(buying == "low", doors == "5more", safety == "low", $target_label : label2 )
+		 $car_0 : Car(safety == "med", persons == "more", buying == "vhigh", maint == "vhigh", $target_label : target )
 	 then 
-		 System.out.println("[label2] Expected value (" + $target_label + "), Classified as (false )");
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (unacc )");
 end
 
-//THE END: Total number of facts correctly classified= 1728 over 1728.0
-//with 9 number of rules over 9 total number of rules 
+rule "#43 target= unacc  classifying 12.0 num of facts with rank:0.006944444444444444" 
+	 when
+		 $car_0 : Car(safety == "med", persons == "4", buying == "vhigh", maint == "high", $target_label : target )
+	 then 
+		 System.out.println("[target] Expected value (" + $target_label + "), Classified as (unacc )");
+end
+
+//THE END: Total number of facts correctly classified= 1052 over 1728.0
+//with 10 number of rules over 10 total number of rules 
