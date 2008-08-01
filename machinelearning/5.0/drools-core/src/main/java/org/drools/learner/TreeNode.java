@@ -27,11 +27,21 @@ public class TreeNode {
 	private int label_size;
 	private int leaves;
 	
+	private int depth;
+	
 	public TreeNode(Domain domain) {
 		this.father = null;
 		this.domain = domain;
 		this.children = new Hashtable<Object, TreeNode>();
 		
+	}
+	
+	public void setDepth(int d) {
+		depth = d;
+	}
+	
+	public int getDepth() {
+		return depth;
 	}
 	
 	public double getRank() {

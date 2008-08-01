@@ -43,8 +43,12 @@ public class ForestBuilder implements DecisionTreeBuilder{
 		}
 	
 		int N = class_instances.getSize();
+		// _trainer.setTrainingDataSize(N); => wrong
 		int tree_capacity = (int)(TREE_SIZE_RATIO * N);
-		_trainer.setDataSizePerTree(tree_capacity);
+		_trainer.setTrainingDataSizePerTree(tree_capacity);
+		
+		/* tree_capacity number of data fed to each tree, there are FOREST_SIZE trees*/
+		_trainer.setTrainingDataSize(tree_capacity * FOREST_SIZE); 
 
 		
 		forest = new ArrayList<DecisionTree> (FOREST_SIZE);

@@ -39,8 +39,8 @@ public class SingleTreeBuilder implements DecisionTreeBuilder{
 			System.exit(0);
 			// TODO put the feature not supported exception || implement it
 		}
-		
-		_trainer.setDataSizePerTree(class_instances.getSize());
+		_trainer.setTrainingDataSize(class_instances.getSize());
+		_trainer.setTrainingDataSizePerTree(class_instances.getSize());
 		one_tree = _trainer.train_tree(class_instances);
 		_trainer.setBestTree(one_tree);
 	}

@@ -66,6 +66,10 @@ public class Util {
 		return (double)x/(double)y;
 	}
 	
+	public static boolean epsilon(double d) {
+		return Math.abs(d) <= 0.0001;
+	}
+	
 	/* TODO make this all_fields arraylist as hashmap */
 	public static void getSuperFields(Class<?> clazz, ArrayList<Field> all_fields) {
 		if (clazz == Object.class)

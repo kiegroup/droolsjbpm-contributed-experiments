@@ -135,7 +135,7 @@ public class DecisionTree {
 
 			return 1;
 		} else {
-			num_nonterminal_nodes ++;
+			num_nonterminal_nodes ++; // TODO does this really work?
 		}
 		
 		int leaves = 0;
@@ -147,6 +147,69 @@ public class DecisionTree {
 			
 		}
 		my_node.setNumLeaves(leaves);
+		return leaves;
+	}
+	
+	//private ArrayList<LeafNode> leaf_nodes;
+	public ArrayList<LeafNode> getLeaves(TreeNode start_node) {
+		ArrayList<LeafNode> terminal_nodes = new ArrayList<LeafNode>();
+		
+		find_leaves(terminal_nodes, start_node);
+
+		return terminal_nodes;
+	}
+	
+	private int find_leaves(ArrayList<LeafNode> terminals, TreeNode my_node) {
+		if (my_node instanceof LeafNode) {
+			terminals.add((LeafNode)my_node);
+			return 1;
+		} else {
+			num_nonterminal_nodes ++; // TODO does this really work?
+		}
+		
+		int leaves = 0;
+		for (Object child_key: my_node.getChildrenKeys()) {
+			/* split the last two class at the same time */
+			
+			TreeNode child = my_node.getChild(child_key);
+			leaves += find_leaves(terminals, child);
+			
+		}
+		//my_node.setNumLeaves(leaves);
+		return leaves;
+	}
+	
+	public ArrayList<TreeNode> getAnchestor_of_Leaves(TreeNode start_node) {
+		ArrayList<LeafNode> terminal_nodes = new ArrayList<LeafNode>();
+		
+		ArrayList<TreeNode> anc_terminal_nodes = new ArrayList<TreeNode>();
+		
+		find_leaves(terminal_nodes, anc_terminal_nodes, start_node);
+
+		return anc_terminal_nodes;
+	}
+	
+	private int find_leaves(ArrayList<LeafNode> terminals, ArrayList<TreeNode> anchestors, TreeNode my_node) {
+		
+		int leaves = 0;
+		boolean anchestor_added = false;
+		for (Object child_key: my_node.getChildrenKeys()) {
+			/* split the last two class at the same time */
+			
+			TreeNode child = my_node.getChild(child_key);
+			if (child instanceof LeafNode) {
+				terminals.add((LeafNode)my_node);
+				if (!anchestor_added) {
+					num_nonterminal_nodes ++; // TODO does this really work?
+					anchestors.add(my_node);
+					anchestor_added = true;
+				}
+				return 1;
+			} else {
+				leaves += find_leaves(terminals, anchestors, child);
+			}
+		}
+		//my_node.setNumLeaves(leaves);
 		return leaves;
 	}
 	

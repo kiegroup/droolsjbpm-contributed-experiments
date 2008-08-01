@@ -1,5 +1,6 @@
 package org.drools.learner.builder;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -11,21 +12,31 @@ import org.drools.learner.eval.AttributeChooser;
 import org.drools.learner.eval.Heuristic;
 import org.drools.learner.eval.InformationContainer;
 import org.drools.learner.eval.InstDistribution;
+import org.drools.learner.eval.StoppingCriterion;
 import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.Util;
 
 public class C45Learner extends Learner{
 	
 	private AttributeChooser chooser;
+	private ArrayList<StoppingCriterion> criteria; 
 	
 	public C45Learner(Heuristic hf) {
 		super();
 		super.setDomainAlgo(DomainAlgo.QUANTITATIVE);
 		chooser = new AttributeChooser(hf);
+		criteria = null;
 	}
 	
 	
-	protected TreeNode train(DecisionTree dt, InstDistribution data_stats) {//List<Instance> data) {
+	public C45Learner(Heuristic hf, ArrayList<StoppingCriterion> _criteria) {
+		super();
+		super.setDomainAlgo(DomainAlgo.QUANTITATIVE);
+		chooser = new AttributeChooser(hf);
+		criteria = _criteria;
+	}
+	
+	protected TreeNode train(DecisionTree dt, InstDistribution data_stats,  int depth) {//List<Instance> data) {
 		
 		if (data_stats.getSum() == 0) {
 			throw new RuntimeException("Nothing to classify, factlist is empty");
@@ -42,7 +53,7 @@ public class C45Learner extends Learner{
 			LeafNode classifiedNode = new LeafNode(dt.getTargetDomain()				/* target domain*/, 
 												   data_stats.get_winner_class() 	/*winner target category*/);
 			classifiedNode.setRank(	(double)data_stats.getSum()/
-									(double)this.getDataSize()/* total size of data fed to dt*/);
+									(double)this.getTrainingDataSize()/* total size of data fed to dt*/);
 			classifiedNode.setNumMatch(data_stats.getSum());						//num of matching instances to the leaf node
 			classifiedNode.setNumClassification(data_stats.getSum());				//num of classified instances at the leaf node
 			
@@ -58,7 +69,7 @@ public class C45Learner extends Learner{
 			LeafNode noAttributeLeftNode = new LeafNode(dt.getTargetDomain()			/* target domain*/, 
 														winner);
 			noAttributeLeftNode.setRank((double)data_stats.getVoteFor(winner)/
-										(double)this.getDataSize()						/* total size of data fed to dt*/);
+										(double)this.getTrainingDataSize()						/* total size of data fed to dt*/);
 			noAttributeLeftNode.setNumMatch(data_stats.getSum());						//num of matching instances to the leaf node
 			noAttributeLeftNode.setNumClassification(data_stats.getVoteFor(winner));	//num of classified instances at the leaf node
 			//noAttributeLeftNode.setInfoMea(best_attr_eval.attribute_eval);
@@ -66,24 +77,42 @@ public class C45Learner extends Learner{
 			
 			/* we need to know how many guys cannot be classified and who these guys are */
 			data_stats.missClassifiedInstances(missclassified_data);
-			dt.setTrainingError(dt.getTrainingError() + data_stats.getSum()/dt.FACTS_READ);
+			dt.setTrainingError(dt.getTrainingError() + data_stats.getSum()/getTrainingDataSize());
 			return noAttributeLeftNode;
 		}
-		
 	
 		InformationContainer best_attr_eval = new InformationContainer();
-		
+		best_attr_eval.setStats(data_stats);
+		best_attr_eval.setDepth(depth);
+		best_attr_eval.setTotalNumData(getTrainingDataSizePerTree());
+
 		/* choosing the best attribute in order to branch at the current node*/
 		chooser.chooseAttribute(best_attr_eval, data_stats, attribute_domains);
-		Domain node_domain = best_attr_eval.domain;
 		
+		if (criteria != null & criteria.size()>0) {
+			for (StoppingCriterion sc: criteria) 
+				if (sc.stop(best_attr_eval)) {
+					Object winner = data_stats.get_winner_class();
+					LeafNode majorityNode = new LeafNode(dt.getTargetDomain(), winner);
+					majorityNode.setRank((double)data_stats.getVoteFor(winner)/
+										 (double)this.getTrainingDataSize()						/* total size of data fed to trainer*/);
+					majorityNode.setNumMatch(data_stats.getSum());
+					majorityNode.setNumClassification(data_stats.getVoteFor(winner));
+					
+					/* we need to know how many guys cannot be classified and who these guys are */
+					data_stats.missClassifiedInstances(missclassified_data);
+					dt.setTrainingError(dt.getTrainingError() + (data_stats.getSum()-data_stats.getVoteFor(winner))/getTrainingDataSize());
+					return majorityNode;
+				}
+		}
+		Domain node_domain = best_attr_eval.domain;
 		if (slog.debug() != null)
 			slog.debug().log("\n"+Util.ntimes("*", 20)+" 1st best attr: "+ node_domain);
 
 		TreeNode currentNode = new TreeNode(node_domain);
 		currentNode.setNumMatch(data_stats.getSum());									//num of matching instances to the leaf node
 		currentNode.setRank((double)data_stats.getSum()/
-							(double)this.getDataSize()									/* total size of data fed to dt*/);
+							(double)this.getTrainingDataSize()									/* total size of data fed to trainer*/);
 		currentNode.setInfoMea(best_attr_eval.attribute_eval);
 		//what the highest represented class is and what proportion of items at that node actually are that class
 		currentNode.setLabel(data_stats.get_winner_class());
@@ -107,6 +136,7 @@ public class C45Learner extends Learner{
 			
 			/* list of domains except the choosen one (&target domain)*/
 			DecisionTree child_dt = new DecisionTree(dt, node_domain);	
+			child_dt.FACTS_READ = dt.FACTS_READ;
 			
 			if (filtered_stats == null || filtered_stats.get(category) == null || filtered_stats.get(category).getSum() ==0) {
 				/* majority !!!! */
@@ -120,7 +150,7 @@ public class C45Learner extends Learner{
 				majorityNode.setFather(currentNode);
 				currentNode.putNode(category, majorityNode);
 			} else {
-				TreeNode newNode = train(child_dt, filtered_stats.get(category));//, attributeNames_copy
+				TreeNode newNode = train(child_dt, filtered_stats.get(category), depth+1);//, attributeNames_copy
 				newNode.setFather(currentNode);
 				currentNode.putNode(category, newNode);
 			}

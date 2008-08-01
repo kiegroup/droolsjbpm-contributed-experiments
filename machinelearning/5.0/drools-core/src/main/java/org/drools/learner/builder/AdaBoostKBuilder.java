@@ -48,9 +48,13 @@ public class AdaBoostKBuilder implements DecisionTreeBuilder{
 		}
 	
 		int N = class_instances.getSize();
+		//_trainer.setTrainingDataSize(N); not only N data is fed. 
+		
 		int K = _trainer.getTargetDomain().getCategoryCount();
 		int M = (int)(TREE_SIZE_RATIO * N);
-		_trainer.setDataSizePerTree(M);
+		_trainer.setTrainingDataSizePerTree(M);
+		/* M data fed to each tree, there are FOREST_SIZE trees*/
+		_trainer.setTrainingDataSize(M * FOREST_SIZE); 
 
 		
 		forest = new ArrayList<DecisionTree> (FOREST_SIZE);
@@ -60,7 +64,6 @@ public class AdaBoostKBuilder implements DecisionTreeBuilder{
 		for (int index_i=0; index_i<M; index_i++) {
 			for (int index_j=0; index_j<K; index_j++) {
 				Instance inst_i = class_instances.getInstance(index_i);
-				
 				
 				Object instance_target = inst_i.getAttrValue(_trainer.getTargetDomain().getFReferenceName());
 				Object instance_target_category = _trainer.getTargetDomain().getCategoryOf(instance_target);

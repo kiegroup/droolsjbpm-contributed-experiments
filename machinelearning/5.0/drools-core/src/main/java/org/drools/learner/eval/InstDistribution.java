@@ -99,8 +99,7 @@ public class InstDistribution extends ClassDistribution{
 	}
 
 	
-	public Hashtable<Object, InstDistribution> splitFromCategorical(
-			Domain splitDomain, Hashtable<Object, InstDistribution> instLists) {
+	public Hashtable<Object, InstDistribution> splitFromCategorical(Domain splitDomain, Hashtable<Object, InstDistribution> instLists) {
 		if (instLists == null)
 			instLists = this.instantiateLists(splitDomain);
 		
@@ -122,8 +121,7 @@ public class InstDistribution extends ClassDistribution{
 		return instLists;
 	}
 	
-	private void splitFromQuantitative(ArrayList<Instance> data, 
-				QuantitativeDomain attributeDomain, Hashtable<Object, InstDistribution> instLists) {
+	private void splitFromQuantitative(ArrayList<Instance> data, QuantitativeDomain attributeDomain, Hashtable<Object, InstDistribution> instLists) {
 		
 		String attributeName = attributeDomain.getFName();
 		String targetName = super.getClassDomain().getFReferenceName();

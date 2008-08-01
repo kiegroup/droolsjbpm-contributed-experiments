@@ -22,7 +22,7 @@ public class ID3Learner extends Learner {
 		chooser = new AttributeChooser(hf);
 	}
 	
-	protected TreeNode train(DecisionTree dt, InstDistribution data_stats) {//List<Instance> data) {
+	protected TreeNode train(DecisionTree dt, InstDistribution data_stats, int depth) {//List<Instance> data) {
 		
 		if (data_stats.getSum() == 0) {
 			throw new RuntimeException("Nothing to classify, factlist is empty");
@@ -39,7 +39,7 @@ public class ID3Learner extends Learner {
 			LeafNode classifiedNode = new LeafNode(dt.getTargetDomain()				/* target domain*/, 
 												   data_stats.get_winner_class() 	/*winner target category*/);
 			classifiedNode.setRank(	(double)data_stats.getSum()/
-									(double)this.getDataSize()/* total size of data fed to dt*/);
+									(double)this.getTrainingDataSize()/* total size of data fed to dt*/);
 			classifiedNode.setNumMatch(data_stats.getSum());						//num of matching instances to the leaf node
 			classifiedNode.setNumClassification(data_stats.getSum());				//num of classified instances at the leaf node
 			return classifiedNode;
@@ -53,7 +53,7 @@ public class ID3Learner extends Learner {
 			LeafNode noAttributeLeftNode = new LeafNode(dt.getTargetDomain()			/* target domain*/, 
 														winner);
 			noAttributeLeftNode.setRank((double)data_stats.getVoteFor(winner)/
-										(double)this.getDataSize()						/* total size of data fed to dt*/);
+										(double)this.getTrainingDataSize()						/* total size of data fed to dt*/);
 			noAttributeLeftNode.setNumMatch(data_stats.getSum());						//num of matching instances to the leaf node
 			noAttributeLeftNode.setNumClassification(data_stats.getVoteFor(winner));	//num of classified instances at the leaf node
 			return noAttributeLeftNode;
@@ -89,7 +89,7 @@ public class ID3Learner extends Learner {
 				majorityNode.setNumClassification(0);
 				currentNode.putNode(category, majorityNode);
 			} else {
-				TreeNode newNode = train(child_dt, filtered_stats.get(category));//, attributeNames_copy
+				TreeNode newNode = train(child_dt, filtered_stats.get(category), depth+1);//, attributeNames_copy
 				currentNode.putNode(category, newNode);
 			}
 		}

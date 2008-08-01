@@ -52,8 +52,11 @@ public class AdaBoostBuilder implements DecisionTreeBuilder{
 		}
 	
 		int N = class_instances.getSize();
-		int NUM_DATA = (int)(TREE_SIZE_RATIO * N);
-		_trainer.setDataSizePerTree(NUM_DATA);
+		int NUM_DATA = (int)(TREE_SIZE_RATIO * N);	// TREE_SIZE_RATIO = 1.0, all data is used to train the trees again again
+		_trainer.setTrainingDataSizePerTree(NUM_DATA);
+		
+		/* all data fed to each tree, the same data?? */
+		_trainer.setTrainingDataSize(NUM_DATA); // TODO????
 
 		
 		forest = new ArrayList<DecisionTree> (FOREST_SIZE);

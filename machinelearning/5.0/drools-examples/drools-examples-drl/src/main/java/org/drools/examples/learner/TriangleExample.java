@@ -36,7 +36,7 @@ public class TriangleExample {
 		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 221;
+		DecisionTree decision_tree; int ALGO = 600;
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
@@ -66,6 +66,12 @@ public class TriangleExample {
 			break;
 		case 322:
 			decision_tree  = DecisionTreeFactory.createBoostedC45G(session, obj_class);
+			break;
+		case 500:
+			decision_tree = DecisionTreeFactory.createSingleC45E_StoppingCriteria(session, obj_class);
+			break;
+		case 600:
+			decision_tree = DecisionTreeFactory.createSinglePrunnedStopC45E(session, obj_class);
 			break;
 //			case 3:
 //			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);

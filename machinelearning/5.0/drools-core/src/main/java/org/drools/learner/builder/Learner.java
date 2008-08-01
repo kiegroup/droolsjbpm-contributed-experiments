@@ -22,7 +22,7 @@ public abstract class Learner {
 	
 	public static enum DataType {PRIMITIVE, STRUCTURED, COLLECTION}
 	public static DataType DEFAULT_DATA = DataType.PRIMITIVE;
-	private int data_size;
+	private int data_size, data_size_per_tree;
 	private DecisionTree best_tree;
 	private InstanceList input_data;
 	protected HashSet<Instance> missclassified_data;
@@ -31,10 +31,11 @@ public abstract class Learner {
 	private DomainAlgo algorithm;
 	
 	
-	protected abstract TreeNode train(DecisionTree dt, InstDistribution data_stats);
+	protected abstract TreeNode train(DecisionTree dt, InstDistribution data_stats, int depth);
 	
 	public Learner() {
 		this.data_size = 0;
+		this.data_size_per_tree = 0;
 	}
 
 	
@@ -47,9 +48,11 @@ public abstract class Learner {
 		
 		InstDistribution stats_by_class = new InstDistribution(dt.getTargetDomain());
 		stats_by_class.calculateDistribution(working_instances.getInstances());
+		
+		
 		dt.FACTS_READ += working_instances.getSize();
 
-		TreeNode root = train(dt, stats_by_class);
+		TreeNode root = train(dt, stats_by_class, 0);
 		dt.setRoot(root);
 		//flog.debug("Result tree\n" + dt);
 		return dt;
@@ -76,7 +79,7 @@ public abstract class Learner {
 			stats_by_class.calculateDistribution(working_instances.getInstances());
 			dt.FACTS_READ += working_instances.getSize();
 			
-			TreeNode root = train(dt, stats_by_class);
+			TreeNode root = train(dt, stats_by_class, 0);
 			dt.setRoot(root);
 			//flog.debug("Result tree\n" + dt);
 		}
@@ -84,13 +87,20 @@ public abstract class Learner {
 	}
 	
 	
-	public void setDataSizePerTree(int num) {
-		this.data_size = num;
+	public void setTrainingDataSizePerTree(int num) {
+		this.data_size_per_tree = num;
 		
 		missclassified_data = new HashSet<Instance>();
 	}
 	
-	public int getDataSize() {
+	public int getTrainingDataSizePerTree() {
+		return this.data_size_per_tree;
+	}
+	
+	public void setTrainingDataSize(int num) {
+		this.data_size = num;
+	}
+	public int getTrainingDataSize() {
 		return this.data_size;
 	}
 	

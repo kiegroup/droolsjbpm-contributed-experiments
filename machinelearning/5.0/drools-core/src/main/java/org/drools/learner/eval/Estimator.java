@@ -10,7 +10,8 @@ public interface Estimator {
 	public int getEstimatorSize();
 	public ArrayList<DecisionTree> getEstimators();
 	public ArrayList<InstanceList> getFold(int id);
+	public int getTrainingDataSize(int i);
 	
-	public double getValidationErrorEstimate();
+	public double getErrorEstimate();
 	public double getAlphaEstimate();
 }

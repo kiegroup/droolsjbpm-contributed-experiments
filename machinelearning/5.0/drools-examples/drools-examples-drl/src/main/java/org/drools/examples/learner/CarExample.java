@@ -37,7 +37,7 @@ public class CarExample {
 		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 400;
+		DecisionTree decision_tree; int ALGO = 600;
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
@@ -73,6 +73,12 @@ public class CarExample {
 //			break;
 		case 400: 
 			decision_tree = DecisionTreeFactory.createSinglePrunnedC45E(session, obj_class);
+			break;
+		case 500:
+			decision_tree = DecisionTreeFactory.createSingleC45E_StoppingCriteria(session, obj_class);
+			break;
+		case 600:
+			decision_tree = DecisionTreeFactory.createSinglePrunnedStopC45E(session, obj_class);
 			break;
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
