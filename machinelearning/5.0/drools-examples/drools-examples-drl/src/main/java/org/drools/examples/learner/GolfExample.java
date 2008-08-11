@@ -75,13 +75,13 @@ public class GolfExample {
 //			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
 //			break;
 		case 400: 
-			decision_tree = DecisionTreeFactory.createSinglePrunnedC45E(session, obj_class);
+			decision_tree = DecisionTreeFactory.createSingleCVPrunnedC45E(session, obj_class);
 			break;
 		case 500:
 			decision_tree = DecisionTreeFactory.createSingleC45E_StoppingCriteria(session, obj_class);
 			break;
 		case 600:
-			decision_tree = DecisionTreeFactory.createSinglePrunnedStopC45E(session, obj_class);
+			decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
 			break;
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);

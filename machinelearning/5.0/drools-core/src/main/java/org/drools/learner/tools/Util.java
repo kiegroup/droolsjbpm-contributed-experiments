@@ -66,8 +66,8 @@ public class Util {
 		return (double)x/(double)y;
 	}
 	
-	public static boolean epsilon(double d) {
-		return Math.abs(d) <= 0.0001;
+	public static boolean epsilon(double d, double epsilon) {
+		return Math.abs(d) <= epsilon; //0.000001;
 	}
 	
 	/* TODO make this all_fields arraylist as hashmap */

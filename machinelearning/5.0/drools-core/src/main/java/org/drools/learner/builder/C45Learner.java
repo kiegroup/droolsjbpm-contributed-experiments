@@ -12,7 +12,7 @@ import org.drools.learner.eval.AttributeChooser;
 import org.drools.learner.eval.Heuristic;
 import org.drools.learner.eval.InformationContainer;
 import org.drools.learner.eval.InstDistribution;
-import org.drools.learner.eval.StoppingCriterion;
+import org.drools.learner.eval.stopping.StoppingCriterion;
 import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.Util;
 

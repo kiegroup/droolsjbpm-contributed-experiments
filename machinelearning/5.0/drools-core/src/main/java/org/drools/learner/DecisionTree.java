@@ -198,7 +198,7 @@ public class DecisionTree {
 			
 			TreeNode child = my_node.getChild(child_key);
 			if (child instanceof LeafNode) {
-				terminals.add((LeafNode)my_node);
+				terminals.add((LeafNode)child);
 				if (!anchestor_added) {
 					num_nonterminal_nodes ++; // TODO does this really work?
 					anchestors.add(my_node);

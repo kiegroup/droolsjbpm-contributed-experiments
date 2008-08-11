@@ -12,7 +12,7 @@ import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
 
-public class CrossValidation implements Estimator{
+public class CrossValidation implements ErrorEstimate{
 
 	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(CrossValidation.class, SimpleLogger.DEFAULT_LEVEL);
 	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(CrossValidation.class, SimpleLogger.DEBUG);
@@ -33,7 +33,9 @@ public class CrossValidation implements Estimator{
 	private int VALID_SET_0 = 0, VALID_SET_1 = 1;
 	
 	private boolean WITH_REP = false;
-	public CrossValidation(int _k, InstanceList _instances) {
+
+	
+	public CrossValidation(int _k) {
 		if (_k <=1) {
 			if (flog.warn() !=null)
 				flog.warn().log("There is 1 or less number of folds specified, i am setting "+MIN_NUM_FOLDS+" folds\n");
@@ -46,13 +48,10 @@ public class CrossValidation implements Estimator{
 		training_error_estimate = 0.0d;
 		num_leaves_estimate = 0.0d;
 		alpha_estimate = 0.0d;
-		class_instances = _instances;
 		
-		num_instances = class_instances.getSize();
 		fold_indices = new int [k_fold] [2];
 	}
 	public int [] cross_set(int N) {
-
 		if (WITH_REP)
 			return Util.bag_w_rep(N, N);
 		else
@@ -61,7 +60,9 @@ public class CrossValidation implements Estimator{
 	
 	
 	// for small samples
-	public void validate(Learner _trainer) {		
+	public void validate(Learner _trainer, InstanceList _instances) {		
+		class_instances = _instances;
+		num_instances = class_instances.getSize();
 		if (class_instances.getTargets().size()>1 ) {
 			//throw new FeatureNotSupported("There is more than 1 target candidates");
 			if (flog.error() !=null)
@@ -69,7 +70,7 @@ public class CrossValidation implements Estimator{
 			System.exit(0);
 			// TODO put the feature not supported exception || implement it
 		}
-
+	
 		crossed_set = cross_set(num_instances);
 		
 		// N-fold 
@@ -78,10 +79,10 @@ public class CrossValidation implements Estimator{
 		int i = 0;
 //			int[] bag;		
 		while (i++ < k_fold ) {
-			int fold_size = getFoldSize(i);
+			int fold_size = getTestDataSize(i);
 			if (slog.debug() !=null)
 				slog.debug().log("i "+(i-1)+"/"+k_fold);
-			ArrayList<InstanceList> sets = getFold(i-1);
+			ArrayList<InstanceList> sets = getSets(i-1);
 			InstanceList learning_set = sets.get(0);
 			InstanceList validation_set = sets.get(1);
 						
@@ -132,7 +133,7 @@ public class CrossValidation implements Estimator{
 		while (fold_index < k_fold) {
 			
 			fold_indices[fold_index][VALID_SET_0] = divide_index;
-			int fold_size = getFoldSize(fold_index); 
+			int fold_size = getTestDataSize(fold_index); 
 			fold_indices[fold_index][VALID_SET_1] = fold_indices[fold_index][VALID_SET_0] +  fold_size -1;
 			
 			System.out.println(fold_indices[fold_index][VALID_SET_0] +" - "+ fold_indices[fold_index][VALID_SET_1]);
@@ -141,11 +142,11 @@ public class CrossValidation implements Estimator{
 		}
 		
 	}
-	public ArrayList<InstanceList> getFold(int i) {
+	public ArrayList<InstanceList> getSets(int i) {
 //		// first part divide = 0; divide < fold_size*i
 //		// the validation set divide = fold_size*i; divide < fold_size*(i+1)-1
 //		// last part divide = fold_size*(i+1); divide < N
-		int valid_fold_size = getFoldSize(i);
+		int valid_fold_size = getTestDataSize(i);
 		InstanceList learning_set = new InstanceList(class_instances.getSchema(), num_instances - valid_fold_size +1);
 		InstanceList validation_set = new InstanceList(class_instances.getSchema(), valid_fold_size);
 		for (int divide_index = 0; divide_index < num_instances; divide_index++){
@@ -169,36 +170,15 @@ public class CrossValidation implements Estimator{
 		
 	}
 	
-//	public ArrayList<InstanceList> getFolds() {
-////		// first part divide = 0; divide < fold_size*i
-////		// the validation set divide = fold_size*i; divide < fold_size*(i+1)-1
-////		// last part divide = fold_size*(i+1); divide < N
-//		int fold_size = getFoldSize();
-//		InstanceList learning_set = new InstanceList(class_instances.getSchema(), num_instances - fold_size +1);
-//		InstanceList validation_set = new InstanceList(class_instances.getSchema(), fold_size);
-//		for (int divide_index = 0; divide_index < num_instances; divide_index++){
-//			if (divide_index >= fold_size*i && divide_index < fold_size*(i+1)-1) { // validation
-//				validation_set.addAsInstance(class_instances.getInstance(crossed_set[divide_index]));
-//			} else { // learninf part 
-//				learning_set.addAsInstance(class_instances.getInstance(crossed_set[divide_index]));
-//			}
-//		}
-//		
-//		ArrayList<InstanceList> lists = new ArrayList<InstanceList>(2);
-//		lists.add(learning_set);
-//		lists.add(validation_set);
-//		return lists;
-//		
-//	}
 	
 	public int getTrainingDataSize(int i) {
-		return num_instances-getFoldSize(i);
+		return num_instances-getTestDataSize(i);
 	}
 	
 	public double getAlphaEstimate() {
 		return alpha_estimate;
 	}
-	private int getFoldSize(int i) {
+	public int getTestDataSize(int i) {
 		int excess = num_instances % k_fold;
 		return (int) num_instances/k_fold + (i < excess? 1:0);
 	}
@@ -206,8 +186,8 @@ public class CrossValidation implements Estimator{
 		return validation_error_estimate;
 	}
 	
-	public ArrayList<DecisionTree> getEstimators() {
-		return forest;
+	public DecisionTree getEstimator(int i) {
+		return forest.get(i);
 	}
 	
 	public int getEstimatorSize() {

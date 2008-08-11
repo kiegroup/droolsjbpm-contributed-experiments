@@ -71,7 +71,7 @@ public class TriangleExample {
 			decision_tree = DecisionTreeFactory.createSingleC45E_StoppingCriteria(session, obj_class);
 			break;
 		case 600:
-			decision_tree = DecisionTreeFactory.createSinglePrunnedStopC45E(session, obj_class);
+			decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
 			break;
 //			case 3:
 //			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
