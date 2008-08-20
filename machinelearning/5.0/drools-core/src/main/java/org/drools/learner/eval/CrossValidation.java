@@ -147,8 +147,8 @@ public class CrossValidation implements ErrorEstimate{
 //		// the validation set divide = fold_size*i; divide < fold_size*(i+1)-1
 //		// last part divide = fold_size*(i+1); divide < N
 		int valid_fold_size = getTestDataSize(i);
-		InstanceList learning_set = new InstanceList(class_instances.getSchema(), num_instances - valid_fold_size +1);
-		InstanceList validation_set = new InstanceList(class_instances.getSchema(), valid_fold_size);
+		InstanceList learning_set = new InstanceList(class_instances, num_instances - valid_fold_size + 1);
+		InstanceList validation_set = new InstanceList(class_instances, valid_fold_size);
 		for (int divide_index = 0; divide_index < num_instances; divide_index++){
 			
 			if (slog.info() !=null)
@@ -192,5 +192,9 @@ public class CrossValidation implements ErrorEstimate{
 	
 	public int getEstimatorSize() {
 		return k_fold;
+	}
+	public void setTrainingDataSize(int trainingDataSize) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -99,7 +99,7 @@ public class ClassVisitor {
 		// can get the field annotation
 		// if it is ignored do not do anything
 		FieldAnnotation f_spec = Util.getFieldAnnotations(f);
-		boolean skip_by_annotation = false;
+		boolean skip = false, ignore_field = false;
 		if (f_spec != null) {
 			// the type of the fields that cannot be processed
 			if (!f_spec.ignore() && f.getType() == String.class && !f_spec.discrete()) {
@@ -107,17 +107,20 @@ public class ClassVisitor {
 			}
 			switch (domain_type) {
 			case CATEGORICAL:	//ID3 can work only with categorical types
-				if (f_spec.ignore() || !f_spec.discrete())
-					skip_by_annotation = true;
+				if (f_spec.skip() || !f_spec.discrete())
+					skip = true;
 				break;
 			case QUANTITATIVE: // C45 can work with categorical || quantitative domain
-				if (f_spec.ignore())
-					skip_by_annotation = true;
+				if (f_spec.skip())
+					skip = true;
 				break;
 			default:
-				if (f_spec.ignore())
-					skip_by_annotation = true;
+				if (f_spec.skip())
+					skip = true;
 			}
+			ignore_field = f_spec.ignore();
+			if (ignore_field)
+				skip = ignore_field;
 			// only if the annotations are given and the flag to ignore is set true 
 			// then continue to next field	
 			
@@ -125,7 +128,7 @@ public class ClassVisitor {
 		// if there is a getter?
 		//if (Util.isGetter(m_name) & Util.isSimpleType(returns)) {
 		
-		if (!skip_by_annotation) {
+		if (!skip) {
 			String f_name= f.getName();		
 			Class<?> _obj_klass = structure.getOwnerClass();
 			String f_refName = Util.getFReference(_obj_klass, f_name);
@@ -144,7 +147,7 @@ public class ClassVisitor {
 						f_extractor = cache.getAccessor( _obj_klass, f_name , _obj_klass.getClassLoader() );
 					
 					class_schema.putExtractor(f_refName, f_extractor);
-				
+					
 					
 					structure.addField(f, d_type);	
 					switch (d_type) {    
@@ -159,6 +162,7 @@ public class ClassVisitor {
 							}
 						}
 						Util.processDomain(fieldDomain, f.getType());
+						fieldDomain.ignore(ignore_field);
 						class_schema.putDomain(f_refName, fieldDomain);
 						for (Field parent_klass: class_relation)
 							class_schema.addParentField(f_refName, parent_klass);

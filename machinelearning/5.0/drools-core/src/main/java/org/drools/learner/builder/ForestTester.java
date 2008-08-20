@@ -78,8 +78,8 @@ public class ForestTester extends Tester{
 		return winner;
 		
 	}
-	public void printStats(final Stats evaluation, String executionSignature) {
-		super.printStats(evaluation, executionSignature);
+	public void printStats(final Stats evaluation, String executionSignature, boolean append) {
+		super.printStats(evaluation, executionSignature, append);
 	}
 
 }

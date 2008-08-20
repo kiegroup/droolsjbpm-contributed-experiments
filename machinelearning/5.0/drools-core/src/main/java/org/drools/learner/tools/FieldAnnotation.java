@@ -7,6 +7,7 @@ import java.lang.annotation.*;
 public @interface FieldAnnotation {
 	    int readingSeq() default 0;
 	    boolean ignore() default false;
+	    boolean skip() default false;
 	    boolean target() default false;
 	    boolean discrete() default true;
 	    String[] values() default {"bok"};

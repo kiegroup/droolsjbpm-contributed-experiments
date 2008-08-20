@@ -10,38 +10,37 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.drools.learner.DecisionTree;
+import org.drools.learner.builder.DecisionTreeBuilder;
 import org.drools.learner.builder.DecisionTreeFactory;
 import org.drools.learner.tools.ObjectFactory;
 import org.drools.learner.tools.ReteStatistics;
 import org.drools.learner.tools.Util;
 
-public class GolfExample {
+import org.drools.examples.learner.structured_nursery.Nursery;;
+
+public class StructuredNurseryExample {
+	
 	
 	public static final void main(final String[] args) throws Exception {
-		long start_time = System.currentTimeMillis();
 		// my rule base 
 		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		//ruleBase.addPackage( pkg );
 
-		final StatefulSession session = ruleBase.newStatefulSession();
-		// LearningSession
+		final StatefulSession session = ruleBase.newStatefulSession();	// LearningSession
 
-		// what are these listeners???
-		session.addEventListener( new DebugAgendaEventListener() );
-		session.addEventListener( new DebugWorkingMemoryEventListener() );
+		//session.addEventListener( new DebugAgendaEventListener() );
+		//session.addEventListener( new DebugWorkingMemoryEventListener() );
+
+		//final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+		//logger.setFileName( "log/car" );   
 		
-		
+		String inputFile = new String("data/nursery/nursery.data.txt");
+		Class<?> obj_class = Nursery.class;
+		List<Object> facts = ObjectFactory.insertStructuredObjects(obj_class, session, inputFile);
+//		for (Object r : facts) {
+//			session.insert(r);
+//		}
 
-		final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-		logger.setFileName( "log/golf_c45" );   
-		
-		String inputFile = new String("data/golf/golf.data.txt");
-		Class<?> obj_class = Golf.class;
-		List<Object> facts = ObjectFactory.getObjects(obj_class, inputFile);
-		for (Object r : facts) {
-			session.insert(r);
-		}
-
+		// instantiate a learner for a specific object class and pass session to train
 		DecisionTree decision_tree; int ALGO = 121;
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
@@ -77,13 +76,16 @@ public class GolfExample {
 //			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
 //			break;
 //		case 400: 
-//		//	decision_tree = DecisionTreeFactory.createSingleCVPrunnedC45E(session, obj_class);
+//			decision_tree = DecisionTreeFactory.createSingleCVPrunnedC45E(session, obj_class);
 //			break;
-		case 500:
-			decision_tree = DecisionTreeFactory.createSingleC45E_Stopped(session, obj_class);
-			break;
+//		case 500:
+//			decision_tree = DecisionTreeFactory.createSingleC45E_Stopped(session, obj_class);
+//			break;
 //		case 600:
-//		//	decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
+//			decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
+//			break;
+//		case 601:
+//			decision_tree = DecisionTreeFactory.createSingleTestPrunnedStopC45E(session, obj_class);
 //			break;
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
@@ -97,19 +99,16 @@ public class GolfExample {
 		 * get the compiled package (which is serializable) from the builder
 		 * add the package to a rulebase (deploy the rule package). 
 		 */
-		ruleBase.addPackage( builder.getPackage() );
-
-		session.fireAllRules();
-		
-		long end_time = System.currentTimeMillis();
-		System.out.println("Total time="+ (end_time-start_time));
-		
-		ReteStatistics stats = new ReteStatistics(ruleBase);
-	    stats.calculateNumberOfNodes();
-	    stats.print(Util.DRL_DIRECTORY + decision_tree.getSignature());
-		logger.writeToDisk();
+//		ruleBase.addPackage( builder.getPackage() );
+//
+//		session.fireAllRules();
+//
+//		//session.fireAllRules();
+//		ReteStatistics stats = new ReteStatistics(ruleBase);
+//        stats.calculateNumberOfNodes();
+//        stats.print(Util.DRL_DIRECTORY + decision_tree.getSignature());
+//		//logger.writeToDisk();
 
 		session.dispose();
 	}
-
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.drools.learner.builder.SingleTreeTester;
 import org.drools.learner.eval.ErrorEstimate;
+import org.drools.learner.eval.TestSample;
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
@@ -24,15 +25,107 @@ public class DecisionTreePruner {
 	private double INIT_ALPHA = 0.5d;
 	private static final double EPSILON = 0.0d;//0.0000000001;
 	
+	private int best_id = 0;;
+	
 	public DecisionTreePruner(ErrorEstimate proc) {
 		procedure = proc;
 		num_trees_to_grow = procedure.getEstimatorSize();
 		//updates = new ArrayList<ArrayList<NodeUpdate>>(num_trees_to_grow);
 		
 		best_stats = new TreeStats(0.0);//proc.getAlphaEstimate());
-	} 	
+	}
 	
-	public void prun_to_estimate() {	
+	public DecisionTreePruner() {
+		procedure = null;
+		num_trees_to_grow = 1;
+		//num_trees_to_grow = procedure.getEstimatorSize();
+		//updates = new ArrayList<ArrayList<NodeUpdate>>(num_trees_to_grow);
+		procedure = new TestSample(0.2d);
+		best_stats = new TreeStats(0.0);//proc.getAlphaEstimate());
+	}
+	
+	public void prun_to_estimate(ArrayList<DecisionTree> dts) {	
+		ArrayList<ArrayList<NodeUpdate>> updates = new ArrayList<ArrayList<NodeUpdate>>(num_trees_to_grow);
+		ArrayList<ArrayList<TreeStats>> sequence_stats = new ArrayList<ArrayList<TreeStats>>(num_trees_to_grow);
+		ArrayList<MinAlphaProc> alpha_procs = new ArrayList<MinAlphaProc>(num_trees_to_grow);
+		
+		/*
+		 * The best tree is selected from this series of trees with the classification error not exceeding 
+		 * 	an expected error rate on some test set (cross-validation error), 
+		 * which is done at the second stage.
+		 */
+//		double value_to_select = procedure.getErrorEstimate();
+		
+		for (int dt_i = 0; dt_i<dts.size(); dt_i++) {
+			
+			DecisionTree dt= dts.get(dt_i);
+			procedure.setTrainingDataSize(dt.getTrainingDataSize());
+			dt.setID(dt_i);
+			dt.calc_num_node_leaves(dt.getRoot());
+			
+			
+
+			// dt.getId()
+			// dt.calc_num_node_leaves(dt.getRoot()); // this is done in the estimator
+
+			double epsilon = EPSILON * numExtraMisClassIfPrun(dt.getRoot());
+			MinAlphaProc alpha_proc = new MinAlphaProc(INIT_ALPHA, epsilon);
+			TreeSequenceProc search = new TreeSequenceProc(dt, alpha_proc);//INIT_ALPHA
+
+			search.init_tree();	// alpha_1 = 0.0 
+			search.iterate_trees(1);
+
+			//updates.add(tree_sequence);
+			updates.add(search.getTreeSequence());
+			sequence_stats.add(search.getTreeSequenceStats());
+			alpha_procs.add(alpha_proc);
+
+			// sort the found candidates
+			//Collections.sort(updates.get(dt.getId()), arg1)
+			int sid = 0, best_st=0;
+			best_id = 0;
+			double best_error = 1.0; 
+			System.out.println("Tree id\t Num_leaves\t Cross-validated\t Resubstitution\t Alpha\t");
+			ArrayList<TreeStats> trees = sequence_stats.get(dt.getId());
+			for (TreeStats st: trees ){
+				if (st.getCostEstimation() <= best_error) {
+					best_error = st.getCostEstimation();
+					best_id = sid;
+					best_st = st.iteration_id;
+				}
+				System.out.println(sid+ "\t " +st.getNum_terminal_nodes()+ "\t "+ st.getCostEstimation() + "\t "+  st.getResubstitution_cost() + "\t "+ st.getAlpha() );
+				sid++;				
+			}
+			System.out.println("BEST "+best_id+ "\t " +trees.get(best_id).getNum_terminal_nodes()+ "\t "+ trees.get(best_id).getCostEstimation() + "\t "+  trees.get(best_id).getResubstitution_cost() + "\t "+ trees.get(best_id).getAlpha() );
+
+			//			System.exit(0);
+			//int N = procedure.getTestDataSize(dt_i);
+			int N = dt.getTestingDataSize();// procedure.getTestDataSize(dt_i);
+			double standart_error_estimate = Math.sqrt((trees.get(best_id).getCostEstimation() * (1- trees.get(best_id).getCostEstimation())/ (double)N));
+
+			int update_id = search.tree_sequence.size()-1;
+			int i = trees.get(trees.size()-1).iteration_id;
+			int _sid = trees.size()-1;
+			while(i > best_st-1) {
+				NodeUpdate nu =search.tree_sequence.get(update_id);
+				while (i == nu.iteration_id) {
+					search.add_back(nu.node_update, nu.old_node);
+					update_id --;
+					nu = search.tree_sequence.get(update_id);
+				}
+				_sid--;
+				TreeStats st = trees.get(_sid);
+				i = st.iteration_id;
+				System.out.println(_sid+ "\t " +st.getNum_terminal_nodes()+ "\t "+ st.getCostEstimation() + "\t "+  st.getResubstitution_cost() + "\t "+ st.getAlpha() );
+				
+			}
+//			System.exit(0);
+		}
+		
+	
+	}
+	
+	public DecisionTree prun_to_estimate() {	
 		ArrayList<ArrayList<NodeUpdate>> updates = new ArrayList<ArrayList<NodeUpdate>>(num_trees_to_grow);
 		ArrayList<ArrayList<TreeStats>> sequence_stats = new ArrayList<ArrayList<TreeStats>>(num_trees_to_grow);
 		ArrayList<MinAlphaProc> alpha_procs = new ArrayList<MinAlphaProc>(num_trees_to_grow);
@@ -65,7 +158,8 @@ public class DecisionTreePruner {
 			
 			// sort the found candidates
 			//Collections.sort(updates.get(dt.getId()), arg1)
-			int sid = 0, best_id = 0;
+			int sid = 0, best_st = 0;
+			best_id = 0;
 			double best_error = 1.0; 
 			System.out.println("Tree id\t Num_leaves\t Cross-validated\t Resubstitution\t Alpha\t");
 			ArrayList<TreeStats> trees = sequence_stats.get(dt.getId());
@@ -73,21 +167,116 @@ public class DecisionTreePruner {
 				if (st.getCostEstimation() <= best_error) {
 					best_error = st.getCostEstimation();
 					best_id = sid;
+					best_st = st.iteration_id;
 				}
 				System.out.println(sid+ "\t " +st.getNum_terminal_nodes()+ "\t "+ st.getCostEstimation() + "\t "+  st.getResubstitution_cost() + "\t "+ st.getAlpha() );
 				sid++;				
 			}
 			System.out.println("BEST "+best_id+ "\t " +trees.get(best_id).getNum_terminal_nodes()+ "\t "+ trees.get(best_id).getCostEstimation() + "\t "+  trees.get(best_id).getResubstitution_cost() + "\t "+ trees.get(best_id).getAlpha() );
-		
+
+			//			System.exit(0);
 			int N = procedure.getTestDataSize(dt_i);
 			double standart_error_estimate = Math.sqrt((trees.get(best_id).getCostEstimation() * (1- trees.get(best_id).getCostEstimation())/ (double)N));
+			
+			int update_id = search.tree_sequence.size()-1;
+			int i = trees.get(trees.size()-1).iteration_id;
+			int _sid = trees.size()-1;
+			while(i > best_st) {
+				NodeUpdate nu =search.tree_sequence.get(update_id);
+				while (i == nu.iteration_id) {
+					search.add_back(nu.node_update, nu.old_node);
+					update_id --;
+					nu = search.tree_sequence.get(update_id);
+				}
+				_sid--;
+				TreeStats st = trees.get(_sid);
+				i = st.iteration_id;
+				System.out.println(_sid+ "\t " +st.getNum_terminal_nodes()+ "\t "+ st.getCostEstimation() + "\t "+  st.getResubstitution_cost() + "\t "+ st.getAlpha() );
+				
+			}
+//			System.exit(0);
+			
+			return dt;
 		}
-		
+		return null;
 		
 	
 	
 	}
 	
+	
+//	public DecisionTree prun_to_estimate(DecisionTree dt) {	
+//		ArrayList<ArrayList<NodeUpdate>> updates = new ArrayList<ArrayList<NodeUpdate>>(num_trees_to_grow);
+//		ArrayList<ArrayList<TreeStats>> sequence_stats = new ArrayList<ArrayList<TreeStats>>(num_trees_to_grow);
+//		ArrayList<MinAlphaProc> alpha_procs = new ArrayList<MinAlphaProc>(num_trees_to_grow);
+//		
+//		/*
+//		 * The best tree is selected from this series of trees with the classification error not exceeding 
+//		 * 	an expected error rate on some test set (cross-validation error), 
+//		 * which is done at the second stage.
+//		 */
+//		double value_to_select = procedure.getErrorEstimate();
+//
+//		for (int dt_i = 0; dt_i<procedure.getEstimatorSize(); dt_i++) {
+//			DecisionTree dt= procedure.getEstimator(dt_i);
+//			
+//			
+//			// dt.getId()
+//			// dt.calc_num_node_leaves(dt.getRoot()); // this is done in the estimator
+//			
+//			double epsilon = EPSILON * numExtraMisClassIfPrun(dt.getRoot());
+//			MinAlphaProc alpha_proc = new MinAlphaProc(INIT_ALPHA, epsilon);
+//			TreeSequenceProc search = new TreeSequenceProc(dt, alpha_proc);//INIT_ALPHA
+//			 
+//			search.init_tree();	// alpha_1 = 0.0 
+//			search.iterate_trees(1);
+//			
+//			//updates.add(tree_sequence);
+//			updates.add(search.getTreeSequence());
+//			sequence_stats.add(search.getTreeSequenceStats());
+//			alpha_procs.add(alpha_proc);
+//			
+//			// sort the found candidates
+//			//Collections.sort(updates.get(dt.getId()), arg1)
+//			int sid = 0;
+//			best_id = 0;
+//			double best_error = 1.0; 
+//			System.out.println("Tree id\t Num_leaves\t Cross-validated\t Resubstitution\t Alpha\t");
+//			ArrayList<TreeStats> trees = sequence_stats.get(dt.getId());
+//			for (TreeStats st: trees ){
+//				if (st.getCostEstimation() <= best_error) {
+//					best_error = st.getCostEstimation();
+//					best_id = sid;
+//				}
+//				System.out.println(sid+ "\t " +st.getNum_terminal_nodes()+ "\t "+ st.getCostEstimation() + "\t "+  st.getResubstitution_cost() + "\t "+ st.getAlpha() );
+//				sid++;				
+//			}
+//			System.out.println("BEST "+best_id+ "\t " +trees.get(best_id).getNum_terminal_nodes()+ "\t "+ trees.get(best_id).getCostEstimation() + "\t "+  trees.get(best_id).getResubstitution_cost() + "\t "+ trees.get(best_id).getAlpha() );
+//
+//			//			System.exit(0);
+//			int N = procedure.getTestDataSize(dt_i);
+//			double standart_error_estimate = Math.sqrt((trees.get(best_id).getCostEstimation() * (1- trees.get(best_id).getCostEstimation())/ (double)N));
+//			
+//			int update_id = search.tree_sequence.size()-1;
+//			for (int i = trees.size()-1; i>=best_id; i--){
+//				NodeUpdate nu =search.tree_sequence.get(update_id);
+//				while (i == nu.iteration_id) {
+//					search.add_back(nu.node_update, nu.old_node);
+//					update_id ++;
+//					nu = search.tree_sequence.get(update_id);
+//				}
+//				TreeStats st = trees.get(i);
+//				System.out.println(sid+ "\t " +st.getNum_terminal_nodes()+ "\t "+ st.getCostEstimation() + "\t "+  st.getResubstitution_cost() + "\t "+ st.getAlpha() );
+//				sid++;				
+//			}
+//			
+//			return dt;
+//		}
+//		return null;
+//		
+//	
+//	
+//	}
 	public void select_tree () {
 		/*
 		 * The best tree is selected from this series of trees with the classification error not exceeding 
@@ -95,6 +284,8 @@ public class DecisionTreePruner {
 		 * which is done at the second stage.
 		 */
 		double value_to_select = procedure.getErrorEstimate();
+		
+
 	
 	}
 	
@@ -174,6 +365,9 @@ public class DecisionTreePruner {
 			init_tree_stats.setNum_terminal_nodes(dt.getRoot().getNumLeaves());		
 			tree_sequence_stats.add(init_tree_stats);
 			
+		}
+		public DecisionTree getFocusTree() {
+			return focus_tree;
 		}
 		
 		public ArrayList<TreeStats> getTreeSequenceStats() {
@@ -286,6 +480,7 @@ public class DecisionTreePruner {
 		}
 
 		
+		
 		private void prune_off(TreeNode candidate_node, int i) {	
 			
 			LeafNode best_clone = new LeafNode(focus_tree.getTargetDomain(), candidate_node.getLabel());
@@ -319,16 +514,34 @@ public class DecisionTreePruner {
 			tree_sequence.add(update);
 			
 		}
+		public void add_back(TreeNode leaf_node, TreeNode original_node) {
+			TreeNode father = leaf_node.getFather();
+			if (father == null) {
+				focus_tree.setRoot(original_node);
+				return;
+			}
+			else
+			for(Object key: father.getChildrenKeys()) {
+				if (father.getChild(key).equals(leaf_node)) {
+					father.putNode(key, original_node);
+					break;
+				}
+			}
+		}
+		
 		
 		private void update_tree_stats(TreeStats stats, double computed_alpha, int change_in_training_error) {
-			ArrayList<InstanceList> sets = procedure.getSets(focus_tree.getId());
-			InstanceList learning_set = sets.get(0);
-			InstanceList validation_set = sets.get(1);
-			
+				//TODO put back
+		//			ArrayList<InstanceList> sets = procedure.getSets(focus_tree.getId());
+//			InstanceList learning_set = sets.get(0);
+//			InstanceList validation_set = sets.get(1);
+
+			InstanceList learning_set = focus_tree.getTrain();
+			InstanceList validation_set = focus_tree.getTest();
 			int num_error = 0;
 			SingleTreeTester t= new SingleTreeTester(focus_tree);
 			
-			System.out.println(validation_set.getSize());
+			//System.out.println(validation_set.getSize());
 			for (int index_i = 0; index_i < validation_set.getSize(); index_i++) {
 				Integer result = t.test(validation_set.getInstance(index_i));
 				if (result == Stats.INCORRECT) {

@@ -33,6 +33,8 @@ public class DecisionTree {
 	private double validation_error, training_error;
 
 	private int num_nonterminal_nodes;
+	private int trainingDataSize, testDataSize;
+	private InstanceList train, test;
 
 	public DecisionTree(Schema inst_schema, String _target) {
 		this.obj_schema = inst_schema; //inst_schema.getObjectClass();
@@ -228,6 +230,38 @@ public class DecisionTree {
 	public String toString() {
 		String out = "Facts scanned " + FACTS_READ + "\n";
 		return out + root.toString();
+	}
+
+	public void setTrainingDataSize(int size) {
+		trainingDataSize = size;
+	}
+	
+	public void setTestingDataSize(int size) {
+		testDataSize = size;
+	}
+	
+	public int getTrainingDataSize() {
+		return trainingDataSize;
+	}
+	
+	public int getTestingDataSize() {
+		return testDataSize;
+	}
+	
+	public void setTrain(InstanceList x) {
+		train = x;
+	}
+	
+	public void setTest(InstanceList x) {
+		 test = x;
+	}
+
+	public InstanceList getTrain() {
+		return train;
+	}
+	
+	public InstanceList getTest() {
+		return test;
 	}
 	
 }

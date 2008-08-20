@@ -12,6 +12,8 @@ import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.builder.DecisionTreeFactory;
+import org.drools.learner.tools.ReteStatistics;
+import org.drools.learner.tools.Util;
 
 // Hello World for Learner
 public class RestaurantExample {
@@ -91,6 +93,9 @@ public class RestaurantExample {
 
 		session.fireAllRules();
 
+        ReteStatistics stats = new ReteStatistics(ruleBase);
+        stats.calculateNumberOfNodes();
+        stats.print(Util.DRL_DIRECTORY + decision_tree.getSignature());
 		logger.writeToDisk();
 
 		session.dispose();

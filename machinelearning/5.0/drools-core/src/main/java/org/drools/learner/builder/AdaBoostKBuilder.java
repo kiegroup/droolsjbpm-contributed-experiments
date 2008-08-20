@@ -19,16 +19,30 @@ public class AdaBoostKBuilder implements DecisionTreeBuilder{
 	
 	private TreeAlgo algorithm = TreeAlgo.BOOST_K; // default bagging, TODO boosting
 	
+	private double trainRatio = Util.TRAINING_RATIO, testRatio = Util.TESTING_RATIO;
+	
 	private static int FOREST_SIZE = 10;
 	private static final double TREE_SIZE_RATIO = 0.9;
 	private static final boolean WITH_REP = false;
 	
 	private ArrayList<DecisionTree> forest;
 	private ArrayList<Double> classifier_accuracy;
+	
+	private DecisionTree best;
 	//private Learner trainer;
+	
+	private DecisionTreeMerger merger;
 	
 	public AdaBoostKBuilder() {
 		//this.trainer = _trainer;
+		merger = new DecisionTreeMerger();
+	}
+	
+	public void setTrainRatio(double ratio) {
+		trainRatio = ratio;
+	}
+	public void setTestRatio(double ratio) {
+		testRatio = ratio;
 	}
 	public void build(Memory mem, Learner _trainer) {
 		
@@ -159,14 +173,19 @@ public class AdaBoostKBuilder implements DecisionTreeBuilder{
 			
 			
 			forest.add(dt);
+			
+			// the DecisionTreeMerger will visit the decision tree and add the paths that have not been seen yet to the list
+			merger.add(dt);	
 
 			if (slog.stat() !=null)
 				slog.stat().stat(".");
 
 		}
 		// TODO how to compute a best tree from the forest
-		_trainer.setBestTree(forest.get(0));
-		
+		//_trainer.setBestTree(forest.get(0));
+		best = merger.getBest();
+		if (best == null)
+			best = forest.get(0);
 		//this.c45 = dt;
 	}
 
@@ -184,5 +203,9 @@ public class AdaBoostKBuilder implements DecisionTreeBuilder{
 		for (int i = forest.size()-1; i >j; i--)
 			forest.remove(i);
 		
+	}
+	
+	public DecisionTree getTree() {
+		return best;
 	}
 }

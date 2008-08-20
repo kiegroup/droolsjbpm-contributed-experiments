@@ -3,7 +3,7 @@ package org.drools.examples.learner;
 import org.drools.learner.tools.ClassAnnotation;
 import org.drools.learner.tools.FieldAnnotation;
 
-@ClassAnnotation(label_element = "getPoker_hand")
+@ClassAnnotation(label_element = "getLabel")
 public class Poker {
 	@FieldAnnotation(readingSeq = 0)
 	private int s1; // 'Suit of card #1': Ordinal (1-4) representing {Hearts, Spades, Diamonds, Clubs}
@@ -30,7 +30,7 @@ public class Poker {
 	@FieldAnnotation(readingSeq = 9, discrete=false)
 	private int c5; // 'Rank of card #5': Numerical (1-13) representing (Ace, 2, 3, ... , Queen, King)
 
-	@FieldAnnotation(readingSeq = 10, ignore = true)
+	@FieldAnnotation(readingSeq = 10, ignore = true)//target=true)
 	private int poker_hand;  
 	/*
 	 *0: Nothing in hand; not a recognized poker hand 
@@ -50,7 +50,7 @@ public class Poker {
 	}
 	
 	public boolean getLabel() {
-		return poker_hand>=4; 
+		return poker_hand>=5; 
 	}
 	
 	public int getS1() {

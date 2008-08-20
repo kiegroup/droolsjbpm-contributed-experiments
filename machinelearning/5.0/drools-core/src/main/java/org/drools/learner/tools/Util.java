@@ -15,6 +15,7 @@ public class Util {
 	
 	public static final boolean PRINT_STATS = true;
 	public static final String DRL_DIRECTORY = "src/main/rules/";
+	public static final int NUM_TREES = 10;
 	/*
 	public static final boolean DEBUG = false;
 	public static final boolean DEBUG_TEST = false;
@@ -25,7 +26,7 @@ public class Util {
 	public static final boolean DEBUG_DIST = false;
 	public static final boolean DEBUG_DECISION_TREE = false;
 	*/
-	public static int MAX_NUM_RULES = 10;
+	public static int MAX_NUM_RULES = 1000000;
 	public static boolean ONLY_ACTIVE_RULES = true;	/* TODO into global settings */
 	
 	public static boolean SORT_RULES_BY_RANK = true;
@@ -33,6 +34,8 @@ public class Util {
 	
 	private static Random BAGGING = new Random(System.currentTimeMillis());
 	//public static String log_file = "testing.log";
+	public static double TRAINING_RATIO = 1.0, TESTING_RATIO = 0.0;;
+	public static double DEFAULT_TRAINING_RATIO = 0.84, DEFAULT_TESTING_RATIO= 0.16;
 	
 	
 	public static String ntimes(String s,int n){

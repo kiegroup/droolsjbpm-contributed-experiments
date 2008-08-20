@@ -88,22 +88,28 @@ public class ShoppingExm {
 	public static Object[] getExamples1()
 	{
 		 Customer mark = new Customer( "mark", 0 );
-		 mark.setEligible(false);
+		 mark.setEligible(true);
 		 Product shoes = new Product( "shoes", 60 );
 		 Product hat = new Product( "hat", 60 );
 		 Purchase purchase_x = new Purchase( mark, shoes );
 		 Purchase purchase_y = new Purchase( mark, hat );
 		 
 		 Customer gizil = new Customer( "gizil", 10 );
-		 mark.setEligible(true);
+		 gizil.setEligible(true);
 		 Customer daniel = new Customer( "daniel", 10 );
-		 mark.setEligible(false);
+		 daniel.setEligible(true);
 		 Customer krem = new Customer( "krem", 10 );
-		 mark.setEligible(true);
+		 krem.setEligible(true);
 		 
 		 Product skirt = new Product( "skirt", 60 );
 		 Product robe = new Product( "robe", 60 );
 		 Product hat2 = new Product( "hat2", 60 );
+		 
+		 Customer pervin = new Customer( "pervin", 20 );
+		 pervin.setEligible(false);
+		 
+		 Customer ertug = new Customer( "ertug", 30 );
+		 ertug.setEligible(false);
 		 
 		 Object[] facts = {
 				 mark, 
@@ -115,6 +121,11 @@ public class ShoppingExm {
 				 new Purchase( gizil, robe ),
 				 new Purchase( daniel, shoes ),
 				 new Purchase( daniel, hat2 ),
+				 new Purchase( pervin, hat ),
+				 new Purchase( pervin, hat2 ),
+				 new Purchase( pervin, shoes ),
+				 new Purchase( ertug, skirt ),
+				 new Purchase( ertug, hat ),
 				 new Purchase( krem, hat2 )};
 		 return facts;
 	}

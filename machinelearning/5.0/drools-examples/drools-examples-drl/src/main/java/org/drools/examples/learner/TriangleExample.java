@@ -9,6 +9,8 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.builder.DecisionTreeFactory;
 import org.drools.learner.tools.ObjectFactory;
+import org.drools.learner.tools.ReteStatistics;
+import org.drools.learner.tools.Util;
 
 public class TriangleExample {
 	
@@ -36,7 +38,7 @@ public class TriangleExample {
 		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 600;
+		DecisionTree decision_tree; int ALGO = 702;
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
@@ -68,14 +70,23 @@ public class TriangleExample {
 			decision_tree  = DecisionTreeFactory.createBoostedC45G(session, obj_class);
 			break;
 		case 500:
-			decision_tree = DecisionTreeFactory.createSingleC45E_StoppingCriteria(session, obj_class);
+			decision_tree = DecisionTreeFactory.createSingleC45E_Stopped(session, obj_class);
 			break;
-		case 600:
-			decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
-			break;
+//		case 600:
+//			decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
+//			break;
 //			case 3:
 //			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
 //			break;
+		case 700:
+			decision_tree = DecisionTreeFactory.createSingleC45E_StoppedTest(session, obj_class);
+			break;
+		case 701:
+			decision_tree = DecisionTreeFactory.createBaggC45E_StoppedTest(session, obj_class);
+			break;
+		case 702:
+			decision_tree = DecisionTreeFactory.createBoostedC45E_StopTest(session, obj_class);
+			break;
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
 
@@ -94,6 +105,10 @@ public class TriangleExample {
 		long end_time = System.currentTimeMillis();
 		System.out.println("Total time="+ (end_time-start_time));
 		
+		
+        ReteStatistics stats = new ReteStatistics(ruleBase);
+        stats.calculateNumberOfNodes();
+        stats.print( decision_tree.getSignature());
 //		logger.writeToDisk();
 
 		session.dispose();

@@ -30,12 +30,12 @@ public class StructuredTestFactory extends DecisionTreeFactory{
 		if (BUILD_TREE) {
 			single_builder.build(mem, learner);//obj_class, target_attr, working_attr
 
-			SingleTreeTester tester = new SingleTreeTester(learner.getTree());
+			SingleTreeTester tester = new SingleTreeTester(single_builder.getTree());
 			//tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
 			//Tester.test(c45, mem.getClassInstances());
 
-			learner.getTree().setSignature(executionSignature);
+			single_builder.getTree().setSignature(executionSignature);
 		}
-		return learner.getTree();
+		return single_builder.getTree();
 	}
 }

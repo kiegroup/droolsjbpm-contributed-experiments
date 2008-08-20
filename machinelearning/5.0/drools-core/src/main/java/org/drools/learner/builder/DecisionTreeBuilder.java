@@ -1,6 +1,7 @@
 package org.drools.learner.builder;
 
 
+import org.drools.learner.DecisionTree;
 import org.drools.learner.Memory;
 
 public interface DecisionTreeBuilder {
@@ -13,5 +14,10 @@ public interface DecisionTreeBuilder {
 //	public Learner getLearner();
 	
 	public TreeAlgo getTreeAlgo();
+	
+	public DecisionTree getTree();
+	
+	public void setTrainRatio(double ratio);
+	public void setTestRatio(double ratio);
 	
 }

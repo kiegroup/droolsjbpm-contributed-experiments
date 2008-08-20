@@ -8,10 +8,21 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
+import org.drools.common.AbstractRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.drools.learner.tools.ObjectFactory;
+import org.drools.learner.tools.ReteStatistics;
+import org.drools.reteoo.InitialFactImpl;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.ObjectSink;
+import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.Rete;
+import org.drools.reteoo.ReteooRuleBase;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Package;
 
 public class GolfC45ExampleFromDrl {
@@ -19,7 +30,7 @@ public class GolfC45ExampleFromDrl {
 	public static final void main(final String[] args) throws Exception {
         //read in the source
         //final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
-    	final Reader source = new InputStreamReader( Golf.class.getResourceAsStream( "golf2.drl" ) );
+    	final Reader source = new InputStreamReader( Golf.class.getResourceAsStream( "golf.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
 
@@ -38,6 +49,8 @@ public class GolfC45ExampleFromDrl {
         //add the package to a rulebase (deploy the rule package).
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
+        
+        
 
         final StatefulSession session = ruleBase.newStatefulSession();
         
@@ -55,10 +68,13 @@ public class GolfC45ExampleFromDrl {
 		}
         
         session.fireAllRules();
-        
-       logger.writeToDisk();
-        
+        ReteStatistics stats = new ReteStatistics(ruleBase);
+        stats.calculateNumberOfNodes();
+            
+        logger.writeToDisk();
+
         session.dispose();
     }
+	
 
 }

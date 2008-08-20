@@ -16,6 +16,8 @@ import org.drools.learner.eval.GainRatio;
 import org.drools.learner.eval.Heuristic;
 import org.drools.learner.eval.TestSample;
 import org.drools.learner.eval.stopping.EstimatedNodeSize;
+import org.drools.learner.eval.stopping.ImpurityDecrease;
+import org.drools.learner.eval.stopping.MaximumDepth;
 import org.drools.learner.eval.stopping.StoppingCriterion;
 import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.Util;
@@ -52,12 +54,12 @@ public class DecisionTreeFactory {
 		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
 		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
 		
-		SingleTreeTester tester = new SingleTreeTester(learner.getTree());
-		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
+		SingleTreeTester tester = new SingleTreeTester(single_builder.getTree());
+		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature, false);
 		//Tester.test(c45, mem.getClassInstances());
 		
-		learner.getTree().setSignature(executionSignature);
-		return learner.getTree();
+		single_builder.getTree().setSignature(executionSignature);
+		return single_builder.getTree();
 	}
 	public static DecisionTree createSingleC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
 		return createSingleC45(wm, obj_class, new Entropy());
@@ -82,12 +84,12 @@ public class DecisionTreeFactory {
 		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
 		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
 		
-		SingleTreeTester tester = new SingleTreeTester(learner.getTree());
-		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
+		SingleTreeTester tester = new SingleTreeTester(single_builder.getTree());
+		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature, false);
 		//Tester.test(c45, mem.getClassInstances());
 		
-		learner.getTree().setSignature(executionSignature);
-		return learner.getTree();
+		single_builder.getTree().setSignature(executionSignature);
+		return single_builder.getTree();
 	}
 	
 	public static DecisionTree createBagC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
@@ -113,12 +115,12 @@ public class DecisionTreeFactory {
 		//forest.clearForest(10);
 
 		ForestTester tester = new ForestTester(forest.getTrees());
-		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
+		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature, false);
 		//forest.test(mem.getClassInstances(), Util.DRL_DIRECTORY+executionSignature);
 		
 		//Tester bla => test(c45, mem.getClassInstances());
-		learner.getTree().setSignature(executionSignature);
-		return learner.getTree();
+		forest.getTree().setSignature(executionSignature);
+		return forest.getTree();
 	}
 	
 	public static DecisionTree createBoostedC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
@@ -146,88 +148,369 @@ public class DecisionTreeFactory {
 		//forest.clearForest(10);
 
 		BoostedTester tester = new BoostedTester(forest.getTrees(), forest.getAccuracies());
-		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
+		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature, false);
 		//forest.test(mem.getClassInstances(), Util.DRL_DIRECTORY+executionSignature);
 		
 		//Tester bla => test(c45, mem.getClassInstances());
-		learner.getTree().setSignature(executionSignature);
-		return learner.getTree();
+		forest.getTree().setSignature(executionSignature);
+		return forest.getTree();
 	}
 	
-	public static DecisionTree createSingleC45E_StoppingCriteria(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+	public static DecisionTree createSingleC45E_Stopped(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
 		return createSingleC45_Stop(wm, obj_class, new Entropy());
 	}
 	
-//	public static DecisionTree createSingleC45G(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
-//		return createSingleC45(wm, obj_class, new GainRatio());
-//	}
+	public static DecisionTree createSingleC45G_Stopped(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createSingleC45(wm, obj_class, new GainRatio());
+	}
 	
 	protected static DecisionTree createSingleC45_Stop(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
 		DataType data = Learner.DEFAULT_DATA;
-		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
-		stopping_criteria.add(new EstimatedNodeSize(0.5));
-		C45Learner learner = new C45Learner(h, stopping_criteria);
+
+		C45Learner learner = new C45Learner(h);
+		learner.addStoppingCriteria(new EstimatedNodeSize(0.5));
+		
 		SingleTreeBuilder single_builder = new SingleTreeBuilder();
 		
-//		String algo_suffices = org.drools.learner.deprecated.DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), single_builder.getTreeAlgo());
-//		String executionSignature = org.drools.learner.deprecated.DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
 		String algo_suffices = DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), single_builder.getTreeAlgo());
 		String executionSignature = DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
 		
 		/* create the memory */
 		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+
+		int max_depth = (int)((mem.getClassInstances().getSchema().getAttrNames().size() - 1)*0.70 );
+		learner.addStoppingCriteria(new MaximumDepth(max_depth));
+
 		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
 		
-		SingleTreeTester tester = new SingleTreeTester(learner.getTree());
-		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
+		SingleTreeTester tester = new SingleTreeTester(single_builder.getTree());
+		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature, false);
+		
 		//Tester.test(c45, mem.getClassInstances());
+		tester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
+
 		
-		learner.getTree().setSignature(executionSignature);
-		return learner.getTree();
+		single_builder.getTree().setSignature(executionSignature);
+		return single_builder.getTree();
 	}
 	
-	public static DecisionTree createSingleCrossPrunnedStopC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
-		
-		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
-		stopping_criteria.add(new EstimatedNodeSize(0.05));
-		return createSinglePrunnedC45(wm, obj_class, new Entropy(), new CrossValidation(10), stopping_criteria);
-	}
-	public static DecisionTree createSingleCrossPrunnedStopC45G(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
-		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
-		stopping_criteria.add(new EstimatedNodeSize(0.05));
-		return createSinglePrunnedC45(wm, obj_class, new GainRatio(), new CrossValidation(10), stopping_criteria);
+	
+	public static DecisionTree createSingleC45E_StoppedTest(WorkingMemory wm, WorkingMemory wm_test, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createSingleC45_StopTest(wm, wm_test, obj_class, new Entropy());
 	}
 	
-	public static DecisionTree createSingleTestPrunnedStopC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
-		
-		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
-		stopping_criteria.add(new EstimatedNodeSize(0.05));
-		return createSinglePrunnedC45(wm, obj_class, new Entropy(), new TestSample(0.2d), stopping_criteria);
-	}
-	public static DecisionTree createSingleTestPrunnedStopC45G(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
-		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
-		stopping_criteria.add(new EstimatedNodeSize(0.05));
-		return createSinglePrunnedC45(wm, obj_class, new GainRatio(), new TestSample(0.2), stopping_criteria);
-	}
-	
-	public static DecisionTree createSingleCVPrunnedC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
-		
-		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
-		//stopping_criteria.add(new EstimatedNodeSize(0.05));
-		return createSinglePrunnedC45(wm, obj_class, new Entropy(), new CrossValidation(10), stopping_criteria);
-	}
-	public static DecisionTree createSingleCVPrunnedC45G(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
-		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
-		//stopping_criteria.add(new EstimatedNodeSize(0.05));
-		return createSinglePrunnedC45(wm, obj_class, new GainRatio(), new CrossValidation(10), stopping_criteria);
-	}
-	
-	protected static DecisionTree createSinglePrunnedC45(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h, ErrorEstimate validater, ArrayList<StoppingCriterion> stopping_criteria) throws FeatureNotSupported {
+	protected static DecisionTree createSingleC45_StopTest(WorkingMemory wm, WorkingMemory wm_test, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
 		DataType data = Learner.DEFAULT_DATA;
 
-		C45Learner learner = new C45Learner(h, stopping_criteria);
+		C45Learner learner = new C45Learner(h);
+		learner.addStoppingCriteria(new EstimatedNodeSize(0.5));
 		
 		SingleTreeBuilder single_builder = new SingleTreeBuilder();
+		
+		String algo_suffices = DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), single_builder.getTreeAlgo());
+		String executionSignature = DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
+		
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+
+		int max_depth = (int)((mem.getClassInstances().getSchema().getAttrNames().size() - 1)*0.70 );
+		learner.addStoppingCriteria(new MaximumDepth(max_depth));
+
+		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
+		
+		SingleTreeTester tester = new SingleTreeTester(single_builder.getTree());
+		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature, false);
+		
+		//Tester.test(c45, mem.getClassInstances());
+		tester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
+		
+		Memory test_mem = Memory.createTestFromWorkingMemory(mem, wm_test, obj_class, learner.getDomainAlgo(), data);
+		tester.printStats(tester.test(test_mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature, true);
+		
+		single_builder.getTree().setSignature(executionSignature);
+		return single_builder.getTree();
+	}
+	
+	public static DecisionTree createSingleC45E_Test(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createSingleC45_Test(wm, obj_class, new Entropy());
+	}
+	public static DecisionTree createSingleC45G_Test(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createSingleC45_Test(wm, obj_class, new GainRatio());
+	}
+	
+	protected static DecisionTree createSingleC45_Test(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
+		DataType data = Learner.DEFAULT_DATA;
+
+		C45Learner learner = new C45Learner(h);
+		//learner.addStoppingCriteria(new EstimatedNodeSize(0.5));
+		
+		SingleTreeBuilder single_builder = new SingleTreeBuilder();
+		single_builder.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
+		single_builder.setTestRatio(Util.DEFAULT_TESTING_RATIO);
+		
+		String algo_suffices = DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), single_builder.getTreeAlgo());
+		String executionSignature = DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
+		
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+
+		int max_depth = (int)((mem.getClassInstances().getSchema().getAttrNames().size() - 1)*0.70 );
+		//learner.addStoppingCriteria(new MaximumDepth(max_depth));
+
+		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
+		single_builder.printResults(executionSignature);
+		single_builder.printLatex(executionSignature);
+		
+		SingleTreeTester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
+		
+		single_builder.getTree().setSignature(executionSignature);
+		return single_builder.getTree();
+	}
+	
+	
+	public static DecisionTree createSingleC45E_StoppedTest(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createSingleC45_StopTest(wm, obj_class, new Entropy());
+	}
+	public static DecisionTree createSingleC45G_StoppedTest(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createSingleC45_StopTest(wm, obj_class, new GainRatio());
+	}
+	
+	protected static DecisionTree createSingleC45_StopTest(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
+		DataType data = Learner.DEFAULT_DATA;
+
+		C45Learner learner = new C45Learner(h);
+		learner.addStoppingCriteria(new EstimatedNodeSize(0.5));
+		learner.addStoppingCriteria(new ImpurityDecrease());
+		
+		SingleTreeBuilder single_builder = new SingleTreeBuilder();
+		single_builder.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
+		single_builder.setTestRatio(Util.DEFAULT_TESTING_RATIO);
+		
+		String algo_suffices = DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), single_builder.getTreeAlgo());
+		String executionSignature = DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
+		
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+
+		int max_depth = (int)((mem.getClassInstances().getSchema().getAttrNames().size() - 1)*0.85 );
+		learner.addStoppingCriteria(new MaximumDepth(max_depth));
+
+		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
+		single_builder.printResults(executionSignature);
+		single_builder.printLatex(executionSignature);
+		
+		SingleTreeTester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
+		
+		single_builder.getTree().setSignature(executionSignature);
+		return single_builder.getTree();
+	}
+	
+	public static DecisionTree createBaggC45E_Test(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createBaggC45_Test(wm, obj_class, new Entropy());
+	}
+	public static DecisionTree createBaggC45G_Test(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createBaggC45_Test(wm, obj_class, new GainRatio());
+	}
+	
+	protected static DecisionTree createBaggC45_Test(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
+		DataType data = Learner.DEFAULT_DATA;
+
+		C45Learner learner = new C45Learner(h);
+		//learner.addStoppingCriteria(new EstimatedNodeSize(0.5));
+		
+		ForestBuilder forest = new ForestBuilder();
+		forest.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
+		forest.setTestRatio(Util.DEFAULT_TESTING_RATIO);
+		
+		String algo_suffices = DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), forest.getTreeAlgo());
+		String executionSignature = DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
+		
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+		
+		int max_depth = (int)((mem.getClassInstances().getSchema().getAttrNames().size() - 1)*0.70 );
+		//learner.addStoppingCriteria(new MaximumDepth(max_depth));
+		
+		forest.build(mem, learner);
+		forest.printResults(executionSignature);
+		forest.printLatex(executionSignature);
+		
+		SingleTreeTester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
+		
+		forest.getTree().setSignature(executionSignature);
+		return forest.getTree();
+	}
+	
+	
+	public static DecisionTree createBaggC45E_StoppedTest(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createBaggC45_StopTest(wm, obj_class, new Entropy());
+	}
+	public static DecisionTree createBaggC45G_StoppedTest(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createBaggC45_StopTest(wm, obj_class, new GainRatio());
+	}
+	
+	protected static DecisionTree createBaggC45_StopTest(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
+		DataType data = Learner.DEFAULT_DATA;
+
+		C45Learner learner = new C45Learner(h);
+		learner.addStoppingCriteria(new EstimatedNodeSize(0.5));
+		learner.addStoppingCriteria(new ImpurityDecrease());
+		
+		ForestBuilder forest = new ForestBuilder();
+		forest.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
+		forest.setTestRatio(Util.DEFAULT_TESTING_RATIO);
+		
+		String algo_suffices = DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), forest.getTreeAlgo());
+		String executionSignature = DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
+		
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+		
+		int max_depth = (int)((mem.getClassInstances().getSchema().getAttrNames().size() - 1)*0.70 );
+		learner.addStoppingCriteria(new MaximumDepth(max_depth));
+		
+		forest.build(mem, learner);
+		forest.printResults(executionSignature);	
+		forest.printLatex(executionSignature);
+		
+		SingleTreeTester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
+		
+		forest.getTree().setSignature(executionSignature);
+		return forest.getTree();
+	}
+	
+	public static DecisionTree createBoostedC45E_Test(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createBoostedC45_Test(wm, obj_class, new Entropy());
+	}
+	public static DecisionTree createBoostedC45G_Test(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createBoostedC45_Test(wm, obj_class, new GainRatio());
+	}
+	
+	public static DecisionTree createBoostedC45_Test(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
+		DataType data = Learner.DEFAULT_DATA;
+
+		C45Learner learner = new C45Learner(h);
+		//learner.addStoppingCriteria(new EstimatedNodeSize(0.5));
+		AdaBoostBuilder forest = new AdaBoostBuilder();
+		forest.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
+		forest.setTestRatio(Util.DEFAULT_TESTING_RATIO);
+		
+		String algo_suffices = DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), forest.getTreeAlgo());
+		String executionSignature = DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
+
+		
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+		int max_depth = (int)((mem.getClassInstances().getSchema().getAttrNames().size() - 1)*0.70 );
+		//learner.addStoppingCriteria(new MaximumDepth(max_depth));
+		
+		forest.build(mem, learner);
+
+		forest.printResults(executionSignature);
+		forest.printLatex(executionSignature);
+		
+		SingleTreeTester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
+		
+		//Tester bla => test(c45, mem.getClassInstances());
+		forest.getTree().setSignature(executionSignature);
+		return forest.getTree();
+	}
+	
+	public static DecisionTree createBoostedC45E_StopTest(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createBoostedC45_StopTest(wm, obj_class, new Entropy());
+	}
+	public static DecisionTree createBoostedC45G_StopTest(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		return createBoostedC45_StopTest(wm, obj_class, new GainRatio());
+	}
+	
+	public static DecisionTree createBoostedC45_StopTest(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h) throws FeatureNotSupported {
+		DataType data = Learner.DEFAULT_DATA;
+
+		C45Learner learner = new C45Learner(h);
+		learner.addStoppingCriteria(new EstimatedNodeSize(0.5));
+		learner.addStoppingCriteria(new ImpurityDecrease());
+		
+		AdaBoostBuilder forest = new AdaBoostBuilder();
+		forest.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
+		forest.setTestRatio(Util.DEFAULT_TESTING_RATIO);
+		
+		String algo_suffices = DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), forest.getTreeAlgo());
+		String executionSignature = DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
+
+		
+		/* create the memory */
+		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
+		int max_depth = (int)((mem.getClassInstances().getSchema().getAttrNames().size() - 1)*0.70 );
+		learner.addStoppingCriteria(new MaximumDepth(max_depth));
+		
+		forest.build(mem, learner);
+
+		forest.printResults(executionSignature);
+		forest.printLatex(executionSignature);
+		
+		SingleTreeTester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
+		
+		//Tester bla => test(c45, mem.getClassInstances());
+		forest.getTree().setSignature(executionSignature);
+		return forest.getTree();
+	}
+	
+//	public static DecisionTree createSingleCrossPrunnedStopC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+//		
+//		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
+//		stopping_criteria.add(new EstimatedNodeSize(0.05));
+//		return createSinglePrunnedC45(wm, obj_class, new Entropy(), new CrossValidation(10), stopping_criteria);
+//	}
+//	public static DecisionTree createSingleCrossPrunnedStopC45G(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+//		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
+//		stopping_criteria.add(new EstimatedNodeSize(0.05));
+//		return createSinglePrunnedC45(wm, obj_class, new GainRatio(), new CrossValidation(10), stopping_criteria);
+//	}
+//	
+//	public static DecisionTree createSingleTestPrunnedStopC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+//		
+//		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
+//		stopping_criteria.add(new EstimatedNodeSize(0.05));
+//		return createSinglePrunnedC45(wm, obj_class, new Entropy(), new TestSample(0.2d), stopping_criteria);
+//	}
+//	public static DecisionTree createSingleTestPrunnedStopC45G(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+//		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
+//		stopping_criteria.add(new EstimatedNodeSize(0.05));
+//		return createSinglePrunnedC45(wm, obj_class, new GainRatio(), new TestSample(0.2), stopping_criteria);
+//	}
+//	
+//	public static DecisionTree createSingleCVPrunnedC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+//		
+//		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
+//		//stopping_criteria.add(new EstimatedNodeSize(0.05));
+//		return createSinglePrunnedC45(wm, obj_class, new Entropy(), new CrossValidation(10), stopping_criteria);
+//	}
+//	public static DecisionTree createSingleCVPrunnedC45G(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+//		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
+//		//stopping_criteria.add(new EstimatedNodeSize(0.05));
+//		return createSinglePrunnedC45(wm, obj_class, new GainRatio(), new CrossValidation(10), stopping_criteria);
+//	}
+	
+	public static DecisionTree createSingleTestPrunnedC45E(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+		
+//		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
+//		//stopping_criteria.add(new EstimatedNodeSize(0.05));
+		return createSinglePrunnedC45(wm, obj_class, new Entropy(), new TestSample(0.2d));
+	}
+	public static DecisionTree createSingleTestPrunnedC45G(WorkingMemory wm, Class<? extends Object> obj_class) throws FeatureNotSupported {
+//		ArrayList<StoppingCriterion> stopping_criteria = new ArrayList<StoppingCriterion>();
+//		stopping_criteria.add(new EstimatedNodeSize(0.05));
+		return createSinglePrunnedC45(wm, obj_class, new GainRatio(), new TestSample(0.2d));
+	}
+	
+	protected static DecisionTree createSinglePrunnedC45(WorkingMemory wm, Class<? extends Object> obj_class, Heuristic h, ErrorEstimate validater) throws FeatureNotSupported {
+		DataType data = Learner.DEFAULT_DATA;
+
+		C45Learner learner = new C45Learner(h);
+		learner.addStoppingCriteria(new EstimatedNodeSize(0.05));
+		SingleTreeBuilder single_builder = new SingleTreeBuilder();
+		single_builder.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
+		single_builder.setTestRatio(Util.DEFAULT_TESTING_RATIO);
 		
 //		String algo_suffices = org.drools.learner.deprecated.DecisionTreeFactory.getAlgoSuffices(learner.getDomainAlgo(), single_builder.getTreeAlgo());
 //		String executionSignature = org.drools.learner.deprecated.DecisionTreeFactory.getSignature(obj_class, "", algo_suffices);
@@ -237,25 +520,28 @@ public class DecisionTreeFactory {
 		/* create the memory */
 		Memory mem = Memory.createFromWorkingMemory(wm, obj_class, learner.getDomainAlgo(), data);
 		single_builder.build(mem, learner);//obj_class, target_attr, working_attr
-		
-		
-		validater.validate(learner, mem.getClassInstances());
-		
-		DecisionTreePruner pruner = new DecisionTreePruner(validater);
-		pruner.prun_to_estimate();
+
+//		validater.validate(learner, mem.getClassInstances());
+//		
+//		DecisionTreePruner pruner = new DecisionTreePruner(validater);
+//		
+//		DecisionTree dt = pruner.prun_to_estimate();
 		
 		// you should be able to get the pruned tree
 		// prun.getMinimumCostTree()
 		// prun.getOptimumCostTree()
 		
-		// test the tree
-		SingleTreeTester tester = new SingleTreeTester(learner.getTree());
-		tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
+		
+		single_builder.printResults(executionSignature);
+		single_builder.printLatex(executionSignature);
+		single_builder.printLatex2(executionSignature);
+		
+		SingleTreeTester.printStopping(learner.getStoppingCriteria(), Util.DRL_DIRECTORY +executionSignature);
 		
 		/* Once Talpha is found the tree that is finally suggested for use is that 
 		 * which minimises the cost-complexity using and all the data use the pruner to prun the tree
 		 */
-		pruner.prun_tree(learner.getTree());
+		//pruner.prun_tree(single_builder.getTree());
 		
 		
 		// test the tree again
@@ -263,8 +549,8 @@ public class DecisionTreeFactory {
 		
 		//Tester.test(c45, mem.getClassInstances());
 		
-		learner.getTree().setSignature(executionSignature);
-		return learner.getTree();
+		single_builder.getTree().setSignature(executionSignature);
+		return single_builder.getTree();
 	}
 	
 	

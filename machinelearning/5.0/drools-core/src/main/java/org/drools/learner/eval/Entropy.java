@@ -23,6 +23,8 @@ public class Entropy implements Heuristic{
 	 * used by:
 	 * c45Alternator, c45Learner, c45Iterator
 	 */
+	
+	protected static double multiplier = 1.0;
 	protected double data_eval; 
 	protected InstDistribution insts_by_target;
 	protected ArrayList<Instance> sorted_instances;
@@ -42,7 +44,7 @@ public class Entropy implements Heuristic{
 	
 	public double getEval(Domain attr_domain) {
 		CondClassDistribution insts_by_attr = info_attr(attr_domain);	
-		return data_eval - Entropy.calc_info_attr(insts_by_attr);
+		return multiplier *(data_eval - Entropy.calc_info_attr(insts_by_attr));
 	}
 	
 	public double getEval_cont(Domain attr_domain) {
@@ -60,7 +62,7 @@ public class Entropy implements Heuristic{
 		}
 		domain = trialDomain;
 		sorted_instances = visitor.getSortedInstances();
-		return attribute_eval;
+		return multiplier *attribute_eval;
 	}
 	
 	public double getDataEval() {
@@ -76,7 +78,7 @@ public class Entropy implements Heuristic{
 	}
 
 	public double getWorstEval() {
-		return -1000;
+		return multiplier -1000;
 	}
 	
 	public CondClassDistribution info_attr(Domain attr_domain) {

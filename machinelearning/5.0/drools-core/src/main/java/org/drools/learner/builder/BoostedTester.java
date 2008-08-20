@@ -85,8 +85,8 @@ public class BoostedTester extends Tester{
 		
 	}
 	
-	public void printStats(final Stats evaluation, String executionSignature) {
-		super.printStats(evaluation, executionSignature);
+	public void printStats(final Stats evaluation, String executionSignature, boolean append) {
+		super.printStats(evaluation, executionSignature, append);
 	}
 
 }

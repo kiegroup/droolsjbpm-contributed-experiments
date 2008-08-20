@@ -21,7 +21,7 @@ public class TestSample implements ErrorEstimate{
 	private InstanceList class_instances;
 	private double error_estimate, training_error_estimate, num_leaves_estimate, alpha_estimate;
 	private boolean WITH_REP = false;
-	private int num_instances;
+	private int num_instances, training_data_size;
 	private int[] crossed_set;
 	private double test_ratio;
 	
@@ -103,8 +103,8 @@ public class TestSample implements ErrorEstimate{
 //		// first part divide = 0; divide < fold_size*i
 //		// the validation set divide = fold_size*i; divide < fold_size*(i+1)-1
 //		// last part divide = fold_size*(i+1); divide < N
-		InstanceList learning_set = new InstanceList(class_instances.getSchema(), num_instances - TEST_SET_1 +1);
-		InstanceList validation_set = new InstanceList(class_instances.getSchema(), TEST_SET_1);
+		InstanceList learning_set = new InstanceList(class_instances, num_instances - TEST_SET_1 +1);
+		InstanceList validation_set = new InstanceList(class_instances, TEST_SET_1);
 		for (int divide_index = 0; divide_index < num_instances; divide_index++){
 			
 			if (slog.info() !=null)
@@ -143,10 +143,14 @@ public class TestSample implements ErrorEstimate{
 	}
 
 	public int getTrainingDataSize(int i) {
-		return num_instances - TEST_SET_1;
+		return training_data_size; //num_instances - TEST_SET_1;
 	}
 	public int getTestDataSize(int i) {
 		return TEST_SET_1;
+	}
+
+	public void setTrainingDataSize(int _trainingDataSize) {
+		training_data_size = _trainingDataSize;
 	}
 
 }

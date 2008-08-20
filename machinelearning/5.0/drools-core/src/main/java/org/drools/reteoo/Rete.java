@@ -41,10 +41,10 @@ import org.drools.spi.PropagationContext;
  * the Rete node where it propagates to all matching ObjectTypeNodes.
  *
  * The first time an  instance of a Class type is asserted it does a full
- * iteration of all ObjectTyppeNodes looking for matches, any matches are
+ * iteration of all ObjectTypeNodes looking for matches, any matches are
  * then cached in a HashMap which is used for future assertions.
  *
- * While Rete  extends ObjectSource nad implements ObjectSink it nulls the
+ * While Rete extends ObjectSource and implements ObjectSink it nulls the
  * methods attach(), remove() and  updateNewNode() as this is the root node
  * they are no applicable
  *

@@ -12,6 +12,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.drools.learner.tools.ObjectFactory;
+import org.drools.learner.tools.ReteStatistics;
 import org.drools.rule.Package;
 
 public class PokerExampleFromDrl {
@@ -19,7 +20,7 @@ public class PokerExampleFromDrl {
 	public static final void main(final String[] args) throws Exception {
         //read in the source
         //final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
-    	final Reader source = new InputStreamReader( Restaurant.class.getResourceAsStream( "poker_c45_bag.drl" ) );
+    	final Reader source = new InputStreamReader( Restaurant.class.getResourceAsStream( "poker_c45_one.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
 
@@ -41,22 +42,24 @@ public class PokerExampleFromDrl {
 
         final StatefulSession session = ruleBase.newStatefulSession();
         
-        session.addEventListener( new DebugAgendaEventListener() );
-        session.addEventListener( new DebugWorkingMemoryEventListener() );
-        
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-        logger.setFileName( "log/poker_c45_bag_fromdrl" );        
+//        session.addEventListener( new DebugAgendaEventListener() );
+//        session.addEventListener( new DebugWorkingMemoryEventListener() );
+//        
+//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+//        logger.setFileName( "log/poker_c45_bag_fromdrl" );        
 
         String inputFile = new String("data/poker/poker-hand-training-true.data.txt");
 		Class<?> obj_class = Poker.class;
-		List<Object> facts = ObjectFactory.getObjects(obj_class, inputFile);
-		for (Object r : facts) {
-			session.insert(r);
-		}
+//		List<Object> facts = ObjectFactory.getObjects(obj_class, inputFile);
+//		for (Object r : facts) {
+//			session.insert(r);
+//		}
         
-        session.fireAllRules();
-        
-       logger.writeToDisk();
+        //session.fireAllRules();
+        ReteStatistics stats = new ReteStatistics(ruleBase);
+	    stats.calculateNumberOfNodes();
+	    stats.print();
+//        logger.writeToDisk();
         
         session.dispose();
     }

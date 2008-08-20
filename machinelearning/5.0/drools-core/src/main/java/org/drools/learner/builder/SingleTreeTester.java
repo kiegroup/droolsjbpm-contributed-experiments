@@ -1,9 +1,12 @@
 package org.drools.learner.builder;
 
+import java.util.ArrayList;
+
 import org.drools.learner.DecisionTree;
 import org.drools.learner.Instance;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
+import org.drools.learner.eval.stopping.StoppingCriterion;
 
 public class SingleTreeTester extends Tester{
 	
@@ -41,7 +44,8 @@ public class SingleTreeTester extends Tester{
 		return evaluate(single_tree.getTargetDomain(), i, tree_decision);
 	}
 	
-	public void printStats(final Stats evaluation, String executionSignature) {
-		super.printStats(evaluation, executionSignature);
-	}
+//	public void printStats(Stats evaluation, String executionSignature, boolean append) {
+//		super.printStats(evaluation, executionSignature, append);
+//	}
+
 }

@@ -2,7 +2,9 @@ package org.drools.learner;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.drools.WorkingMemory;
 import org.drools.learner.tools.LoggerFactory;
@@ -10,22 +12,30 @@ import org.drools.learner.tools.SimpleLogger;
 public class InstanceList {
 
 	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(InstanceList.class, SimpleLogger.WARN);
-	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(InstanceList.class, SimpleLogger.DEBUG);
+	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(InstanceList.class, SimpleLogger.DEFAULT_LEVEL);
 	
 	private Schema schema;
 	private ArrayList<Instance> instances;
-	private InstanceFactory factory;
+	private InstanceFactory factory = null;
 	
 	public InstanceList(Schema _schema, WorkingMemory _session) {
 		this.schema = _schema;
-		this.instances = new ArrayList<Instance>(); 
+		this.instances = new ArrayList<Instance>();
 		this.factory = new InstanceFactory(_session, _schema);
 	}
 	
-	// will be used as copy constructer
-	public InstanceList(Schema _schema, int size) {
-		this.schema = _schema;
+	// copy ctor
+	public InstanceList(InstanceList _il) {
+		this.schema = _il.schema;
+		this.instances = _il.instances;
+		this.factory = _il.factory;
+	}
+	
+	// another copy constructor
+	public InstanceList(InstanceList _il, int size) {
+		this.schema = _il.schema;
 		this.instances = new ArrayList<Instance>(size);
+		this.factory = _il.factory;
 	}
 
 	public void addStructuredInstance(Object _obj) {
@@ -42,6 +52,18 @@ public class InstanceList {
 				slog.warn().log("The object "+_obj.getClass()+" is not related to the structure, couldnot create the instance\n");
 			//System.exit(0);
 		}
+	}
+
+	public void shuffle() {
+		long seed = 10101001;
+		Random rnd = new Random(seed);
+		Collections.shuffle(this.instances, rnd);
+	}
+	
+	public InstanceList subList(int from, int until) {
+		InstanceList il = new InstanceList(this);
+		il.instances = new ArrayList<Instance>(instances.subList(from, until));
+		return il;
 	}
 	
 	public void addAsInstance(Instance inst) {
@@ -65,7 +87,7 @@ public class InstanceList {
 			System.out.println("Exception: TOO BIG to get Memory.getClassInstancesOf");
 			return null;
 		}
-		InstanceList toReturn = new InstanceList(this.getSchema(), bag.length);
+		InstanceList toReturn = new InstanceList(this, bag.length);
 		for (int j = 0; j< bag.length ; j ++) {
 			toReturn.addAsInstance(this.getInstance(bag[j]));
 		}

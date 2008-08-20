@@ -5,7 +5,7 @@ import org.drools.learner.tools.FieldAnnotation;
 public class ShoppingClasses {
 	   public static class Customer {
 	        private String name;
-	        
+	        @FieldAnnotation(discrete = false)
 	        private int discount;
 	        
 	        @FieldAnnotation(target = true)
@@ -15,6 +15,9 @@ public class ShoppingClasses {
 	                        int discount) {
 	            this.name = name;
 	            this.discount = discount;
+	        }
+	        public void setName(String _name) {
+	            name = _name;
 	        }
 
 	        public String getName() {
@@ -36,6 +39,7 @@ public class ShoppingClasses {
 			public void setDiscount(int discount) {
 	            this.discount = discount;
 	        }
+			
 	                       
 	    }
 	    
@@ -44,6 +48,19 @@ public class ShoppingClasses {
 	    	private Dress skirt;
 	    	// attribute 1
 	    	private double salary;
+			public Dress getSkirt() {
+				return skirt;
+			}
+			public void setSkirt(Dress skirt) {
+				this.skirt = skirt;
+			}
+			public double getSalary() {
+				return salary;
+			}
+			public void setSalary(double salary) {
+				this.salary = salary;
+			}
+	    	
 	    	
 	    }
 	   
@@ -52,6 +69,20 @@ public class ShoppingClasses {
 	    	double color;
 	    	// target attribute
 	    	String value;//classification valuable, normal, cheap
+			public double getColor() {
+				return color;
+			}
+			public void setColor(double color) {
+				this.color = color;
+			}
+			public String getValue() {
+				return value;
+			}
+			public void setValue(String value) {
+				this.value = value;
+			}
+	    	
+	    	
 	    }
 	    
 	    public static class Discount {
@@ -71,6 +102,15 @@ public class ShoppingClasses {
 	        public int getAmount() {
 	            return amount;
 	        }
+
+			public void setCustomer(Customer customer) {
+				this.customer = customer;
+			}
+
+			public void setAmount(int amount) {
+				this.amount = amount;
+			}
+	        
 	        
 	    }
 
@@ -90,6 +130,14 @@ public class ShoppingClasses {
 	        
 	        public float getPrice() {
 	            return price;
+	        }
+	        
+	        public void setName(String _name) {
+	        	name = _name;
+	        }
+	        
+	        public void setPrice(float _price) {
+	        	price = _price;
 	        }
 	        
 	        
@@ -112,5 +160,13 @@ public class ShoppingClasses {
 	        public Product getProduct() {
 	            return product;
 	        }            
+	        public void setCustomer(Customer _customer) {
+	            customer = _customer;
+	        }
+	        
+	        public void setProduct(Product _product) {
+	        	product = _product;
+	        }
+	        
 	    }   
 }

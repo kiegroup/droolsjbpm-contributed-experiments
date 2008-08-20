@@ -19,22 +19,14 @@ import org.drools.learner.tools.Util;
 public class C45Learner extends Learner{
 	
 	private AttributeChooser chooser;
-	private ArrayList<StoppingCriterion> criteria; 
+	
 	
 	public C45Learner(Heuristic hf) {
 		super();
 		super.setDomainAlgo(DomainAlgo.QUANTITATIVE);
 		chooser = new AttributeChooser(hf);
-		criteria = null;
 	}
 	
-	
-	public C45Learner(Heuristic hf, ArrayList<StoppingCriterion> _criteria) {
-		super();
-		super.setDomainAlgo(DomainAlgo.QUANTITATIVE);
-		chooser = new AttributeChooser(hf);
-		criteria = _criteria;
-	}
 	
 	protected TreeNode train(DecisionTree dt, InstDistribution data_stats,  int depth) {//List<Instance> data) {
 		
@@ -89,7 +81,7 @@ public class C45Learner extends Learner{
 		/* choosing the best attribute in order to branch at the current node*/
 		chooser.chooseAttribute(best_attr_eval, data_stats, attribute_domains);
 		
-		if (criteria != null & criteria.size()>0) {
+		if (super.criteria != null && criteria.size()>0) {
 			for (StoppingCriterion sc: criteria) 
 				if (sc.stop(best_attr_eval)) {
 					Object winner = data_stats.get_winner_class();

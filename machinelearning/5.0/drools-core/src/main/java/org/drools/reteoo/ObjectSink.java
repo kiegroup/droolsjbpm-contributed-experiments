@@ -24,7 +24,7 @@ import org.drools.spi.PropagationContext;
  * Receiver of propagated <code>FactHandleImpl</code>s from a
  * <code>ObjectSource</code>.
  * 
- * @see ObectSource
+ * @see ObjectSource
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>

@@ -22,7 +22,7 @@ import org.drools.learner.Path;
 public class RulePrinter {
 	
 	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(RulePrinter.class, SimpleLogger.WARN);
-	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(RulePrinter.class, SimpleLogger.WARN);
+	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(RulePrinter.class, SimpleLogger.DEBUG);
 	
 	public static Reader readRules(DecisionTree learned_dt) {
 		
@@ -92,11 +92,15 @@ public class RulePrinter {
 		this.num_instances = dt.getRoot().getNumMatch();
 		
 		visitor.visit(dt);
-		
+		rules.ensureCapacity(visitor.getNumPathsFound());
+		int id = 1;
 		for (Path p: visitor.getPathList()) {
+//			if (id == 289)
+//				System.out.println("Here the p");
 			Rule newRule = createRule(p);
-			newRule.setId(rules.size());
+			newRule.setId(id);//rules.size());
 			rules.add(newRule);
+			id++;
 		}
 		
 		if (sort)
@@ -130,7 +134,8 @@ public class RulePrinter {
 				}
 				if (slog.error() != null)
 					slog.error().log("\n");
-				newRule.processNodeValue(current, nodeRelations, 0, 1);	//int condition_or_action = condition = 1
+				// call with rule_decs.get(0)
+				newRule.processNodeValue(current, nodeRelations, newRule.getMainDeclaration(), 0, 1);	//int condition_or_action = condition = 1
 			}
 //			} else {			}
 		}
@@ -140,7 +145,7 @@ public class RulePrinter {
 			// this a direct child add to reference to the main guy 
 			newRule.addActionToMain(action_node);
 		} else {
-			newRule.processNodeValue(action_node, nodeRelations, 0, 2);	//int condition_or_action = action = 2	
+			newRule.processNodeValue(action_node, nodeRelations, newRule.getMainDeclaration(), 0, 2);	//int condition_or_action = action = 2	
 		}
 		return newRule;	
 	}
@@ -290,6 +295,9 @@ class Rule {
 		rule_decs.get(main_obj_id).addCondition(current);
 	}
 	
+	public Declaration getMainDeclaration(){
+		return rule_decs.get(main_obj_id);
+	}
 	public void addActionToMain(NodeValue current) {
 		AttrReference aRef = new AttrReference(current);	//D
 		rule_decs.get(main_obj_id).addActionReference(aRef);						//D
@@ -302,29 +310,29 @@ class Rule {
 			Field referenceField = nodeRelations.get(nodeRelations.size()-1);			
 			String referenceOfCondition = Util.getDecReference(referenceField);
 			
-			System.out.println("It is primitive, should add a condition to its father "+referenceOfCondition+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+			//System.out.println("It is primitive, should add a condition to its father "+referenceOfCondition+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
 			Declaration dec = rule_decs.get(declarationMap.get(referenceOfCondition));
 			dec.addCondition(current);					//D
 		} else {
 			Field referenceField = nodeRelations.get(rel_id);			
 			String referenceOfCondition = Util.getDecReference(referenceField);
-			System.out.println("referenceOfCondition " +referenceOfCondition + " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1));
+			//System.out.println("referenceOfCondition " +referenceOfCondition + " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1));
 			Declaration the_place_declared = null;
 			
 			if (rel_id ==0 ) {
 				
 				the_place_declared = rule_decs.get(0);
-				System.out.println("The first guy "+referenceField.getName()+" to main declaration (ref?)"+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+				//System.out.println("The first guy "+referenceField.getName()+" to main declaration (ref?)"+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
 				
 			} else {
 				the_place_declared = rule_decs.get(rel_id-1);//declarationMap.get(referenceOfCondition));
-				System.out.println("Continue"+referenceField.getName()+" in "+the_place_declared+ "??? rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+				//System.out.println("Continue"+referenceField.getName()+" in "+the_place_declared+ "??? rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+
 			}
-			
 			if (!the_place_declared.hasReference(referenceField.getName())) {
 				num_declarations++;
 				Declaration new_dec = new Declaration(referenceField.getType(), referenceField.getName(), num_declarations);
-				System.out.println("Create new dec "+referenceOfCondition+" (Main declaration doesnot have a ref"+ referenceField.getName() + ") rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+				//System.out.println("Create new dec "+referenceOfCondition+" (Main declaration doesnot have a ref"+ referenceField.getName() + ") rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
 				
 				the_place_declared.addReference(new_dec);					//D
 				declarationMap.put(referenceOfCondition, num_declarations);
@@ -333,15 +341,17 @@ class Rule {
 			
 			addCondition(current, nodeRelations, rel_id+1);
 			
+			
+			
 		}
 	}
-	
-	public void processNodeValue(NodeValue current, ArrayList<Field> nodeRelations, int rel_id, int condition_or_action) {
+	// first time: the_place_declared = rule_decs.get(0)
+	public void processNodeValue(NodeValue current, ArrayList<Field> nodeRelations, Declaration the_place_declared, int rel_id, int condition_or_action) {
 		if (rel_id == nodeRelations.size()) {	// it must be primitive
 			Field referenceField = nodeRelations.get(nodeRelations.size()-1);			
 			String referenceOfCondition = Util.getDecReference(referenceField);
 			
-			System.out.println("It is primitive, should add a condition to its father "+referenceOfCondition+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+			//System.out.println("It is primitive, should add a condition to its father "+referenceOfCondition+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
 			Declaration dec = rule_decs.get(declarationMap.get(referenceOfCondition));
 			
 			switch (condition_or_action) {
@@ -360,25 +370,17 @@ class Rule {
 		} else {
 			Field referenceField = nodeRelations.get(rel_id);			
 			String referenceOfCondition = Util.getDecReference(referenceField);
-			System.out.println("referenceOfCondition " +referenceOfCondition + " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1));
-			Declaration the_place_declared = null;
 			
-			if (rel_id ==0 ) {	
-				the_place_declared = rule_decs.get(0);
-				System.out.println("The first guy "+referenceField.getName()+" to main declaration (ref?)"+ " rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
-				
-			} else {
-				the_place_declared = rule_decs.get(rel_id-1);//declarationMap.get(referenceOfCondition));
-				System.out.println("Continue"+referenceField.getName()+" in "+the_place_declared+ "??? rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
-			}
-			
+			//Reference current_ref = the_place_declared.getReference(referenceField.getName());
+			Declaration current_dec = null;
 			if (!the_place_declared.hasReference(referenceField.getName())) {
+			//if (current_ref == null) {
 				num_declarations++;
-				Declaration new_dec = new Declaration(referenceField.getType(), referenceField.getName(), num_declarations);
-				System.out.println("Create new dec "+referenceOfCondition+" (Main declaration doesnot have a ref"+ referenceField.getName() + ") rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
+				current_dec = new Declaration(referenceField.getType(), referenceField.getName(), num_declarations);
+				//System.out.println("Create new dec "+referenceOfCondition+" (Main declaration doesnot have a ref"+ referenceField.getName() + ") rel_id "+ rel_id + " size "+ (nodeRelations.size()-1)+ " \n");	
 				switch (condition_or_action) {
 				case 1: // condition
-					the_place_declared.addReference(new_dec);			//D
+					the_place_declared.addReference(current_dec);			//D
 					break;
 				case 2: // action
 					AttrReference aRef = new AttrReference(current);	//D
@@ -386,10 +388,13 @@ class Rule {
 					break;
 				}
 				declarationMap.put(referenceOfCondition, num_declarations);
-				rule_decs.add(new_dec);
+				rule_decs.add(current_dec);
+			} else {
+				//current_dec = the_place_declared.getReference(referenceField.getName()).
+				current_dec = the_place_declared.getReferenceDec(referenceField.getName());
 			}
 			
-			processNodeValue(current, nodeRelations, rel_id+1, condition_or_action);	
+			processNodeValue(current, nodeRelations, current_dec, rel_id+1, condition_or_action);	
 			
 		}
 	}
@@ -559,6 +564,23 @@ class Declaration{
 		references.add(df);
 	}
 	
+	public Reference getReference(String fName) {
+		for (Reference df : references) {
+			if (df.getFName().equalsIgnoreCase(fName))
+				return df;
+		}
+		return null;
+		
+	}
+	
+	public Declaration getReferenceDec(String fName) {
+		for (Reference df : references) {
+			if (df.getFName().equalsIgnoreCase(fName) && df instanceof DecReference)
+				return ((DecReference)df).getDec();
+		}
+		return null;
+		
+	}
 	public boolean hasReference(String fName) {
 		for (Reference df : references) {
 			if (df.getFName().equalsIgnoreCase(fName))
@@ -592,6 +614,10 @@ class DecReference implements Reference {
 	public DecReference (Declaration d) {
 		toReference = d;
 		fName = d.getDeclaringFName();
+	}
+	
+	public Declaration getDec() {
+		return toReference;
 	}
 	
 	public String getFName() {

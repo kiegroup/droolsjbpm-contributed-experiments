@@ -18,4 +18,6 @@ public interface ErrorEstimate {
 	
 	public double getErrorEstimate();
 	public double getAlphaEstimate();
+
+	public void setTrainingDataSize(int trainingDataSize);
 }

@@ -12,8 +12,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.drools.StatefulSession;
+
 
 public class ObjectFactory {
+	
+	private int MAX_NUM = 30012;
 	
 //	public static List<Object> getObjectsFromFile(Class<?> clazz, String filename, String separator) {
 //		
@@ -33,6 +37,19 @@ public class ObjectFactory {
 		return null;
 	}
 	
+	public static List<Object> insertStructuredObjects(Class<?> obj_class, StatefulSession session, String filename) {
+		ObjectFactory class_factory = new ObjectFactory(obj_class);
+		class_factory.wm = session;
+		try {
+			//return class_factory.fromFileAsObject("src/main/java/org/drools"+filename, ",");
+			return class_factory.fromFileAsStructuredObject(filename, ",");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	private StatefulSession wm = null;
 	private Class<?> obj_clazz;
 	private ArrayList<Field> clazz_fields;
 	private HashMap<String,Integer> field_sequences;
@@ -75,11 +92,56 @@ public class ObjectFactory {
 //		BufferedReader reader = new BufferedReader(new InputStreamReader(
 //				this.obj_clazz.getResourceAsStream(filename)));// "../data/"
 		String line;
-		while ((line = reader.readLine()) != null) {
+		int num = 0;
+		while ((line = reader.readLine()) != null && num < MAX_NUM) {
 			line = line.trim();
 			if (line.length() == 0)
 				break;
 			Object element = this.read(line, separator);
+			//System.out.println("New object "+ element);
+			obj_read.add(element);
+			num++;
+
+		}
+		return obj_read;
+	}
+	
+	public List<Object> fromFileAsStructuredObject(String filename, String separator) 
+	throws Exception {
+		List<Object> obj_read = new ArrayList<Object>();
+
+		/**/
+		File file =new File(filename);
+		if(!file.exists()){
+			System.out.println("where is the file ? "+ filename);
+			//System.exit(0);
+			
+			file =new File("src/main/java/org/drools/examples/learner/"+filename);
+			if(!file.exists()){
+				file =new File("drools-examples/drools-examples-drl/src/main/java/org/drools/examples/learner/"+filename);
+				
+				System.out.println("where is still the file ? "+ file);
+				if(!file.exists()){
+					System.out.println("where is still still the file ? "+ file);
+					System.exit(0);
+				}
+			}
+		}
+		
+		BufferedReader reader = new BufferedReader(new FileReader(file));	
+		/**/
+		
+//		BufferedReader reader = new BufferedReader(new InputStreamReader(
+//				this.obj_clazz.getResourceAsStream(filename)));// "../data/"
+		String line;
+		while ((line = reader.readLine()) != null) {
+			line = line.trim();
+			if (line.length() == 0)
+				break;
+			if (line.endsWith("."))
+				line = line.substring(0, line.length() - 1);
+			List<String> fieldValues = Arrays.asList(line.split(separator));
+			Object element = this.readStructured(this.obj_clazz, fieldValues);
 			//System.out.println("New object "+ element);
 			obj_read.add(element);
 
@@ -87,6 +149,73 @@ public class ObjectFactory {
 		return obj_read;
 	}
 	
+	
+	private Object readStructured(Class<?> _obj_clazz, List<String> fieldValues) throws Exception {
+		Object element = null;
+		ArrayList<Field> _clazz_fields = new ArrayList<Field>();
+		Util.getSuperFields(_obj_clazz, _clazz_fields); 
+		HashMap<String,Integer> _field_sequences = getFieldReadingSeqs(_obj_clazz, _clazz_fields);
+		try {
+			element = _obj_clazz.newInstance();			
+			
+			Method[] element_methods = _obj_clazz.getDeclaredMethods();
+			for (Method m : element_methods) {
+				String m_name = m.getName();
+				Class<?>[] param_type_name = m.getParameterTypes();
+				if (Util.isSetter(m_name)) {
+					Object fieldValue = null;;
+					if (Util.isSimpleMethod(param_type_name)) {
+						String basicFieldName = Util.getFieldName(m_name);
+
+						/* TODO dont use the basic field name as the real field name, there can be a capital/miniscul 
+						 * letter problem
+						 */
+						Field f = null;
+						for (Field _f: _clazz_fields) {
+							if (_f.getName().equalsIgnoreCase(basicFieldName)) {
+								f = _f;
+								break;
+							}			
+						}
+						if (f == null) {
+							throw new Exception("Field("+basicFieldName+") could not be found for the class("+_obj_clazz+")");
+						}
+						else {
+							//System.out.print("Field("+f.getName()+") for the class("+_obj_clazz+") " );
+							//System.out.print("seq="+_field_sequences.get(f.getName()) + " ");
+							String fieldString = fieldValues.get(_field_sequences.get(f.getName()));
+							//System.out.println("val="+fieldString);
+							fieldValue = readString(f, fieldString.trim());						
+						}
+					} else {
+						Class<?>[] param_classes = m.getParameterTypes();
+						fieldValue = readStructured(param_classes[0], fieldValues);
+						
+					}
+					
+					try {
+						m.invoke(element, fieldValue);
+					} catch (IllegalArgumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						System.out.println("invoking the method of the element e:"+element + " v:"+ fieldValue);
+
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		wm.insert(element);
+		return element;
+	}
 	private Object read(String data, String separator) throws Exception {
 		Object element = null;
 		
@@ -104,7 +233,7 @@ public class ObjectFactory {
 			for (Method m : element_methods) {
 				String m_name = m.getName();
 				Class<?>[] param_type_name = m.getParameterTypes();
-				if (Util.isSetter(m_name) & Util.isSimpleMethod(param_type_name)) {
+				if (Util.isSetter(m_name) && Util.isSimpleMethod(param_type_name)) {
 					String basicFieldName = Util.getFieldName(m_name);
 					
 					/* TODO dont use the basic field name as the real field name, there can be a capital/miniscul 
@@ -251,6 +380,11 @@ public class ObjectFactory {
 	
 	private static Object readDoubleFromString(String data) {
 		return Double.parseDouble(data);
+	}
+
+	public static void insert(StatefulSession session, Object r) {
+		session.insert(r);
+		
 	}
 	
 	

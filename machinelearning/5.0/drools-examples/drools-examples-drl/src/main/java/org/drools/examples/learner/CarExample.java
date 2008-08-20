@@ -13,6 +13,8 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.builder.DecisionTreeBuilder;
 import org.drools.learner.builder.DecisionTreeFactory;
 import org.drools.learner.tools.ObjectFactory;
+import org.drools.learner.tools.ReteStatistics;
+import org.drools.learner.tools.Util;
 
 public class CarExample {
 	
@@ -37,7 +39,7 @@ public class CarExample {
 		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 600;
+		DecisionTree decision_tree; int ALGO = 121;
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
@@ -71,17 +73,26 @@ public class CarExample {
 //			case 3:
 //			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
 //			break;
-		case 400: 
-			decision_tree = DecisionTreeFactory.createSingleCVPrunnedC45E(session, obj_class);
+//		case 400: 
+//			decision_tree = DecisionTreeFactory.createSingleCVPrunnedC45E(session, obj_class);
+//			break;
+//		case 500:
+//			decision_tree = DecisionTreeFactory.createSingleC45E_Stopped(session, obj_class);
+//			break;
+//		case 600:
+//			decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
+//			break;
+//		case 601:
+//			decision_tree = DecisionTreeFactory.createSingleTestPrunnedStopC45E(session, obj_class);
+//			break;
+		case 700:
+			decision_tree = DecisionTreeFactory.createSingleC45E_StoppedTest(session, obj_class);
 			break;
-		case 500:
-			decision_tree = DecisionTreeFactory.createSingleC45E_StoppingCriteria(session, obj_class);
+		case 701:
+			decision_tree = DecisionTreeFactory.createBaggC45E_StoppedTest(session, obj_class);
 			break;
-		case 600:
-			decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
-			break;
-		case 601:
-			decision_tree = DecisionTreeFactory.createSingleTestPrunnedStopC45E(session, obj_class);
+		case 702:
+			decision_tree = DecisionTreeFactory.createBoostedC45E_StopTest(session, obj_class);
 			break;
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
@@ -102,6 +113,10 @@ public class CarExample {
 		 */
 
 		session.fireAllRules();
+		
+        ReteStatistics stats = new ReteStatistics(ruleBase);
+        stats.calculateNumberOfNodes();
+        stats.print(Util.DRL_DIRECTORY +decision_tree.getSignature());
 
 		//logger.writeToDisk();
 

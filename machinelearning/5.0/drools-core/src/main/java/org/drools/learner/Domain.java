@@ -6,7 +6,7 @@ import java.util.Collections;
 import org.drools.learner.tools.Util;
 
 public class Domain {
-	private boolean categorical, fixed, artificial;
+	private boolean categorical, fixed, artificial, ignore;
 	//private DataType dataType;
 	private String fName;
 	private Class<?> fType, objKlass /*the class that attribute belongs to*/; // , ownerKlass;		// not sure if necessary
@@ -19,6 +19,7 @@ public class Domain {
 		
 		this.categorical = true;	// BY DEFAULT, it is categorical
 		this.artificial = false;	// BY DEFAULT, it is a real field, if it is artificial it means there is no field exist but there is method which computes the value
+		this.ignore = false;
 		//this.dataType = DataType.PRIMITIVE; // BY DEFAULT it is primitive
 		this.fCategories = new ArrayList<Object>(2);
 		
@@ -29,6 +30,7 @@ public class Domain {
 		dom.categorical = this.categorical;
 		//dom.readingSeq = readingSeq;
 		dom.fCategories = this.fCategories;
+		dom.ignore = this.ignore;
 		
 		return dom;
 	}
@@ -153,6 +155,13 @@ public class Domain {
 			}
 		}
 	
+	}
+	public boolean ignore() {
+		return ignore;
+	}
+	
+	public void ignore(boolean ignore_field) {
+		ignore = ignore_field;
 	}
 	
 	public boolean isNotJustSelected(Domain exceptDomain) {
