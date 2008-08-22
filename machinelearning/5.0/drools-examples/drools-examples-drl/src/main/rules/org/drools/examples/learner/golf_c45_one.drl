@@ -2,40 +2,40 @@ package org.drools.examples.learner;
 
 import org.drools.examples.learner.Golf
 
-rule "#0 decision= Play  classifying 4.0 num of facts with rank:0.2857142857142857" 
+rule "#1 decision= Play  classifying 4.0 num of facts with rank:Infinity" 
 	 when
 		 $golf_0 : Golf(outlook == "overcast", $target_label : decision )
 	 then 
 		 System.out.println("[decision] Expected value (" + $target_label + "), Classified as (Play )");
 end
 
-rule "#3 decision= Play  classifying 3.0 num of facts with rank:0.21428571428571427" 
+rule "#2 decision= Play  classifying 1.0 num of facts with rank:Infinity" 
 	 when
-		 $golf_0 : Golf(outlook == "rain", windy == false, $target_label : decision )
+		 $golf_0 : Golf(outlook == "sunny", humidity <= 80, $target_label : decision )
 	 then 
 		 System.out.println("[decision] Expected value (" + $target_label + "), Classified as (Play )");
 end
 
-rule "#4 decision= Don't Play  classifying 3.0 num of facts with rank:0.21428571428571427" 
-	 when
-		 $golf_0 : Golf(outlook == "sunny", humidity > 77, $target_label : decision )
-	 then 
-		 System.out.println("[decision] Expected value (" + $target_label + "), Classified as (Don't Play )");
-end
-
-rule "#1 decision= Play  classifying 2.0 num of facts with rank:0.14285714285714285" 
-	 when
-		 $golf_0 : Golf(outlook == "sunny", humidity <= 77, $target_label : decision )
-	 then 
-		 System.out.println("[decision] Expected value (" + $target_label + "), Classified as (Play )");
-end
-
-rule "#2 decision= Don't Play  classifying 2.0 num of facts with rank:0.14285714285714285" 
+rule "#3 decision= Don't Play  classifying 2.0 num of facts with rank:Infinity" 
 	 when
 		 $golf_0 : Golf(outlook == "rain", windy == true, $target_label : decision )
 	 then 
 		 System.out.println("[decision] Expected value (" + $target_label + "), Classified as (Don't Play )");
 end
 
-//THE END: Total number of facts correctly classified= 14 over 14.0
+rule "#4 decision= Play  classifying 2.0 num of facts with rank:Infinity" 
+	 when
+		 $golf_0 : Golf(outlook == "rain", windy == false, $target_label : decision )
+	 then 
+		 System.out.println("[decision] Expected value (" + $target_label + "), Classified as (Play )");
+end
+
+rule "#5 decision= Don't Play  classifying 2.0 num of facts with rank:Infinity" 
+	 when
+		 $golf_0 : Golf(outlook == "sunny", humidity > 80, $target_label : decision )
+	 then 
+		 System.out.println("[decision] Expected value (" + $target_label + "), Classified as (Don't Play )");
+end
+
+//THE END: Total number of facts correctly classified= 11 over 11.0
 //with 5 number of rules over 5 total number of rules 

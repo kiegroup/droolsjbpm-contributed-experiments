@@ -7,7 +7,7 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
 import org.drools.learner.builder.Learner;
-import org.drools.learner.builder.SingleTreeTester;
+import org.drools.learner.builder.test.SingleTreeTester;
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
@@ -103,15 +103,15 @@ public class CrossValidation implements ErrorEstimate{
 					error ++;
 				}
 			}
-			dt.setValidationError(Util.division(error, fold_size));
+			//TODO dt.setTrainError(Util.division(error, fold_size));
 			dt.calc_num_node_leaves(dt.getRoot());
 			
-			if (slog.error() !=null)
-				slog.error().log("The estimate of : "+(i-1)+" training=" +dt.getTrainingError() +" valid=" + dt.getValidationError() +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
+//			if (slog.error() !=null)
+//				slog.error().log("The estimate of : "+(i-1)+" training=" +dt.getTrainingError() +" valid=" + dt.getValidationError() +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
 		
 			/* moving averages */
 			validation_error_estimate += ((double)error/(double) fold_size)/(double)k_fold;
-			training_error_estimate += ((double)dt.getTrainingError())/(double)k_fold;//((double)dt.getTrainingError()/(double)(num_instances-fold_size))/(double)k_fold;
+			//TODO training_error_estimate += ((double)dt.getTrainingError())/(double)k_fold;//((double)dt.getTrainingError()/(double)(num_instances-fold_size))/(double)k_fold;
 			num_leaves_estimate += (double)dt.getRoot().getNumLeaves()/(double)k_fold;
 
 

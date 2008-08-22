@@ -63,30 +63,7 @@ public class TriangleExample {
 		case 222:
 			decision_tree  = DecisionTreeFactory.createBagC45G(session, obj_class);
 			break;	
-		case 321:
-			decision_tree  = DecisionTreeFactory.createBoostedC45E(session, obj_class);
-			break;
-		case 322:
-			decision_tree  = DecisionTreeFactory.createBoostedC45G(session, obj_class);
-			break;
-		case 500:
-			decision_tree = DecisionTreeFactory.createSingleC45E_Stopped(session, obj_class);
-			break;
-//		case 600:
-//			decision_tree = DecisionTreeFactory.createSingleCrossPrunnedStopC45E(session, obj_class);
-//			break;
-//			case 3:
-//			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
-//			break;
-		case 700:
-			decision_tree = DecisionTreeFactory.createSingleC45E_StoppedTest(session, obj_class);
-			break;
-		case 701:
-			decision_tree = DecisionTreeFactory.createBaggC45E_StoppedTest(session, obj_class);
-			break;
-		case 702:
-			decision_tree = DecisionTreeFactory.createBoostedC45E_StopTest(session, obj_class);
-			break;
+
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
 

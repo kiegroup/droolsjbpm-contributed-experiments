@@ -6,7 +6,7 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
 import org.drools.learner.builder.Learner;
-import org.drools.learner.builder.SingleTreeTester;
+import org.drools.learner.builder.test.SingleTreeTester;
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
@@ -79,15 +79,15 @@ public class TestSample implements ErrorEstimate{
 				error ++;
 			}
 		}
-		dt.setValidationError(Util.division(error, test_set.getSize()));
+		//TODO dt.setValidationError(Util.division(error, test_set.getSize()));
 		dt.calc_num_node_leaves(dt.getRoot());
 		
-		if (slog.error() !=null)
-			slog.error().log("The estimate of : "+(0)+" training=" +dt.getTrainingError() +" valid=" + dt.getValidationError() +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
+//		if (slog.error() !=null)
+//			slog.error().log("The estimate of : "+(0)+" training=" +dt.getTrainingError() +" valid=" + dt.getValidationError() +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
 	
 		/* moving averages */
-		error_estimate = dt.getValidationError();
-		training_error_estimate = (double)dt.getTrainingError();
+		//TODO error_estimate = dt.getValidationError();
+		//TODO training_error_estimate = (double)dt.getTrainingError();
 		num_leaves_estimate = (double)dt.getRoot().getNumLeaves();
 
 

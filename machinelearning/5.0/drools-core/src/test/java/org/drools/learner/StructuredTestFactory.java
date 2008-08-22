@@ -4,8 +4,8 @@ import org.drools.WorkingMemory;
 import org.drools.learner.builder.C45Learner;
 import org.drools.learner.builder.Learner;
 import org.drools.learner.builder.SingleTreeBuilder;
-import org.drools.learner.builder.SingleTreeTester;
 import org.drools.learner.builder.Learner.DataType;
+import org.drools.learner.builder.test.SingleTreeTester;
 import org.drools.learner.builder.DecisionTreeFactory;
 import org.drools.learner.eval.Entropy;
 import org.drools.learner.tools.FeatureNotSupported;
@@ -30,12 +30,12 @@ public class StructuredTestFactory extends DecisionTreeFactory{
 		if (BUILD_TREE) {
 			single_builder.build(mem, learner);//obj_class, target_attr, working_attr
 
-			SingleTreeTester tester = new SingleTreeTester(single_builder.getTree());
+			SingleTreeTester tester = new SingleTreeTester(single_builder.getBestSolution().getTree());
 			//tester.printStats(tester.test(mem.getClassInstances()), Util.DRL_DIRECTORY + executionSignature);
 			//Tester.test(c45, mem.getClassInstances());
 
-			single_builder.getTree().setSignature(executionSignature);
+			single_builder.getBestSolution().getTree().setSignature(executionSignature);
 		}
-		return single_builder.getTree();
+		return single_builder.getBestSolution().getTree();
 	}
 }

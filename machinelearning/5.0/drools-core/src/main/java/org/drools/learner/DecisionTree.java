@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.drools.learner.eval.TreeStats;
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 
@@ -30,11 +31,12 @@ public class DecisionTree {
 	private String execution_signature;
 	public long FACTS_READ = 0;
 
-	private double validation_error, training_error;
+//	private double validation_error, training_error;
 
+	private TreeStats error_stats;
 	private int num_nonterminal_nodes;
 	private int trainingDataSize, testDataSize;
-	private InstanceList train, test;
+	//private InstanceList train, test;
 
 	public DecisionTree(Schema inst_schema, String _target) {
 		this.obj_schema = inst_schema; //inst_schema.getObjectClass();
@@ -57,24 +59,20 @@ public class DecisionTree {
 			}
 		}
 		Collections.sort(this.attrsToClassify, new DomainComparator()); // compare the domains by the name
-		
+		error_stats = new TreeStats(0.0d, 0.0d);
 	}
 	
 	public DecisionTree(DecisionTree parentTree, Domain exceptDomain) {
 		//this.domainSet = new Hashtable<String, Domain<?>>();
 		this.obj_schema = parentTree.getSchema();
 		this.target = parentTree.getTargetDomain();
+		this.error_stats = parentTree.error_stats;
+		
 		this.attrsToClassify = new ArrayList<Domain>(parentTree.getAttrDomains().size()-1);
 		for (Domain attr_domain : parentTree.getAttrDomains()) {
 			if (attr_domain.isNotJustSelected(exceptDomain))
 				this.attrsToClassify.add(attr_domain);
-		}
-//		System.out.print("New tree ");
-//		for (Domain d:attrsToClassify)
-//			System.out.print("d: "+d);
-//		System.out.println("");
-		//Collections.sort(this.attrsToClassify, new Comparator<Domain>()); // compare the domains by the name
-		
+		}		
 	}
 	
 	private Schema getSchema() {
@@ -117,20 +115,38 @@ public class DecisionTree {
 		return this.getRoot().voteFor(i);
 	}
 	
-
-	public void setValidationError(double error) {
-		validation_error = error;
-	}	
-	public double getValidationError() {
-		return validation_error;
+	public TreeStats getStats() {
+		return error_stats;
+	}
+	public void changeTestError(double error) {
+		error_stats.setErrorEstimation(error_stats.getErrorEstimation() + error);
 	}
 	
-	public void setTrainingError(double error) {
-		training_error = error;
+	public void changeTrainError(double error) {
+		error_stats.setTrainError(error_stats.getTrainError() + error);
 	}
-	public double getTrainingError() {
-		return training_error;
+	
+	public double getTestError() {
+		return error_stats.getErrorEstimation();
 	}
+	
+	public double getTrainError() {
+		return error_stats.getTrainError();
+	}
+
+//	public void setValidationError(double error) {
+//		validation_error = error;
+//	}	
+//	public double getValidationError() {
+//		return validation_error;
+//	}
+//	
+//	public void setTrainingError(double error) {
+//		training_error = error;
+//	}
+//	public double getTrainingError() {
+//		return training_error;
+//	}
 	
 	public int calc_num_node_leaves(TreeNode my_node) {
 		if (my_node instanceof LeafNode) {
@@ -248,20 +264,22 @@ public class DecisionTree {
 		return testDataSize;
 	}
 	
-	public void setTrain(InstanceList x) {
-		train = x;
-	}
-	
-	public void setTest(InstanceList x) {
-		 test = x;
-	}
+//	public void setTrain(InstanceList x) {
+//		train = x;
+//	}
+//	
+//	public void setTest(InstanceList x) {
+//		 test = x;
+//	}
+//
+//	public InstanceList getTrain() {
+//		return train;
+//	}
+//	
+//	public InstanceList getTest() {
+//		return test;
+//	}
 
-	public InstanceList getTrain() {
-		return train;
-	}
-	
-	public InstanceList getTest() {
-		return test;
-	}
+
 	
 }

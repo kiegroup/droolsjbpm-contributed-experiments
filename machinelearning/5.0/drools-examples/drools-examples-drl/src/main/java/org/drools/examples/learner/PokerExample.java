@@ -48,7 +48,7 @@ public class PokerExample {
 //		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 700;
+		DecisionTree decision_tree; int ALGO = 141;
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
@@ -67,44 +67,53 @@ public class PokerExample {
 		case 122: 
 			decision_tree  = DecisionTreeFactory.createSingleC45G(session, obj_class);
 			break;
+		case 131: 
+			decision_tree  = DecisionTreeFactory.createSingleC45E_Stop(session, obj_class);
+			break;
+		case 132: 
+			decision_tree  = DecisionTreeFactory.createSingleC45G_Stop(session, obj_class);
+			break;
+		case 141: 
+			decision_tree  = DecisionTreeFactory.createSingleC45E_PrunStop(session, obj_class);
+			break;
+		case 142: 
+			decision_tree  = DecisionTreeFactory.createSingleC45G_PrunStop(session, obj_class);
+			break;
 		case 221:
 			decision_tree  = DecisionTreeFactory.createBagC45E(session, obj_class);
 			break;		
 		case 222:
 			decision_tree  = DecisionTreeFactory.createBagC45G(session, obj_class);
 			break;	
+		case 231:
+			decision_tree  = DecisionTreeFactory.createBagC45E_Stop(session, obj_class);
+			break;		
+		case 232:
+			decision_tree  = DecisionTreeFactory.createBagC45G_Stop(session, obj_class);
+			break;	
+		case 241:
+			decision_tree  = DecisionTreeFactory.createBagC45E_PrunStop(session, obj_class);
+			break;		
+		case 242:
+			decision_tree  = DecisionTreeFactory.createBagC45G_PrunStop(session, obj_class);
+			break;
 		case 321:
-			decision_tree  = DecisionTreeFactory.createBoostedC45E(session, obj_class);
-			break;
+			decision_tree  = DecisionTreeFactory.createBoostC45E(session, obj_class);
+			break;		
 		case 322:
-			decision_tree  = DecisionTreeFactory.createBoostedC45G(session, obj_class);
-			break;
-//			case 3:
-//			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
-//			break;
-		case 400:
-			decision_tree = DecisionTreeFactory.createSingleC45E_Stopped(session, obj_class);
-			break;
-		case 600:
-			decision_tree = DecisionTreeFactory.createSingleTestPrunnedC45E(session, obj_class);
-			break;
-		case 700:
-			decision_tree = DecisionTreeFactory.createSingleC45E_Test(session, obj_class);
-			break;
-		case 701:
-			decision_tree = DecisionTreeFactory.createBaggC45E_Test(session, obj_class);
-			break;
-		case 702:
-			decision_tree = DecisionTreeFactory.createBoostedC45E_Test(session, obj_class);
-			break;
-		case 710:
-			decision_tree = DecisionTreeFactory.createSingleC45E_StoppedTest(session, obj_class);
-			break;
-		case 711:
-			decision_tree = DecisionTreeFactory.createBaggC45E_StoppedTest(session, obj_class);
-			break;
-		case 712:
-			decision_tree = DecisionTreeFactory.createBoostedC45E_StopTest(session, obj_class);
+			decision_tree  = DecisionTreeFactory.createBoostC45G(session, obj_class);
+			break;	
+		case 331:
+			decision_tree  = DecisionTreeFactory.createBoostC45E_Stop(session, obj_class);
+			break;		
+		case 332:
+			decision_tree  = DecisionTreeFactory.createBoostC45G_Stop(session, obj_class);
+			break;	
+		case 341:
+			decision_tree  = DecisionTreeFactory.createBoostC45E_PrunStop(session, obj_class);
+			break;		
+		case 342:
+			decision_tree  = DecisionTreeFactory.createBoostC45G_PrunStop(session, obj_class);
 			break;
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
@@ -120,7 +129,7 @@ public class PokerExample {
 		 */
 		ruleBase.addPackage( builder.getPackage() );
 
-		session.fireAllRules();
+		//session.fireAllRules();
 		long end_time = System.currentTimeMillis();
 		System.out.println("Total time="+ (end_time-start_time));
 		ReteStatistics stats = new ReteStatistics(ruleBase);

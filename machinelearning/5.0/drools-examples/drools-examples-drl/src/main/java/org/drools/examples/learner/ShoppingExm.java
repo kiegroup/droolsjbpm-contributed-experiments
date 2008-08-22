@@ -46,9 +46,7 @@ public class ShoppingExm {
 		case 2:
 			decision_tree  = DecisionTreeFactory.createBagC45E(session, obj_class);
 			break;
-		case 3: 
-			decision_tree  = DecisionTreeFactory.createBoostedC45G(session, obj_class);
-			break;
+
 		default:
 			decision_tree  = DecisionTreeFactory.createBagC45G(session, obj_class);
 		

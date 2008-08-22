@@ -77,14 +77,6 @@ public class Stats {
 		}
 		
 	}
-//	public String print4Latex() {
-//		
-//		double in = 100.0d *(double)getResult(Stats.INCORRECT)/(double) getTotal();
-//		double co = 100.0d *(double)getResult(Stats.CORRECT)/(double) getTotal();
-//		double un = 100.0d *(double)getResult(Stats.UNKNOWN)/(double) getTotal();
-//		return "Builder" +"\t&\t"+ getResult(Stats.INCORRECT)+ "\t&\t"+ precision.format(in) + "\t&\t"+
-//				getResult(Stats.CORRECT)+"\t&\t"+ precision.format(co)+ "\t&\t"+ getResult(Stats.UNKNOWN)+"\t&\t"+ precision.format(un)+ "\\\\";
-//	}
 	
 	public String print4Latex() {
 		

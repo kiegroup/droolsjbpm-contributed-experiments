@@ -65,15 +65,7 @@ public class RestaurantExample {
 		case 222:
 			decision_tree  = DecisionTreeFactory.createBagC45G(session, obj_class);
 			break;	
-		case 321:
-			decision_tree  = DecisionTreeFactory.createBoostedC45E(session, obj_class);
-			break;
-		case 322:
-			decision_tree  = DecisionTreeFactory.createBoostedC45G(session, obj_class);
-			break;
-//			case 3:
-//			decision_tree  = DecisionTreeFactory.createGlobal2(session, obj_class);
-//			break;
+
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
 		

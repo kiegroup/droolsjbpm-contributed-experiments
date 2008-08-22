@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.drools.learner.tools.Util;
+
 public class StatsPrinter {
 
 
@@ -29,6 +31,32 @@ public class StatsPrinter {
 		wr.write(sb.toString()+ "\n");
 		
 		wr.close();
+	}
+	public static void print(Stats train, Stats test) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("#"+ Stats.getErrors());
+		sb.append( "\n");
+		sb.append(train.print4Latex() +test.print4Latex()+"\\\\"+ "\n");
+		sb.append( "\n");
+		
+		System.out.println(sb.toString());
+	}
+	
+	public static void printLatexComment(String comment, String executionSignature, boolean append) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("#"+ comment+"\n");		
+		StatsPrinter.print2file(sb, Util.DRL_DIRECTORY +executionSignature, append);
+	}
+	public static void printLatexLine(String executionSignature, boolean append) {
+		StringBuffer sb = new StringBuffer();
+		sb.append( "\n");		
+		StatsPrinter.print2file(sb, Util.DRL_DIRECTORY +executionSignature, append);
+	}
+	
+	public static void printLatex(Stats train, Stats test, String executionSignature, boolean append) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(train.print4Latex() +test.print4Latex()+"\\\\"+ "\n");		
+		StatsPrinter.print2file(sb, Util.DRL_DIRECTORY +executionSignature, append);
 	}
 	
 	public static void print2file(StringBuffer sb, String fileSignature, boolean append) {

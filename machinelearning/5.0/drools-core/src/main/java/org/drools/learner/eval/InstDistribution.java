@@ -168,13 +168,13 @@ public class InstDistribution extends ClassDistribution{
 			
 			if ((num_supp > 0) && !winner.equals(looser)) {
 				
-				//System.out.println(Util.ntimes("DANIEL", 2)+ " one looser ? "+looser + " num of sup="+num_supp);
-				//System.out.println(" the num of supporters = "+ stats.getVoteFor(looser));
-				//System.out.println(" but the guys "+ stats.getSupportersFor(looser));
-				//System.out.println("How many bok: "+stats.getSupportersFor(looser).size());
+//				System.out.println(Util.ntimes("DANIEL", 2)+ " one looser ? "+looser + " num of sup="+num_supp);
+//				System.out.println(" the num of supporters = "+ this.getVoteFor(looser));
+//				System.out.println(" but the guys "+ this.getSupportersFor(looser));
+//				System.out.println("How many bok: "+this.getSupportersFor(looser).size());
 				missclassification.addAll(getSupportersFor(looser));
 			} else {
-				//System.out.println(Util.ntimes("DANIEL", 5)+ "how many times matching?? not a looser "+ looser );
+//				System.out.println(Util.ntimes("DANIEL", 5)+ "how many times matching?? not a looser "+ looser );
 			}
 		}
 		

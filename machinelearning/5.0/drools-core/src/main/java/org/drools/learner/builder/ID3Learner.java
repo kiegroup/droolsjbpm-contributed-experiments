@@ -71,6 +71,14 @@ public class ID3Learner extends Learner {
 
 		TreeNode currentNode = new TreeNode(node_domain);
 		currentNode.setNumMatch(data_stats.getSum());									//num of matching instances to the leaf node
+		currentNode.setRank((double)data_stats.getSum()/
+							(double)this.getTrainingDataSize()									/* total size of data fed to trainer*/);
+		//currentNode.setInfoMea(best_attr_eval.attribute_eval);
+		//what the highest represented class is and what proportion of items at that node actually are that class
+		currentNode.setLabel(data_stats.get_winner_class());
+		currentNode.setNumLabeled(data_stats.getSupportersFor(data_stats.get_winner_class()).size());
+		
+		
 		Hashtable<Object, InstDistribution> filtered_stats = data_stats.splitFromCategorical(node_domain, null);
 		dt.FACTS_READ += data_stats.getSum();
 		

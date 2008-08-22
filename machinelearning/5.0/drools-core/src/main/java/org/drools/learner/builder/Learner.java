@@ -44,6 +44,7 @@ public abstract class Learner {
 		this.data_size_per_tree = 0;
 		
 		criteria = new ArrayList<StoppingCriterion>(4);
+		missclassified_data = new HashSet<Instance>();
 	}
 
 	
@@ -123,8 +124,6 @@ public abstract class Learner {
 	
 	public void setTrainingDataSizePerTree(int num) {
 		this.data_size_per_tree = num;
-		
-		missclassified_data = new HashSet<Instance>();
 	}
 	
 	public int getTrainingDataSizePerTree() {
@@ -150,13 +149,13 @@ public abstract class Learner {
 		this.algorithm = type;
 	}
 
-	public void setInputData(InstanceList class_instances) {
+	public void setInputSpec(InstanceList class_instances) {
 		this.input_data = class_instances;	
 	}
 	
-	public InstanceList getInputData() {
-		return input_data;
-	}
+//	public InstanceList getInputData() {
+//		return input_data;
+//	}
 
 	// must be deleted, goes to builder	
 //	public void setBestTree(DecisionTree dt) {

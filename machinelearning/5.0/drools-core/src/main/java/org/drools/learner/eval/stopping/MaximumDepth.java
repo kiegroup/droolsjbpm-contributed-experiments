@@ -22,5 +22,8 @@ public class MaximumDepth implements StoppingCriterion {
 	public int getNumPruned() {
 		return num_prunned;
 	}
+	public void setDepth(int max_depth) {
+		limit_depth = max_depth;
+	}
 
 }

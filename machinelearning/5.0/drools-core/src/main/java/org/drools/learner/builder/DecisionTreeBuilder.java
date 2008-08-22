@@ -3,21 +3,37 @@ package org.drools.learner.builder;
 
 import org.drools.learner.DecisionTree;
 import org.drools.learner.Memory;
+import org.drools.learner.builder.test.SingleTreeTester;
+import org.drools.learner.builder.test.Tester;
 
-public interface DecisionTreeBuilder {
+public abstract class DecisionTreeBuilder {
 	
 	//public static final int SINGLE = 1, BAG = 2, BOOST = 3;
 	public static enum TreeAlgo { SINGLE, BAG, BOOST, BOOST_K }
 	
-	void build(Memory wm, Learner trainer);
+	public SolutionSet solutions;
+	public int best_solution_id;
 	
-//	public Learner getLearner();
+	public SolutionSet build(Memory wm, Learner trainer) {
+		solutions = beforeBuild(wm);
+		internalBuild(solutions, trainer);
+		return solutions;
+	}
 	
-	public TreeAlgo getTreeAlgo();
+	protected SolutionSet beforeBuild(Memory wm) {
+		return new SolutionSet(wm);
+	}
 	
-	public DecisionTree getTree();
+	protected abstract void internalBuild(SolutionSet sol, Learner trainer);
 	
-	public void setTrainRatio(double ratio);
-	public void setTestRatio(double ratio);
+	public abstract TreeAlgo getTreeAlgo();
+	
+	public abstract Solution getBestSolution();
+	
+	
+	public Tester getTester(DecisionTree dt) {
+		return new SingleTreeTester(dt);
+	}
+	
 	
 }
