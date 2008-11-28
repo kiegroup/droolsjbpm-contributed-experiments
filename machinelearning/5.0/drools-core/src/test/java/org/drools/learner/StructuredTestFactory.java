@@ -7,7 +7,7 @@ import org.drools.learner.builder.SingleTreeBuilder;
 import org.drools.learner.builder.Learner.DataType;
 import org.drools.learner.builder.test.SingleTreeTester;
 import org.drools.learner.builder.DecisionTreeFactory;
-import org.drools.learner.eval.Entropy;
+import org.drools.learner.eval.heuristic.Entropy;
 import org.drools.learner.tools.FeatureNotSupported;
 
 public class StructuredTestFactory extends DecisionTreeFactory{

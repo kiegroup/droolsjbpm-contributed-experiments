@@ -35,7 +35,7 @@ public class Util {
 	private static Random BAGGING = new Random(System.currentTimeMillis());
 	//public static String log_file = "testing.log";
 	public static double TRAINING_RATIO = 1.0, TESTING_RATIO = 0.0;;
-	public static double DEFAULT_TRAINING_RATIO = 0.84, DEFAULT_TESTING_RATIO= 0.16;
+	public static double DEFAULT_TRAINING_RATIO = 0.80, DEFAULT_TESTING_RATIO= 0.20;
 	
 	
 	public static String ntimes(String s,int n){

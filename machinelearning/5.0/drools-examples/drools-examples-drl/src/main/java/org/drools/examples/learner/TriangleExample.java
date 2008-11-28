@@ -38,7 +38,7 @@ public class TriangleExample {
 		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 702;
+		DecisionTree decision_tree; int ALGO = 121;
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
@@ -57,16 +57,63 @@ public class TriangleExample {
 		case 122: 
 			decision_tree  = DecisionTreeFactory.createSingleC45G(session, obj_class);
 			break;
+		case 123: 
+			decision_tree  = DecisionTreeFactory.createSingleC45E_worst(session, obj_class);
+			break;
+		case 124: 
+			decision_tree  = DecisionTreeFactory.createSingleC45Random(session, obj_class);
+			break;
+		case 131: 
+			decision_tree  = DecisionTreeFactory.createSingleC45E_Stop(session, obj_class);
+			break;
+		case 132: 
+			decision_tree  = DecisionTreeFactory.createSingleC45G_Stop(session, obj_class);
+			break;
+		case 141: 
+			decision_tree  = DecisionTreeFactory.createSingleC45E_PrunStop(session, obj_class);
+			break;
+		case 142: 
+			decision_tree  = DecisionTreeFactory.createSingleC45G_PrunStop(session, obj_class);
+			break;
 		case 221:
 			decision_tree  = DecisionTreeFactory.createBagC45E(session, obj_class);
 			break;		
 		case 222:
 			decision_tree  = DecisionTreeFactory.createBagC45G(session, obj_class);
 			break;	
-
+		case 231:
+			decision_tree  = DecisionTreeFactory.createBagC45E_Stop(session, obj_class);
+			break;		
+		case 232:
+			decision_tree  = DecisionTreeFactory.createBagC45G_Stop(session, obj_class);
+			break;	
+		case 241:
+			decision_tree  = DecisionTreeFactory.createBagC45E_PrunStop(session, obj_class);
+			break;		
+		case 242:
+			decision_tree  = DecisionTreeFactory.createBagC45G_PrunStop(session, obj_class);
+			break;
+		case 321:
+			decision_tree  = DecisionTreeFactory.createBoostC45E(session, obj_class);
+			break;		
+		case 322:
+			decision_tree  = DecisionTreeFactory.createBoostC45G(session, obj_class);
+			break;	
+		case 331:
+			decision_tree  = DecisionTreeFactory.createBoostC45E_Stop(session, obj_class);
+			break;		
+		case 332:
+			decision_tree  = DecisionTreeFactory.createBoostC45G_Stop(session, obj_class);
+			break;	
+		case 341:
+			decision_tree  = DecisionTreeFactory.createBoostC45E_PrunStop(session, obj_class);
+			break;		
+		case 342:
+			decision_tree  = DecisionTreeFactory.createBoostC45G_PrunStop(session, obj_class);
+			break;
 		default:
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
-
+		
 		}
 		
 		final PackageBuilder builder = new PackageBuilder();
@@ -85,7 +132,7 @@ public class TriangleExample {
 		
         ReteStatistics stats = new ReteStatistics(ruleBase);
         stats.calculateNumberOfNodes();
-        stats.print( decision_tree.getSignature());
+        stats.print(Util.DRL_DIRECTORY + decision_tree.getSignature());
 //		logger.writeToDisk();
 
 		session.dispose();

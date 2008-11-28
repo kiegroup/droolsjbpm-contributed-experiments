@@ -88,7 +88,7 @@ public class StructuredNurseryExample {
 //        stats.calculateNumberOfNodes();
 //        stats.print(Util.DRL_DIRECTORY + decision_tree.getSignature());
 //		//logger.writeToDisk();
-
-		session.dispose();
+//
+//		session.dispose();
 	}
 }

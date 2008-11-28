@@ -3,6 +3,7 @@ package org.drools.learner.eval;
 import java.util.List;
 
 import org.drools.learner.Domain;
+import org.drools.learner.eval.heuristic.Heuristic;
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 

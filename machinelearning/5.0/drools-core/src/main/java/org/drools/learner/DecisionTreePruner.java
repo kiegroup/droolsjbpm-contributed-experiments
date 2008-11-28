@@ -3,6 +3,7 @@ package org.drools.learner;
 import java.util.ArrayList;
 
 import org.drools.learner.builder.Solution;
+import org.drools.learner.builder.SolutionSet;
 import org.drools.learner.builder.test.SingleTreeTester;
 //import org.drools.learner.eval.ErrorEstimate;
 //import org.drools.learner.eval.TestSample;
@@ -18,27 +19,49 @@ public class DecisionTreePruner {
 	private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(DecisionTreePruner.class, SimpleLogger.DEFAULT_LEVEL);
 	private static SimpleLogger slog = LoggerFactory.getSysOutLogger(DecisionTreePruner.class, SimpleLogger.DEBUG);
 	
-	private PrunerStats best_stats;
+//	private PrunerStats best_stats;
 	
 	private double INIT_ALPHA = 0.5d;
 	private static final double EPSILON = 0.0d;//0.0000000001;
 	
 	
-	private double best_error;
+//	private double best_error;
 	private Solution best_solution;
-	ArrayList<Solution> pruned_sol;
+	private ArrayList<Solution> pruned_sol;
+	
+	
+	private PrunerStats best_stats_everfound;
 
 	public DecisionTreePruner() {
-		best_error = 1.0;
+//		best_error = 1.0;
 
-		best_stats = new PrunerStats(0.0);//proc.getAlphaEstimate());
+		best_stats_everfound = new PrunerStats(1.0);//proc.getAlphaEstimate());
 		pruned_sol = new ArrayList<Solution>();
 	}
 	public Solution getBestSolution() {
 		return best_solution;
 		
 	}
-	public void prun_to_estimate(Solution sol) {			
+	public void prun_to_estimate(SolutionSet sol_set) {			
+		/*
+		 * The best tree is selected from this series of trees with the classification error not exceeding 
+		 * 	an expected error rate on some test set (cross-validation error), 
+		 * which is done at the second stage.
+		 */
+		int i =0;
+		for (Solution sol: sol_set.getSolutions()) {
+			boolean updated = this.prun_to_estimate(sol);
+			if (updated) {
+				sol_set.setBestSolutionId(i);
+			}
+		}
+		
+		
+
+		
+	}
+	
+	public boolean prun_to_estimate(Solution sol) {			
 		/*
 		 * The best tree is selected from this series of trees with the classification error not exceeding 
 		 * 	an expected error rate on some test set (cross-validation error), 
@@ -62,24 +85,32 @@ public class DecisionTreePruner {
 
 		boolean better_found = false;
 
-		int sid = 0, best_st=0;
+		int sid = 0;
 		int best_id = 0;
-		double best_error = 1.0d;
+//		double best_error = 1.0d;
 		System.out.println("Tree id\t Num_leaves\t Cross-validated\t Resubstitution\t Alpha\t");
 		ArrayList<PrunerStats> trees = search._getTreeSequenceStats();
 		for (PrunerStats st: trees ){
-			if (st.getErrorEstimation() <= best_error) {
-				best_error = st.getErrorEstimation();
+			if (st.getErrorEstimation() < best_stats_everfound.getErrorEstimation() ||
+			   (st.getErrorEstimation() == best_stats_everfound.getErrorEstimation() && 
+				st.getNum_terminal_nodes() < best_stats_everfound.getNum_terminal_nodes())) {
+				best_stats_everfound.iteration_id(st.iteration_id());
+				best_stats_everfound.setErrorEstimation(st.getErrorEstimation());
+				best_stats_everfound.setTrainError(st.getTrainError());
+				best_stats_everfound.setNum_terminal_nodes(st.getNum_terminal_nodes());
+				best_stats_everfound.setAlpha(st.getAlpha());
 				best_id = sid;
-				best_st = st.iteration_id();
+//				best_st = st.iteration_id();
 				better_found = true;
+			} else {
+				
 			}
-			System.out.println(sid+ "\t " +st.getNum_terminal_nodes()+ "\t "+ st.getErrorEstimation() + "\t "+  st.getTrainError()+ "\t "+ st.getAlpha() );
+			System.out.println(sid+ "\t " +st.getNum_terminal_nodes()+ "\t "+ 100.0d*st.getErrorEstimation() + "\t "+  100.0d*st.getTrainError()+ "\t "+ st.getAlpha() );
 			sid++;				
 		}
 		System.out.println("BEST "+best_id+ "\t " +trees.get(best_id).getNum_terminal_nodes()+ "\t "+ trees.get(best_id).getErrorEstimation() + "\t "+  trees.get(best_id).getTrainError() + "\t "+ trees.get(best_id).getAlpha() );
 		
-//		System.exit(0);
+		//System.exit(0);
 		
 		int N = dt.getTestingDataSize();// procedure.getTestDataSize(dt_i);
 		double standart_error_estimate = Math.sqrt((trees.get(best_id).getErrorEstimation() * (1- trees.get(best_id).getErrorEstimation())/ (double)N));
@@ -88,8 +119,8 @@ public class DecisionTreePruner {
 			for (int i = search.tree_sequence.size()-1; i>0; i--) {
 
 				NodeUpdate nu = search.tree_sequence.get(i);
-				System.out.println(nu.iteration_id +">"+ best_st);
-				if (nu.iteration_id > best_st ) {
+				System.out.println(nu.iteration_id +">"+ best_stats_everfound.iteration_id());
+				if (nu.iteration_id > best_stats_everfound.iteration_id() ) {
 					search.add_back(nu.node_update, nu.old_node);
 					SingleTreeTester t = new SingleTreeTester(search.tree_sol.getTree());
 					Stats train = t.test(search.tree_sol.getList());
@@ -103,7 +134,9 @@ public class DecisionTreePruner {
 			}
 			
 			best_solution = search.tree_sol;
+			return true;
 		}
+		return false;
 
 		
 	}
@@ -111,7 +144,7 @@ public class DecisionTreePruner {
 	
 	public void prun_tree(Solution sol) {
 		double epsilon = 0.0000001 * numExtraMisClassIfPrun(sol.getTree().getRoot());
-		TreeSequenceProc search = new TreeSequenceProc(sol, new AnAlphaProc(best_stats.getAlpha(), epsilon));
+		TreeSequenceProc search = new TreeSequenceProc(sol, new AnAlphaProc(best_stats_everfound.getAlpha(), epsilon));
 		search.iterate_trees(0);
 		//search.getTreeSequence()// to go back
 		

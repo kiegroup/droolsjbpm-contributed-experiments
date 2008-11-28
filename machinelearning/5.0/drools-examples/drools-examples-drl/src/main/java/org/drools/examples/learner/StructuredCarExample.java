@@ -79,14 +79,14 @@ public class StructuredCarExample {
 		 * get the compiled package (which is serializable) from the builder
 		 * add the package to a rulebase (deploy the rule package). 
 		 */
-		ruleBase.addPackage( builder.getPackage() );
-
-		session.fireAllRules();
-
-		//session.fireAllRules();
-		ReteStatistics stats = new ReteStatistics(ruleBase);
-        stats.calculateNumberOfNodes();
-        stats.print(Util.DRL_DIRECTORY + decision_tree.getSignature());
+//		ruleBase.addPackage( builder.getPackage() );
+//
+//		session.fireAllRules();
+//
+//		//session.fireAllRules();
+//		ReteStatistics stats = new ReteStatistics(ruleBase);
+//        stats.calculateNumberOfNodes();
+//        stats.print(Util.DRL_DIRECTORY + decision_tree.getSignature());
 		//logger.writeToDisk();
 
 		session.dispose();

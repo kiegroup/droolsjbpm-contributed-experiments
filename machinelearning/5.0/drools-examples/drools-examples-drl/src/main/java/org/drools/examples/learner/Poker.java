@@ -30,7 +30,7 @@ public class Poker {
 	@FieldAnnotation(readingSeq = 9, discrete=false)
 	private int c5; // 'Rank of card #5': Numerical (1-13) representing (Ace, 2, 3, ... , Queen, King)
 
-	@FieldAnnotation(readingSeq = 10, ignore = true)//target=true)
+	@FieldAnnotation(readingSeq = 10, ignore = true)//target=true)//
 	private int poker_hand;  
 	/*
 	 *0: Nothing in hand; not a recognized poker hand 

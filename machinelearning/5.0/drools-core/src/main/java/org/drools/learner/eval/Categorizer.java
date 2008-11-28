@@ -7,7 +7,7 @@ import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.InstanceComparator;
 import org.drools.learner.QuantitativeDomain;
-import org.drools.learner.eval.Entropy;
+import org.drools.learner.eval.heuristic.Entropy;
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;

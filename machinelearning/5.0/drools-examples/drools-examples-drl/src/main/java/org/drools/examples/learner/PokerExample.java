@@ -48,7 +48,7 @@ public class PokerExample {
 //		}
 
 		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 141;
+		DecisionTree decision_tree; int ALGO = 141;//241;//341
 		/* 
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
@@ -66,6 +66,12 @@ public class PokerExample {
 			break;
 		case 122: 
 			decision_tree  = DecisionTreeFactory.createSingleC45G(session, obj_class);
+			break;
+		case 123: 
+			decision_tree  = DecisionTreeFactory.createSingleC45E_worst(session, obj_class);
+			break;
+		case 124: 
+			decision_tree  = DecisionTreeFactory.createSingleC45Random(session, obj_class);
 			break;
 		case 131: 
 			decision_tree  = DecisionTreeFactory.createSingleC45E_Stop(session, obj_class);
@@ -119,6 +125,7 @@ public class PokerExample {
 			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
 		
 		}
+		
 		
 		final PackageBuilder builder = new PackageBuilder();
 		//this wil generate the rules, then parse and compile in one step

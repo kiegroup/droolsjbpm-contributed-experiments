@@ -8,8 +8,8 @@ import org.drools.learner.Domain;
 import org.drools.learner.LeafNode;
 import org.drools.learner.TreeNode;
 import org.drools.learner.eval.AttributeChooser;
-import org.drools.learner.eval.Heuristic;
 import org.drools.learner.eval.InstDistribution;
+import org.drools.learner.eval.heuristic.Heuristic;
 import org.drools.learner.tools.Util;
 
 public class ID3Learner extends Learner {
