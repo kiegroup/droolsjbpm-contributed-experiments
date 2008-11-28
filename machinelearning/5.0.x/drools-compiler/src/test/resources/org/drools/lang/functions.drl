@@ -1,0 +1,26 @@
+
+import java.lang.String
+
+function String functionA(String s, Integer i) {
+	
+	foo();
+
+}
+
+function void functionB() {
+	bar();	
+}
+
+
+rule something 
+	when
+	then
+end
+
+rule "one more thing"
+	when
+	then
+end
+
+
+

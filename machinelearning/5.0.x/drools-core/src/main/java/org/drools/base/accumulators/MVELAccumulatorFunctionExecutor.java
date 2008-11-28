@@ -1,0 +1,188 @@
+/*
+ * Copyright 2007 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Created on Jun 20, 2007
+ */
+package org.drools.base.accumulators;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.base.mvel.MVELCompileable;
+import org.drools.common.InternalFactHandle;
+import org.drools.rule.Declaration;
+import org.drools.WorkingMemory;
+import org.drools.spi.Accumulator;
+import org.drools.spi.Tuple;
+import org.mvel2.MVEL;
+
+/**
+ * An MVEL accumulator function executor implementation
+ *
+ * @author etirelli
+ */
+public class MVELAccumulatorFunctionExecutor
+    implements
+    MVELCompileable,
+    Externalizable,
+    Accumulator {
+
+    private static final long   serialVersionUID = 400L;
+
+    private final Object        dummy            = new Object();
+
+    private MVELCompilationUnit unit;
+    private AccumulateFunction  function;
+
+    private DroolsMVELFactory   model;
+    private Serializable        expression;
+
+    public MVELAccumulatorFunctionExecutor() {
+
+    }
+
+    public MVELAccumulatorFunctionExecutor(MVELCompilationUnit unit,
+                                           final AccumulateFunction function) {
+        super();
+        this.unit = unit;
+        this.function = function;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        unit = (MVELCompilationUnit) in.readObject();
+        function = (AccumulateFunction) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( unit );
+        out.writeObject( function );
+    }
+
+    public void compile(ClassLoader classLoader) {
+        expression = unit.getCompiledExpression( classLoader );
+        model = unit.getFactory();
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.spi.Accumulator#createContext()
+     */
+    public Serializable createContext() {
+        MVELAccumulatorFunctionContext context = new MVELAccumulatorFunctionContext();
+        context.context = this.function.createContext();
+        if ( this.function.supportsReverse() ) {
+            context.reverseSupport = new HashMap<Integer, Serializable>();
+        }
+        return context;
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.spi.Accumulator#init(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     */
+    public void init(Object workingMemoryContext,
+                     Object context,
+                     Tuple leftTuple,
+                     Declaration[] declarations,
+                     WorkingMemory workingMemory) throws Exception {
+        this.function.init( ((MVELAccumulatorFunctionContext) context).context );
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.spi.Accumulator#accumulate(java.lang.Object, org.drools.spi.Tuple, org.drools.common.InternalFactHandle, org.drools.rule.Declaration[], org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     */
+    public void accumulate(Object workingMemoryContext,
+                           Object context,
+                           Tuple leftTuple,
+                           InternalFactHandle handle,
+                           Declaration[] declarations,
+                           Declaration[] innerDeclarations,
+                           WorkingMemory workingMemory) throws Exception {
+        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+        factory.setContext( leftTuple,
+                            null,
+                            handle.getObject(),
+                            workingMemory,
+                            null );
+        final Serializable value = (Serializable) MVEL.executeExpression( this.expression,
+                                                                          this.dummy,
+                                                                          factory );
+        if ( this.function.supportsReverse() ) {
+            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( Integer.valueOf( handle.getId() ),
+                                                                           value );
+        }
+        this.function.accumulate( ((MVELAccumulatorFunctionContext) context).context,
+                                  value );
+    }
+
+    public void reverse(Object workingMemoryContext,
+                        Object context,
+                        Tuple leftTuple,
+                        InternalFactHandle handle,
+                        Declaration[] declarations,
+                        Declaration[] innerDeclarations,
+                        WorkingMemory workingMemory) throws Exception {
+        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( Integer.valueOf( handle.getId() ) );
+        this.function.reverse( ((MVELAccumulatorFunctionContext) context).context,
+                               value );
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.spi.Accumulator#getResult(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
+     */
+    public Object getResult(Object workingMemoryContext,
+                            Object context,
+                            Tuple leftTuple,
+                            Declaration[] declarations,
+                            WorkingMemory workingMemory) throws Exception {
+        return this.function.getResult( ((MVELAccumulatorFunctionContext) context).context );
+    }
+
+    public boolean supportsReverse() {
+        return this.function.supportsReverse();
+    }
+
+    public Object createWorkingMemoryContext() {
+        return this.model.clone();
+    }
+
+    private static class MVELAccumulatorFunctionContext
+        implements
+        Externalizable {
+        public Serializable               context;
+        public Map<Integer, Serializable> reverseSupport;
+        
+        public MVELAccumulatorFunctionContext() {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            context = (Serializable) in.readObject();
+            reverseSupport = (Map<Integer, Serializable>) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( context );
+            out.writeObject( reverseSupport );
+        }
+    }
+
+}

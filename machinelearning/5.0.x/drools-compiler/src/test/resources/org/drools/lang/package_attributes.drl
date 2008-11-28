@@ -1,0 +1,23 @@
+package com.foo;
+
+agenda-group "x"
+
+import goo.ber
+import wee.waa
+
+
+dialect "java"
+
+
+
+
+rule bar
+  when
+  then
+end
+
+rule baz
+  dialect "mvel"
+  when
+  then
+end

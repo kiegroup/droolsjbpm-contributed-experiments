@@ -1,0 +1,46 @@
+#created on: 2.6.2008
+package org.drools.verifier.incompatibility
+
+#list any import classes here.
+import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.PatternPossibility;
+
+import org.drools.verifier.report.components.Incompatibility;
+
+import org.drools.verifier.dao.VerifierResult;
+
+global VerifierResult result;
+
+#
+# Pattern possibilities are incompatible if any of the restrictions are incompatible.
+#
+# Dependencies:
+#	Needs at least one of the following packages or rules to fire:
+# 		package org.drools.verifier.incompatibility;
+#			rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
+#			rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
+#			rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
+#			rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
+#
+# Example: 
+#		Pattern( a < b )
+#		Pattern( a > b )
+#
+rule "Incompatible Patterns"
+	when
+		$incompatibility :Incompatibility()
+		
+		$pp1 :PatternPossibility(
+			items contains $incompatibility.left
+		)
+		
+		$pp2 :PatternPossibility(
+			items contains $incompatibility.right
+		)
+		
+		# Check that these facts do not already exist
+		not Incompatibility( left == $pp1, right == $pp2)
+		not Incompatibility( left == $pp2, right == $pp1)	
+	then 
+		insert( new Incompatibility( $pp1, $pp2 ));
+end

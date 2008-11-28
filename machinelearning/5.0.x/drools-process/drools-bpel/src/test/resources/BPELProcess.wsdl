@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<definitions name="BPELProcess"
+        targetNamespace="http://drools.jboss.org/bpel/sample"
+        xmlns:tns="http://drools.jboss.org/bpel/sample"
+        xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+        xmlns="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:p="http://www.w3.org/2001/XMLSchema">
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     TYPE DEFINITION - List of types participating in this BPEL process 
+     The BPEL Designer will generate default request and response types
+     but you can define or import any XML Schema type and use them as part 
+     of the message types.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <types>
+        <schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
+                targetNamespace="http://drools.jboss.org/bpel/sample" 
+                xmlns="http://www.w3.org/2001/XMLSchema">
+
+            <element name="BPELProcessRequest">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="string"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="BPELProcessResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="string"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     MESSAGE TYPE DEFINITION - Definition of the message types used as 
+     part of the port type defintions
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <message name="BPELProcessRequestMessage">
+        <part name="payload" element="tns:BPELProcessRequest"/>
+        <part name="input" type="p:string"></part>
+    </message>
+    <message name="BPELProcessResponseMessage">
+        <part name="payload" element="tns:BPELProcessResponse"/>
+        <part name="output" type="p:string"></part>
+    </message>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     PORT TYPE DEFINITION - A port type groups a set of operations into
+     a logical service unit.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+
+    <!-- portType implemented by the BPELProcess BPEL process -->
+    <portType name="BPELProcess">
+        <operation name="process">
+            <input  message="tns:BPELProcessRequestMessage" />
+            <output message="tns:BPELProcessResponseMessage"/>
+        </operation>
+        <operation name="process2">
+            <input  message="tns:BPELProcessRequestMessage" />
+        </operation>
+        <operation name="process3">
+            <input  message="tns:BPELProcessRequestMessage" />
+        </operation>
+    </portType>
+  
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     PARTNER LINK TYPE DEFINITION
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <plnk:partnerLinkType name="BPELProcess">
+        <plnk:role name="BPELProcessProvider" portType="tns:BPELProcess"/>
+    </plnk:partnerLinkType>
+    
+</definitions>

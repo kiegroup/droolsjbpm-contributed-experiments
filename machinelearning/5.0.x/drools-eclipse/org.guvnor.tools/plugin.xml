@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension point="org.eclipse.ui.views">
+      <category name="%category.name" id="org.guvnor.tools"/>
+      <view name="%repositories.view.name"
+            icon="icons/guvnor_rep.gif"
+            category="org.guvnor.tools"
+            class="org.guvnor.tools.views.RepositoryView"
+            id="org.guvnor.tools.views.RepositoryView"/>
+      <view name="%resource.history.view.name"
+            icon="icons/guvnor_rep.gif"
+            category="org.guvnor.tools"
+            class="org.guvnor.tools.views.ResourceHistoryView"
+            id="org.guvnor.tools.views.ResourceHistoryView"/>
+   </extension>
+   
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+         <view ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.guvnor.tools.views.RepositoryView"/>
+      </perspectiveExtension>
+   </extension>
+  
+  <extension point = "org.eclipse.ui.newWizards">
+		<category id = "org.guvnor.tools.wizcat" name="%category.name"/>
+	 	<wizard id = "org.guvnor.tools.wizards.checkoutwizard"
+	      	    name = "%wiz.copy.resources"
+		        class="org.guvnor.tools.wizards.CheckoutWizard"
+		        category="org.guvnor.tools.wizcat"
+		        project="true"
+		        icon="icons/guvnor_rep.gif">
+	    	   <description>%wiz.copy.resources.desc</description>
+		</wizard>
+		<wizard name = "%wiz.new.repository.location"
+		        id = "org.guvnor.tools.wizards.newreplocationwizard"
+		        class="org.guvnor.tools.wizards.NewRepLocationWizard"
+		        category="org.guvnor.tools.wizcat"
+		        icon="icons/guvnor_rep.gif">
+	    	   <description>%wiz.new.repository.location.desc</description>
+		</wizard>
+	</extension>
+	<extension point = "org.eclipse.ui.importWizards">
+	    <category id = "org.guvnor.tools.importwizcat" name="%category.name"/>
+	 	<wizard id = "org.guvnor.tools.checkoutwizard"
+	      	    name = "%wiz.import.resources"
+	            category="org.guvnor.tools.importwizcat"
+		        class="org.guvnor.tools.wizards.CheckoutWizard"
+		        icon="icons/guvnor_rep.gif">
+	    	   <description>%wiz.import.resources.desc</description>
+		</wizard>
+	</extension>
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+    	<perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+           <view id="org.guvnor.tools.views.RepositoryView"
+                 ratio="0.5"
+                 relationship="right"
+                 relative="org.eclipse.ui.views.TaskList"/>
+       </perspectiveExtension>
+       <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+          <view id="org.guvnor.tools.views.ResourceHistoryView"
+                ratio="0.5"
+                relationship="right"
+                relative="org.eclipse.ui.views.TaskList"/>
+       </perspectiveExtension>
+  </extension>
+ 
+  <extension point="org.eclipse.ui.perspectives">
+      <perspective name="%persp.name"
+                   icon="icons/guvnor_rep.gif"
+                   class="org.guvnor.tools.perspectives.GuvnorRepExplorerPerspective"
+                   id="org.guvnor.tools.perspectives.GuvnorRepExplorerPerspective"/>
+  </extension>
+  
+  <extension point="org.eclipse.ui.popupMenus">
+  	<objectContribution objectClass="org.guvnor.tools.views.model.TreeObject"
+                        adaptable="true"
+                        id="org.guvnor.tools.view.model.actions">
+        <action label="%action.properties"
+                tooltip="%action.properties.tooltip"
+                class="org.guvnor.tools.actions.RepositoryElementPropsAction"
+                menubarPath="additions"
+                id="org.guvnor.tools.view.model.actions.properties">
+        </action>
+        <action class="org.guvnor.tools.actions.ShowHistoryAction"
+                enablesFor="1"
+                id="org.guvnor.tools.actions.showhistoryaction"
+                label="%action.popup.showhistory"
+                menubarPath="additions">
+        </action>
+        <action class="org.guvnor.tools.actions.OpenGuvnorWebConsoleAction"
+                enablesFor="1"
+                id="org.guvnor.tools.actions.openguvnorwebconsoleaction"
+                label="%action.popup.openguvnorwebconsoleaction"
+                menubarPath="additions">
+        </action>
+  	</objectContribution>
+    <objectContribution id="org.guvnor.tools.contribution1"
+                        objectClass="org.eclipse.core.resources.IFile">
+      <menu id="org.guvnor.tools.popupmenu"
+            label="%category.name"
+            path="additions">
+         <separator name="group1"/>
+      </menu>
+      <action class="org.guvnor.tools.actions.DisconnectAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.disconnectaction"
+            label="%action.popup.disconnect"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.DeleteAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.deleteaction"
+            label="%action.popup.delete"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.SwitchVersionAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.switchversionaction"
+            label="%action.popup.switchversion"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+       <action class="org.guvnor.tools.actions.CompareVersionAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.compareversionaction"
+            label="%action.popup.compareversion"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.ShowHistoryAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.showhistoryaction"
+            label="%action.popup.showhistory"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.CommitAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.commitaction"
+            label="%action.popup.commit"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.AddAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.addaction"
+            label="%action.popup.add"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+      <action class="org.guvnor.tools.actions.UpdateAction"
+              enablesFor="1"
+              id="org.guvnor.tools.actions.updateaction"
+            label="%action.popup.update"
+            menubarPath="org.guvnor.tools.popupmenu/group1">
+      </action>
+   </objectContribution>
+  </extension>
+  
+  <extension point = "org.eclipse.ui.propertyPages">
+        <page id="org.guvnor.tools.proppage.ifile"
+              name="%category.name"
+	          class="org.guvnor.tools.properties.GuvnorWorkspaceFilePage"/>
+  </extension>
+  <extension point="org.eclipse.ui.preferencePages">
+		<page name="%preferences.guvnor.page"  
+		      class="org.guvnor.tools.preferences.GuvnorPreferencePage" 
+		      id="org.guvnor.tools.preferences.guvnorpreferencepage"/>
+  </extension>
+  <extension point="org.eclipse.ui.decorators">
+      <decorator lightweight="true" adaptable="true" 
+                 label="%category.name" state="true"
+                 class="org.guvnor.tools.GuvnorDecorator"
+                 id="org.guvnor.tools.decorator">
+         <description>
+            %decorator.desc
+         </description>
+         <enablement>
+            <objectClass name="org.eclipse.core.resources.IResource"/>
+         </enablement>
+      </decorator>
+   </extension>
+   
+</plugin>

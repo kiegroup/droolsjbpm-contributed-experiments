@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>eclipse-all</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  
+  <includeBaseDirectory>false</includeBaseDirectory>
+  
+  <fileSets>
+    <fileSet>
+      <includes>
+        <include>LICENSE-ASL-2.0.txt</include>
+        <include>JBossORG-EULA.txt</include>
+        <include>README_DEPENDENCIES.txt</include>
+      </includes>
+    </fileSet>
+      
+    <fileSet>
+      <directory>target/eclipse</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+         <include>**/**</include>
+      </includes>      
+    </fileSet>
+  </fileSets>
+</assembly>

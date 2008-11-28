@@ -1,0 +1,10 @@
+
+import org.drools.Person
+
+rule simple_rule 
+  when
+	foo :  ( Person(name == "mark") or Person(type == "fan") ) 
+	Cheese(type == "green")
+  then
+	System.out.println( "Mark and Michael" + bar );
+end

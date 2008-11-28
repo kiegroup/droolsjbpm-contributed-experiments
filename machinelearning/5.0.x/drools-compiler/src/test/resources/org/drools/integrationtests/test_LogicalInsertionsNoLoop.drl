@@ -1,0 +1,20 @@
+package org.drools.test;
+
+import org.drools.Person;
+import java.util.List;
+
+global Person a;
+global List l;
+
+rule "r"
+	no-loop true
+    when
+        not Person()
+    then
+   		l.add(new Person("0"));
+   		if (l.size() > 2)
+    	{
+    	    throw new Exception( "this should not loop" );
+    	}
+   		insertLogical( a );
+end

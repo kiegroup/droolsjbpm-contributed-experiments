@@ -1,0 +1,55 @@
+package foo
+
+import goo.wee
+
+
+function void goo1() {
+	//do something ! { yeah }
+}
+
+function String goo2(String la) {
+	//yeah man !
+	return "whee";
+}
+
+function String goo3() { return "HELLO"; }
+
+function String goo4() { 
+
+	if( true ) {
+		return "HELLO"; 
+	}
+}
+
+/*
+	function String goo5() { 
+	
+		if( true ) {
+			return "HELLO"; 
+		}
+	}
+*/
+
+function String goo6() { 
+
+		return "HELLO"; 
+	/* } */
+	/* }
+	}
+	} */
+}
+
+rule "blah"
+ when
+   Whee()
+ then
+   goo();
+end
+
+
+rule "cha"
+  when
+   Sup()
+  then
+   ka();
+end

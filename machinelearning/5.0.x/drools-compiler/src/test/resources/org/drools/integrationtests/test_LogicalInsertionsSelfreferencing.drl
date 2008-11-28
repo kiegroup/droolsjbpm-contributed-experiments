@@ -1,0 +1,13 @@
+package org.drools.test;
+
+import org.drools.Person;
+
+global Person b;
+
+
+rule "Person => b"
+    when
+        s : Person()
+    then
+		insertLogical( b );
+end

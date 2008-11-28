@@ -1,0 +1,12 @@
+package org.drools.benchmark.manners
+
+
+
+rule assignFirstSeat
+    when
+        context : Context( state == Context.START_UP )
+        guest : Guest()
+        count : Count()
+    then
+		# 
+end

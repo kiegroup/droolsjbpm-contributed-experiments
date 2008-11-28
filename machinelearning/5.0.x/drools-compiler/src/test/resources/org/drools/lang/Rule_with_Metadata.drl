@@ -1,0 +1,11 @@
+
+package org.drools;
+
+rule test_rule
+	@fooMeta1(barVal1)
+	@fooMeta2(barVal2)
+	when
+		foo()
+	then
+		
+end

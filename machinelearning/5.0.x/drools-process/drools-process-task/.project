@@ -1,0 +1,18 @@
+<projectDescription>
+  <name>drools-process-task</name>
+  <comment>A rule production system</comment>
+  <projects>
+    <project>drools-core</project>
+    <project>drools-api</project>
+    <project>drools-workitems</project>
+    <project>drools-compiler</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

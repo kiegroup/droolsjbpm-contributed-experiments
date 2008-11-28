@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpws:process exitOnStandardFault="yes" name="BPELProcess"
+    suppressJoinFailure="yes"
+    targetNamespace="http://drools.jboss.org/bpel/sample"
+    xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:ns1="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://drools.jboss.org/bpel/sample">
+    <bpws:import importType="http://schemas.xmlsoap.org/wsdl/"
+        location="BPELProcess.wsdl" namespace="http://drools.jboss.org/bpel/sample"/>
+    <bpws:import importType="http://www.w3.org/2001/XMLSchema"
+        location="bundleentry://220/cache/www.w3.org/2001/XMLSchema.xsd" namespace="http://www.w3.org/2001/XMLSchema"/>
+    <bpws:partnerLinks>
+        <bpws:partnerLink myRole="BPELProcessProvider" name="client" partnerLinkType="tns:BPELProcess"/>
+    </bpws:partnerLinks>
+    <bpws:variables>
+        <bpws:variable messageType="tns:BPELProcessRequestMessage" name="input"/>
+        <bpws:variable messageType="tns:BPELProcessResponseMessage" name="output"/>
+        <bpws:variable name="counter" type="ns1:integer"/>
+    </bpws:variables>
+    <bpws:sequence name="main">
+        <bpws:receive createInstance="yes" name="receiveInput"
+            operation="process" partnerLink="client"
+            portType="tns:BPELProcess" variable="input"/>
+        <bpws:assign name="counter=1" validate="no">
+            <bpws:copy>
+                <bpws:from>
+                    <bpws:literal>1</bpws:literal>
+                </bpws:from>
+                <bpws:to variable="counter"/>
+            </bpws:copy>
+        </bpws:assign>
+        <bpws:repeatUntil name="RepeatUntil">
+            <bpws:sequence name="Sequence1">
+                <bpws:empty name="Empty"/>
+                <bpws:assign name="counter++" validate="no">
+                    <bpws:copy>
+                        <bpws:from><![CDATA[number($counter) + 1]]></bpws:from>
+                        <bpws:to variable="counter"/>
+                    </bpws:copy>
+                </bpws:assign>
+            </bpws:sequence>
+            <bpws:condition><![CDATA[number($counter) > 3]]></bpws:condition>
+        </bpws:repeatUntil>
+        <bpws:reply name="replyOutput" operation="process"
+            partnerLink="client" portType="tns:BPELProcess" variable="output"/>
+    </bpws:sequence>
+</bpws:process>

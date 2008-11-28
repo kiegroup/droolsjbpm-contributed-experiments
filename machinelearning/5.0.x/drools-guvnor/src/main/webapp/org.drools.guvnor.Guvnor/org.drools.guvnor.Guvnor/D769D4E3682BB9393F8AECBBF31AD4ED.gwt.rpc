@@ -1,0 +1,8 @@
+com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true
+java.lang.Exception, false
+java.lang.RuntimeException, false
+java.lang.String, true
+java.lang.Throwable, false
+java.util.HashSet, true
+java.util.LinkedHashSet, true
+org.drools.guvnor.client.rpc.UserSecurityContext, true
