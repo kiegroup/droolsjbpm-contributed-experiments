@@ -1,0 +1,89 @@
+package org.drools.examples.lotrc
+
+import org.drools.examples.lotrc.model.*
+import org.drools.examples.lotrc.action.*
+import org.drools.examples.lotrc.player.*
+import org.drools.examples.lotrc.player.command.*
+import org.apache.log4j.Logger
+
+global Logger logger
+
+rule "PlaceCharacterAction Acknowledged"
+    no-loop
+when
+    $p : PlaceCharacterAction( characterName != CharacterName.HIDDEN )
+    $r : Region( name == $p.regionName )
+    $c : Character( name == $p.characterName )
+then
+    modify( $r ) {
+        addCharacter( $c )
+    }
+end
+
+rule "PlaceCharacterAction Acknowledged for Hidden Character"
+    no-loop
+when
+    $p : PlaceCharacterAction( characterName == CharacterName.HIDDEN )
+    $r : Region( name == $p.regionName )
+then
+    CharacterImpl hidden = new CharacterImpl( $p.getAllegiance(),
+                                          CharacterName.HIDDEN,
+                                          0,
+                                          CharacterAbility.UNKNOWN );
+    modify( $r ) {
+        addCharacter( hidden ) 
+    }
+end
+
+rule "Ackowledge a move"
+when
+    $m : MoveAction( )
+    $f : Region( name == $m.fromRegion )
+    $t : Region( name == $m.toRegion ) 
+    $c : Character( name == $m.characterName ) from $f.characters
+then
+    retract( $m );
+    modify( $f ) {
+        removeCharacter( $c );
+    }
+    modify( $t ) {
+        addCharacter( $c );
+    }
+end 
+
+rule "Acknowledge a card play"
+    no-loop
+when
+    $pca  : PlayCardAction()
+    $card : Card( allegiance == $pca.allegiance, name == $pca.cardName )
+then
+    modify( $card ) {
+        setStatus( CardStatus.PLAYED )
+    }
+end
+
+rule "Acknowledge a character defeat"
+    no-loop
+when
+    $cda  : CharacterDefeatedAction()
+    $char : Character( name == $cda.characterName )
+    $r    : Region( characters contains $char )
+then
+    modify( $char ) {
+        setStatus( CharacterStatus.DEFEATED )
+    }
+    modify( $r ) {
+        removeCharacter( $char )
+    }
+end
+
+
+rule "Print board"
+when
+    String( this == "Print Board" )
+    $b : Board()
+then
+    $b.printBoard();
+end 
+       
+

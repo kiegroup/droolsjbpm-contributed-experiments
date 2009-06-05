@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="Combat Flow" id="Combat Flow" package-name="org.drools.examples.lotrc" >
+
+  <header>
+    <imports>
+      <import name="org.drools.examples.lotrc.model.*" />
+    </imports>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" x="43" y="94" width="80" height="40" />
+    <ruleSet id="2" name="Reveal Characters" x="630" y="251" width="113" height="40" ruleFlowGroup="resolve characters" />
+    <ruleSet id="3" name="Select Cards" x="459" y="250" width="104" height="40" ruleFlowGroup="select cards" />
+    <ruleSet id="4" name="Play Cards" x="308" y="248" width="96" height="40" ruleFlowGroup="play cards" />
+    <ruleSet id="5" name="Casualties" x="149" y="250" width="108" height="40" ruleFlowGroup="casualties" />
+    <end id="6" name="End" x="959" y="97" width="80" height="40" />
+    <split id="7" name="Is there a combat?" x="621" y="99" width="129" height="40" type="2" >
+      <constraints>
+        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="No" priority="1" type="rule" dialect="mvel" >not( 
+    $c1 : Character( $a : allegiance ) and 
+    $c2 : Character( allegiance != $a )  and
+    Region( characters contains $c1, characters contains $c2 ) 
+)</constraint>
+        <constraint toNodeId="2" toType="DROOLS_DEFAULT" name="Yes" priority="1" type="rule" dialect="java" >exists( 
+    $c1 : Character( $a : allegiance ) and 
+    $c2 : Character( allegiance != $a )  and
+    Region( characters contains $c1, characters contains $c2 ) 
+)</constraint>
+      </constraints>
+    </split>
+    <join id="8" name="Combat" x="156" y="96" width="100" height="40" type="2" />
+    <ruleSet id="9" name="No More Conflicts" x="803" y="98" width="118" height="40" ruleFlowGroup="combat end" />
+  </nodes>
+
+  <connections>
+    <connection from="7" to="2" />
+    <connection from="2" to="3" />
+    <connection from="3" to="4" />
+    <connection from="4" to="5" />
+    <connection from="9" to="6" />
+    <connection from="8" to="7" />
+    <connection from="5" to="8" />
+    <connection from="1" to="8" />
+    <connection from="7" to="9" />
+  </connections>
+
+</process>

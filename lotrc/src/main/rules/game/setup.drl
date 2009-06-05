@@ -1,0 +1,100 @@
+package org.drools.examples.lotrc
+
+import org.drools.examples.lotrc.model.*
+import org.drools.examples.lotrc.action.*
+import org.drools.examples.lotrc.player.*
+import org.apache.log4j.Logger
+
+global Logger logger
+
+rule "Setup Fellowship Characters"
+    ruleflow-group "setup"
+    salience 10
+	when
+	    $c : Character( status == CharacterStatus.INIT, allegiance == Allegiance.FELLOWSHIP )
+	    $p : Player( allegiance == Allegiance.FELLOWSHIP )
+	then 
+		PlaceCharacterAction pca = $p.setupCharacter( $c.getName() );
+		insert( pca ); 
+end 
+ 
+rule "Setup Sauron Characters"
+	ruleflow-group "setup"
+	when
+	    $c : Character( status == CharacterStatus.INIT, allegiance == Allegiance.SAURON )
+	    $p : Player( allegiance == Allegiance.SAURON )
+	then 
+		PlaceCharacterAction pca = $p.setupCharacter( $c.getName() );
+		insert( pca ); 
+end 
+
+rule "Is legal PCA for the Fellowhisp?" 
+    ruleflow-group "setup"
+    salience 100
+when
+    $pca : PlaceCharacterAction( allegiance == Allegiance.FELLOWSHIP )
+    $c   : Character( status == CharacterStatus.INIT, name == $pca.characterName, allegiance == Allegiance.FELLOWSHIP )
+    $r   : Region( name == $pca.regionName, row < 3, ( name == RegionName.SHIRE && characters.size < capacity ) || characters.empty == true )
+    $s   : Player( allegiance == Allegiance.SAURON )
+    $f   : Player( allegiance == Allegiance.FELLOWSHIP )
+then
+    logger.info( $pca );
+    retract( $pca ); 
+    modify( $r ) { 
+        addCharacter( $c ) 
+    }
+    modify( $c ) {
+        setStatus( CharacterStatus.HIDDEN )
+    }
+    $s.notify( $pca.getHidden() );
+    $f.notify( $pca );
+end 
+
+rule "Is legal PCA for Sauron?" 
+    ruleflow-group "setup"
+    salience 100
+when
+    $pca : PlaceCharacterAction( allegiance == Allegiance.SAURON )
+    $c   : Character( status == CharacterStatus.INIT, name == $pca.characterName, allegiance == Allegiance.SAURON )
+    $r   : Region( name == $pca.regionName, row > 3, ( name == RegionName.MORDOR && characters.size < capacity ) || characters.empty == true )
+    $s   : Player( allegiance == Allegiance.SAURON )
+    $f   : Player( allegiance == Allegiance.FELLOWSHIP )
+then
+    logger.info( $pca );
+    retract( $pca ); 
+    modify( $r ) { 
+        addCharacter( $c )
+    }
+    modify( $c ) {
+        setStatus( CharacterStatus.HIDDEN )
+    }
+    $s.notify( $pca );
+    $f.notify( $pca.getHidden() );
+end  
+
+rule "Is illegal PCA"
+    ruleflow-group "setup" 
+    salience 90
+when
+    $pca : PlaceCharacterAction( )
+    $p   : Player( allegiance == $pca.allegiance )
+then
+    retract( $pca );
+    logger.fatal( "Invalid Place Character Action: "+$pca );
+    logger.fatal( "Game will be terminated." );
+    drools.halt();
+end
+
+rule "Setup is done, Sauron plays first"
+    ruleflow-group "setup"
+    no-loop
+when
+    not( Character( status == CharacterStatus.INIT ) )
+    $g : Game()
+    $p : Player( allegiance == Allegiance.SAURON )
+then
+    logger.info("Lets start... Sauron player plays first.");
+    modify( $g ) { 
+        setActivePlayer( $p )
+    } 
+end

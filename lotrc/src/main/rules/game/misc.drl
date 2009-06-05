@@ -1,0 +1,21 @@
+package org.drools.examples.lotrc
+
+import org.drools.examples.lotrc.model.*
+import org.drools.examples.lotrc.action.*
+import org.drools.examples.lotrc.player.*
+import org.apache.log4j.Logger
+
+global Logger logger
+
+rule "Next player"
+    ruleflow-group "end of turn"
+    lock-on-active
+when
+    $g : Game( $activePlayer : activePlayer )
+    $n : Player( this != $activePlayer )
+then
+    logger.info( "Next turn. Active player is now: "+$n );
+    modify( $g ) {
+        setActivePlayer( $n )
+    }
+end 

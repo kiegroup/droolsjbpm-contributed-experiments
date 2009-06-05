@@ -1,0 +1,65 @@
+package org.drools.examples.lotrc
+
+import org.drools.examples.lotrc.model.*
+import org.drools.examples.lotrc.action.*
+import org.drools.examples.lotrc.player.*
+import org.apache.log4j.Logger
+
+global Logger logger
+
+rule "Frodo reached Mordor, so the Fellowship wins"
+    ruleflow-group "check victory"
+when
+    $f : Character( name == CharacterName.FRODO )
+    $r : Region( name == RegionName.MORDOR, characters contains $f )
+    $p : Player( allegiance == Allegiance.FELLOWSHIP )
+then
+    insert( new Winner( $p ) );
+end
+
+rule "Frodo is defeated, so Sauron wins"
+    ruleflow-group "check victory"
+when
+    $f : Character( name == CharacterName.FRODO, status == CharacterStatus.DEFEATED )
+    $p : Player( allegiance == Allegiance.SAURON )
+then
+    insert( new Winner( $p ) );
+end
+
+rule "Sauron has 3 or more charactes in the Shire, so Sauron wins"
+    ruleflow-group "check victory"
+when
+    $r : Region( name == RegionName.SHIRE, $characters : characters )
+    Number( intValue >= 3 ) from accumulate( 
+                 Character( allegiance == Allegiance.SAURON ) from $characters,
+                 count( 1 ) ) 
+    $p : Player( allegiance == Allegiance.SAURON )
+then
+    insert( new Winner( $p ) );
+end
+
+rule "Player is unable to move a character, so opposing player wins"
+    ruleflow-group "check victory"
+when
+    $p : Player( )
+    $g : Game( activePlayer == $p )
+    $m : MoveAction( status in ( MoveStatus.ISSUED, MoveStatus.INVALID ) )
+    $o : Player( this != $p )
+then
+    retract( $m ); 
+    $p.printBoard();
+    $o.printBoard(); 
+    logger.fatal( "Invalid Move Action: "+$m );
+    logger.fatal( "Game will be terminated." );
+    insert( new Winner( $o ) );
+end         
+
+rule "There is a winner"
+    ruleflow-group "game end"
+when
+    Winner( $p : winner )
+then
+    logger.info( "And the winner is....... "+$p );
+end    
+
+     

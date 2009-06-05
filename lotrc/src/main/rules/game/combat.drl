@@ -1,0 +1,200 @@
+package org.drools.examples.lotrc
+
+import org.drools.examples.lotrc.model.*
+import org.drools.examples.lotrc.action.*
+import org.drools.examples.lotrc.player.*
+import org.apache.log4j.Logger
+
+global Logger logger
+
+rule "Combat starts"
+    ruleflow-group "resolve characters"
+    lock-on-active
+    salience 100
+when
+    $c : CombatAction()
+then
+    modify( $c ) { 
+        prepareForCombat()
+    }
+end
+
+rule "Select characters for the combat"
+    ruleflow-group "resolve characters"
+when
+    $c : CombatAction( defenderName == null, status == CombatStatus.UNSETTLED )
+    $r : Region( name == $c.regionName ) 
+    $a : Character( name == $c.attackerName )
+    $d : Character( ) from accumulate(
+            $def : Character( allegiance != $a.allegiance ) from $r.characters,
+            randomSelect( $def ) )
+then
+    modify( $c ) { 
+        setDefenderName( $d.getName() )
+    }
+    modify( $a ) {
+        setStatus( CharacterStatus.EXPOSED )
+    }
+    modify( $d ) {
+        setStatus( CharacterStatus.EXPOSED )
+    }
+    logger.info( "Combat started on "+$r.getName()+". "+$a.getName()+" attacks "+$d.getName()+"." ); 
+end
+
+rule "Merry defeats the Witch King"
+    ruleflow-group "resolve characters"
+when
+    $c : CombatAction( status == CombatStatus.UNSETTLED )
+    $m : Character( name == CharacterName.MERRY, name in ($c.attackerName, $c.defenderName) )
+    $w : Character( name == CharacterName.WITCH_KING, name in ($c.attackerName, $c.defenderName) )
+then
+    modify( $c ) {
+        setStatus( CombatStatus.SETTLED )
+    }
+    modify( $w ) {
+        setStatus( CharacterStatus.DEFEATED )
+    }
+    logger.info( "Merry immediately defeats the Witch King" );
+end
+
+rule "Select Cards to play" 
+    ruleflow-group "select cards"
+when
+    $c : CombatAction( status == CombatStatus.UNSETTLED )
+    $f : Player( allegiance == Allegiance.FELLOWSHIP )
+    $s : Player( allegiance == Allegiance.SAURON )
+then
+    PlayCardAction fc = $f.playACard( $c.getHidden() );
+    logger.info( "Fellowship player selected a card to play: "+fc.getCardName() );
+    PlayCardAction sc = $s.playACard( $c.getHidden() );
+    logger.info( "Sauron player selected a card to play: "+sc.getCardName() );
+    // REMOVE_THIS
+    if( fc == null || sc == null || fc.getCardName() == null || sc.getCardName() == null ) {
+        logger.fatal("ABNORMAL TERMINATION: "+fc+" / "+sc );
+        drools.halt();
+    } 
+    insert( fc ); 
+    insert( sc );
+end
+
+rule "Attacker plays his card"
+    ruleflow-group "play cards"
+when
+    $c    : CombatAction( status == CombatStatus.UNSETTLED, attackerCard == null )
+    $char : Character( name == $c.attackerName )
+    $pca  : PlayCardAction( allegiance == $char.allegiance )
+    $card : Card( status == CardStatus.UNPLAYED, allegiance == $pca.allegiance, name == $pca.cardName )
+    $ap   : Player( allegiance == $pca.allegiance )
+    $dp   : Player( allegiance != $pca.allegiance )
+then
+    logger.info( "Attacker plays: "+$card );
+    modify( $c ) {
+        setAttackerCard( $card )
+    }
+    modify( $card ) {
+        setStatus( CardStatus.PLAYED )
+    }
+    retract( $pca );
+    // notify players
+    $ap.notify( $pca ); 
+    $dp.notify( $pca ); 
+end
+ 
+
+rule "Defender plays his card"
+    ruleflow-group "play cards"
+when
+    $c    : CombatAction( status == CombatStatus.UNSETTLED, defenderCard == null )
+    $char : Character( name == $c.defenderName )
+    $pca  : PlayCardAction( allegiance == $char.allegiance )
+    $card : Card( status == CardStatus.UNPLAYED, allegiance == $pca.allegiance, name == $pca.cardName )
+    $ap   : Player( allegiance != $pca.allegiance )
+    $dp   : Player( allegiance == $pca.allegiance )
+then
+    logger.info( "Defender plays: "+$card );
+    modify( $c ) {
+        setDefenderCard( $card )
+    }
+    modify( $card ) {
+        setStatus( CardStatus.PLAYED )
+    }
+    retract( $pca );
+    // notify players
+    $ap.notify( $pca ); 
+    $dp.notify( $pca ); 
+end
+ 
+rule "Calculate combat result"
+    ruleflow-group "casualties"
+    lock-on-active
+when
+    $c    : CombatAction( status == CombatStatus.UNSETTLED )
+    $att  : Character( name == $c.attackerName )
+    $def  : Character( name == $c.defenderName )
+then
+    int result = $att.getStrength() + $c.getAttackerCard().getPower() -
+                 $def.getStrength() - $c.getDefenderCard().getPower();
+    modify( $c ) {
+        setResult( result ),
+        setStatus( CombatStatus.SETTLED );
+    }
+    logger.info( "Combat results: "+$c );
+end
+
+rule "Attacker is defeated"
+    ruleflow-group "casualties"
+when
+    $c    : CombatAction( status == CombatStatus.SETTLED, result <= 0 )
+    $att  : Character( name == $c.attackerName, status == CharacterStatus.EXPOSED )
+    $ap   : Player( allegiance == $c.allegiance )
+    $dp   : Player( allegiance != $c.allegiance )
+then
+    logger.info( "The attacker ( "+$att+" ) was defeated." );
+    modify( $att ) {
+        setStatus( CharacterStatus.DEFEATED )
+    }
+    // notify players
+    CharacterDefeatedAction cda = new CharacterDefeatedAction( $att.getAllegiance(), $att.getName() );
+    $ap.notify( cda );
+    $dp.notify( cda );
+end
+
+rule "Defender is defeated"
+    ruleflow-group "casualties"
+when
+    $c    : CombatAction( status == CombatStatus.SETTLED, result >= 0 )
+    $def  : Character( name == $c.defenderName, status == CharacterStatus.EXPOSED )
+    $ap   : Player( allegiance == $c.allegiance )
+    $dp   : Player( allegiance != $c.allegiance )
+then
+    logger.info( "The defender ( "+$def+" ) was defeated." );
+    modify( $def ) {
+        setStatus( CharacterStatus.DEFEATED )
+    }
+    // notify players
+    CharacterDefeatedAction cda = new CharacterDefeatedAction( $def.getAllegiance(), $def.getName() );
+    $ap.notify( cda );
+    $dp.notify( cda );
+end
+
+rule "Remove casualties"
+    ruleflow-group "casualties"
+when
+    $c    : CombatAction( status == CombatStatus.SETTLED )
+    $r    : Region( name == $c.regionName )
+    $char : Character( status == CharacterStatus.DEFEATED, this memberOf $r.characters )
+then
+    logger.info("Removing defeated character : "+$char );
+    modify( $r ) {
+        removeCharacter( $char )
+    }
+end
+
+rule "Clean up combat"
+    ruleflow-group "combat end"
+when
+    $c : CombatAction( )
+then
+    retract( $c );
+end
+

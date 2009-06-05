@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="Game Flow" id="Game Flow" package-name="org.drools.examples.lotrc" >
+
+  <header>
+    <imports>
+      <import name="org.drools.examples.lotrc.model.*" />
+      <import name="org.drools.examples.lotrc.model.Winner" />
+      <import name="org.drools.examples.lotrc.player.*" />
+      <import name="org.drools.examples.lotrc.player.SauronPlayer" />
+    </imports>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" x="32" y="130" width="80" height="40" />
+    <ruleSet id="2" name="Setup" x="138" y="130" width="80" height="40" ruleFlowGroup="setup" />
+    <ruleSet id="3" name="Move" x="222" y="212" width="104" height="40" ruleFlowGroup="move" />
+    <split id="5" name="Victory?" x="372" y="290" width="80" height="40" type="2" >
+      <constraints>
+        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="There is a winner" priority="10" type="rule" dialect="mvel" >exists( Winner() )</constraint>
+        <constraint toNodeId="15" toType="DROOLS_DEFAULT" name="No Winner" priority="1" type="rule" dialect="mvel" >not( Winner() )</constraint>
+      </constraints>
+    </split>
+    <split id="6" name="Victory?" x="808" y="289" width="80" height="40" type="2" >
+      <constraints>
+        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="There is a Winner" priority="10" type="rule" dialect="mvel" >exists( Winner() )</constraint>
+        <constraint toNodeId="14" toType="DROOLS_DEFAULT" name="No Winner" priority="1" type="rule" dialect="mvel" >not( Winner() )</constraint>
+      </constraints>
+    </split>
+    <ruleSet id="7" name="Game End" x="601" y="424" width="80" height="40" ruleFlowGroup="game end" />
+    <join id="8" name="New turn" x="233" y="129" width="80" height="40" type="2" />
+    <join id="9" name="Game End" x="601" y="354" width="80" height="40" type="2" />
+    <end id="10" name="End" x="605" y="504" width="80" height="40" />
+    <ruleSet id="12" name="Check Victory" x="227" y="290" width="96" height="40" ruleFlowGroup="check victory" />
+    <ruleSet id="13" name="Check Victory" x="663" y="288" width="96" height="40" ruleFlowGroup="check victory" />
+    <ruleSet id="14" name="End of Turn" x="807" y="131" width="80" height="40" ruleFlowGroup="end of turn" />
+    <subProcess id="15" name="Combat" x="516" y="289" width="111" height="40" processId="Combat Flow" >
+    </subProcess>
+  </nodes>
+
+  <connections>
+    <connection from="1" to="2" />
+    <connection from="8" to="3" />
+    <connection from="12" to="5" />
+    <connection from="13" to="6" />
+    <connection from="9" to="7" />
+    <connection from="2" to="8" />
+    <connection from="14" to="8" />
+    <connection from="5" to="9" bendpoints="[411,372]" />
+    <connection from="6" to="9" bendpoints="[847,372]" />
+    <connection from="7" to="10" />
+    <connection from="3" to="12" />
+    <connection from="15" to="13" />
+    <connection from="6" to="14" />
+    <connection from="5" to="15" />
+  </connections>
+
+</process>

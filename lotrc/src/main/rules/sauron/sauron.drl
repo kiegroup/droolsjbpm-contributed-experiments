@@ -1,0 +1,57 @@
+package org.drools.examples.lotrc
+
+import org.drools.examples.lotrc.model.*
+import org.drools.examples.lotrc.action.*
+import org.drools.examples.lotrc.player.*
+import org.drools.examples.lotrc.player.command.*
+import org.apache.log4j.Logger
+
+global Logger logger
+
+rule "Setup Character"
+when
+    $s : SetupCharacter( $name : name, action == null )
+    $c : Character( name == $name )
+    $r : Region( row > 3, characters.empty == true || ( name == RegionName.MORDOR && characters.size < 4 ) )
+then
+    logger.info("Placing "+$name+" in "+$r );
+    PlaceCharacterAction pca = new PlaceCharacterAction( Allegiance.SAURON, $name, $r.getName() );
+    modify( $s ) { 
+        setAction( pca ) 
+    }
+end
+
+rule "Make a move"
+    no-loop
+when
+    $m : MakeAMove( action == null )
+    $c : Character( allegiance == Allegiance.SAURON )
+    $f : Region( characters contains $c )
+    $t : Region( this towardsShire $f )
+    Number( intValue < $t.capacity ) from accumulate( 
+                      Character( allegiance == Allegiance.SAURON ) from $t.characters,
+                      count( 1 ) )
+then
+    MoveAction move = new MoveAction( Allegiance.SAURON, $c.getName(), $f.getName(), $t.getName() );
+    modify( $m ) { 
+        setAction( move ) 
+    }
+end  
+
+rule "Play a card"
+    no-loop
+when 
+    $p : PlayACard( action == null )
+    $c : CombatAction( ) from $p.combatAction
+    $a : Character( name == $c.attackerName )
+    $d : Character( name == $c.defenderName )
+    $r : Card( ) from accumulate(
+             $card : Card( allegiance == Allegiance.SAURON, status == CardStatus.UNPLAYED ),
+             randomSelect( $card ) )
+then 
+    PlayCardAction action = new PlayCardAction(Allegiance.SAURON, $r.getName() );
+    modify( $p ) {
+        setAction( action ) 
+    }
+end
+

@@ -1,0 +1,320 @@
+###########################################################################################
+#
+#  This file contains all the moving phase rules, including special character abilities
+#  that affect or are affected by move.
+#
+#  @author etirelli
+#
+###########################################################################################
+package org.drools.examples.lotrc
+
+import org.drools.examples.lotrc.model.*
+import org.drools.examples.lotrc.action.*
+import org.drools.examples.lotrc.player.*
+import org.apache.log4j.Logger
+
+global Logger logger
+
+#**********************************************************************
+#    The active player must make a move
+# 
+rule "Active player makes a move"
+    ruleflow-group "move"
+    lock-on-active 
+	when
+		$g : Game( $active : activePlayer )
+		$p : Player( this == $active )
+	then 
+		MoveAction ma = $p.makeAMove();
+		insert( ma );
+		update( $g );
+end
+ 
+#**********************************************************************
+#    A move for the Sauron player is valid if it is moving a Sauron
+# character, towards Shire, and the destination region still has room
+# for the moving character. 
+# 
+rule "Move is made to an adjacent forward region by Sauron Character"
+    ruleflow-group "move"
+    when 
+        $m : MoveAction( status == MoveStatus.ISSUED, allegiance == Allegiance.SAURON )
+        $c : Character( name == $m.characterName, allegiance == Allegiance.SAURON )
+        $f : Region( name == $m.fromRegion, characters contains $c )
+        $t : Region( name == $m.toRegion, this towardsShire $f, $characters : characters )
+        Number( intValue < $t.capacity ) from accumulate( 
+                      Character( allegiance == Allegiance.SAURON ) from $characters,
+                      count( 1 ) )
+    then  
+        # execute the move 
+        logger.info( $m );
+        modify( $m ) {
+            setStatus( MoveStatus.EXECUTED )
+        }
+        modify( $f ) {
+            removeCharacter( $c )
+        }
+        modify( $t ) {
+            addCharacter( $c )
+        }
+end
+
+#**********************************************************************
+#    A move for the Fellowship player is valid if it is moving a 
+# Fellowship character, towards Mordor, and the destination region still 
+# has room for the moving character. 
+# 
+rule "Move is made to an adjacent forward region by Fellowship Character"
+    ruleflow-group "move"
+    when  
+        $m : MoveAction( status == MoveStatus.ISSUED, allegiance == Allegiance.FELLOWSHIP )
+        $c : Character( name == $m.characterName, allegiance == Allegiance.FELLOWSHIP )
+        $f : Region( name == $m.fromRegion, characters contains $c )
+        $t : Region( name == $m.toRegion, this towardsMordor $f, $characters : characters )
+        Number( intValue < $t.capacity ) from accumulate( 
+                      Character( allegiance == Allegiance.FELLOWSHIP ) from $characters,
+                      count( 1 ) )
+    then  
+        # execute the move 
+        logger.info( $m );
+        modify( $m ) {
+            setStatus( MoveStatus.EXECUTED )
+        }
+        modify( $f ) {
+            removeCharacter( $c );
+        }
+        modify( $t ) {
+            addCharacter( $c );
+        }
+end
+
+#**********************************************************************
+#    The Fellowship player can also use the Tunnel of Moria to move
+# characters from Hollin directly to Fangorn, as long as Fangorn still
+# has room for the moving character. 
+# 
+rule "Fellowship Characters can use the Tunnel of Moria to move from Hollin to Fangorn"
+    ruleflow-group "move"
+    when  
+        $m : MoveAction( status == MoveStatus.ISSUED, allegiance == Allegiance.FELLOWSHIP )
+        $c : Character( name == $m.characterName, allegiance == Allegiance.FELLOWSHIP )
+        $f : Region( name == $m.fromRegion && == RegionName.HOLLIN, characters contains $c )
+        $t : Region( name == $m.toRegion && == RegionName.FANGORN, $characters : characters )
+        Number( intValue < $t.capacity ) from accumulate( 
+                      Character( allegiance == Allegiance.FELLOWSHIP ) from $characters,
+                      count( 1 ) )
+    then  
+        # execute the move 
+        logger.info( $m );
+        modify( $m ) {
+            setStatus( MoveStatus.EXECUTED )
+        }
+        modify( $f ) {
+            removeCharacter( $c );
+        }
+        modify( $t ) {
+            addCharacter( $c );
+        }
+end
+
+#**********************************************************************
+#    The Fellowship player can also use the Anduin River to move
+# characters from Mirkwood directly to Fangorn, as long as Fangorn still
+# has room for the moving character. 
+# 
+rule "Fellowship Characters can use the Anduin River to move from Mirkwood to Fangorn"
+    ruleflow-group "move"
+    when  
+        $m : MoveAction( status == MoveStatus.ISSUED, allegiance == Allegiance.FELLOWSHIP )
+        $c : Character( name == $m.characterName, allegiance == Allegiance.FELLOWSHIP )
+        $f : Region( name == $m.fromRegion && == RegionName.MIRKWOOD, characters contains $c )
+        $t : Region( name == $m.toRegion && == RegionName.FANGORN, $characters : characters )
+        Number( intValue < $t.capacity ) from accumulate( 
+                      Character( allegiance == Allegiance.FELLOWSHIP ) from $characters,
+                      count( 1 ) )
+    then  
+        # execute the move 
+        logger.info( $m );
+        modify( $m ) {
+            setStatus( MoveStatus.EXECUTED )
+        }
+        modify( $f ) {
+            removeCharacter( $c );
+        }
+        modify( $t ) {
+            addCharacter( $c );
+        }
+end
+
+#**********************************************************************
+#    The Fellowship player can also use the Anduin River to move
+# characters from Fangorn directly to Rohan, as long as Rohan still
+# has room for the moving character. 
+# 
+rule "Fellowship Characters can use the Anduin River to move from Fangorn to Rohan"
+    ruleflow-group "move"
+    when  
+        $m : MoveAction( status == MoveStatus.ISSUED, allegiance == Allegiance.FELLOWSHIP )
+        $c : Character( name == $m.characterName, allegiance == Allegiance.FELLOWSHIP )
+        $f : Region( name == $m.fromRegion && == RegionName.FANGORN, characters contains $c )
+        $t : Region( name == $m.toRegion && == RegionName.ROHAN, $characters : characters )
+        Number( intValue < $t.capacity ) from accumulate( 
+                      Character( allegiance == Allegiance.FELLOWSHIP ) from $characters,
+                      count( 1 ) )
+    then  
+        # execute the move 
+        logger.info( $m );
+        modify( $m ) {
+            setStatus( MoveStatus.EXECUTED )
+        }
+        modify( $f ) {
+            removeCharacter( $c );
+        }
+        modify( $t ) {
+            addCharacter( $c );
+        }
+end
+
+#**********************************************************************
+#    Which King's ability allows him to move sideways when 
+# attacking an adjacent character, but not if he is in the mountains. 
+# 
+rule "The Witch king can move sideways to attack an enemy"
+    ruleflow-group "move"
+    when  
+        $m : MoveAction( status == MoveStatus.ISSUED, allegiance == Allegiance.SAURON, characterName == CharacterName.WITCH_KING )
+        $c : Character( name == CharacterName.WITCH_KING )
+        $f : Region( name == $m.fromRegion, characters contains $c, mountain == false );
+        $t : Region( name == $m.toRegion, this isAdjacentTo $f, row == $f.row, $characters : characters )
+        exists( Character( allegiance == Allegiance.FELLOWSHIP ) from $characters ) 
+    then  
+        # execute the move 
+        logger.info( $m );
+        modify( $m ) {
+            setStatus( MoveStatus.EXECUTED )
+        }
+        modify( $f ) {
+            removeCharacter( $c );
+        }
+        modify( $t ) {
+            addCharacter( $c );
+        }
+end
+
+#**********************************************************************
+#    Aragorns's ability allows him to move to any adjacent region when 
+# attacking, but not if he is in the mountains. 
+# 
+rule "Aragorn can move to any adjacent region to attack an enemy"
+    ruleflow-group "move"
+    when  
+        $m : MoveAction( status == MoveStatus.ISSUED, allegiance == Allegiance.FELLOWSHIP, characterName == CharacterName.ARAGORN )
+        $c : Character( name == CharacterName.ARAGORN )
+        $f : Region( name == $m.fromRegion, characters contains $c );
+        $t : Region( name == $m.toRegion, this isAdjacentTo $f, $characters : characters, mountain == false || != $f.mountain )
+        exists( Character( allegiance == Allegiance.SAURON ) from $characters )
+    then  
+        # execute the move 
+        logger.info( $m );
+        modify( $m ) {
+            setStatus( MoveStatus.EXECUTED )
+        }
+        modify( $f ) {
+            removeCharacter( $c );
+        }
+        modify( $t ) {
+            addCharacter( $c );
+        }
+end
+
+#**********************************************************************
+#    The Flying Nazgul's ability allows him to move to any region, 
+# as long as that region contains a single fellowship character
+# 
+rule "Flying Nazgul can move to any region to attack a solitary enemy"
+    ruleflow-group "move"
+    when  
+        $m : MoveAction( status == MoveStatus.ISSUED, allegiance == Allegiance.SAURON, characterName == CharacterName.FLYING_NAZGUL )
+        $c : Character( name == CharacterName.FLYING_NAZGUL )
+        $f : Region( name == $m.fromRegion, characters contains $c );
+        $t : Region( name == $m.toRegion,  characters.size == 1 )
+        exists( Character( allegiance == Allegiance.FELLOWSHIP ) from $t.characters )
+    then  
+        # execute the move 
+        logger.info( $m );
+        modify( $m ) {
+            setStatus( MoveStatus.EXECUTED )
+        }
+        modify( $f ) {
+            removeCharacter( $c );
+        }
+        modify( $t ) {
+            addCharacter( $c );
+        }
+end
+
+#**********************************************************************
+#    If the Balrog is in Moria, though, and a Fellowship character 
+# moves through the Tunnel of Moria, the Balrog immediately defeats 
+# him.
+# 
+rule "If the Balrog is in Moria when a character moves through the tunnel, defeat the character"
+    ruleflow-group "move"
+    salience 10
+    when
+        $m  : MoveAction( status == MoveStatus.EXECUTED, fromRegion == RegionName.HOLLIN, toRegion == RegionName.FANGORN )
+        $c  : Character( name == $m.characterName, status in ( CharacterStatus.HIDDEN, CharacterStatus.EXPOSED ) )
+        $t  : Region( name == RegionName.FANGORN )
+        $b  : Character( name == CharacterName.BALROG )
+              Region( name == RegionName.MORIA, characters contains $b )
+    	$sp : Player( allegiance == Allegiance.SAURON )
+        $fp : Player( allegiance == Allegiance.FELLOWSHIP )
+    then
+        logger.info("Balrog is in Moria and instantly defeats "+$c+" when he tries to use the tunels.");
+        modify( $c ) {
+            setStatus( CharacterStatus.DEFEATED )
+        }
+        modify( $t ) {
+            removeCharacter( $c )
+        }
+        // notify players
+        CharacterDefeatedAction cda = new CharacterDefeatedAction( Allegiance.FELLOWSHIP, $c.getName() );
+        $sp.notify( cda );
+        $fp.notify( cda );
+end
+
+
+#**********************************************************************
+#    If a character moves into a region where there are characters
+# from the opposing allegiance, a combat is initiated, having the 
+# moving character as the attacker.
+# 
+rule "Is the move an attack?"
+    ruleflow-group "move"
+    when
+        $m : MoveAction( status == MoveStatus.EXECUTED )
+        $a : Character( name == $m.characterName )
+        $t : Region( name == $m.toRegion )
+        exists( Character( allegiance != $a.allegiance ) from $t.characters )
+    then
+        CombatAction ca = new CombatAction( $a.getAllegiance(), $t.getName(), $a.getName() );
+        insert( ca );
+end
+
+#**********************************************************************
+#    In any case, if a move is successfuly executed, we need to notify
+# the players, and then we can remove the move action fact, since it is
+# no longer necessary.
+# 
+rule "If the move was successful, notify players and remove it"
+    ruleflow-group "move"
+    salience -10
+    when
+        $m : MoveAction( status == MoveStatus.EXECUTED )
+    	$a : Player( allegiance == $m.allegiance )
+        $o : Player( allegiance != $m.allegiance )
+    then
+        retract( $m );
+    	$a.notify( $m );
+    	$o.notify( $m.getHidden() );
+end
