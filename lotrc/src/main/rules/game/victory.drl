@@ -1,3 +1,10 @@
+###########################################################################################
+#
+#  This file contains all the rules for determining game victory.
+#
+#  @author etirelli
+#
+###########################################################################################
 package org.drools.examples.lotrc
 
 import org.drools.examples.lotrc.model.*
@@ -7,6 +14,11 @@ import org.apache.log4j.Logger
 
 global Logger logger
 
+#**********************************************************************
+#    The first possible victory condition is Frodo reaching Mordor.
+# If that happens, the Fellowship player wins, even if the Sauron 
+# player has characters in Mordor.
+# 
 rule "Frodo reached Mordor, so the Fellowship wins"
     ruleflow-group "check victory"
 when
@@ -17,6 +29,10 @@ then
     insert( new Winner( $p ) );
 end
 
+#**********************************************************************
+#    The second possible victory condition is Frodo is defeated.
+# If that happens, the Sauron player wins immediately.
+# 
 rule "Frodo is defeated, so Sauron wins"
     ruleflow-group "check victory"
 when
@@ -26,6 +42,11 @@ then
     insert( new Winner( $p ) );
 end
 
+#**********************************************************************
+#    The third possible victory condition is if Sauron moves his 
+# third character into the Shire. If that happens, the Sauron player 
+# wins immediately.
+# 
 rule "Sauron has 3 or more charactes in the Shire, so Sauron wins"
     ruleflow-group "check victory"
 when
@@ -38,6 +59,10 @@ then
     insert( new Winner( $p ) );
 end
 
+#**********************************************************************
+#    The fourth possible victory condition is if any player is unable
+# to legally move a piece. If that happens, that player loses.
+# 
 rule "Player is unable to move a character, so opposing player wins"
     ruleflow-group "check victory"
 when

@@ -1,3 +1,10 @@
+###########################################################################################
+#
+#  This file contains all the combat related rules
+#
+#  @author etirelli
+#
+###########################################################################################
 package org.drools.examples.lotrc
 
 import org.drools.examples.lotrc.model.*
@@ -7,6 +14,9 @@ import org.apache.log4j.Logger
 
 global Logger logger
 
+#**********************************************************************
+#    If there is a combat, prepare the domain model for it. 
+# 
 rule "Combat starts"
     ruleflow-group "resolve characters"
     lock-on-active
@@ -19,6 +29,11 @@ then
     }
 end
 
+#**********************************************************************
+#    The first step in a combat is to randomily pick a defender 
+# among all the defending characters in the region and expose both
+# attacker and defender. 
+# 
 rule "Select characters for the combat"
     ruleflow-group "resolve characters"
 when
@@ -41,6 +56,11 @@ then
     logger.info( "Combat started on "+$r.getName()+". "+$a.getName()+" attacks "+$d.getName()+"." ); 
 end
 
+#**********************************************************************
+#    If the revealed characters are Merry and the Witch King, then
+# Merry immediately defeats the Witch King and this round of the combat
+# is over. 
+# 
 rule "Merry defeats the Witch King"
     ruleflow-group "resolve characters"
 when
@@ -57,6 +77,75 @@ then
     logger.info( "Merry immediately defeats the Witch King" );
 end
 
+#**********************************************************************
+#    If the revealed characters are Gimly and the Orcs, then
+# Gimli immediately defeats the Orcs and this round of the combat
+# is over. 
+# 
+rule "Gimli defeats the orcs"
+    ruleflow-group "resolve characters"
+when
+    $c : CombatAction( status == CombatStatus.UNSETTLED )
+    $g : Character( name == CharacterName.GIMLI, name in ($c.attackerName, $c.defenderName) )
+    $o : Character( name == CharacterName.ORCS, name in ($c.attackerName, $c.defenderName) )
+then
+    modify( $c ) {
+        setStatus( CombatStatus.SETTLED )
+    }
+    modify( $o ) {
+        setStatus( CharacterStatus.DEFEATED )
+    }
+    logger.info( "Gimli immediately defeats the Orcs" );
+end
+
+#**********************************************************************
+#    If the revealed characters are Legolas and the Flying Nazgul, then
+# Legolas immediately defeats the Flying Nazgul and this round of the 
+# combat is over. 
+# 
+rule "Legolas defeats the Flying Nazgul"
+    ruleflow-group "resolve characters"
+when
+    $c : CombatAction( status == CombatStatus.UNSETTLED )
+    $l : Character( name == CharacterName.LEGOLAS, name in ($c.attackerName, $c.defenderName) )
+    $f : Character( name == CharacterName.FLYING_NAZGUL, name in ($c.attackerName, $c.defenderName) )
+then
+    modify( $c ) {
+        setStatus( CombatStatus.SETTLED )
+    }
+    modify( $f ) {
+        setStatus( CharacterStatus.DEFEATED )
+    }
+    logger.info( "Legolas immediately defeats the Flying Nazgul" );
+end
+
+#**********************************************************************
+#    If Boromir is revealed, he sacrifices himself defeating the 
+# Sauron character as well and this round of the combat is over. 
+# 
+rule "Boromir sacrifices himself to defeat the opponent"
+    ruleflow-group "resolve characters"
+when
+    $c : CombatAction( status == CombatStatus.UNSETTLED )
+    $b : Character( name == CharacterName.BOROMIR, name in ($c.attackerName, $c.defenderName) )
+    $o : Character( name != CharacterName.BOROMIR, name in ($c.attackerName, $c.defenderName) )
+then
+    modify( $c ) {
+        setStatus( CombatStatus.SETTLED )
+    }
+    modify( $b ) {
+        setStatus( CharacterStatus.DEFEATED )
+    }
+    modify( $o ) {
+        setStatus( CharacterStatus.DEFEATED )
+    }
+    logger.info( "Boromir sacrifices himself to defeat "+$o.getName() );
+end
+
+#**********************************************************************
+#    If combat is still unsettled, then players must select a card 
+# to play. 
+# 
 rule "Select Cards to play" 
     ruleflow-group "select cards"
 when
@@ -77,6 +166,9 @@ then
     insert( sc );
 end
 
+#**********************************************************************
+#    The attacker plays his card 
+# 
 rule "Attacker plays his card"
     ruleflow-group "play cards"
 when
@@ -101,6 +193,9 @@ then
 end
  
 
+#**********************************************************************
+#    The defender plays his card 
+# 
 rule "Defender plays his card"
     ruleflow-group "play cards"
 when
@@ -124,6 +219,12 @@ then
     $dp.notify( $pca ); 
 end
  
+#**********************************************************************
+#    If the combat is still unsettled, then we calculate each side's
+# strength and the combat final result. If 0, then it is a tie and
+# both characters are defeated. If positive number, the attacker wins.
+# If negative number, the defender wins.
+# 
 rule "Calculate combat result"
     ruleflow-group "casualties"
     lock-on-active
@@ -141,55 +242,66 @@ then
     logger.info( "Combat results: "+$c );
 end
 
+#**********************************************************************
+#    If the combat result is equals or less than zero, the attacker
+# is defeated.
+# 
 rule "Attacker is defeated"
     ruleflow-group "casualties"
 when
     $c    : CombatAction( status == CombatStatus.SETTLED, result <= 0 )
     $att  : Character( name == $c.attackerName, status == CharacterStatus.EXPOSED )
-    $ap   : Player( allegiance == $c.allegiance )
-    $dp   : Player( allegiance != $c.allegiance )
 then
     logger.info( "The attacker ( "+$att+" ) was defeated." );
     modify( $att ) {
         setStatus( CharacterStatus.DEFEATED )
     }
-    // notify players
-    CharacterDefeatedAction cda = new CharacterDefeatedAction( $att.getAllegiance(), $att.getName() );
-    $ap.notify( cda );
-    $dp.notify( cda );
 end
 
+#**********************************************************************
+#    If the combat result is equals or greater than zero, the defender
+# is defeated.
+# 
 rule "Defender is defeated"
     ruleflow-group "casualties"
 when
     $c    : CombatAction( status == CombatStatus.SETTLED, result >= 0 )
     $def  : Character( name == $c.defenderName, status == CharacterStatus.EXPOSED )
-    $ap   : Player( allegiance == $c.allegiance )
-    $dp   : Player( allegiance != $c.allegiance )
 then
     logger.info( "The defender ( "+$def+" ) was defeated." );
     modify( $def ) {
         setStatus( CharacterStatus.DEFEATED )
     }
-    // notify players
-    CharacterDefeatedAction cda = new CharacterDefeatedAction( $def.getAllegiance(), $def.getName() );
-    $ap.notify( cda );
-    $dp.notify( cda );
 end
 
+#**********************************************************************
+#    Finally, we need to remove the combat casualties from the board
+# and notify players.
+# 
 rule "Remove casualties"
     ruleflow-group "casualties"
 when
     $c    : CombatAction( status == CombatStatus.SETTLED )
     $r    : Region( name == $c.regionName )
     $char : Character( status == CharacterStatus.DEFEATED, this memberOf $r.characters )
+    $ap   : Player( allegiance == $c.allegiance )
+    $dp   : Player( allegiance != $c.allegiance )
 then
     logger.info("Removing defeated character : "+$char );
     modify( $r ) {
         removeCharacter( $char )
     }
+    // notify players
+    CharacterDefeatedAction cda = new CharacterDefeatedAction( $char.getAllegiance(), $char.getName() );
+    $ap.notify( cda );
+    $dp.notify( cda );
 end
 
+#**********************************************************************
+#    Last, but not least, after all rounds of combat were fought, we
+# must remove the Combat Action from the working memory, since it is
+# no longer true. 
+# 
 rule "Clean up combat"
     ruleflow-group "combat end"
 when
