@@ -34,7 +34,7 @@ public class Main {
 
     public static void main(String[] args) {
         initResources();
-        initRulebase();
+        initKnowledgeBase();
         initSession();
         run();
     }
@@ -43,7 +43,7 @@ public class Main {
         PropertyConfigurator.configure(Main.class.getResource( "/log4j.properties" ));
     }
 
-    private static void initRulebase() {
+    private static void initKnowledgeBase() {
         logger.debug( "Creating knowledge base" );
         KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
@@ -69,11 +69,21 @@ public class Main {
             //logger.debug( "Loading "+resource );
             builder.add( ResourceFactory.newClassPathResource( resource ),
                          resource.endsWith( ".rf" ) ? ResourceType.DRF : ResourceType.DRL );
+            checkErrors(builder);
             int newSize = builder.getKnowledgePackages().iterator().next().getRules().size();
             logger.info( "Loaded: "+resource+" with "+(newSize-previous)+" rules." );
             previous = newSize;
         }
         logger.info( "All resources loaded. Total of "+previous+" rules." );
+    }
+
+    private static void checkErrors(KnowledgeBuilder builder) {
+        if( builder.hasErrors() ) {
+            for (KnowledgeBuilderError knowledgeBuilderError : builder.getErrors()) {
+                System.err.println(knowledgeBuilderError.toString());
+            }
+            System.exit(0);
+        }
     }
 
     private static void initSession() {
@@ -109,14 +119,17 @@ public class Main {
     }
 
     private static void run() {
-        logger.debug( "Starting Game Flow" );
-        ksession.startProcess( "Game Flow" );
-        logger.debug( "Firing rules" );
-        ksession.fireAllRules();
-        logger.debug( "Session finished" );
-        if( audit != null ) {
-            audit.writeToDisk();
+        try {
+            logger.debug( "Starting Game Flow" );
+            ksession.startProcess( "Game Flow" );
+            logger.debug( "Firing rules" );
+            ksession.fireAllRules();
+            logger.debug( "Session finished" );
+        } finally {
+            if( audit != null ) {
+                audit.writeToDisk();
+            }
         }
     }
-    
+
 }

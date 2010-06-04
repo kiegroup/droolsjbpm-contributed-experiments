@@ -170,7 +170,7 @@ end
 #    The attacker plays his card 
 # 
 rule "Attacker plays his card"
-    ruleflow-group "play cards"
+    ruleflow-group "play cards" 
 when
     $c    : CombatAction( status == CombatStatus.UNSETTLED, attackerCard == null )
     $char : Character( name == $c.attackerName )

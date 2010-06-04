@@ -26,7 +26,7 @@ rule "Setup Sauron Characters"
 	then 
 		PlaceCharacterAction pca = $p.setupCharacter( $c.getName() );
 		insert( pca ); 
-end 
+end
 
 rule "Is legal PCA for the Fellowhisp?" 
     ruleflow-group "setup"

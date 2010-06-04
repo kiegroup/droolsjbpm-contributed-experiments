@@ -11,7 +11,7 @@
   </header>
 
   <nodes>
-    <start id="1" name="Start" x="43" y="94" width="80" height="40" />
+    <start id="1" name="Start" x="43" y="98" width="80" height="40" />
     <ruleSet id="2" name="Reveal Characters" x="630" y="251" width="113" height="40" ruleFlowGroup="resolve characters" />
     <ruleSet id="3" name="Select Cards" x="459" y="250" width="104" height="40" ruleFlowGroup="select cards" />
     <ruleSet id="4" name="Play Cards" x="308" y="248" width="96" height="40" ruleFlowGroup="play cards" />

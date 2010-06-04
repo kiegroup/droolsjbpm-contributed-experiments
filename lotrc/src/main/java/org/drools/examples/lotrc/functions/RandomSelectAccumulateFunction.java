@@ -16,7 +16,6 @@
  */
 package org.drools.examples.lotrc.functions;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -45,25 +44,14 @@ public class RandomSelectAccumulateFunction
         // functions are stateless, so nothing to serialize
     }
 
-    public static class RandomSelectData
+    private static class RandomSelectData
         implements
-        Externalizable {
+        Serializable {
+        private static final long serialVersionUID = 7632007789321541884L;
         public List<Object> list = new ArrayList<Object>();
-        public Random random = new Random(System.currentTimeMillis());
-
+        public transient Random random = new Random(System.currentTimeMillis());
         public RandomSelectData() {
         }
-
-        @SuppressWarnings("unchecked")
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            list = (List<Object>) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( list );
-        }
-
     }
 
     /* (non-Javadoc)
@@ -104,7 +92,7 @@ public class RandomSelectAccumulateFunction
      */
     public Object getResult(Serializable context) throws Exception {
         RandomSelectData data = (RandomSelectData) context;
-        return data.list.get( data.random.nextInt( data.list.size() ) );
+        return data.list.isEmpty() ? null : data.list.get( data.random.nextInt( data.list.size() ) );
     }
 
     /* (non-Javadoc)

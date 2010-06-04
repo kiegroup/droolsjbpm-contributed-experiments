@@ -17,7 +17,7 @@ global Logger logger
 
 #**********************************************************************
 #    The active player must make a move
-# 
+#  
 rule "Active player makes a move"
     ruleflow-group "move"
     lock-on-active 

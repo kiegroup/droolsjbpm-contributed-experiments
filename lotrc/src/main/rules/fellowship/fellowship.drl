@@ -24,7 +24,7 @@ end
 rule "Make a move"
     no-loop
 when
-    $m : MakeAMove( action == null )
+    $m : MakeAMove( action == null ) 
     $c : Character( allegiance == Allegiance.FELLOWSHIP )
     $f : Region( characters contains $c )
     $t : Region( this towardsMordor $f )

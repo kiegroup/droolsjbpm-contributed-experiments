@@ -16,12 +16,9 @@ import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
+import static org.mockito.Mockito.*;
 
 public class TowardsEvaluatorTest extends TestCase {
-
-    private Mockery mockery = new Mockery();
 
     private EvaluatorRegistry registry = new EvaluatorRegistry();
     private Region[][] regions = new Board().getRegions();
@@ -174,15 +171,13 @@ public class TowardsEvaluatorTest extends TestCase {
      */
     private void runEvaluatorTest(final Object[][] data,
                                   final ValueType valueType) {
-        final InternalReadAccessor extractor = mockery.mock( InternalReadAccessor.class );
+        final InternalReadAccessor extractor = mock( InternalReadAccessor.class );
         for ( int i = 0; i < data.length; i++ ) {
             final Object[] row = data[i];
-            mockery.checking( new Expectations() {{
-                allowing(extractor).getValue( with( row[0] ) ); will( returnValue( row[0] ) );
-                allowing(extractor).getValue( with( row[2] ) ); will( returnValue( row[2] ) );
-                allowing(extractor).getValue( with( any( InternalWorkingMemory.class) ), with( row[0] ) ); will( returnValue( row[0] ) );
-                allowing(extractor).getValue( with( any( InternalWorkingMemory.class) ), with( row[2] ) ); will( returnValue( row[2] ) );
-            }} );
+            when( extractor.getValue( row[0] ) ).thenReturn( row[0] );
+            when( extractor.getValue( row[2] ) ).thenReturn( row[2] );
+            when( extractor.getValue( any( InternalWorkingMemory.class), eq( row[0] ) ) ).thenReturn( row[0] ); 
+            when( extractor.getValue( any( InternalWorkingMemory.class), eq( row[2] ) ) ).thenReturn( row[2] );
             
             boolean isNegated = ((String) row[1]).startsWith( "not " );
             String evaluatorStr = isNegated ? ((String) row[1]).substring( 4 ) : (String) row[1];

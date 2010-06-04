@@ -27,7 +27,7 @@ when
     $m : MakeAMove( action == null )
     $c : Character( allegiance == Allegiance.SAURON )
     $f : Region( characters contains $c )
-    $t : Region( this towardsShire $f )
+    $t : Region( this towardsShire $f ) 
     Number( intValue < $t.capacity ) from accumulate( 
                       Character( allegiance == Allegiance.SAURON ) from $t.characters,
                       count( 1 ) )

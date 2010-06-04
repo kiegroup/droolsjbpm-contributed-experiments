@@ -65,7 +65,7 @@ end
 # 
 rule "Player is unable to move a character, so opposing player wins"
     ruleflow-group "check victory"
-when
+when 
     $p : Player( )
     $g : Game( activePlayer == $p )
     $m : MoveAction( status in ( MoveStatus.ISSUED, MoveStatus.INVALID ) )

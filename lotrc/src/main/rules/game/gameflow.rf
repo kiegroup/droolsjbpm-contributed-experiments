@@ -14,7 +14,7 @@
   </header>
 
   <nodes>
-    <start id="1" name="Start" x="32" y="130" width="80" height="40" />
+    <start id="1" name="Start" x="31" y="125" width="80" height="40" />
     <ruleSet id="2" name="Setup" x="138" y="130" width="80" height="40" ruleFlowGroup="setup" />
     <ruleSet id="3" name="Move" x="222" y="212" width="104" height="40" ruleFlowGroup="move" />
     <split id="5" name="Victory?" x="372" y="290" width="80" height="40" type="2" >
@@ -29,7 +29,7 @@
         <constraint toNodeId="14" toType="DROOLS_DEFAULT" name="No Winner" priority="1" type="rule" dialect="mvel" >not( Winner() )</constraint>
       </constraints>
     </split>
-    <ruleSet id="7" name="Game End" x="601" y="424" width="80" height="40" ruleFlowGroup="game end" />
+    <ruleSet id="7" name="Game End" x="589" y="421" width="80" height="40" ruleFlowGroup="game end" />
     <join id="8" name="New turn" x="233" y="129" width="80" height="40" type="2" />
     <join id="9" name="Game End" x="601" y="354" width="80" height="40" type="2" />
     <end id="10" name="End" x="605" y="504" width="80" height="40" />

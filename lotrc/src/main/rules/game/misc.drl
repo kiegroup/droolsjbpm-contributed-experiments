@@ -7,7 +7,7 @@ import org.apache.log4j.Logger
 
 global Logger logger
 
-rule "Next player"
+rule "Next player" 
     ruleflow-group "end of turn"
     lock-on-active
 when

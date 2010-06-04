@@ -78,7 +78,7 @@ then
 end
 
 
-rule "Print board"
+rule "Print board" 
 when
     String( this == "Print Board" )
     $b : Board()
