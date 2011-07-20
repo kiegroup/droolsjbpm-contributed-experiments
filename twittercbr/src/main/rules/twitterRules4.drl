@@ -1,0 +1,26 @@
+package org.drools.examples.twittercbr
+
+import twitter4j.Status
+import twitter4j.Place
+import java.text.MessageFormat
+
+declare Status
+    @role( event )
+    @timestamp( createdAt )
+    //@expires( 6m )
+end
+
+rule "Dump tweets from user conversation"
+when
+    $s1 : Status( $name : user.screenName ) from entry-point "twitter"
+    $s2 : Status( inReplyToScreenName == $name, this after[1ms,2m] $s1 ) from entry-point "twitter"
+then
+    System.out.println( MessageFormat.format( "@{0} twitted: [{1,time,HH:mm:ss.SSS}] ({2})\n@{3} replied: [{4,time,HH:mm:ss.SSS}] ({5})\n\n",
+                                              $name,
+                                              $s1.getCreatedAt(),
+                                              $s1.getText(),
+                                              $s2.getUser().getScreenName(),
+                                              $s2.getCreatedAt(),
+                                              $s2.getText() ) );
+end
+

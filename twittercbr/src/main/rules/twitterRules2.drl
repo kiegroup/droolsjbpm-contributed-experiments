@@ -1,0 +1,21 @@
+package org.drools.examples.twittercbr
+
+import twitter4j.Status
+import java.text.MessageFormat
+
+declare Status
+    @role( event )
+    @timestamp( createdAt )
+    @expires( 2s )
+end
+
+rule "Dump tweets from people laughing"
+when
+    $s : Status( text matches ".*lol.*" ) from entry-point "twitter"
+then
+    System.out.println( MessageFormat.format( "[{0,time,full}] @{1} - {2}",
+                                              $s.getCreatedAt(),
+                                              $s.getUser().getScreenName(),
+                                              $s.getText() ) );
+end
+

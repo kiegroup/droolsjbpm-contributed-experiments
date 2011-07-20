@@ -1,0 +1,24 @@
+package org.drools.examples.twittercbr
+
+import twitter4j.Status
+import twitter4j.Place
+import java.text.MessageFormat
+
+declare Status
+    @role( event )
+    @timestamp( createdAt )
+    @expires( 2s )
+end
+
+rule "Dump tweets from US"
+when
+    $s : Status( ) from entry-point "twitter"
+    $p : Place( countryCode == "US" ) from $s.place
+then
+    System.out.println( MessageFormat.format( "[{0,time,full}] ({3}) @{1} - {2}",
+                                              $s.getCreatedAt(),
+                                              $s.getUser().getScreenName(),
+                                              $s.getText(),
+                                              $s.getPlace().getCountry() ) );
+end
+

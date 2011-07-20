@@ -1,0 +1,26 @@
+package org.drools.examples.twittercbr
+
+import twitter4j.Status
+import twitter4j.Place
+import java.text.MessageFormat
+import java.util.Date;
+import org.drools.time.SessionClock;
+
+declare Status
+    @role( event )
+    @timestamp( createdAt )
+    @expires( 1m )
+end
+
+rule "Count tweets in 10 seconds"
+    duration( 10s )
+when
+    Number( $count : intValue ) from accumulate(
+        Status() over window:time( 30s ) from entry-point "twitter",
+        count(1) )
+then
+    SessionClock clock = drools.getWorkingMemory().getSessionClock();
+    Date current = new Date( clock.getCurrentTime() );
+    System.out.println( current+" - Tweets in the last 30 seconds = " + $count );
+end
+

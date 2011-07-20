@@ -1,0 +1,49 @@
+package org.drools.examples.twittercbr
+
+import twitter4j.Status
+import twitter4j.Place
+import java.text.MessageFormat
+
+declare Status
+    @role( event )
+    @timestamp( createdAt )
+    @expires( 10s )
+end
+
+rule "Filter retweeted messages"
+when
+    $s : Status( retweetCount > 0 ) from entry-point "twitter"
+then
+    entryPoints["retweeted"].insert( $s );
+end
+
+
+rule "Filter non-retweeted messages"
+when
+    $s : Status( retweetCount == 0 ) from entry-point "twitter"
+then
+    entryPoints["non-retweeted"].insert( $s );
+end
+
+
+rule "Dump retweeted"
+when
+    $s : Status( user.screenName matches "[a-g].*" ) from entry-point "retweeted"
+then
+    System.out.println( MessageFormat.format( "RT:  [{0,time,full}] {3,number,000;} @{1} - {2}",
+                                              $s.getCreatedAt(),
+                                              $s.getUser().getScreenName(),
+                                              $s.getText(),
+                                              $s.getRetweetCount() ) );
+end
+
+rule "Dump non retweeted"
+when
+    $s : Status( user.screenName matches "[h-p].*" ) from entry-point "non-retweeted"
+then
+    System.out.println( MessageFormat.format( "NRT: [{0,time,full}] {3,number,000;} @{1} - {2}",
+                                              $s.getCreatedAt(),
+                                              $s.getUser().getScreenName(),
+                                              $s.getText(),
+                                              $s.getRetweetCount() ) );
+end
