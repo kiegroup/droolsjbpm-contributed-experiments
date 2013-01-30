@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
@@ -59,6 +60,9 @@ public class TwitterDumper {
                     e.printStackTrace();
                     System.exit( 0 );
                 }
+            }
+            @Override
+            public void onStallWarning(StallWarning arg0) {
             }
         };
         StatusStream stream = twitterStream.getSampleStream();
