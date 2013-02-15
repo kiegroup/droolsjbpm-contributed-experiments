@@ -1,0 +1,34 @@
+package com.drools.memory.banchmark
+
+import com.drools.memory.banchmark.model.events.MainEvent
+import com.drools.memory.banchmark.model.state.VisitorRTData
+import java.util.LinkedList
+import java.lang.Number
+import com.drools.memory.banchmark.model.ConfigData
+
+
+declare MainEvent
+	@role( event )
+end
+
+rule "inWebSite"
+	when
+	    $visitorRtData : VisitorRTData( InWebSite == false , $visitorId : VisitorId )
+	    $mainEvent : MainEvent( VisitorId == $visitorId )
+	then
+		modify($visitorRtData) {
+			setInWebSite(true)
+		};
+end
+
+
+rule "accepted"
+	when
+	    $config : ConfigData( $rate : Rate)
+	    $visitorRtData : VisitorRTData( Accepted == false , InWebSite == true, $visitorId : VisitorId )
+	    $mainPages : LinkedList( size >= $rate) from collect ( MainEvent( VisitorId == $visitorId ))
+	then
+		modify($visitorRtData) {
+			setAccepted(true)
+		};
+end
