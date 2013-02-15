@@ -1,0 +1,73 @@
+package com.drools.memory.banchmark
+
+import com.drools.memory.banchmark.model.events.MainEvent
+import com.drools.memory.banchmark.model.state.VisitorRTData
+import com.drools.memory.banchmark.model.ConfigData
+import java.util.LinkedList
+import java.lang.Number
+import java.util.Date
+import java.lang.Integer
+
+declare MainEvent
+	@role( event )
+end
+
+
+
+# The flow is
+# flow name: ${flow}
+# stage1 url: http://testhost:8080/${flow}/page1 (must)
+# stage2 url: http://testhost:8080/${flow}/page2 (must)
+# stage3 url: http://testhost:8080/${flow}/page3 (must)
+# stage4 url: http://testhost:8080/${flow}/page4 (must)
+#
+#
+
+rule "in-${flow}-Step1"
+	when
+	    $visitorRtData : VisitorRTData( InWebSite == true, $visitorId : VisitorId , (!Integer.valueOf(1).equals(getInFlowStage("${flow}"))) )
+	    $mainEvent : MainEvent( VisitorId == $visitorId, $eventTimestamp : EventTimestamp, PageUrl.toString() == "http://testhost:8080/${flow}/page1" )
+	    not ( MainEvent ( VisitorId == $visitorId, EventTimestamp.getTime() > $eventTimestamp.getTime() ) )
+	then
+		modify($visitorRtData) {
+			setInFlow("${flow}",1)
+		};
+end
+
+rule "in-${flow}-Step2"
+	when
+	    $visitorRtData : VisitorRTData( InWebSite == true , $visitorId : VisitorId, getInFlowStage("${flow}") == 1 )
+	    $mainEvent : MainEvent( VisitorId == $visitorId, $eventTimestamp : EventTimestamp, PageUrl.toString() == "http://testhost:8080/${flow}/page2" )
+	    not ( MainEvent ( VisitorId == $visitorId, EventTimestamp.getTime() > $eventTimestamp.getTime() ) )
+	then
+		modify($visitorRtData) {
+			setInFlow("${flow}",2)
+		};
+end
+
+rule "in-${flow}-Step3"
+	when
+	    $visitorRtData : VisitorRTData( InWebSite == true , $visitorId : VisitorId, getInFlowStage("${flow}") == 2 )
+	    $mainEvent : MainEvent( VisitorId == $visitorId, $eventTimestamp : EventTimestamp, PageUrl.toString() == "http://testhost:8080/${flow}/page3" )
+	    not ( MainEvent ( VisitorId == $visitorId, EventTimestamp.getTime() > $eventTimestamp.getTime() ) )
+	then
+		modify($visitorRtData) {
+			setInFlow("${flow}",3)
+		};
+end
+
+
+rule "in-${flow}-Step4"
+	when
+	    $visitorRtData : VisitorRTData( InWebSite == true , $visitorId : VisitorId, getInFlowStage("${flow}") == 3 )
+	    $mainEvent : MainEvent( VisitorId == $visitorId, $eventTimestamp : EventTimestamp, PageUrl.toString() == "http://testhost:8080/${flow}/page4" )
+	    not ( MainEvent ( VisitorId == $visitorId, EventTimestamp.getTime() > $eventTimestamp.getTime() ) )
+	then
+		modify($visitorRtData) {
+			setInFlow("${flow}",4)
+		};
+end
+
+
+
+

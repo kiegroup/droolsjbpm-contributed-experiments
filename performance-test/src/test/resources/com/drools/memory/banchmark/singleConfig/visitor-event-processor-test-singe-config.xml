@@ -1,0 +1,96 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <!--We set the order to -1 to make sure this place holder will override all other properties-->
+        <property name="locations">
+            <list>
+                  <value>classpath:com/drools/memory/banchmark/singleConfig/visitor-event-processor-test-single-config.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="searchSystemEnvironment" value="true" />
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    </bean>
+
+
+    <bean id="knowledgeBaseFactory" class="com.drools.memory.banchmark.singleConfig.TestKnowledgeBaseFactory">
+        <property name="drlsDir" value="${web.flow.test.drlsDir}"/>
+        <property name="drlsCreator" ref="drlsCreator"/>
+    </bean>
+    
+    <bean id="knowledgeBase"  factory-bean="knowledgeBaseFactory" factory-method="create"></bean>
+
+    <bean id="visitorCEP" class="com.drools.memory.banchmark.ruleEngine.RuleEngine">
+        <property name="configDao" ref="configDao"/>
+        <property name="configId" value="${web.flow.test.config.id}"/>
+        <property name="knowledgeBase" ref="knowledgeBase"/>
+    </bean>
+
+    <bean id="eventTransformer" class="com.drools.memory.banchmark.transform.EventTransformer">
+
+    </bean>
+
+    <bean id="visitorEventProcessor" class="com.drools.memory.banchmark.event.prcessor.VisitorEventProcessor">
+
+        <property name="visitorCEP" ref="visitorCEP"/>
+        <property name="eventTransformer" ref="eventTransformer"/>
+    </bean>
+
+    <bean id="configDao" class="com.drools.memory.banchmark.dao.impl.InMemoryConfigDao"></bean>
+
+
+    <bean id="visitorGenericEventFactory" class="com.drools.memory.banchmark.event.prcessor.VisitorGenericEventFactory"></bean>
+
+
+    <bean id="eventsExecutor" class="java.util.concurrent.ScheduledThreadPoolExecutor">
+        <constructor-arg value="${eventsExecutor.coreThreadCount}"/>
+    </bean>
+
+    <bean id="writerScheduledExecutorService" class="java.util.concurrent.ScheduledThreadPoolExecutor">
+        <constructor-arg value="${writerScheduledExecutorService.coreThreadCount}"/>
+    </bean>
+
+    <bean id="outputWriter" class="com.drools.memory.banchmark.stats.impl.OutputWriterImpl">
+          <property name="outputFileName" value="${outputWriter.outputFileName}"></property>
+          <property name="layoutPattern" value="${outputWriter.layoutPattern}"></property>
+    </bean>
+
+    <bean id="processingTimeStatsManager" class="com.drools.memory.banchmark.stats.impl.ProcessingTimeStatsManager">
+        <property name="writerScheduledExecutorService" ref="writerScheduledExecutorService"/>
+        <property name="statsFlushPeriodInMillis" value="${processingTimeStatsManager.statsFlushPeriodInMillis}"></property>
+        <property name="outputWriter" ref="outputWriter"></property>
+    </bean>
+
+    <bean id="testConfig" class="com.drools.memory.banchmark.singleConfig.VisitorEventProcessorPerformanceTestConfig">
+        <property name="numOfVisitors" value="${web.flow.test.numOfVisitors}"/>
+        <property name="mainPerVisitor" value="${web.flow.test.mainPerVisitor}"/>
+        <property name="minorPerVisitor" value="${web.flow.test.minorPerVisitor}"/>
+        <property name="delayBetweenEachRequestInSeconds" value="${web.flow.test.delayBetweenEachRequestInSeconds}"/>
+        <property name="drlsDir" value="${web.flow.test.drlsDir}"/>
+        <property name="configId" value="${web.flow.test.config.id}"/>
+    </bean>
+
+    <bean  id="drlsCreator" class="com.drools.memory.banchmark.singleConfig.DrlsCreator">
+        <property name="drlsDir" value="${web.flow.test.drlsDir}"/>
+        <property name="numOfDrls" value="${web.flow.test.numOfDrls}"/>
+    </bean>
+
+    <bean id="runAdditionalResults" class="com.drools.memory.banchmark.singleConfig.RunAdditionalResults">
+        <property name="additionalResultsFileName" value="${web.flow.test.additional.results.fileName}"/>
+        <property name="numOfVisitors" value="${web.flow.test.numOfVisitors}"/>
+        <property name="mainPerVisitor" value="${web.flow.test.mainPerVisitor}"/>
+        <property name="minorPerVisitor" value="${web.flow.test.minorPerVisitor}"/>
+        <property name="delayBetweenEachRequestInSeconds" value="${web.flow.test.delayBetweenEachRequestInSeconds}"/>
+        <property name="numOfDrls" value="${web.flow.test.numOfDrls}"/>
+    </bean>
+
+</beans>
