@@ -2,6 +2,7 @@ package org.drools.examples.twittercbr;
 
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
+import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
@@ -32,4 +33,8 @@ public class TwitterStatusListener
     public void onTrackLimitationNotice( int numberOfLimitedStatuses ) {}
     public void onScrubGeo( long userId, long upToStatusId ) {}
     public void onException( Exception ex ) {}
+
+    @Override
+    public void onStallWarning(StallWarning arg0) {
+    }
 }
