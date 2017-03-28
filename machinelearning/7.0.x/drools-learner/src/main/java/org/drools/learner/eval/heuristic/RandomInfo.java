@@ -7,38 +7,32 @@ import org.drools.learner.QuantitativeDomain;
 import org.drools.learner.eval.Categorizer;
 import org.drools.learner.eval.CondClassDistribution;
 
-public class RandomInfo extends Entropy implements Heuristic{
+public class RandomInfo extends Entropy implements Heuristic {
 
-	private static Random info_number = new Random(System.currentTimeMillis()); 
-	public RandomInfo() {
-		super();
-	}
+    private static Random infoNumber = new Random( System.currentTimeMillis() );
 
+    public RandomInfo() {
+        super();
+    }
 
-	public double getEval(Domain attr_domain) {
-		CondClassDistribution insts_by_attr = super.info_attr(attr_domain);
-		double info_gain = super.data_eval - Entropy.calc_info_attr(insts_by_attr);
-	
-		return info_number.nextDouble(); //info_gain;// /split_info;
-	}
+    public double getEval( Domain attrDomain ) {
+        CondClassDistribution instsByAttr = super.infoAttr( attrDomain );
+        double infoGain = super.dataEval - Entropy.calcInfoAttr( instsByAttr );
 
-	public double getEval_cont(Domain attr_domain) {
-		
-		double attribute_eval= 0.0d, split_info = 1.0d;
-		QuantitativeDomain trialDomain = QuantitativeDomain.createFromDomain(attr_domain);
+        return infoNumber.nextDouble(); //info_gain;// /split_info;
+    }
 
-		Categorizer visitor = new Categorizer(insts_by_target);
-		visitor.findSplits(trialDomain);
+    public double getEvalCont( Domain attrDomain ) {
 
-		domain = trialDomain;
-		sorted_instances = visitor.getSortedInstances();
-		return info_number.nextDouble();//attribute_eval / split_info;
-	}
-	
+        double attributeEval = 0.0d, splitInfo = 1.0d;
+        QuantitativeDomain trialDomain = QuantitativeDomain.createFromDomain( attrDomain );
 
-	
+        Categorizer visitor = new Categorizer( instsByTarget );
+        visitor.findSplits( trialDomain );
 
-
-
+        domain = trialDomain;
+        sortedInstances = visitor.getSortedInstances();
+        return infoNumber.nextDouble();//attribute_eval / split_info;
+    }
 
 }

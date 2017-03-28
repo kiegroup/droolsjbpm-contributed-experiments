@@ -17,7 +17,7 @@ public class PseudoFieldExtractor implements ReadAccessor {
     private Method method;
     //private Class clazz;
 
-    public PseudoFieldExtractor( Class<?> _clazz, Method m ) {
+    public PseudoFieldExtractor( Class<?> clazz, Method m ) {
         super();
         method = m;
         //clazz = _clazz;

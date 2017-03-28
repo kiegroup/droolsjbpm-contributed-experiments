@@ -1,50 +1,50 @@
 package org.drools.learner.eval;
 
-public class TreeStats{
+public class TreeStats {
 
-	//private int iteration_id;
-	private int num_terminal_nodes;
-	private double test_error;
-	private double train_error;
+    //private int iteration_id;
+    private int numTerminalNodes;
+    private double testError;
+    private double trainError;
 
-	
-	public TreeStats() {
+    public TreeStats() {
 
-	}
-	public TreeStats(double error1, double error2) {
-		train_error = error1;
-		test_error = error2;
-	}
+    }
 
-	// to set an node update with the worst cross validated error
-	public TreeStats(double error) {
-//		iteration_id = 0;
-		test_error = error;
-		train_error = 1.0d - error;
-	}
-	
-	public int getNum_terminal_nodes() {
-		return num_terminal_nodes;
-	}
+    public TreeStats( double error1, double error2 ) {
+        trainError = error1;
+        testError = error2;
+    }
 
-	public void setNum_terminal_nodes(int num_terminal_nodes) {
-		this.num_terminal_nodes = num_terminal_nodes;
-	}
+    // to set an node update with the worst cross validated error
+    public TreeStats( double error ) {
+        //		iteration_id = 0;
+        testError = error;
+        trainError = 1.0d - error;
+    }
 
-	public double getErrorEstimation() {
-		return test_error;
-	}
+    public int getNumTerminalNodes() {
+        return numTerminalNodes;
+    }
 
-	public void setErrorEstimation(double valid_cost) {
-		this.test_error = valid_cost;
-	}
+    public void setNumTerminalNodes( int numTerminalNodes ) {
+        this.numTerminalNodes = numTerminalNodes;
+    }
 
-	public double getTrainError() {
-		return train_error;
-	}
+    public double getErrorEstimation() {
+        return testError;
+    }
 
-	public void setTrainError(double resubstitution_cost) {
-		this.train_error = resubstitution_cost;
-	}
-	
+    public void setErrorEstimation( double validCost ) {
+        this.testError = validCost;
+    }
+
+    public double getTrainError() {
+        return trainError;
+    }
+
+    public void setTrainError( double resubstitutionCost ) {
+        this.trainError = resubstitutionCost;
+    }
+
 }

@@ -21,9 +21,9 @@ public class BoostedTester extends Tester {
     private ArrayList<Double> accuracy;
     private Domain targetDomain;
 
-    public BoostedTester( ArrayList<DecisionTree> forest, ArrayList<Double> _accuracy ) {
+    public BoostedTester( ArrayList<DecisionTree> forest, ArrayList<Double> accuracy ) {
         trees = forest;
-        accuracy = _accuracy;
+        this.accuracy = accuracy;
         targetDomain = forest.get( 0 ).getTargetDomain();
     }
 
@@ -33,8 +33,8 @@ public class BoostedTester extends Tester {
 
         int i = 0;
         for ( Instance instance : data.getInstances() ) {
-            Object forest_decision = this.voteOn( instance );
-            Integer result = evaluate( targetDomain, instance, forest_decision );
+            Object forestDecision = this.voteOn( instance );
+            Integer result = evaluate( targetDomain, instance, forestDecision );
 
             //flog.debug(Util.ntimes("#\n", 1)+i+ " <START> TEST: instant="+ instance + " = target "+ result);			
             if ( i % 1000 == 0 && slog.stat() != null )
@@ -67,18 +67,18 @@ public class BoostedTester extends Tester {
                 slog.debug().log( "Vote " + accuracy.get( j ) + " for " + vote + "\n" );
         }
         classification.evaluateMajority();
-        Object winner = classification.get_winner_class();
+        Object winner = classification.getWinnerClass();
         if ( slog.debug() != null )
             slog.debug().log( "Winner = " + winner + "\n" );
 
         double ratio = 0.0;
-        if ( classification.get_num_ideas() == 1 ) {
+        if ( classification.getNumIdeas() == 1 ) {
             //100 %
             ratio = 1.0d;
             return winner;
         } else {
-            double num_votes = classification.getVoteFor( winner );
-            ratio = ( num_votes / (double) trees.size() );
+            double numVotes = classification.getVoteFor( winner );
+            ratio = ( numVotes / (double) trees.size() );
             // TODO if the ratio is smaller than some number => reject
         }
         return winner;

@@ -1,62 +1,61 @@
 package org.drools.learner.tools;
 
-
 public class SimpleLogger {
 
-	public static final int STAT  = 0;
-	public static final int ERROR = 1;
-	public static final int WARN  = 2;
-	public static final int DEBUG = 3;
-	public static final int INFO  = 4;
-	
-	public static final int DEFAULT_LEVEL  = ERROR;
-	
-	public static String[] msgs = {"stat","error", "warn", "debug", "info"};
+    public static final int STAT = 0;
+    public static final int ERROR = 1;
+    public static final int WARN = 2;
+    public static final int DEBUG = 3;
+    public static final int INFO = 4;
 
-	public static final int LAST  = INFO;
+    public static final int DEFAULT_LEVEL = ERROR;
 
-	public LoggerInterface[] loggers = new LoggerInterface[LAST+1];
+    public static String[] msgs = { "stat", "error", "warn", "debug", "info" };
 
-	public SimpleLogger() {
-	
-		for (int i = 0; i <= LAST; ++i) {
-			loggers[i] = null;
-		}
-	}
+    public static final int LAST = INFO;
 
-	public SimpleLogger(int _lvl, LoggerInterface _logint) {
-		for (int i = 0; i <= LAST; ++i) {
-			if (i > _lvl)
-				loggers[i] = null;
-			else {
-				loggers[i] = _logint.clone();
-				loggers[i].setMsg(msgs[i]);
-			}
-		}
-	}
+    public LoggerInterface[] loggers = new LoggerInterface[LAST + 1];
 
-	public final LoggerInterface get(int _index) {
-		return loggers[_index];
-	}
+    public SimpleLogger() {
 
-	public final LoggerInterface stat() {
-		return loggers[STAT];
-	}
+        for ( int i = 0; i <= LAST; ++i ) {
+            loggers[i] = null;
+        }
+    }
 
-	public final LoggerInterface error() {
-		return loggers[ERROR];
-	}
+    public SimpleLogger( int lvl, LoggerInterface logint ) {
+        for ( int i = 0; i <= LAST; ++i ) {
+            if ( i > lvl )
+                loggers[i] = null;
+            else {
+                loggers[i] = logint.clone();
+                loggers[i].setMsg( msgs[i] );
+            }
+        }
+    }
 
-	public final LoggerInterface warn() {
-		return loggers[WARN];
-	}
+    public final LoggerInterface get( int index ) {
+        return loggers[index];
+    }
 
-	public final LoggerInterface debug() {
-		return loggers[DEBUG];
-	}
+    public final LoggerInterface stat() {
+        return loggers[STAT];
+    }
 
-	public final LoggerInterface info() {
-		return loggers[INFO];
-	}
+    public final LoggerInterface error() {
+        return loggers[ERROR];
+    }
+
+    public final LoggerInterface warn() {
+        return loggers[WARN];
+    }
+
+    public final LoggerInterface debug() {
+        return loggers[DEBUG];
+    }
+
+    public final LoggerInterface info() {
+        return loggers[INFO];
+    }
 
 }
