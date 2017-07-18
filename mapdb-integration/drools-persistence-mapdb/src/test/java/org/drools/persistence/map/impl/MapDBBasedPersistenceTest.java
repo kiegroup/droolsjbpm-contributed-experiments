@@ -17,12 +17,15 @@ package org.drools.persistence.map.impl;
 
 import java.util.Map;
 
+import javax.naming.InitialContext;
+
 import org.drools.persistence.mapdb.MapDBEnvironmentName;
 import org.drools.persistence.mapdb.PersistentSessionSerializer;
 import org.drools.persistence.mapdb.marshaller.MapDBPlaceholderResolverStrategy;
 import org.drools.persistence.mapdb.util.MapDBPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.Environment;
@@ -32,12 +35,27 @@ import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arjuna.ats.jta.TransactionManager;
+
 public class MapDBBasedPersistenceTest extends MapPersistenceTest {
 
     private static Logger logger = LoggerFactory.getLogger(MapDBPlaceholderResolverStrategy.class);
     
     private Map<String, Object> context;
     private DB db;
+    
+    @BeforeClass
+    public static void configureTx() {
+        try {
+            InitialContext initContext = new InitialContext();
+
+            initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+            initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+            initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     @Before
     public void setUp() throws Exception {

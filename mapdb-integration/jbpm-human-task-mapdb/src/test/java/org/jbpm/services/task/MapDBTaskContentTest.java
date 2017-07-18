@@ -17,15 +17,33 @@ package org.jbpm.services.task;
 
 import java.util.Map;
 
+import javax.naming.InitialContext;
+
 import org.jbpm.persistence.mapdb.util.MapDBProcessPersistenceUtil;
 import org.jbpm.services.task.util.MapDBTaskPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.kie.api.runtime.Environment;
+
+import com.arjuna.ats.jta.TransactionManager;
 
 public class MapDBTaskContentTest extends TaskContentTest {
 
     private Map<String, Object> context;
+
+    @BeforeClass
+    public static void configureTx() {
+        try {
+            InitialContext initContext = new InitialContext();
+
+            initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+            initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+            initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     @Before
     public void setup() {

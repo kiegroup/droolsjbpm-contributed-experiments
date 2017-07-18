@@ -18,7 +18,6 @@ package org.jbpm.persistence.mapdb.util;
 import static org.drools.persistence.mapdb.MapDBEnvironmentName.DB_OBJECT;
 import static org.kie.api.runtime.EnvironmentName.GLOBALS;
 import static org.kie.api.runtime.EnvironmentName.TRANSACTION;
-import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +32,6 @@ import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
-
-import bitronix.tm.TransactionManagerServices;
 
 public class MapDBProcessPersistenceUtil {
 
@@ -78,7 +75,6 @@ public class MapDBProcessPersistenceUtil {
         }
 
         env.set(DB_OBJECT, context.get(DB_OBJECT));
-        env.set(TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
         env.set(GLOBALS, new MapGlobalResolver());
 
         return env;

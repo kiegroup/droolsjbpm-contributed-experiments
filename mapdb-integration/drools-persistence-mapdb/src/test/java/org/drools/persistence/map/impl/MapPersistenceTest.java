@@ -15,6 +15,7 @@
  */
 package org.drools.persistence.map.impl;
 
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.persistence.mapdb.marshaller.MapDBPlaceholderResolverStrategy;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +27,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -31,15 +31,13 @@ import javax.transaction.UserTransaction;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.TimerJobFactoryType;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.core.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.impl.WorkImpl;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.persistence.mapdb.MapDBJDKTimerService;
 import org.drools.persistence.mapdb.MapDBSessionCommandService;
 import org.drools.persistence.processinstance.mapdb.MapDBWorkItemManagerFactory;
@@ -47,6 +45,8 @@ import org.jbpm.compiler.ProcessBuilderImpl;
 import org.jbpm.persistence.mapdb.MapDBProcessInstanceManagerFactory;
 import org.jbpm.persistence.mapdb.MapDBSignalManagerFactory;
 import org.jbpm.persistence.mapdb.util.MapDBProcessPersistenceUtil;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -62,17 +62,19 @@ import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.arjuna.ats.jta.TransactionManager;
 
 public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
     
@@ -80,6 +82,19 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
 
     private HashMap<String, Object> context;
     private Environment env;
+    
+    @BeforeClass
+    public static void configureTx() {
+        try {
+            InitialContext initContext = new InitialContext();
+
+            initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+            initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+            initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     public void setUp() {
         context = MapDBProcessPersistenceUtil.setupMapDB();
@@ -97,7 +112,9 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<InternalKnowledgePackage> kpkgs = getProcessWorkItems();
-        ((InternalKnowledgeBase) kbase).addPackages( kpkgs );
+        for (InternalKnowledgePackage kpkg : kpkgs) {
+            ((InternalKnowledgeBase) kbase).addPackage( kpkg );
+        }
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
@@ -223,7 +240,9 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<InternalKnowledgePackage> kpkgs = getProcessWorkItems();
-        ((InternalKnowledgeBase) kbase).addPackages( kpkgs );
+        for (InternalKnowledgePackage kpkg : kpkgs) {
+            ((InternalKnowledgeBase) kbase).addPackage( kpkg );
+        }
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
@@ -427,7 +446,7 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         processBuilder.buildProcess( process,
                                      null );
         List<InternalKnowledgePackage> list = new ArrayList<>();
-        for (KnowledgePackage kpkg : packageBuilder.getKnowledgePackages()) {
+        for (KiePackage kpkg : packageBuilder.getKnowledgePackages()) {
             list.add( (InternalKnowledgePackage) kpkg );
         }
         return list;
@@ -645,8 +664,10 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         config.setOption( TimerJobFactoryOption.get("mapdb") );
 
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = getProcessTimer();
-        ((InternalKnowledgeBase) kbase).addKnowledgePackages(kpkgs);;
+        Collection<KiePackage> kpkgs = getProcessTimer();
+        for (KiePackage kpkg : kpkgs) {
+            ((InternalKnowledgeBase) kbase).addPackage( kpkg );
+        }        
 
         MapDBSessionCommandService service = new MapDBSessionCommandService( kbase,
                                                                                config,
@@ -682,7 +703,7 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         assertNull( processInstance );
     }
 
-    private List<KnowledgePackage> getProcessTimer() {
+    private List<KiePackage> getProcessTimer() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -727,7 +748,7 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        List<KnowledgePackage> list = new ArrayList<>();
+        List<KiePackage> list = new ArrayList<>();
         list.add( packageBuilder.getPackage() );
         return list;
     }
@@ -752,8 +773,10 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         config.setOption( TimerJobFactoryOption.get("mapdb") );
         
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = getProcessTimer2();
-        ((InternalKnowledgeBase) kbase).addKnowledgePackages( kpkgs );
+        Collection<KiePackage> kpkgs = getProcessTimer2();
+        for (KiePackage kpkg : kpkgs) {
+            ((InternalKnowledgeBase) kbase).addPackage( kpkg );
+        }
 
         MapDBSessionCommandService service = new MapDBSessionCommandService( kbase,
                                                                                config,
@@ -775,7 +798,7 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         assertNull( processInstance );
     }
 
-    private Collection<KnowledgePackage> getProcessTimer2() {
+    private Collection<KiePackage> getProcessTimer2() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );

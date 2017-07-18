@@ -22,18 +22,21 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.naming.InitialContext;
+
 import org.drools.persistence.mapdb.KnowledgeStoreServiceImpl;
 import org.jbpm.persistence.mapdb.util.MapDBProcessPersistenceUtil;
 import org.jbpm.services.task.commands.TaskCommandExecutorImpl;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.impl.command.CommandBasedTaskService;
+import org.jbpm.services.task.mapdb.persistence.TaskTransactionInterceptor;
 import org.jbpm.services.task.persistence.MapDBTaskPersistenceContextManager;
-import org.jbpm.services.task.persistence.TaskTransactionInterceptor;
 import org.jbpm.services.task.wih.NonManagedLocalHTWorkItemHandler;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -50,10 +53,25 @@ import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 
+import com.arjuna.ats.jta.TransactionManager;
+
 public class TestTaskAndTimers {
 
     private HashMap<String, Object> context;
 
+    @BeforeClass
+    public static void configureTx() {
+        try {
+            InitialContext initContext = new InitialContext();
+
+            initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+            initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+            initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     @Before
     public void setUp() {
         this.context = MapDBProcessPersistenceUtil.setupMapDB();

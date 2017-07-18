@@ -52,7 +52,11 @@ public class MapDBPersistenceContext implements PersistenceContext {
     }
     
     @Override
-    public PersistentSession persist(PersistentSession session) {
+    public PersistentSession persist(PersistentSession session) {        
+        return persist(session, false);
+    }
+    
+    public PersistentSession persist(PersistentSession session, boolean skipUpdatableSet) {
         long id;
         if (session.getId() == null || session.getId() == -1) {
             id = nextSessionId.incrementAndGet();
@@ -60,7 +64,9 @@ public class MapDBPersistenceContext implements PersistenceContext {
         } else {
             id = session.getId();
         }
-        TransactionManagerHelper.addToUpdatableSet(txm, session);
+        if (!skipUpdatableSet) {
+            TransactionManagerHelper.addToUpdatableSet(txm, session);
+        }
         sessionMap.put(id, session); //to be placed in map by triggerupdatesync
         return session;
     }
@@ -126,9 +132,15 @@ public class MapDBPersistenceContext implements PersistenceContext {
     }
 
     @Override
-    public PersistentWorkItem merge(PersistentWorkItem workItem) {
+    public PersistentWorkItem merge(PersistentWorkItem workItem) {        
+        return merge(workItem, false);
+    }
+    
+    public PersistentWorkItem merge(PersistentWorkItem workItem, boolean skipUpdatableSet) {
         workItemMap.put(workItem.getId(), workItem);
-        TransactionManagerHelper.addToUpdatableSet(txm, workItem);
+        if (!skipUpdatableSet) {
+            TransactionManagerHelper.addToUpdatableSet(txm, workItem);
+        }
         return workItem;
     }
 }

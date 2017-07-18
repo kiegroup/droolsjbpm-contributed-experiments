@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.jbpm.services.task.persistence;
+package org.jbpm.services.task.mapdb.persistence;
 
 import java.lang.reflect.Constructor;
 import java.util.Set;
@@ -30,6 +30,10 @@ import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerFactory;
 import org.drools.persistence.api.TransactionManagerHelper;
 import org.jbpm.services.task.commands.TaskCommand;
+import org.jbpm.services.task.persistence.MapDBElement;
+import org.jbpm.services.task.persistence.MapDBTaskPersistenceContext;
+import org.jbpm.services.task.persistence.MapDBTaskPersistenceContextManager;
+import org.jbpm.services.task.persistence.TaskTransactionHelper;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Context;
@@ -60,7 +64,7 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
             for (Batch batch : ( (InternalExecutable) executable ).getBatches()) {
                 for (Command command : batch.getCommands()) {
                     if (command instanceof TaskCommand) {
-                        Object result = ((ExecutableCommand) command).execute( TaskTransactionInterceptor.this.createContext() );
+                        Object result = ((ExecutableCommand) command).execute( createContext() );
                         context.set("Result", result);
                     } else {
                         throw new IllegalArgumentException("Task service can only execute task commands");
@@ -75,7 +79,8 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
     private TaskPersistenceContextManager  tpm;
     
     public TaskTransactionInterceptor(Environment environment) {
-        initTransactionManager(environment);
+        initTransactionManager(environment);  
+        
     }
     
     @Override
