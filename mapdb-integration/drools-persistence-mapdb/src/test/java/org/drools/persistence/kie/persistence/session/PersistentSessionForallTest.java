@@ -21,10 +21,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.naming.InitialContext;
+
 import org.drools.compiler.Person;
 import org.drools.persistence.mapdb.util.MapDBPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -35,12 +38,27 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
+import com.arjuna.ats.jta.TransactionManager;
+
 public class PersistentSessionForallTest {
 
     private KieSession kieSession;
 
     private Map<String, Object> context;
     private Environment env;
+    
+    @BeforeClass
+    public static void configureTx() {
+        try {
+            InitialContext initContext = new InitialContext();
+
+            initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+            initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+            initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Before
     public void setUp() throws Exception {

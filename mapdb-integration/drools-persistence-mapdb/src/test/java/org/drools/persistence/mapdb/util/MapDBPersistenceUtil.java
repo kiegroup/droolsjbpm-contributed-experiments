@@ -18,7 +18,6 @@ package org.drools.persistence.mapdb.util;
 import static org.drools.persistence.mapdb.MapDBEnvironmentName.DB_OBJECT;
 import static org.kie.api.runtime.EnvironmentName.GLOBALS;
 import static org.kie.api.runtime.EnvironmentName.TRANSACTION;
-import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
 
 import java.io.File;
 import java.util.HashMap;
@@ -29,12 +28,9 @@ import javax.transaction.UserTransaction;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.persistence.mapdb.KnowledgeStoreServiceImpl;
-import org.drools.persistence.mapdb.MapDBUserTransaction;
 import org.kie.api.runtime.Environment;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
-
-import bitronix.tm.TransactionManagerServices;
 
 public class MapDBPersistenceUtil {
 
@@ -68,7 +64,6 @@ public class MapDBPersistenceUtil {
         }
 
         env.set(DB_OBJECT, context.get(DB_OBJECT));
-        env.set(TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
         env.set(GLOBALS, new MapGlobalResolver());
 
         return env;

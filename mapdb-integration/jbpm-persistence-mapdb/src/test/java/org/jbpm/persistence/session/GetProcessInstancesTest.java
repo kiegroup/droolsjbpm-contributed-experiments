@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.naming.InitialContext;
-import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.drools.persistence.mapdb.MapDBEnvironmentName;
@@ -40,6 +39,7 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -51,6 +51,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
+
+import com.arjuna.ats.jta.TransactionManager;
 
 /**
  * This test looks at the behavior of the  {@link JPAProcessInstanceManager} 
@@ -65,6 +67,19 @@ public class GetProcessInstancesTest extends AbstractBaseTest {
     private KieBase kbase;
     private long sessionId;
     
+    @BeforeClass
+    public static void configureTx() {
+        try {
+            InitialContext initContext = new InitialContext();
+
+            initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+            initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+            initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Before
     public void setUp() throws Exception {
         context = MapDBProcessPersistenceUtil.setupMapDB();
@@ -197,7 +212,7 @@ public class GetProcessInstancesTest extends AbstractBaseTest {
         kbuilder.add(ResourceFactory.newClassPathResource("processinstance/HelloWorld.rf"), ResourceType.DRF);
         assertFalse(kbuilder.getErrors().toString(), kbuilder.hasErrors());
 
-        return kbuilder.newKnowledgeBase();
+        return kbuilder.newKieBase();
     }
     
     private KieSession reloadKnowledgeSession() {

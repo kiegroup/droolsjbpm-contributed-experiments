@@ -28,12 +28,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
+
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.drools.persistence.mapdb.util.MapDBPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -47,11 +50,26 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
 
+import com.arjuna.ats.jta.TransactionManager;
+
 public class MapDBPersistenceTraitTest {
 
     private Map<String, Object> context;
     private Environment env;
 
+    @BeforeClass
+    public static void configureTx() {
+        try {
+            InitialContext initContext = new InitialContext();
+
+            initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+            initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+            initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     @Before
     public void setUp() throws Exception {
         context = MapDBPersistenceUtil.setupMapDB();

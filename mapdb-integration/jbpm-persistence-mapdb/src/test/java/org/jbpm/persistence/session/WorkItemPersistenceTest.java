@@ -30,16 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.InitialContext;
+
 import org.drools.compiler.Person;
 import org.drools.core.WorkItemHandlerNotFoundException;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.process.core.ParameterDefinition;
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.process.core.datatype.impl.type.StringDataType;
-import org.drools.core.process.core.impl.ParameterDefinitionImpl;
-import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.drools.persistence.mapdb.MapDBEnvironmentName;
 import org.jbpm.persistence.api.PersistentProcessInstance;
@@ -48,7 +44,14 @@ import org.jbpm.persistence.mapdb.PersistentProcessInstanceSerializer;
 import org.jbpm.persistence.mapdb.ProcessInstanceKeySerializer;
 import org.jbpm.persistence.mapdb.ProcessKey;
 import org.jbpm.persistence.mapdb.util.MapDBProcessPersistenceUtil;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.core.impl.ParameterDefinitionImpl;
+import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -61,6 +64,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -71,12 +75,13 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.arjuna.ats.jta.TransactionManager;
 
 public class WorkItemPersistenceTest extends AbstractBaseTest {
 
@@ -87,6 +92,19 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
     
     static {
         ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
+    }
+    
+    @BeforeClass
+    public static void configureTx() {
+        try {
+            InitialContext initContext = new InitialContext();
+
+            initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+            initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+            initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     @Before
