@@ -35,19 +35,11 @@ import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class KnowledgeStoreServiceImpl
     implements
     KieStoreServices, Service {
 
-    static {
-        ServiceRegistryImpl.getInstance().addDefault(
-                KieStoreServices.class, 
-                KnowledgeStoreServiceImpl.class.getName());
-    }
-    
-    
     private Class< ? extends CommandExecutor>               commandServiceClass;
     private Class< ? extends WorkItemManagerFactory>        workItemManagerFactoryClass;
 

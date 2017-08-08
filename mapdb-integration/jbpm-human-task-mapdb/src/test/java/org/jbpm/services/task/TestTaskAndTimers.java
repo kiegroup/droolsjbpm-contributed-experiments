@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
 
-import org.drools.persistence.mapdb.KnowledgeStoreServiceImpl;
 import org.jbpm.persistence.mapdb.util.MapDBProcessPersistenceUtil;
 import org.jbpm.services.task.commands.TaskCommandExecutorImpl;
 import org.jbpm.services.task.events.TaskEventSupport;
@@ -86,7 +85,6 @@ public class TestTaskAndTimers {
     @Test
     public void testPersistentTasks() {
         KieServices ks = KieServices.Factory.get();
-        Assert.assertNotNull(new KnowledgeStoreServiceImpl()); //make sure services are loaded
         KieBase kbase = createKieBase(ks);
         Properties userGroups = new Properties();
         userGroups.setProperty("mary", "g1");
@@ -100,7 +98,6 @@ public class TestTaskAndTimers {
     @Test
     public void testPersistenceTasksConcurrent() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        Assert.assertNotNull(new KnowledgeStoreServiceImpl()); //make sure services are loaded
         final KieBase kbase = createKieBase(ks);
         int size = 10;  
         Properties userGroups = new Properties();

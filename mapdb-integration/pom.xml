@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.1.0-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>mapdb-integration</artifactId>
@@ -32,6 +32,8 @@
     <module>jbpm-persistence-mapdb</module>
     <module>jbpm-human-task-mapdb</module>
     <module>jbpm-runtime-manager-mapdb</module>
+    <module>jbpm-services-mapdb-impl</module>
+    <module>kie-server-jbpm-mapdb</module>
   </modules>
 
   <properties>
@@ -54,6 +56,16 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>jbpm-human-task-mapdb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>jbpm-runtime-manager-mapdb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>jbpm-services-mapdb-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -163,8 +175,55 @@
       </dependency>
       <dependency>
         <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-services-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-kie-services</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
         <artifactId>jbpm-test-util</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-audit</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-document</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-ci</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.server</groupId>
+        <artifactId>kie-server-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.server</groupId>
+        <artifactId>kie-server-services-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.server</groupId>
+        <artifactId>kie-server-services-jbpm</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.4</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
