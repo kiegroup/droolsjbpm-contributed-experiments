@@ -643,7 +643,7 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
 
         processBuilder.buildProcess( process,
                                      null );
-        return packageBuilder.getPackage();
+        return packageBuilder.getPackages()[0];
     }
 
     @Test
@@ -749,7 +749,7 @@ public class MapDBSessionCommandServiceTest extends AbstractBaseTest {
         processBuilder.buildProcess( process,
                                      null );
         List<KiePackage> list = new ArrayList<>();
-        list.add( packageBuilder.getPackage() );
+        list.add( packageBuilder.getPackages()[0] );
         return list;
     }
 

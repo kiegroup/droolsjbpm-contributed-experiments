@@ -26,10 +26,7 @@ import javax.transaction.UserTransaction;
 
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.persistence.mapdb.KnowledgeStoreServiceImpl;
 import org.kie.api.runtime.Environment;
-import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
@@ -44,8 +41,7 @@ public class MapDBProcessPersistenceUtil {
     }
     
     public static HashMap<String, Object> setupMapDB() {
-        new KnowledgeStoreServiceImpl(); //TODO this reference is to make sure it registers the store service
-        ServiceRegistryImpl.getInstance().addDefault(CorrelationKeyFactory.class, "org.jbpm.persistence.correlation.MapDBCorrelationKeyFactory");
+        
         HashMap<String, Object> context = new HashMap<>();
         DB db = makeDB();
         context.put(DB_OBJECT, db);
