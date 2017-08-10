@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 //import org.drools.spi.Extractor;ReadAccessor
 import org.drools.core.spi.ReadAccessor;
@@ -21,6 +22,7 @@ public class ClassVisitor {
     private static SimpleLogger slog = LoggerFactory.getSysOutLogger( ClassVisitor.class, SimpleLogger.WARN );
 
     //private static ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    private ClassFieldAccessorStore store = new ClassFieldAccessorStore();
     private static ClassFieldAccessorCache cache = new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() );
 
     private DomainAlgo domainType = Learner.DEFAULT_DOMAIN;
@@ -33,17 +35,19 @@ public class ClassVisitor {
     private boolean TARGET_FOUND;
     private boolean MULTIPLE_TARGETS = false;
 
-    public ClassVisitor( DomainAlgo domainType, DataType dataType ) {
-        this.domainType = domainType;
-        this.dataType = dataType;
+    public ClassVisitor() {
+        store.setClassFieldAccessorCache( cache );
+    }
 
+    public ClassVisitor( DomainAlgo domainType, DataType dataType ) {
+        this(null, domainType, dataType);
     }
 
     public ClassVisitor( Schema classSchema, DomainAlgo domainType, DataType dataType ) {
+        this();
+        this.classSchema = classSchema;
         this.domainType = domainType;
         this.dataType = dataType;
-
-        this.classSchema = classSchema;
     }
 
     public void visit() throws FeatureNotSupported {
@@ -154,7 +158,7 @@ public class ClassVisitor {
 
                     structure.addField( field, dataType );
 
-                    ReadAccessor fieldExtractor = cache.getReadAcessor( new ClassFieldReader( objClass.getClass().getName(), fieldName ) );
+                    ReadAccessor fieldExtractor = store.getReader( objClass, fieldName );
                     classSchema.putExtractor( fieldReferenceName, fieldExtractor );
                     structure.addField( field, dataType );
 

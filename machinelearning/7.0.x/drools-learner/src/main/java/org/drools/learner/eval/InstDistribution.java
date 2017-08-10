@@ -30,7 +30,7 @@ public class InstDistribution extends ClassDistribution {
 
         instanceByClass = new Hashtable<Object, List<Instance>>( targetDomain.getCategoryCount() );
         for ( int t = 0; t < targetDomain.getCategoryCount(); t++ ) {
-            // mireynol - FWIW this variable was formerly named obj_t, just guessing at the meaning
+            // mireynol - FWIW this variable was formerly named obj_t, just guessing at the meaning FIXME
             Object objType = targetDomain.getCategory( t );
             instanceByClass.put( objType, new ArrayList<Instance>() );
         }

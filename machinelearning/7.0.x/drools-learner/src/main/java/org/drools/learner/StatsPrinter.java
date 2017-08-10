@@ -1,5 +1,6 @@
 package org.drools.learner;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class StatsPrinter {
     }
 
     public static void print2file( StringBuffer sb, String fileSignature, boolean append ) {
-
+        System.out.println(sb);
         //String dataFileName = "src/main/rules/"+_packageNames+"/"+ fileName; 
 
         if ( !fileSignature.endsWith( ".stats" ) )
@@ -69,7 +70,9 @@ public class StatsPrinter {
         System.out.println( "printing stats:" + fileSignature );
 
         try {
-            StatsPrinter.print( sb, new FileWriter( fileSignature, append ) );
+            File file = new File( fileSignature);
+            System.out.println( file.getAbsolutePath() );
+            StatsPrinter.print( sb, new FileWriter( file, append ) );
         } catch ( FileNotFoundException e ) {
             // TODO Auto-generated catch block
             e.printStackTrace();

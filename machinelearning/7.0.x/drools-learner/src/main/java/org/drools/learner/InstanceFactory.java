@@ -3,25 +3,22 @@ package org.drools.learner;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.learner.builder.Learner.DataType;
 import org.drools.learner.tools.ClassStructure;
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
 import org.drools.core.spi.ReadAccessor;
+import org.kie.api.runtime.KieSession;
 
 public class InstanceFactory {
 
     private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger( InstanceFactory.class, SimpleLogger.DEFAULT_LEVEL );
     private static SimpleLogger slog = LoggerFactory.getSysOutLogger( InstanceFactory.class, SimpleLogger.DEFAULT_LEVEL );
 
-    private WorkingMemory session;
     private Schema schema;
 
-    public InstanceFactory( WorkingMemory session, Schema schema ) {
-        this.session = session;
+    public InstanceFactory( Schema schema ) {
         this.schema = schema;
     }
 

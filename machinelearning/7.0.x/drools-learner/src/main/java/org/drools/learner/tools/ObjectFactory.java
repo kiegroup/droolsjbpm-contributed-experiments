@@ -3,6 +3,8 @@ package org.drools.learner.tools;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +18,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ObjectFactory {
 
-    private StatefulKnowledgeSession wm = null;
     private Class<?> objClazz;
     private ArrayList<Field> clazzFields;
     private HashMap<String, Integer> fieldSequences;
@@ -41,9 +42,8 @@ public class ObjectFactory {
         return null;
     }
 
-    public static List<Object> insertStructuredObjects( Class<?> objClass, StatefulKnowledgeSession session, String filename ) {
+    public static List<Object> getStructuredObjects( Class<?> objClass, String filename ) {
         ObjectFactory classFactory = new ObjectFactory( objClass );
-        classFactory.wm = session;
         try {
             //return class_factory.fromFileAsObject("src/main/java/org/drools"+filename, ",");
             return classFactory.fromFileAsStructuredObject( filename, "," );
@@ -66,25 +66,32 @@ public class ObjectFactory {
 
         List<Object> objRead = new ArrayList<Object>();
 
-        /**/
-        File file = new File( filename );
-        if ( !file.exists() ) {
+//        /**/
+//        File file = new File( filename );
+//        if ( !file.exists() ) {
+//            System.out.println( "where is the file ? " + filename );
+//            //System.exit(0);
+//
+//            file = new File( "src/main/java/org/drools/examples/learner/" + filename );
+//            if ( !file.exists() ) {
+//                file = new File( "drools-examples/drools-examples-drl/src/main/java/org/drools/examples/learner/" + filename );
+//
+//                System.out.println( "where is still the file ? " + file );
+//                if ( !file.exists() ) {
+//                    System.out.println( "where is still still the file ? " + file );
+//                    System.exit( 0 );
+//                }
+//            }
+//        }
+//
+//        BufferedReader reader = new BufferedReader( new FileReader( file ) );
+        InputStream is = this.getClass().getResourceAsStream( "/" + filename);
+        if ( is == null )
+        {
             System.out.println( "where is the file ? " + filename );
-            //System.exit(0);
-
-            file = new File( "src/main/java/org/drools/examples/learner/" + filename );
-            if ( !file.exists() ) {
-                file = new File( "drools-examples/drools-examples-drl/src/main/java/org/drools/examples/learner/" + filename );
-
-                System.out.println( "where is still the file ? " + file );
-                if ( !file.exists() ) {
-                    System.out.println( "where is still still the file ? " + file );
-                    System.exit( 0 );
-                }
-            }
         }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
-        BufferedReader reader = new BufferedReader( new FileReader( file ) );
         /**/
 
         //		BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -133,10 +140,13 @@ public class ObjectFactory {
         String line;
         while ( ( line = reader.readLine() ) != null ) {
             line = line.trim();
-            if ( line.length() == 0 )
+            if ( line.length() == 0 ) {
                 break;
-            if ( line.endsWith( "." ) )
-                line = line.substring( 0, line.length() - 1 );
+            }
+            if ( line.endsWith( "." ) ) {
+                line = line.substring( 0,
+                                       line.length() - 1 );
+            }
             List<String> fieldValues = Arrays.asList( line.split( separator ) );
             Object element = this.readStructured( this.objClazz, fieldValues );
             //System.out.println("New object "+ element);
@@ -210,7 +220,6 @@ public class ObjectFactory {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        wm.insert( element );
         return element;
     }
 
@@ -378,8 +387,4 @@ public class ObjectFactory {
         return Double.parseDouble( data );
     }
 
-    public static void insert( StatefulKnowledgeSession session, Object r ) {
-        session.insert( r );
-
-    }
 }

@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.core.WorkingMemory;
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
+import org.kie.api.runtime.KieSession;
 
 public class InstanceList {
 
@@ -19,10 +19,10 @@ public class InstanceList {
     private ArrayList<Instance> instances;
     private InstanceFactory factory = null;
 
-    public InstanceList( Schema schema, WorkingMemory session ) {
+    public InstanceList( Schema schema ) {
         this.schema = schema;
         this.instances = new ArrayList<Instance>();
-        this.factory = new InstanceFactory( session, schema );
+        this.factory = new InstanceFactory( schema );
     }
 
     // copy ctor

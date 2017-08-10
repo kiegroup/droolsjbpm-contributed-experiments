@@ -24,7 +24,7 @@ public class RulePrinter {
     private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger( RulePrinter.class, SimpleLogger.WARN );
     private static SimpleLogger slog = LoggerFactory.getSysOutLogger( RulePrinter.class, SimpleLogger.DEBUG );
 
-    public static Reader readRules( DecisionTree learnedDt ) {
+    public static String readRules( DecisionTree learnedDt ) {
 
         RulePrinter myPrinter = new RulePrinter(); //bocuk.getNum_fact_trained()
         myPrinter.setBoundOnNumRules( Util.MAX_NUM_RULES );
@@ -36,7 +36,7 @@ public class RulePrinter {
             myPrinter.write2File( allRules, false, Util.DRL_DIRECTORY + learnedDt.getSignature() );
         }
 
-        return new StringReader( allRules );
+        return allRules;
     }
 
     private Class<?> ruleClazz;

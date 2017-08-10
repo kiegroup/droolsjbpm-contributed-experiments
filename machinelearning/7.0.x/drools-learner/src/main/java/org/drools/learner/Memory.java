@@ -2,22 +2,18 @@ package org.drools.learner;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
-import org.drools.core.WorkingMemory;
 import org.drools.learner.builder.Learner.DataType;
 import org.drools.learner.builder.Learner.DomainAlgo;
 import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.Util;
+import org.kie.api.runtime.KieSession;
 
 public class Memory {
-
-    // TODO pass a list of classes, and get all the object from that class
-    // by default structured
-    public static Memory createFromWorkingMemory( WorkingMemory session, Class<?> clazz, DomainAlgo domain, DataType data ) throws FeatureNotSupported {
+    public static Memory createFromObjects( List<Object> objects, Class<?> clazz, DomainAlgo domain, DataType data ) throws FeatureNotSupported {
         // if mem == null
         Memory mem = new Memory();
-
-        mem.session = session;
 
         mem.setClassToClassify( clazz );
         // create schema from clazz
@@ -31,13 +27,15 @@ public class Memory {
         }
 
         // create a instance list that can hold objects from our schema
-        mem.instances.put( clazz, new InstanceList( instSchema, session ) );
+        mem.instances.put( clazz, new InstanceList( instSchema ) );
 
         /*
          * do they create an ObjectTypeNode for each new inserted object type?
          * even if there is no rule exists. No probably they do not
          */
-        Iterator<Object> itObject = (Iterator<Object>) session.iterateObjects(); // how can i get the object type nodes
+
+
+        Iterator<Object> itObject = objects.iterator(); // how can i get the object type nodes
         while ( itObject.hasNext() ) {
             Object obj = itObject.next();
             // validating in the the factory during instantiation
@@ -47,9 +45,6 @@ public class Memory {
 
         return mem;
     }
-
-    // Drools memory
-    private WorkingMemory session;
     //// class specification
     //private Schema schema;
     Class<?> clazzToClassify;
