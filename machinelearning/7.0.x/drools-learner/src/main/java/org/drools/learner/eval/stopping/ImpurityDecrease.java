@@ -11,22 +11,21 @@ public class ImpurityDecrease implements StoppingCriterion {
         numPrunned = 0;
     }
 
-    public ImpurityDecrease( double beta ) {
+    public ImpurityDecrease(double beta) {
         numPrunned = 0;
         this.beta = beta;
     }
 
-    public boolean stop( InformationContainer bestAttrEval ) {
-        if ( bestAttrEval.attributeEval < beta ) {
+    public boolean stop(InformationContainer bestAttrEval) {
+        if (bestAttrEval.attributeEval < beta) {
             numPrunned++;
             return true;
-        } else
+        } else {
             return false;
-
+        }
     }
 
     public int getNumPruned() {
         return numPrunned;
     }
-
 }

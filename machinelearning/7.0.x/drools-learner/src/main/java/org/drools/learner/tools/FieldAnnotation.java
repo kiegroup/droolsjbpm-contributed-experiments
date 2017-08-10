@@ -5,9 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD, ElementType.FIELD } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.FIELD})
 public @interface FieldAnnotation {
+
     int readingSeq() default 0;
 
     boolean ignore() default false;
@@ -18,5 +19,5 @@ public @interface FieldAnnotation {
 
     boolean discrete() default true;
 
-    String[] values() default { "bok" };
+    String[] values() default {"bok"};
 }

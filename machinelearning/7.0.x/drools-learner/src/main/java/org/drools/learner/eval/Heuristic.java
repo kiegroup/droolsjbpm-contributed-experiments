@@ -7,11 +7,11 @@ import org.drools.learner.Instance;
 
 public interface Heuristic {
 
-    public void init( InstDistribution instsByTarget );
+    public void init(InstDistribution instsByTarget);
 
-    public double getEval( Domain attrDomain );
+    public double getEval(Domain attrDomain);
 
-    public double getEvalCont( Domain attrDomain );
+    public double getEvalCont(Domain attrDomain);
 
     public Domain getDomain();
 
@@ -24,5 +24,4 @@ public interface Heuristic {
     //	
     //	public abstract double calc_info_attr( CondClassDistribution instances_by_attr);
     //	public abstract double calc_info(ClassDistribution quantity_by_class);
-
 }

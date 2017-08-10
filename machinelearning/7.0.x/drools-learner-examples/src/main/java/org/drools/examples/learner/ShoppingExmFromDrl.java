@@ -1,12 +1,8 @@
 package org.drools.examples.learner;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-
 public class ShoppingExmFromDrl {
-	
-	public static final void main(final String[] args) throws Exception {
+
+    public static final void main(final String[] args) throws Exception {
 //        //read in the source
 //        //final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
 //    	final Reader source = new InputStreamReader( Purchase.class.getResourceAsStream( "purchase_c45_one.drl" ) );
@@ -54,5 +50,4 @@ public class ShoppingExmFromDrl {
 //
 //        session.dispose();
     }
-
 }

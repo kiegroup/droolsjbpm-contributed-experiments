@@ -8,21 +8,21 @@ import org.drools.learner.builder.Learner;
 
 public interface ErrorEstimate {
 
-    public void validate( Learner trainer, InstanceList instances );
+    public void validate(Learner trainer, InstanceList instances);
 
     public int getEstimatorSize();
 
-    public DecisionTree getEstimator( int i );
+    public DecisionTree getEstimator(int i);
 
-    public ArrayList<InstanceList> getSets( int id );
+    public ArrayList<InstanceList> getSets(int id);
 
-    public int getTestDataSize( int i );
+    public int getTestDataSize(int i);
 
-    public int getTrainingDataSize( int i );
+    public int getTrainingDataSize(int i);
 
     public double getErrorEstimate();
 
     public double getAlphaEstimate();
 
-    public void setTrainingDataSize( int trainingDataSize );
+    public void setTrainingDataSize(int trainingDataSize);
 }

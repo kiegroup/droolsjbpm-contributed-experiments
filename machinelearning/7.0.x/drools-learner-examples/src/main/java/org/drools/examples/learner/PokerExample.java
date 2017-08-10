@@ -1,23 +1,19 @@
 package org.drools.examples.learner;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import org.drools.learner.DecisionTree;
-import org.drools.learner.StatsPrinter;
 import org.drools.learner.builder.DecisionTreeFactory;
-import org.drools.learner.eval.stopping.StoppingCriterion;
 import org.drools.learner.tools.ObjectFactory;
-import org.drools.learner.tools.ReteStatistics;
 import org.drools.learner.tools.RulePrinter;
-import org.drools.learner.tools.Util;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 public class PokerExample {
-	
-	public static final void main(final String[] args) throws Exception {
-		long start_time = System.currentTimeMillis();
+
+    public static final void main(final String[] args) throws Exception {
+        long start_time = System.currentTimeMillis();
 //		// my rule base
 //		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 //		//ruleBase.addPackage( pkg );
@@ -39,97 +35,96 @@ public class PokerExample {
 //		for (Object r : facts) {
 //			session.insert(r);
 //		}
-		
+
 //		final StatefulSession test_session = ruleBase.newStatefulSession();
 //		List<Object> test_facts = ObjectFactory.getObjects(obj_class, new String("data/poker/poker-hand-testing.data.txt"));
 //		for (Object r : test_facts) {
 //			test_session.insert(r);
 //		}
 
-		String inputFile = new String("data/poker/poker-train.txt");
-		Class<?> obj_class = Poker.class;
-		List<Object> objects = ObjectFactory.getObjects(obj_class, inputFile);
+        String       inputFile = new String("data/poker/poker-train.txt");
+        Class<?>     obj_class = Poker.class;
+        List<Object> objects   = ObjectFactory.getObjects(obj_class, inputFile);
 
-		// instantiate a learner for a specific object class and pass session to train
-		DecisionTree decision_tree; int ALGO = 141;//241;//341
-		/* 
+        // instantiate a learner for a specific object class and pass session to train
+        DecisionTree decision_tree;
+        int          ALGO = 141;//241;//341
+        /*
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
 		 * Entropy	xx1, Gain	xx2
 		 */
-		switch (ALGO) {
-		case 111:
-			decision_tree  = DecisionTreeFactory.createSingleID3E(objects, obj_class);
-			break;
-		case 112:
-			decision_tree  = DecisionTreeFactory.createSingleID3G(objects, obj_class);
-			break;
-		case 121: 
-			decision_tree  = DecisionTreeFactory.createSingleC45E(objects, obj_class);
-			break;
-		case 122: 
-			decision_tree  = DecisionTreeFactory.createSingleC45G(objects, obj_class);
-			break;
-		case 123: 
-			decision_tree  = DecisionTreeFactory.createSingleC45EWorst(objects, obj_class);
-			break;
-		case 124: 
-			decision_tree  = DecisionTreeFactory.createSingleC45Random(objects, obj_class);
-			break;
-		case 131: 
-			decision_tree  = DecisionTreeFactory.createSingleC45EStop(objects, obj_class);
-			break;
-		case 132: 
-			decision_tree  = DecisionTreeFactory.createSingleC45GStop(objects, obj_class);
-			break;
-		case 141: 
-			decision_tree  = DecisionTreeFactory.createSingleC45EPrunStop(objects, obj_class);
-			break;
-		case 142: 
-			decision_tree  = DecisionTreeFactory.createSingleC45GPrunStop(objects, obj_class);
-			break;
-		case 221:
-			decision_tree  = DecisionTreeFactory.createBagC45E(objects, obj_class);
-			break;		
-		case 222:
-			decision_tree  = DecisionTreeFactory.createBagC45G(objects, obj_class);
-			break;	
-		case 231:
-			decision_tree  = DecisionTreeFactory.createBagC45EStop(objects, obj_class);
-			break;		
-		case 232:
-			decision_tree  = DecisionTreeFactory.createBagC45GStop(objects, obj_class);
-			break;	
-		case 241:
-			decision_tree  = DecisionTreeFactory.createBagC45EPrunStop(objects, obj_class);
-			break;		
-		case 242:
-			decision_tree  = DecisionTreeFactory.createBagC45GPrunStop(objects, obj_class);
-			break;
-		case 321:
-			decision_tree  = DecisionTreeFactory.createBoostC45E(objects, obj_class);
-			break;		
-		case 322:
-			decision_tree  = DecisionTreeFactory.createBoostC45G(objects, obj_class);
-			break;	
-		case 331:
-			decision_tree  = DecisionTreeFactory.createBoostC45EStop(objects, obj_class);
-			break;		
-		case 332:
-			decision_tree  = DecisionTreeFactory.createBoostC45GStop(objects, obj_class);
-			break;	
-		case 341:
-			decision_tree  = DecisionTreeFactory.createBoostC45EPrunStop(objects, obj_class);
-			break;		
-		case 342:
-			decision_tree  = DecisionTreeFactory.createBoostC45GPrunStop(objects, obj_class);
-			break;
-		default:
-			decision_tree  = DecisionTreeFactory.createSingleID3E(objects, obj_class);
-		
-		}
-		
-		
+        switch (ALGO) {
+            case 111:
+                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
+                break;
+            case 112:
+                decision_tree = DecisionTreeFactory.createSingleID3G(objects, obj_class);
+                break;
+            case 121:
+                decision_tree = DecisionTreeFactory.createSingleC45E(objects, obj_class);
+                break;
+            case 122:
+                decision_tree = DecisionTreeFactory.createSingleC45G(objects, obj_class);
+                break;
+            case 123:
+                decision_tree = DecisionTreeFactory.createSingleC45EWorst(objects, obj_class);
+                break;
+            case 124:
+                decision_tree = DecisionTreeFactory.createSingleC45Random(objects, obj_class);
+                break;
+            case 131:
+                decision_tree = DecisionTreeFactory.createSingleC45EStop(objects, obj_class);
+                break;
+            case 132:
+                decision_tree = DecisionTreeFactory.createSingleC45GStop(objects, obj_class);
+                break;
+            case 141:
+                decision_tree = DecisionTreeFactory.createSingleC45EPrunStop(objects, obj_class);
+                break;
+            case 142:
+                decision_tree = DecisionTreeFactory.createSingleC45GPrunStop(objects, obj_class);
+                break;
+            case 221:
+                decision_tree = DecisionTreeFactory.createBagC45E(objects, obj_class);
+                break;
+            case 222:
+                decision_tree = DecisionTreeFactory.createBagC45G(objects, obj_class);
+                break;
+            case 231:
+                decision_tree = DecisionTreeFactory.createBagC45EStop(objects, obj_class);
+                break;
+            case 232:
+                decision_tree = DecisionTreeFactory.createBagC45GStop(objects, obj_class);
+                break;
+            case 241:
+                decision_tree = DecisionTreeFactory.createBagC45EPrunStop(objects, obj_class);
+                break;
+            case 242:
+                decision_tree = DecisionTreeFactory.createBagC45GPrunStop(objects, obj_class);
+                break;
+            case 321:
+                decision_tree = DecisionTreeFactory.createBoostC45E(objects, obj_class);
+                break;
+            case 322:
+                decision_tree = DecisionTreeFactory.createBoostC45G(objects, obj_class);
+                break;
+            case 331:
+                decision_tree = DecisionTreeFactory.createBoostC45EStop(objects, obj_class);
+                break;
+            case 332:
+                decision_tree = DecisionTreeFactory.createBoostC45GStop(objects, obj_class);
+                break;
+            case 341:
+                decision_tree = DecisionTreeFactory.createBoostC45EPrunStop(objects, obj_class);
+                break;
+            case 342:
+                decision_tree = DecisionTreeFactory.createBoostC45GPrunStop(objects, obj_class);
+                break;
+            default:
+                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
+        }
+
 //		final PackageBuilder builder = new PackageBuilder();
 //		//this wil generate the rules, then parse and compile in one step
 //		builder.addPackageFromTree( decision_tree );
@@ -149,11 +144,8 @@ public class PokerExample {
 //
 //		session.dispose();
 
-		String drl = RulePrinter.readRules( decision_tree );
-		KieSession ksession =  new KieHelper().addContent( drl, ResourceType.DRL).build().newKieSession();
-		ksession.fireAllRules();
-	}
-	
-
-
+        String     drl      = RulePrinter.readRules(decision_tree);
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        ksession.fireAllRules();
+    }
 }

@@ -12,8 +12,8 @@ import org.drools.learner.tools.SimpleLogger;
 public class DecisionTreeMerger {
 
     //private static SimpleLogger flog = LoggerFactory.getFileLogger(DecisionTreeMerger.class, SimpleLogger.WARN, "rules_gizil2");
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger( DecisionTreeMerger.class, SimpleLogger.WARN );
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger( DecisionTreeMerger.class, SimpleLogger.WARN );
+    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(DecisionTreeMerger.class, SimpleLogger.WARN);
+    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(DecisionTreeMerger.class, SimpleLogger.WARN);
 
     private DecisionTreeVisitor visitor;
 
@@ -21,15 +21,14 @@ public class DecisionTreeMerger {
 
     public DecisionTreeMerger() {
         visitor = new DecisionTreeVisitor();
-
     }
 
-    public void add( DecisionTree dt ) {
-        visitor.visit( dt );
+    public void add(DecisionTree dt) {
+        visitor.visit(dt);
     }
 
-    public void add2( DecisionTree dt ) {
-        visitor.visit2( dt );
+    public void add2(DecisionTree dt) {
+        visitor.visit2(dt);
     }
 
     public DecisionTree getBest() {
@@ -40,8 +39,8 @@ public class DecisionTreeMerger {
     }
 
     public void sortPaths() {
-        sortedPaths = new ArrayList<Path>( visitor.getPathList() );
-        Collections.sort( sortedPaths, Path.getPathRankComparator() );
+        sortedPaths = new ArrayList<Path>(visitor.getPathList());
+        Collections.sort(sortedPaths, Path.getPathRankComparator());
     }
 
     public int getNumPaths() {
@@ -53,26 +52,22 @@ public class DecisionTreeMerger {
     }
 
     public void printPaths() {
-        if ( flog.warn() != null ) {
-            for ( Path p : visitor.getPathList() ) {
-                flog.warn().log( p.hashCode() + "-" + p.getRank() + " : " + p + "\n" );
+        if (flog.warn() != null) {
+            for (Path p : visitor.getPathList()) {
+                flog.warn().log(p.hashCode() + "-" + p.getRank() + " : " + p + "\n");
             }
-
         }
-
     }
 
     public void printSortedPaths() {
 
-        if ( flog.warn() != null ) {
-            flog.warn().log( "Sorted paths: Total num of paths " + getNumPathsfound() + " num paths different" + getNumPaths() + "\n" );
-            slog.warn().log( "Total num of paths " + getNumPathsfound() + " num paths different" + getNumPaths() + "\n" );
-            for ( Path p : sortedPaths ) {
-                flog.warn().log( p.hashCode() + "-" + p.getTreeId() + "-" + p.getRank() + " : " + p + "\n" );
-                slog.warn().log( p.hashCode() + "-" + p.getTreeId() + "-" + p.getRank() + " : " + p + "\n" );
+        if (flog.warn() != null) {
+            flog.warn().log("Sorted paths: Total num of paths " + getNumPathsfound() + " num paths different" + getNumPaths() + "\n");
+            slog.warn().log("Total num of paths " + getNumPathsfound() + " num paths different" + getNumPaths() + "\n");
+            for (Path p : sortedPaths) {
+                flog.warn().log(p.hashCode() + "-" + p.getTreeId() + "-" + p.getRank() + " : " + p + "\n");
+                slog.warn().log(p.hashCode() + "-" + p.getTreeId() + "-" + p.getRank() + " : " + p + "\n");
             }
-
         }
-
     }
 }

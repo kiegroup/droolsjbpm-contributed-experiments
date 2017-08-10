@@ -10,9 +10,9 @@ public class Solution {
     private InstanceList trainingList;
 
     private InstanceList testList;
-    private Stats trainStats, testStats;
+    private Stats        trainStats, testStats;
 
-    public Solution( DecisionTree dt, InstanceList list ) {
+    public Solution(DecisionTree dt, InstanceList list) {
         this.dt = dt;
         trainingList = list;
     }
@@ -29,44 +29,44 @@ public class Solution {
         return testList;
     }
 
-    public void setTestList( InstanceList test ) {
+    public void setTestList(InstanceList test) {
         testList = test;
-    }
-
-    public void setTrainStats( Stats train ) {
-        trainStats = train;
-    }
-
-    public void setTestStats( Stats test ) {
-        testStats = test;
     }
 
     public Stats getTrainStats() {
         return trainStats;
     }
 
+    public void setTrainStats(Stats train) {
+        trainStats = train;
+    }
+
     public Stats getTestStats() {
         return testStats;
     }
 
+    public void setTestStats(Stats test) {
+        testStats = test;
+    }
+
     public double getTrainError() {
-        System.out.println( "Total Train" + trainStats.getTotal() + ", size " + trainingList.getSize() );
-        return (double) trainStats.getResult( Stats.INCORRECT ) / (double) trainStats.getTotal();
+        System.out.println("Total Train" + trainStats.getTotal() + ", size " + trainingList.getSize());
+        return (double) trainStats.getResult(Stats.INCORRECT) / (double) trainStats.getTotal();
     }
 
     public double getTestError() {
-        System.out.println( "Total Test" + testStats.getTotal() + ", size " + testList.getSize() );
-        return (double) testStats.getResult( Stats.INCORRECT ) / (double) testStats.getTotal();
+        System.out.println("Total Test" + testStats.getTotal() + ", size " + testList.getSize());
+        return (double) testStats.getResult(Stats.INCORRECT) / (double) testStats.getTotal();
     }
 
-    public void changeTrainError( int change ) {
-        trainStats.change( Stats.INCORRECT, change );
-        trainStats.change( Stats.CORRECT, -1 * change );
+    public void changeTrainError(int change) {
+        trainStats.change(Stats.INCORRECT, change);
+        trainStats.change(Stats.CORRECT, -1 * change);
     }
 
-    public void setError( int change ) {
+    public void setError(int change) {
         // TODO test_stats.	
-        System.out.println( "Solution setError() doing nothing" );
-        System.exit( 0 );
+        System.out.println("Solution setError() doing nothing");
+        System.exit(0);
     }
 }

@@ -1,17 +1,15 @@
 package org.drools.examples.learner;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
+
 import org.drools.learner.tools.ObjectFactory;
-import org.drools.learner.tools.ReteStatistics;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
 public class GolfC45ExampleFromDrl {
-	
-	public static final void main(final String[] args) throws Exception {
+
+    public static final void main(final String[] args) throws Exception {
 //        //read in the source
 //        //final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
 //    	final Reader source = new InputStreamReader( Golf.class.getResourceAsStream( "golf.drl" ) );
@@ -58,10 +56,10 @@ public class GolfC45ExampleFromDrl {
 //        logger.writeToDisk();
 //
 //        session.dispose();
-        KieSession ksession = new KieHelper( ).addResource( ResourceFactory.newInputStreamResource( Car.class.getResourceAsStream( "golf.drl" ) ) ).build().newKieSession();
-        String inputFile = new String("data/golf/golf.data.txt");
-        Class<?> obj_class = Golf.class;
-        List<Object> facts = ObjectFactory.getObjects(obj_class, inputFile);
+        KieSession   ksession  = new KieHelper().addResource(ResourceFactory.newInputStreamResource(Car.class.getResourceAsStream("golf.drl"))).build().newKieSession();
+        String       inputFile = new String("data/golf/golf.data.txt");
+        Class<?>     obj_class = Golf.class;
+        List<Object> facts     = ObjectFactory.getObjects(obj_class, inputFile);
         for (Object r : facts) {
             ksession.insert(r);
         }
@@ -70,6 +68,4 @@ public class GolfC45ExampleFromDrl {
 
         ksession.dispose();
     }
-	
-
 }

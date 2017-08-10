@@ -17,28 +17,28 @@ public class PseudoFieldExtractor implements ReadAccessor {
     private Method method;
     //private Class clazz;
 
-    public PseudoFieldExtractor( Class<?> clazz, Method m ) {
+    public PseudoFieldExtractor(Class<?> clazz, Method m) {
         super();
         method = m;
         //clazz = _clazz;
     }
 
-    public boolean getBooleanValue( Object object ) {
+    public boolean getBooleanValue(Object object) {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public byte getByteValue( Object object ) {
+    public byte getByteValue(Object object) {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public char getCharValue( Object object ) {
+    public char getCharValue(Object object) {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public double getDoubleValue( Object object ) {
+    public double getDoubleValue(Object object) {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -53,12 +53,12 @@ public class PseudoFieldExtractor implements ReadAccessor {
         return null;
     }
 
-    public float getFloatValue( Object object ) {
+    public float getFloatValue(Object object) {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public int getHashCode( Object object ) {
+    public int getHashCode(Object object) {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -68,12 +68,12 @@ public class PseudoFieldExtractor implements ReadAccessor {
         return 0;
     }
 
-    public int getIntValue( Object object ) {
+    public int getIntValue(Object object) {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public long getLongValue( Object object ) {
+    public long getLongValue(Object object) {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -83,22 +83,22 @@ public class PseudoFieldExtractor implements ReadAccessor {
         return null;
     }
 
-    public short getShortValue( Object object ) {
+    public short getShortValue(Object object) {
         // TODO Auto-generated method stub
         return 0;
     }
 
     /* DONT FORGET THAT */
-    public Object getValue( Object object ) {
+    public Object getValue(Object object) {
         try {
-            return method.invoke( object, null );
-        } catch ( IllegalArgumentException e ) {
+            return method.invoke(object, null);
+        } catch (IllegalArgumentException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch ( IllegalAccessException e ) {
+        } catch (IllegalAccessException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch ( InvocationTargetException e ) {
+        } catch (InvocationTargetException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -110,29 +110,29 @@ public class PseudoFieldExtractor implements ReadAccessor {
         return null;
     }
 
-    public boolean isNullValue( Object object ) {
+    public boolean isNullValue(Object object) {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         // TODO Auto-generated method stub
 
     }
 
-    public void writeExternal( ObjectOutput out ) throws IOException {
+    public void writeExternal(ObjectOutput out) throws IOException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public BigDecimal getBigDecimalValue( Object object ) {
+    public BigDecimal getBigDecimalValue(Object object) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public BigInteger getBigIntegerValue( Object object ) {
+    public BigInteger getBigIntegerValue(Object object) {
         // TODO Auto-generated method stub
         return null;
     }

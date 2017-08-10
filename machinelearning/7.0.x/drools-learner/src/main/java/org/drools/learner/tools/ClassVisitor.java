@@ -7,8 +7,6 @@ import java.util.Stack;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ClassFieldReader;
-//import org.drools.spi.Extractor;ReadAccessor
 import org.drools.core.spi.ReadAccessor;
 import org.drools.learner.Domain;
 import org.drools.learner.Schema;
@@ -16,19 +14,19 @@ import org.drools.learner.builder.Learner;
 import org.drools.learner.builder.Learner.DataType;
 import org.drools.learner.builder.Learner.DomainAlgo;
 
+//import org.drools.spi.Extractor;ReadAccessor
+
 public class ClassVisitor {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger( ClassVisitor.class, SimpleLogger.WARN );
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger( ClassVisitor.class, SimpleLogger.WARN );
-
+    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(ClassVisitor.class, SimpleLogger.WARN);
+    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(ClassVisitor.class, SimpleLogger.WARN);
+    private static ClassFieldAccessorCache cache = new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader());
     //private static ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
-    private ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-    private static ClassFieldAccessorCache cache = new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() );
-
+    private        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
     private DomainAlgo domainType = Learner.DEFAULT_DOMAIN;
-    private DataType dataType = Learner.DEFAULT_DATA;
+    private DataType   dataType   = Learner.DEFAULT_DATA;
 
-    private Schema classSchema;
+    private Schema       classSchema;
     private Stack<Field> classRelation;
 
     //@mireynol - need to change these from contstant style to camel case
@@ -36,14 +34,14 @@ public class ClassVisitor {
     private boolean MULTIPLE_TARGETS = false;
 
     public ClassVisitor() {
-        store.setClassFieldAccessorCache( cache );
+        store.setClassFieldAccessorCache(cache);
     }
 
-    public ClassVisitor( DomainAlgo domainType, DataType dataType ) {
+    public ClassVisitor(DomainAlgo domainType, DataType dataType) {
         this(null, domainType, dataType);
     }
 
-    public ClassVisitor( Schema classSchema, DomainAlgo domainType, DataType dataType ) {
+    public ClassVisitor(Schema classSchema, DomainAlgo domainType, DataType dataType) {
         this();
         this.classSchema = classSchema;
         this.domainType = domainType;
@@ -54,7 +52,7 @@ public class ClassVisitor {
         //		this.all_klasses = new HashMap<Class<?>,ClassStructure>();
         TARGET_FOUND = false;
         classRelation = new Stack<Field>();
-        getStructuredSuperFields( classSchema.getObjectClass()/* , null */ );
+        getStructuredSuperFields(classSchema.getObjectClass()/* , null */);
 
         return;
     }
@@ -64,69 +62,77 @@ public class ClassVisitor {
     }
 
     public void getStructuredSuperFields(
-            Class<?> clazz/* , Class<?> owner_clazz */ ) {
-        if ( slog.debug() != null )
-            slog.debug().log( "On the class " + clazz + " the structure exists " + classSchema.getClassStructure().containsKey( clazz ) );
-        if ( classSchema.getClassStructure().containsKey( clazz ) && classSchema.getClassStructure().get( clazz ).isDone() )
+        Class<?> clazz/* , Class<?> owner_clazz */) {
+        if (slog.debug() != null) {
+            slog.debug().log("On the class " + clazz + " the structure exists " + classSchema.getClassStructure().containsKey(clazz));
+        }
+        if (classSchema.getClassStructure().containsKey(clazz) && classSchema.getClassStructure().get(clazz).isDone()) {
             return;
+        }
         // process if the parent_klass.equals(Object.class) ?????
-        ClassStructure structure = new ClassStructure( clazz );
-        if ( MULTIPLE_TARGETS || !TARGET_FOUND )
-            processClassLabel( structure );
-        classSchema.putStructure( clazz, structure );
+        ClassStructure structure = new ClassStructure(clazz);
+        if (MULTIPLE_TARGETS || !TARGET_FOUND) {
+            processClassLabel(structure);
+        }
+        classSchema.putStructure(clazz, structure);
 
         // get the fields declared in the class
         Field[] elementFields = clazz.getDeclaredFields(); //clazz.getFields();
-        for ( Field f : elementFields ) {
+        for (Field f : elementFields) {
             try {
-                decomposeField( structure, f /* , owner_clazz */ );
-            } catch ( FeatureNotSupported e ) {
-                if ( slog.error() != null )
-                    slog.error().log( "FeatureNotSupported " + e + ")\n" );
-
+                decomposeField(structure, f /* , owner_clazz */);
+            } catch (FeatureNotSupported e) {
+                if (slog.error() != null) {
+                    slog.error().log("FeatureNotSupported " + e + ")\n");
+                }
             }
         }
         structure.setDone();
         Class<?> parentKlass = clazz.getSuperclass();
-        structure.setParent( parentKlass );
-        if ( parentKlass.equals( Object.class ) )
+        structure.setParent(parentKlass);
+        if (parentKlass.equals(Object.class)) {
             return;
-        getStructuredSuperFields( parentKlass );
+        }
+        getStructuredSuperFields(parentKlass);
 
         return;
     }
 
-    public void decomposeField( ClassStructure structure, Field field ) throws FeatureNotSupported {
+    public void decomposeField(ClassStructure structure, Field field) throws FeatureNotSupported {
 
         //		if (slog.warn() != null)
         //			slog.warn().log("!!!!!!!!!The field "+f+"  " +f.getName()+ "\n");
         // can get the field annotation
         // if it is ignored do not do anything
-        FieldAnnotation fieldSpec = Util.getFieldAnnotations( field );
+        FieldAnnotation fieldSpec = Util.getFieldAnnotations(field);
 
-        boolean skip = false;
+        boolean skip        = false;
         boolean ignoreField = false;
-        if ( fieldSpec != null ) {
+        if (fieldSpec != null) {
             // the type of the fields that cannot be processed
-            if ( !fieldSpec.ignore() && field.getType() == String.class && !fieldSpec.discrete() ) {
-                throw new FeatureNotSupported( "String categorization not supported" );
+            if (!fieldSpec.ignore() && field.getType() == String.class && !fieldSpec.discrete()) {
+                throw new FeatureNotSupported("String categorization not supported");
             }
-            switch ( domainType ) {
+            switch (domainType) {
                 case CATEGORICAL: //ID3 can work only with categorical types
-                    if ( fieldSpec.skip() || !fieldSpec.discrete() )
+                    if (fieldSpec.skip() || !fieldSpec.discrete()) {
                         skip = true;
-                break;
+                    }
+                    break;
                 case QUANTITATIVE: // C45 can work with categorical || quantitative domain
-                    if ( fieldSpec.skip() )
+                    if (fieldSpec.skip()) {
                         skip = true;
-                break;
+                    }
+                    break;
                 default:
-                    if ( fieldSpec.skip() )
+                    if (fieldSpec.skip()) {
                         skip = true;
+                    }
             }
             ignoreField = fieldSpec.ignore();
-            if ( ignoreField )
+            if (ignoreField) {
                 skip = ignoreField;
+            }
             // only if the annotations are given and the flag to ignore is set true 
             // then continue to next field
 
@@ -134,16 +140,17 @@ public class ClassVisitor {
         // if there is a getter?
         //if (Util.isGetter(m_name) & Util.isSimpleType(returns)) {
 
-        if ( !skip ) {
-            String fieldName = field.getName();
-            Class<?> objClass = structure.getOwnerClass();
-            String fieldReferenceName = Util.getFReference( objClass, fieldName );
-            DataType dataType = Util.getDataType( field.getType() );
+        if (!skip) {
+            String   fieldName          = field.getName();
+            Class<?> objClass           = structure.getOwnerClass();
+            String   fieldReferenceName = Util.getFReference(objClass, fieldName);
+            DataType dataType           = Util.getDataType(field.getType());
 
             ///////////
-            if ( dataType != DataType.COLLECTION ) { // TODO 
-                if ( slog.warn() != null )
-                    slog.warn().log( "The field " + fieldName + " of the obj klass:" + objClass + " and the loader:" + objClass.getClassLoader() + "\n" );
+            if (dataType != DataType.COLLECTION) { // TODO
+                if (slog.warn() != null) {
+                    slog.warn().log("The field " + fieldName + " of the obj klass:" + objClass + " and the loader:" + objClass.getClassLoader() + "\n");
+                }
                 try {
                     //					if (f_name.startsWith("get")) {//TODO check
                     //						System.out.println(f_name.substring(3));
@@ -156,61 +163,65 @@ public class ClassVisitor {
                     //                    f_extractor = cache.getAccessor( _obj_klass, f_name , _obj_klass.getClassLoader() );
                     //                    class_schema.putExtractor(f_refName, f_extractor);
 
-                    structure.addField( field, dataType );
+                    structure.addField(field, dataType);
 
-                    ReadAccessor fieldExtractor = store.getReader( objClass, fieldName );
-                    classSchema.putExtractor( fieldReferenceName, fieldExtractor );
-                    structure.addField( field, dataType );
+                    ReadAccessor fieldExtractor = store.getReader(objClass, fieldName);
+                    classSchema.putExtractor(fieldReferenceName, fieldExtractor);
+                    structure.addField(field, dataType);
 
-                    switch ( dataType ) {
+                    switch (dataType) {
                         case PRIMITIVE: // domain will be created only for primitive types
-                            Domain fieldDomain = new Domain( objClass, fieldName, field.getType() );
+                            Domain fieldDomain = new Domain(objClass, fieldName, field.getType());
                             //fieldDomain.setOwner(owner_clazz);
-                            if ( fieldSpec != null ) {
-                                fieldDomain.setCategorical( fieldSpec.discrete() );
-                                if ( ( MULTIPLE_TARGETS || !TARGET_FOUND ) && fieldSpec.target() ) {
-                                    classSchema.addTarget( fieldReferenceName );
+                            if (fieldSpec != null) {
+                                fieldDomain.setCategorical(fieldSpec.discrete());
+                                if ((MULTIPLE_TARGETS || !TARGET_FOUND) && fieldSpec.target()) {
+                                    classSchema.addTarget(fieldReferenceName);
                                     TARGET_FOUND = true;
                                 }
                             }
-                            Util.processDomain( fieldDomain, field.getType() );
-                            fieldDomain.ignore( ignoreField );
-                            classSchema.putDomain( fieldReferenceName, fieldDomain );
-                            for ( Field parentKlass : classRelation )
-                                classSchema.addParentField( fieldReferenceName, parentKlass );
-                        break;
+                            Util.processDomain(fieldDomain, field.getType());
+                            fieldDomain.ignore(ignoreField);
+                            classSchema.putDomain(fieldReferenceName, fieldDomain);
+                            for (Field parentKlass : classRelation) {
+                                classSchema.addParentField(fieldReferenceName, parentKlass);
+                            }
+                            break;
                         case STRUCTURED: // the extractor is necessary for both types of data.	
-                            classRelation.push( field );
-                            getStructuredSuperFields( field.getType() );//recurse on the structured 
+                            classRelation.push(field);
+                            getStructuredSuperFields(field.getType());//recurse on the structured
                             classRelation.pop();
-                        break;
+                            break;
                         default:
                             //throw new Exception("What type of data is this");	
                     }
-                } catch ( RuntimeException e ) {
-                    if ( slog.warn() != null )
-                        slog.warn().log( "Exception e:" + e + " skip\n" );
-                    if ( flog.warn() != null )
-                        flog.warn().log( "Exception e:" + e + " skip" );
+                } catch (RuntimeException e) {
+                    if (slog.warn() != null) {
+                        slog.warn().log("Exception e:" + e + " skip\n");
+                    }
+                    if (flog.warn() != null) {
+                        flog.warn().log("Exception e:" + e + " skip");
+                    }
                 }
             } else { //case COLLECTION:
-                if ( slog.warn() != null )
-                    slog.warn().log( "Case Collection(f_name " + fieldName + " What is the obj klass:" + objClass + ")\n" );
-                throw new FeatureNotSupported( "Can not deal with collections as an attribute" );
+                if (slog.warn() != null) {
+                    slog.warn().log("Case Collection(f_name " + fieldName + " What is the obj klass:" + objClass + ")\n");
+                }
+                throw new FeatureNotSupported("Can not deal with collections as an attribute");
             }
         }
         return;
     }
 
-    public void processClassLabel( ClassStructure clazzStructure ) {
+    public void processClassLabel(ClassStructure clazzStructure) {
 
         Class<?> clazz = clazzStructure.getOwnerClass();
         /*
          * Apperantly the getAnnotation function recurse on the superclasses so
          * use the getDeclaredAnnotations() not to recurse
          */
-        ClassAnnotation classLabel = Util.getDecClassAnnotations( clazz );
-        if ( classLabel != null && classLabel.labelElement() != "" ) {
+        ClassAnnotation classLabel = Util.getDecClassAnnotations(clazz);
+        if (classLabel != null && classLabel.labelElement() != "") {
             // the targetting label is set, put the function that gets that value somewhere
 
             try {
@@ -219,39 +230,40 @@ public class ClassVisitor {
                  * superclasses i dont need to recurse myself Method m
                  * =c.getDeclaredMethod(lab.label_element(), null);
                  */
-                Method m = clazz.getMethod( classLabel.labelElement(), null );
-                if ( Util.isSimpleType( m.getReturnType() ) ) {
+                Method m = clazz.getMethod(classLabel.labelElement(), null);
+                if (Util.isSimpleType(m.getReturnType())) {
                     String mName = classLabel.labelElement();
                     //					if (mName.startsWith("get")) {//TODO check??
                     //						mName = mName..toLowerCase();
                     //					}
-                    System.out.println( mName );
-                    String fRefName = Util.getFReference( clazz, mName ); // class.name + "@" + label
-                    Domain fieldDomain = new Domain( clazz, mName, m.getReturnType() );
-                    fieldDomain.setArtificial( true );
+                    System.out.println(mName);
+                    String fRefName    = Util.getFReference(clazz, mName); // class.name + "@" + label
+                    Domain fieldDomain = new Domain(clazz, mName, m.getReturnType());
+                    fieldDomain.setArtificial(true);
                     Class<?> methodClass = m.getReturnType();
 
-                    Util.processDomain( fieldDomain, methodClass );
-                    clazzStructure.addMethod( m );
-                    classSchema.putDomain( fRefName, fieldDomain );
+                    Util.processDomain(fieldDomain, methodClass);
+                    clazzStructure.addMethod(m);
+                    classSchema.putDomain(fRefName, fieldDomain);
 
-                    ReadAccessor mExtractor = new PseudoFieldExtractor( clazz, m );
+                    ReadAccessor mExtractor = new PseudoFieldExtractor(clazz, m);
                     //cache.getExtractor( clazz, lab.label_element(), clazz.getClassLoader() );
-                    classSchema.putExtractor( fRefName, mExtractor );
-                    if ( !MULTIPLE_TARGETS )
+                    classSchema.putExtractor(fRefName, mExtractor);
+                    if (!MULTIPLE_TARGETS) {
                         classSchema.clearTargets();
-                    classSchema.addTarget( fRefName );
+                    }
+                    classSchema.addTarget(fRefName);
                     TARGET_FOUND = true;
-                    if ( slog.warn() != null )
-                        slog.warn().log( "!!!!!:processClassLabel: TARGET FOUND " + fRefName + " " + classLabel.labelElement() + ")\n" );
+                    if (slog.warn() != null) {
+                        slog.warn().log("!!!!!:processClassLabel: TARGET FOUND " + fRefName + " " + classLabel.labelElement() + ")\n");
+                    }
 
                     //break; // if the ClassAnnotation is found then stop
                 }
-
-            } catch ( SecurityException e ) {
+            } catch (SecurityException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } catch ( NoSuchMethodException e ) {
+            } catch (NoSuchMethodException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -262,5 +274,4 @@ public class ClassVisitor {
         // TODO Auto-generated method stub
         return TARGET_FOUND;
     }
-
 }

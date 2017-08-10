@@ -4,9 +4,9 @@ import java.util.Comparator;
 
 public class DomainComparator implements Comparator<Domain> {
 
-    public int compare( Domain d0, Domain d1 ) {
+    public int compare(Domain d0, Domain d1) {
 
-        return d0.getFName().compareTo( d1.getFName() );
+        return d0.getFName().compareTo(d1.getFName());
         //		int fNameComp = d0.getFName().compareTo(d1.getFName());
         //		if (fNameComp!=0)
         //			return fNameComp;

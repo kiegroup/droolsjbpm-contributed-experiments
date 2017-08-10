@@ -11,9 +11,9 @@ public interface Estimator {
 
     public ArrayList<DecisionTree> getEstimators();
 
-    public ArrayList<InstanceList> getFold( int id );
+    public ArrayList<InstanceList> getFold(int id);
 
-    public int getTrainingDataSize( int i );
+    public int getTrainingDataSize(int i);
 
     public double getErrorEstimate();
 

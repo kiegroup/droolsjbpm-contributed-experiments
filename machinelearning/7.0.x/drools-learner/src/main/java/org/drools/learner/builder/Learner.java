@@ -16,76 +16,64 @@ import org.drools.learner.tools.SimpleLogger;
 
 public abstract class Learner {
 
-    protected static SimpleLogger flog = LoggerFactory.getUniqueFileLogger( Learner.class, SimpleLogger.DEFAULT_LEVEL );
-    protected static SimpleLogger slog = LoggerFactory.getSysOutLogger( Learner.class, SimpleLogger.DEFAULT_LEVEL );
-
-    public static enum DomainAlgo {
-        CATEGORICAL, QUANTITATIVE
-    }
-
     public static DomainAlgo DEFAULT_DOMAIN = DomainAlgo.QUANTITATIVE;
-
-    public static enum DataType {
-        PRIMITIVE, STRUCTURED, COLLECTION
-    }
-
     public static DataType DEFAULT_DATA = DataType.PRIMITIVE;
+    protected static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Learner.class, SimpleLogger.DEFAULT_LEVEL);
+    protected static SimpleLogger slog = LoggerFactory.getSysOutLogger(Learner.class, SimpleLogger.DEFAULT_LEVEL);
+    protected HashSet<Instance> missclassifiedData;
+    protected ArrayList<StoppingCriterion> criteria;
     private int dataSize, dataSizePerTree;
 
     // must be deleted, goes to builder	
     //	private DecisionTree best_tree;
-    private InstanceList inputData;
-    protected HashSet<Instance> missclassifiedData;
-
+    private   InstanceList      inputData;
     private DomainAlgo algorithm;
-
-    protected ArrayList<StoppingCriterion> criteria;
-
-    protected abstract TreeNode train( DecisionTree dt, InstDistribution dataStats, int depth );
 
     public Learner() {
         this.dataSize = 0;
         this.dataSizePerTree = 0;
 
-        criteria = new ArrayList<StoppingCriterion>( 4 );
+        criteria = new ArrayList<StoppingCriterion>(4);
         missclassifiedData = new HashSet<Instance>();
     }
+
+    protected abstract TreeNode train(DecisionTree dt, InstDistribution dataStats, int depth);
 
     public DecisionTree instantiateTree() {
         String targetReference = this.getTargetDomain().getFReferenceName();
         //System.out.println("(Learner) target   "+ target_reference);
-        DecisionTree dt = new DecisionTree( inputData.getSchema(), targetReference );
+        DecisionTree dt = new DecisionTree(inputData.getSchema(), targetReference);
 
         //flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
         return dt;
     }
 
-    public void trainTree( DecisionTree dt, InstanceList workingInstances ) {
-        InstDistribution statsByClass = new InstDistribution( dt.getTargetDomain() );
-        statsByClass.calculateDistribution( workingInstances.getInstances() );
+    public void trainTree(DecisionTree dt, InstanceList workingInstances) {
+        InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain());
+        statsByClass.calculateDistribution(workingInstances.getInstances());
 
         dt.FACTS_READ += workingInstances.getSize();
 
-        TreeNode root = train( dt, statsByClass, 0 );
-        dt.setRoot( root );
+        TreeNode root = train(dt, statsByClass, 0);
+        dt.setRoot(root);
         //flog.debug("Result tree\n" + dt);
         //		return dt;
     }
 
-    public DecisionTree trainTree( InstanceList workingInstances ) {
+    public DecisionTree trainTree(InstanceList workingInstances) {
         String targetReference = this.getTargetDomain().getFReferenceName();
         //System.out.println("(Learner) target   "+ target_reference);
-        DecisionTree dt = new DecisionTree( inputData.getSchema(), targetReference );
+        DecisionTree dt = new DecisionTree(inputData.getSchema(), targetReference);
 
         //flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
 
-        InstDistribution statsByClass = new InstDistribution( dt.getTargetDomain() );
-        statsByClass.calculateDistribution( workingInstances.getInstances() );
+        InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain());
+        statsByClass.calculateDistribution(workingInstances.getInstances());
 
         dt.FACTS_READ += workingInstances.getSize();
 
-        TreeNode root = train( dt, statsByClass, 0 );
-        dt.setRoot( root );
+        TreeNode root = train(dt, statsByClass, 0);
+        dt.setRoot(root);
         //flog.debug("Result tree\n" + dt);
         return dt;
     }
@@ -95,24 +83,23 @@ public abstract class Learner {
         // TODO check if there is a target candidate
         String target = itTarget.next();
         //System.out.println("(Learner) What is target?? "+ target +" and the domain "+ input_data.getSchema().getAttrDomain(target));
-        return inputData.getSchema().getAttrDomain( target );
-
+        return inputData.getSchema().getAttrDomain(target);
     }
 
     // TODO how are we going to select the target domain if there is more than one candidate
-    private DecisionTree selectTarget( InstanceList workingInstances ) {
+    private DecisionTree selectTarget(InstanceList workingInstances) {
         DecisionTree dt = null;
-        for ( String target : inputData.getTargets() ) {
-            dt = new DecisionTree( inputData.getSchema(), target );
+        for (String target : inputData.getTargets()) {
+            dt = new DecisionTree(inputData.getSchema(), target);
 
             //flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
 
-            InstDistribution statsByClass = new InstDistribution( dt.getTargetDomain() );
-            statsByClass.calculateDistribution( workingInstances.getInstances() );
+            InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain());
+            statsByClass.calculateDistribution(workingInstances.getInstances());
             dt.FACTS_READ += workingInstances.getSize();
 
-            TreeNode root = train( dt, statsByClass, 0 );
-            dt.setRoot( root );
+            TreeNode root = train(dt, statsByClass, 0);
+            dt.setRoot(root);
             //flog.debug("Result tree\n" + dt);
         }
         return dt;
@@ -122,40 +109,48 @@ public abstract class Learner {
         return criteria;
     }
 
-    public void addStoppingCriteria( StoppingCriterion c ) {
-        criteria.add( c );
-    }
-
-    public void setTrainingDataSizePerTree( int num ) {
-        this.dataSizePerTree = num;
+    public void addStoppingCriteria(StoppingCriterion c) {
+        criteria.add(c);
     }
 
     public int getTrainingDataSizePerTree() {
         return this.dataSizePerTree;
     }
 
-    public void setTrainingDataSize( int num ) {
-        this.dataSize = num;
+    public void setTrainingDataSizePerTree(int num) {
+        this.dataSizePerTree = num;
     }
 
     public int getTrainingDataSize() {
         return this.dataSize;
+    }
+
+    public void setTrainingDataSize(int num) {
+        this.dataSize = num;
+    }
+
+    public DomainAlgo getDomainAlgo() {
+        return this.algorithm;
+    }
+
+    public void setDomainAlgo(DomainAlgo type) {
+        this.algorithm = type;
     }
     // must be deleted, goes to builder	
     //	public DecisionTree getTree() {
     //		return best_tree;
     //	}
 
-    public DomainAlgo getDomainAlgo() {
-        return this.algorithm;
-    }
-
-    public void setDomainAlgo( DomainAlgo type ) {
-        this.algorithm = type;
-    }
-
-    public void setInputSpec( InstanceList classInstances ) {
+    public void setInputSpec(InstanceList classInstances) {
         this.inputData = classInstances;
+    }
+
+    public static enum DomainAlgo {
+        CATEGORICAL, QUANTITATIVE
+    }
+
+    public static enum DataType {
+        PRIMITIVE, STRUCTURED, COLLECTION
     }
 
     //	public InstanceList getInputData() {
@@ -166,5 +161,4 @@ public abstract class Learner {
     //	public void setBestTree(DecisionTree dt) {
     //		this.best_tree = dt;
     //	}
-
 }

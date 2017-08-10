@@ -7,8 +7,8 @@ import org.drools.learner.tools.SimpleLogger;
 
 public class SingleTreeBuilder extends DecisionTreeBuilder {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger( SingleTreeBuilder.class, SimpleLogger.DEFAULT_LEVEL );
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger( SingleTreeBuilder.class, SimpleLogger.DEFAULT_LEVEL );
+    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(SingleTreeBuilder.class, SimpleLogger.DEFAULT_LEVEL);
+    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(SingleTreeBuilder.class, SimpleLogger.DEFAULT_LEVEL);
 
     private TreeAlgo algorithm = TreeAlgo.SINGLE; // default bagging, TODO boosting
 
@@ -25,36 +25,37 @@ public class SingleTreeBuilder extends DecisionTreeBuilder {
      * instance (Class<?>) klass, String targetField, List<String>
      * workingAttributes
      */
-    public void internalBuild( SolutionSet sol, Learner trainer ) {
+    public void internalBuild(SolutionSet sol, Learner trainer) {
 
-        if ( sol.getTargets().size() > 1 ) {
+        if (sol.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if ( flog.error() != null )
-                flog.error().log( "There is more than 1 target candidates" );
+            if (flog.error() != null) {
+                flog.error().log("There is more than 1 target candidates");
+            }
 
-            System.exit( 0 );
+            System.exit(0);
             // TODO put the feature not supported exception || implement it
         }
 
-        trainer.setInputSpec( sol.getInputSpec() );
-        trainer.setTrainingDataSize( sol.getTrainSet().getSize() );
+        trainer.setInputSpec(sol.getInputSpec());
+        trainer.setTrainingDataSize(sol.getTrainSet().getSize());
         DecisionTree oneTree = trainer.instantiateTree();
-        if ( slog.debug() != null )
-            slog.debug().log( "\n" + "Training a tree" + "\n" );
-        trainer.trainTree( oneTree, sol.getTrainSet() );
-        oneTree.setID( 0 );
+        if (slog.debug() != null) {
+            slog.debug().log("\n" + "Training a tree" + "\n");
+        }
+        trainer.trainTree(oneTree, sol.getTrainSet());
+        oneTree.setID(0);
 
-        Tester t = getTester( oneTree );
-        Stats train = t.test( sol.getTrainSet() );
-        Stats test = t.test( sol.getTestSet() );
-        Solution best = new Solution( oneTree, sol.getTrainSet() );
-        best.setTestList( sol.getTestSet() );
-        best.setTrainStats( train );
-        best.setTestStats( test );
-        sol.addSolution( best );
+        Tester   t     = getTester(oneTree);
+        Stats    train = t.test(sol.getTrainSet());
+        Stats    test  = t.test(sol.getTestSet());
+        Solution best  = new Solution(oneTree, sol.getTrainSet());
+        best.setTestList(sol.getTestSet());
+        best.setTrainStats(train);
+        best.setTestStats(test);
+        sol.addSolution(best);
 
         return;
-
     }
 
     public TreeAlgo getTreeAlgo() {

@@ -5,17 +5,15 @@ import java.util.List;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.builder.DecisionTreeFactory;
 import org.drools.learner.tools.ObjectFactory;
-import org.drools.learner.tools.ReteStatistics;
 import org.drools.learner.tools.RulePrinter;
-import org.drools.learner.tools.Util;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 public class GolfExample {
-	
-	public static final void main(final String[] args) throws Exception {
-		long start_time = System.currentTimeMillis();
+
+    public static final void main(final String[] args) throws Exception {
+        long start_time = System.currentTimeMillis();
 //		// my rule base
 //		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 //		//ruleBase.addPackage( pkg );
@@ -39,41 +37,41 @@ public class GolfExample {
 //			session.insert(r);
 //		}
 
-		String inputFile = new String("data/golf/golf.data.txt");
-		Class<?> obj_class = Golf.class;
-		List<Object> objects = ObjectFactory.getObjects(obj_class, inputFile);
+        String       inputFile = new String("data/golf/golf.data.txt");
+        Class<?>     obj_class = Golf.class;
+        List<Object> objects   = ObjectFactory.getObjects(obj_class, inputFile);
 
-		DecisionTree decision_tree; int ALGO = 121;
-		/* 
+        DecisionTree decision_tree;
+        int          ALGO = 121;
+        /*
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
 		 * Entropy	xx1, Gain	xx2
 		 */
-		switch (ALGO) {
-		case 111:
-			decision_tree  = DecisionTreeFactory.createSingleID3E(objects, obj_class);
-			break;
-		case 112:
-			decision_tree  = DecisionTreeFactory.createSingleID3G(objects, obj_class);
-			break;
-		case 121: 
-			decision_tree  = DecisionTreeFactory.createSingleC45E(objects, obj_class);
-			break;
-		case 122: 
-			decision_tree  = DecisionTreeFactory.createSingleC45G(objects, obj_class);
-			break;
-		case 221:
-			decision_tree  = DecisionTreeFactory.createBagC45E(objects, obj_class);
-			break;		
-		case 222:
-			decision_tree  = DecisionTreeFactory.createBagC45G(objects, obj_class);
-			break;	
+        switch (ALGO) {
+            case 111:
+                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
+                break;
+            case 112:
+                decision_tree = DecisionTreeFactory.createSingleID3G(objects, obj_class);
+                break;
+            case 121:
+                decision_tree = DecisionTreeFactory.createSingleC45E(objects, obj_class);
+                break;
+            case 122:
+                decision_tree = DecisionTreeFactory.createSingleC45G(objects, obj_class);
+                break;
+            case 221:
+                decision_tree = DecisionTreeFactory.createBagC45E(objects, obj_class);
+                break;
+            case 222:
+                decision_tree = DecisionTreeFactory.createBagC45G(objects, obj_class);
+                break;
 
-		default:
-			decision_tree  = DecisionTreeFactory.createSingleID3E(objects, obj_class);
-		
-		}
-		
+            default:
+                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
+        }
+
 //		final PackageBuilder builder = new PackageBuilder();
 //		//this wil generate the rules, then parse and compile in one step
 //		builder.addPackageFromTree( decision_tree );
@@ -95,9 +93,8 @@ public class GolfExample {
 //
 //		session.dispose();
 
-		String drl = RulePrinter.readRules( decision_tree );
-		KieSession ksession =  new KieHelper().addContent( drl, ResourceType.DRL).build().newKieSession();
-		ksession.fireAllRules();
-	}
-
+        String     drl      = RulePrinter.readRules(decision_tree);
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        ksession.fireAllRules();
+    }
 }

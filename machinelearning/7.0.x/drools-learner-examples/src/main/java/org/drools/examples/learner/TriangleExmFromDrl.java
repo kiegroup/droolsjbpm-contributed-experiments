@@ -1,14 +1,15 @@
 package org.drools.examples.learner;
 
 import java.util.List;
+
 import org.drools.learner.tools.ObjectFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
 public class TriangleExmFromDrl {
-	
-	public static final void main(final String[] args) throws Exception {
+
+    public static final void main(final String[] args) throws Exception {
 //        //read in the source
 //        //final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
 //    	final Reader source = new InputStreamReader( Triangle.class.getResourceAsStream( "triangle_bok.drl" ) );
@@ -52,10 +53,10 @@ public class TriangleExmFromDrl {
 //
 //        session.dispose();
 
-        KieSession ksession = new KieHelper( ).addResource( ResourceFactory.newInputStreamResource( Car.class.getResourceAsStream( "triangle_bok.drl" ) ) ).build().newKieSession();
-        String inputFile = new String("data/triangle/triangle.data.txt");
-        Class<?> obj_class = Triangle.class;
-        List<Object> facts = ObjectFactory.getObjects(obj_class, inputFile);
+        KieSession   ksession  = new KieHelper().addResource(ResourceFactory.newInputStreamResource(Car.class.getResourceAsStream("triangle_bok.drl"))).build().newKieSession();
+        String       inputFile = new String("data/triangle/triangle.data.txt");
+        Class<?>     obj_class = Triangle.class;
+        List<Object> facts     = ObjectFactory.getObjects(obj_class, inputFile);
         for (Object r : facts) {
             ksession.insert(r);
         }
@@ -64,5 +65,4 @@ public class TriangleExmFromDrl {
 
         ksession.dispose();
     }
-
 }

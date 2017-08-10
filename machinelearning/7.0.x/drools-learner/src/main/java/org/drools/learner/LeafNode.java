@@ -7,30 +7,30 @@ public class LeafNode extends TreeNode {
     private Object targetCategory;
     private double numIntancesClassified;
 
-    public LeafNode( Domain targetDomain, Object value ) {
-        super( targetDomain );
+    public LeafNode(Domain targetDomain, Object value) {
+        super(targetDomain);
         this.targetCategory = value;
         numIntancesClassified = 0;
     }
 
-    public void putNode( Object attributeCategory, TreeNode node ) {
-        throw new RuntimeException( "cannot add Node to a leaf node" );
+    public void putNode(Object attributeCategory, TreeNode node) {
+        throw new RuntimeException("cannot add Node to a leaf node");
     }
 
     public Object getCategory() {
         return targetCategory;
     }
 
-    public void setNumClassification( double size ) {
-        this.numIntancesClassified = size;
-    }
-
     public double getNumClassification() {
         return this.numIntancesClassified;
     }
 
+    public void setNumClassification(double size) {
+        this.numIntancesClassified = size;
+    }
+
     public int getMissClassified() {
-        return (int) ( getNumMatch() - numIntancesClassified );
+        return (int) (getNumMatch() - numIntancesClassified);
     }
 
     public int getNumLeaves() {
@@ -48,7 +48,7 @@ public class LeafNode extends TreeNode {
     //		}			
     //	}
 
-    public Object voteFor( Instance i ) {
+    public Object voteFor(Instance i) {
 
         return this.targetCategory;
     }
@@ -61,11 +61,10 @@ public class LeafNode extends TreeNode {
         return "DECISION -> " + targetCategory.toString();
     }
 
-    public String toString( int tab, int depth, StringBuffer buf ) {
-        buf.append( Util.ntimes( "\t", tab + 1 ) );
+    public String toString(int tab, int depth, StringBuffer buf) {
+        buf.append(Util.ntimes("\t", tab + 1));
 
-        buf.append( super.getDomain().getFName() + ":DECISION->" + targetCategory.toString() + " match: " + getNumMatch() + " correct:" + numIntancesClassified + "\n" );
+        buf.append(super.getDomain().getFName() + ":DECISION->" + targetCategory.toString() + " match: " + getNumMatch() + " correct:" + numIntancesClassified + "\n");
         return buf.toString();
     }
-
 }

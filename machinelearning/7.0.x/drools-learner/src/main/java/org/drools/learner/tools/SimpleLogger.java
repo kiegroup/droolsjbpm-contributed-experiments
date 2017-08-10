@@ -2,39 +2,36 @@ package org.drools.learner.tools;
 
 public class SimpleLogger {
 
-    public static final int STAT = 0;
+    public static final int STAT  = 0;
     public static final int ERROR = 1;
-    public static final int WARN = 2;
+    public static final int WARN  = 2;
     public static final int DEBUG = 3;
-    public static final int INFO = 4;
+    public static final int INFO  = 4;
 
     public static final int DEFAULT_LEVEL = ERROR;
-
-    public static String[] msgs = { "stat", "error", "warn", "debug", "info" };
-
     public static final int LAST = INFO;
-
+    public static String[] msgs = {"stat", "error", "warn", "debug", "info"};
     public LoggerInterface[] loggers = new LoggerInterface[LAST + 1];
 
     public SimpleLogger() {
 
-        for ( int i = 0; i <= LAST; ++i ) {
+        for (int i = 0; i <= LAST; ++i) {
             loggers[i] = null;
         }
     }
 
-    public SimpleLogger( int lvl, LoggerInterface logint ) {
-        for ( int i = 0; i <= LAST; ++i ) {
-            if ( i > lvl )
+    public SimpleLogger(int lvl, LoggerInterface logint) {
+        for (int i = 0; i <= LAST; ++i) {
+            if (i > lvl) {
                 loggers[i] = null;
-            else {
+            } else {
                 loggers[i] = logint.clone();
-                loggers[i].setMsg( msgs[i] );
+                loggers[i].setMsg(msgs[i]);
             }
         }
     }
 
-    public final LoggerInterface get( int index ) {
+    public final LoggerInterface get(int index) {
         return loggers[index];
     }
 
@@ -57,5 +54,4 @@ public class SimpleLogger {
     public final LoggerInterface info() {
         return loggers[INFO];
     }
-
 }

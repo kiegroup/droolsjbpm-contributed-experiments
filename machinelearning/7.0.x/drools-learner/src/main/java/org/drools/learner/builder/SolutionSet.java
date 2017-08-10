@@ -10,16 +10,16 @@ import org.drools.learner.Stats;
 
 public class SolutionSet {
 
-    private Memory mem;
+    private Memory              mem;
     private ArrayList<Solution> solTrees;
-    private InstanceList globalTrainSet, globalTestSet;
+    private InstanceList        globalTrainSet, globalTestSet;
     private Stats globalTrainStats, globalTestStats;
     private int bestSolutionId;
 
-    public SolutionSet( Memory mem ) {
+    public SolutionSet(Memory mem) {
         this.mem = mem;
         bestSolutionId = 0;
-        solTrees = new ArrayList<Solution>( 1 );
+        solTrees = new ArrayList<Solution>(1);
     }
 
     public Collection<String> getTargets() {
@@ -40,14 +40,14 @@ public class SolutionSet {
         return mem.getTestSet();
     }
 
-    public void addSolution( Solution s ) {
-        solTrees.add( s );
+    public void addSolution(Solution s) {
+        solTrees.add(s);
     }
 
-    public void addSolution( DecisionTree tree, InstanceList set, InstanceList testSet ) {
-        Solution x = new Solution( tree, set );
-        x.setTestList( testSet );
-        addSolution( x );
+    public void addSolution(DecisionTree tree, InstanceList set, InstanceList testSet) {
+        Solution x = new Solution(tree, set);
+        x.setTestList(testSet);
+        addSolution(x);
     }
 
     public ArrayList<Solution> getSolutions() {
@@ -58,50 +58,47 @@ public class SolutionSet {
         return globalTrainStats;
     }
 
+    public void setGlobalTrainStats(Stats train) {
+        globalTrainStats = train;
+    }
+
     public Stats getGlobalTestStats() {
         return globalTestStats;
     }
 
-    public void setGlobalTrainStats( Stats train ) {
-        globalTrainStats = train;
-    }
-
-    public void setGlobalTestStats( Stats test ) {
+    public void setGlobalTestStats(Stats test) {
         globalTestStats = test;
-    }
-
-    public void setBestSolutionId( int bestId ) {
-        bestSolutionId = bestId;
     }
 
     public int getBestSolutionId() {
         return bestSolutionId;
     }
 
+    public void setBestSolutionId(int bestId) {
+        bestSolutionId = bestId;
+    }
+
     public Solution getBestSolution() {
-        return solTrees.get( bestSolutionId );
+        return solTrees.get(bestSolutionId);
     }
 
     public int getMinTestId() {
         double min = 1.0;
-        int id = -1;
-        for ( int i = 0; i < solTrees.size(); i++ ) {
-            double testError = solTrees.get( i ).getTestError();
-            double trainError = solTrees.get( i ).getTrainError();
-            if ( testError < min ) {
+        int    id  = -1;
+        for (int i = 0; i < solTrees.size(); i++) {
+            double testError  = solTrees.get(i).getTestError();
+            double trainError = solTrees.get(i).getTrainError();
+            if (testError < min) {
                 min = testError;
                 id = i;
-            } else if ( testError == min ) {
-                double trainOld = solTrees.get( id ).getTrainError();
-                if ( trainError < trainOld ) {
+            } else if (testError == min) {
+                double trainOld = solTrees.get(id).getTrainError();
+                if (trainError < trainOld) {
                     min = testError;
                     id = i;
                 }
             }
-
         }
         return id;
-
     }
-
 }

@@ -11,75 +11,75 @@ import org.drools.learner.tools.Util;
 public class StatsPrinter {
 
     //public static void print(Stats mystats, OutputStream os) {
-    public static void print( Stats mystats, Writer wr ) throws IOException {
+    public static void print(Stats mystats, Writer wr) throws IOException {
         //PrintWriter pwr = new PrintWriter(os);
 
         // print the statistics of the results to a file	
-        wr.write( "TESTING results: incorrect " + mystats.getResult( Stats.INCORRECT ) + "\n" );
-        wr.write( "TESTING results: correct " + mystats.getResult( Stats.CORRECT ) + "\n" );
-        wr.write( "TESTING results: unknown " + mystats.getResult( Stats.UNKNOWN ) + "\n" );
-        wr.write( "TESTING results: Total Number " + mystats.getTotal() );
+        wr.write("TESTING results: incorrect " + mystats.getResult(Stats.INCORRECT) + "\n");
+        wr.write("TESTING results: correct " + mystats.getResult(Stats.CORRECT) + "\n");
+        wr.write("TESTING results: unknown " + mystats.getResult(Stats.UNKNOWN) + "\n");
+        wr.write("TESTING results: Total Number " + mystats.getTotal());
 
         //wr.flush();
         wr.close();
     }
 
-    public static void print( StringBuffer sb, Writer wr ) throws IOException {
+    public static void print(StringBuffer sb, Writer wr) throws IOException {
         //PrintWriter pwr = new PrintWriter(os);
 
         // print the statistics of the results to a file	
-        wr.write( sb.toString() + "\n" );
+        wr.write(sb.toString() + "\n");
 
         wr.close();
     }
 
-    public static void print( Stats train, Stats test ) {
+    public static void print(Stats train, Stats test) {
         StringBuffer sb = new StringBuffer();
-        sb.append( "#" + Stats.getErrors() );
-        sb.append( "\n" );
-        sb.append( train.print4Latex() + test.print4Latex() + "\\\\" + "\n" );
-        sb.append( "\n" );
+        sb.append("#" + Stats.getErrors());
+        sb.append("\n");
+        sb.append(train.print4Latex() + test.print4Latex() + "\\\\" + "\n");
+        sb.append("\n");
 
-        System.out.println( sb.toString() );
+        System.out.println(sb.toString());
     }
 
-    public static void printLatexComment( String comment, String executionSignature, boolean append ) {
+    public static void printLatexComment(String comment, String executionSignature, boolean append) {
         StringBuffer sb = new StringBuffer();
-        sb.append( "#" + comment + "\n" );
-        StatsPrinter.print2file( sb, Util.DRL_DIRECTORY + executionSignature, append );
+        sb.append("#" + comment + "\n");
+        StatsPrinter.print2file(sb, Util.DRL_DIRECTORY + executionSignature, append);
     }
 
-    public static void printLatexLine( String executionSignature, boolean append ) {
+    public static void printLatexLine(String executionSignature, boolean append) {
         StringBuffer sb = new StringBuffer();
-        sb.append( "\n" );
-        StatsPrinter.print2file( sb, Util.DRL_DIRECTORY + executionSignature, append );
+        sb.append("\n");
+        StatsPrinter.print2file(sb, Util.DRL_DIRECTORY + executionSignature, append);
     }
 
-    public static void printLatex( Stats train, Stats test, String executionSignature, boolean append ) {
+    public static void printLatex(Stats train, Stats test, String executionSignature, boolean append) {
         StringBuffer sb = new StringBuffer();
-        sb.append( train.print4Latex() + test.print4Latex() + "\\\\" + "\n" );
-        StatsPrinter.print2file( sb, Util.DRL_DIRECTORY + executionSignature, append );
+        sb.append(train.print4Latex() + test.print4Latex() + "\\\\" + "\n");
+        StatsPrinter.print2file(sb, Util.DRL_DIRECTORY + executionSignature, append);
     }
 
-    public static void print2file( StringBuffer sb, String fileSignature, boolean append ) {
+    public static void print2file(StringBuffer sb, String fileSignature, boolean append) {
         System.out.println(sb);
         //String dataFileName = "src/main/rules/"+_packageNames+"/"+ fileName; 
 
-        if ( !fileSignature.endsWith( ".stats" ) )
+        if (!fileSignature.endsWith(".stats")) {
             fileSignature += ".stats";
-        System.out.println( "printing stats:" + fileSignature );
+        }
+        System.out.println("printing stats:" + fileSignature);
 
         try {
-            File file = new File( fileSignature);
-            System.out.println( file.getAbsolutePath() );
-            StatsPrinter.print( sb, new FileWriter( file, append ) );
-        } catch ( FileNotFoundException e ) {
+            File file = new File(fileSignature);
+            System.out.println(file.getAbsolutePath());
+            StatsPrinter.print(sb, new FileWriter(file, append));
+        } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
-
 }

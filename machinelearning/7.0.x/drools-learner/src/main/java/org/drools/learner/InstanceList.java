@@ -8,89 +8,89 @@ import java.util.Random;
 
 import org.drools.learner.tools.LoggerFactory;
 import org.drools.learner.tools.SimpleLogger;
-import org.kie.api.runtime.KieSession;
 
 public class InstanceList {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger( InstanceList.class, SimpleLogger.WARN );
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger( InstanceList.class, SimpleLogger.DEFAULT_LEVEL );
+    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(InstanceList.class, SimpleLogger.WARN);
+    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(InstanceList.class, SimpleLogger.DEFAULT_LEVEL);
 
-    private Schema schema;
+    private Schema              schema;
     private ArrayList<Instance> instances;
     private InstanceFactory factory = null;
 
-    public InstanceList( Schema schema ) {
+    public InstanceList(Schema schema) {
         this.schema = schema;
         this.instances = new ArrayList<Instance>();
-        this.factory = new InstanceFactory( schema );
+        this.factory = new InstanceFactory(schema);
     }
 
     // copy ctor
-    public InstanceList( InstanceList il ) {
+    public InstanceList(InstanceList il) {
         this.schema = il.schema;
         this.instances = il.instances;
         this.factory = il.factory;
     }
 
     // another copy constructor
-    public InstanceList( InstanceList il, int size ) {
+    public InstanceList(InstanceList il, int size) {
         this.schema = il.schema;
-        this.instances = new ArrayList<Instance>( size );
+        this.instances = new ArrayList<Instance>(size);
         this.factory = il.factory;
     }
 
-    public void addStructuredInstance( Object obj ) {
+    public void addStructuredInstance(Object obj) {
         //the factory will validate the object class during the execution
         // create instance and all attributes according to the schema		
-        Instance inst = factory.createInstance( obj );
+        Instance inst = factory.createInstance(obj);
 
-        if ( inst != null ) {
+        if (inst != null) {
             // the object is validated and the instance is created
             //System.out.println(inst);
-            instances.add( inst );
+            instances.add(inst);
         } else {
-            if ( slog.warn() != null )
-                slog.warn().log( "The object " + obj.getClass() + " is not related to the structure, couldnot create the instance\n" );
+            if (slog.warn() != null) {
+                slog.warn().log("The object " + obj.getClass() + " is not related to the structure, couldnot create the instance\n");
+            }
             //System.exit(0);
         }
     }
 
     public void shuffle() {
-        long seed = 10101001;
-        Random rnd = new Random( seed );
-        Collections.shuffle( this.instances, rnd );
+        long   seed = 10101001;
+        Random rnd  = new Random(seed);
+        Collections.shuffle(this.instances, rnd);
     }
 
-    public InstanceList subList( int from, int until ) {
-        InstanceList il = new InstanceList( this );
-        il.instances = new ArrayList<Instance>( instances.subList( from, until ) );
+    public InstanceList subList(int from, int until) {
+        InstanceList il = new InstanceList(this);
+        il.instances = new ArrayList<Instance>(instances.subList(from, until));
         return il;
     }
 
-    public void addAsInstance( Instance inst ) {
-        instances.add( inst );
+    public void addAsInstance(Instance inst) {
+        instances.add(inst);
     }
 
     public int getSize() {
         return instances.size();
     }
 
-    public Instance getInstance( int index ) {
-        return instances.get( index );
+    public Instance getInstance(int index) {
+        return instances.get(index);
     }
 
     public List<Instance> getInstances() {
         return instances;
     }
 
-    public InstanceList getInstances( int[] bag ) {
-        if ( bag.length > this.getSize() ) {
-            System.out.println( "Exception: TOO BIG to get Memory.getClassInstancesOf" );
+    public InstanceList getInstances(int[] bag) {
+        if (bag.length > this.getSize()) {
+            System.out.println("Exception: TOO BIG to get Memory.getClassInstancesOf");
             return null;
         }
-        InstanceList toReturn = new InstanceList( this, bag.length );
-        for ( int j = 0; j < bag.length; j++ ) {
-            toReturn.addAsInstance( this.getInstance( bag[j] ) );
+        InstanceList toReturn = new InstanceList(this, bag.length);
+        for (int j = 0; j < bag.length; j++) {
+            toReturn.addAsInstance(this.getInstance(bag[j]));
         }
         return toReturn;
     }

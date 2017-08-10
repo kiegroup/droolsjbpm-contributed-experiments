@@ -8,20 +8,32 @@ import org.drools.learner.eval.SplitPoint;
 
 public class QuantitativeDomain extends Domain {
 
-    public static QuantitativeDomain createFromDomain( Domain father ) {
-        QuantitativeDomain quantitative = new QuantitativeDomain( father.getObjKlass(), father.getFName(), father.getFType() );
+    private ArrayList<SplitPoint> splits;
+
+    private QuantitativeDomain(Class<?> objKlass, String fname, Class<?> ftype) {
+        super(objKlass, fname, ftype);
+        super.setCategorical(false); // by deafault it is true, must set it to false
+        this.splits = new ArrayList<SplitPoint>();
+    }
+
+    public static QuantitativeDomain createFromDomain(Domain father) {
+        QuantitativeDomain quantitative = new QuantitativeDomain(father.getObjKlass(), father.getFName(), father.getFType());
         //quantitative.setCategories(father.getCategories());
 
         return quantitative;
     }
 
+    public static Comparator<SplitPoint> getSplitComparator() {
+        return new SplitComparator();
+    }
+
     public QuantitativeDomain cheapClone() {
-        QuantitativeDomain qdom = new QuantitativeDomain( super.getObjKlass(), super.getFName(), super.getFType() );
-        if ( super.isCategorical() ) {
-            System.out.println( "QuantitativeDomain.cheapClone() fuck categorical how come QuantitativeDomain cloned " );
-            System.exit( 0 );
+        QuantitativeDomain qdom = new QuantitativeDomain(super.getObjKlass(), super.getFName(), super.getFType());
+        if (super.isCategorical()) {
+            System.out.println("QuantitativeDomain.cheapClone() fuck categorical how come QuantitativeDomain cloned ");
+            System.exit(0);
         }
-        qdom.setCategorical( super.isCategorical() );
+        qdom.setCategorical(super.isCategorical());
 
         //for (int i = 0; i<super.getCategoryCount(); i++)
         qdom.fCategories = this.fCategories;
@@ -30,17 +42,8 @@ public class QuantitativeDomain extends Domain {
         return qdom;
     }
 
-    private ArrayList<SplitPoint> splits;
-
-    private QuantitativeDomain( Class<?> objKlass, String fname, Class<?> ftype ) {
-        super( objKlass, fname, ftype );
-        super.setCategorical( false ); // by deafault it is true, must set it to false
-        this.splits = new ArrayList<SplitPoint>();
-
-    }
-
-    public void setFName( String fname ) {
-        super.setFName( fname );
+    public void setFName(String fname) {
+        super.setFName(fname);
     }
 
     public boolean isCategorical() {
@@ -50,18 +53,18 @@ public class QuantitativeDomain extends Domain {
     //	public int getIndex(int index) {
     //		return splits.get(index).getIndex();
     //	}
-    public SplitPoint getSplit( int index ) {
-        return splits.get( index );
+    public SplitPoint getSplit(int index) {
+        return splits.get(index);
     }
 
     public int getNumIndices() {
         return splits.size();
     }
 
-    public boolean addSplitPoint( SplitPoint pair ) { //int index, Number value) {
+    public boolean addSplitPoint(SplitPoint pair) { //int index, Number value) {
 
-        int insertionPoint = Collections.binarySearch( this.splits, pair, getSplitComparator() );
-        if ( insertionPoint >= 0 ) {
+        int insertionPoint = Collections.binarySearch(this.splits, pair, getSplitComparator());
+        if (insertionPoint >= 0) {
             return false; /*
                            * the pair exists in the list and the return is index
                            * of the search key
@@ -71,9 +74,9 @@ public class QuantitativeDomain extends Domain {
                   * inserted into the list the index of the first element
                   * greater than the key, or list.size()
                   */
-            int unfoundInsertionPoint = - ( insertionPoint ) - 1;
-            this.splits.add( unfoundInsertionPoint, pair );
-            super.fCategories.add( unfoundInsertionPoint, pair.getValue() );
+            int unfoundInsertionPoint = -(insertionPoint) - 1;
+            this.splits.add(unfoundInsertionPoint, pair);
+            super.fCategories.add(unfoundInsertionPoint, pair.getValue());
             return true;
         }
         /*
@@ -82,26 +85,20 @@ public class QuantitativeDomain extends Domain {
          */
     }
 
-    public boolean containsIndex( int value ) {
-        for ( Object op : super.fCategories ) {
+    public boolean containsIndex(int value) {
+        for (Object op : super.fCategories) {
             SplitPoint sp = (SplitPoint) op;
-            if ( sp.getIndex() == value )
+            if (sp.getIndex() == value) {
                 return true;
-
+            }
         }
         return false;
-
-    }
-
-    public static Comparator<SplitPoint> getSplitComparator() {
-        return new SplitComparator();
     }
 
     private static class SplitComparator implements Comparator<SplitPoint> {
-        public int compare( SplitPoint sp1, SplitPoint sp2 ) {
-            return sp1.getIndex() - sp2.getIndex();
 
+        public int compare(SplitPoint sp1, SplitPoint sp2) {
+            return sp1.getIndex() - sp2.getIndex();
         }
     }
-
 }

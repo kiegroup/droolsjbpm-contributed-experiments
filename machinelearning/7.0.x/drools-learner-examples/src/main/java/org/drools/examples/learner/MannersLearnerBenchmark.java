@@ -1,15 +1,8 @@
 package org.drools.examples.learner;
 
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
-
-import org.drools.learner.DecisionTree;
-import org.drools.learner.builder.DecisionTreeFactory;
-import org.drools.learner.tools.ObjectFactory;
-
 public class MannersLearnerBenchmark {
-	public static final void main(final String[] args) throws Exception {
+
+    public static final void main(final String[] args) throws Exception {
 //		long start_time = System.currentTimeMillis();
 //		// my rule base
 //		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -70,7 +63,7 @@ public class MannersLearnerBenchmark {
 //			decision_tree  = DecisionTreeFactory.createSingleID3E(session, obj_class);
 //
 //		}
-		
+
 //		final PackageBuilder builder = new PackageBuilder();
 //		//this wil generate the rules, then parse and compile in one step
 //		builder.addPackageFromTree( decision_tree );
@@ -87,5 +80,5 @@ public class MannersLearnerBenchmark {
 ////		logger.writeToDisk();
 //
 //		session.dispose();
-	}
+    }
 }

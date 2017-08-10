@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.drools.learner.builder.Learner.DataType;
 
 public class ClassStructure {
+
     private Class<?> klass, parentKlass;
 
     private ArrayList<Method> methods;
@@ -19,7 +20,7 @@ public class ClassStructure {
 
     private boolean done;
 
-    public ClassStructure( Class<?> klass ) {
+    public ClassStructure(Class<?> klass) {
         this.klass = klass;
         done = false;
         fieldStructure = new HashMap<Field, DataType>();
@@ -34,10 +35,10 @@ public class ClassStructure {
         return done;
     }
 
-    public void addField( Field f, DataType type ) {
+    public void addField(Field f, DataType type) {
         //		fields.add(f);
         //		field_types.add(type);
-        fieldStructure.put( f, type );
+        fieldStructure.put(f, type);
     }
 
     public Collection<Field> getFields() {
@@ -45,8 +46,8 @@ public class ClassStructure {
         return fieldStructure.keySet();
     }
 
-    public DataType getFieldType( Field f ) {
-        return fieldStructure.get( f );
+    public DataType getFieldType(Field f) {
+        return fieldStructure.get(f);
     }
 
     public boolean hasLabel() {
@@ -57,8 +58,8 @@ public class ClassStructure {
         return methods;
     }
 
-    public void addMethod( Method m ) {
-        methods.add( m );
+    public void addMethod(Method m) {
+        methods.add(m);
     }
 
     public Class<?> getOwnerClass() {
@@ -69,8 +70,7 @@ public class ClassStructure {
         return parentKlass;
     }
 
-    public void setParent( Class<?> parent ) {
+    public void setParent(Class<?> parent) {
         parentKlass = parent;
     }
-
 }

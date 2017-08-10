@@ -11,7 +11,7 @@ public class Attribute {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -19,14 +19,14 @@ public class Attribute {
         return value;
     }
 
-    public void setValue( Object value ) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
     /* we assume that "another" points to the same attribute type as this */
-    public int compareValue( Attribute another ) {
+    public int compareValue(Attribute another) {
         /* Boolean, Double, Integer, String... */
-        return AttributeValueComparator.instance.compare( getValue(), another.getValue() );
+        return AttributeValueComparator.instance.compare(getValue(), another.getValue());
     }
 
     public int hashCode() {
@@ -36,5 +36,4 @@ public class Attribute {
     public String toString() {
         return value.toString();
     }
-
 }

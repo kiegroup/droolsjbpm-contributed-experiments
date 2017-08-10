@@ -6,13 +6,14 @@ import java.util.Collections;
 import org.drools.learner.tools.Util;
 
 public class Domain {
+
+    protected ArrayList<Object> fCategories;
     private boolean categorical, fixed, artificial, ignore;
     //private DataType dataType;
-    private String fName;
+    private String   fName;
     private Class<?> fType, objKlass /* the class that attribute belongs to */; // , ownerKlass;		// not sure if necessary
-    protected ArrayList<Object> fCategories;
 
-    public Domain( Class<?> klass, String name, Class<?> type ) {
+    public Domain(Class<?> klass, String name, Class<?> type) {
         this.fName = name;
         this.fType = type;
         this.objKlass = klass;
@@ -21,12 +22,11 @@ public class Domain {
         this.artificial = false; // BY DEFAULT, it is a real field, if it is artificial it means there is no field exist but there is method which computes the value
         this.ignore = false;
         //this.dataType = DataType.PRIMITIVE; // BY DEFAULT it is primitive
-        this.fCategories = new ArrayList<Object>( 2 );
-
+        this.fCategories = new ArrayList<Object>(2);
     }
 
     public Domain cheapClone() {
-        Domain dom = new Domain( this.objKlass, this.fName, this.fType );
+        Domain dom = new Domain(this.objKlass, this.fName, this.fType);
         //dom.fixed = this.fixed;
         dom.categorical = this.categorical;
         //dom.readingSeq = readingSeq;
@@ -41,42 +41,46 @@ public class Domain {
     }
 
     public String getFReferenceName() {
-        return Util.getFReference( objKlass, fName );
+        return Util.getFReference(objKlass, fName);
     }
 
     public String getFName() {
         return this.fName;
     }
 
-    protected void setFName( String name ) {
+    protected void setFName(String name) {
         this.fName = name;
     }
 
-    public void setFixed( boolean fixed ) {
-        this.fixed = fixed;
-    }
-
-    /** Indicates that this domain cannot be changed after creation */
+    /**
+     * Indicates that this domain cannot be changed after creation
+     */
     boolean isFixed() {
         return this.fixed;
     }
 
-    public void setCategorical( boolean cate ) {
-        this.categorical = cate;
+    public void setFixed(boolean fixed) {
+        this.fixed = fixed;
     }
 
-    /** Indicates that this domain has discrete set of values */
+    /**
+     * Indicates that this domain has discrete set of values
+     */
     public boolean isCategorical() {
         return this.categorical;
     }
 
-    // if the field is a artificial field
-    public void setArtificial( boolean b ) {
-        this.artificial = b;
+    public void setCategorical(boolean cate) {
+        this.categorical = cate;
     }
 
     public boolean isArtificial() {
         return this.artificial;
+    }
+
+    // if the field is a artificial field
+    public void setArtificial(boolean b) {
+        this.artificial = b;
     }
     //	public void setOwnerKlass(Class<?> owner_clazz) {
     //		 = owner_clazz;
@@ -86,50 +90,51 @@ public class Domain {
         return objKlass;
     }
 
-    public void addCategory( Object value ) {
-        if ( fixed )
+    public void addCategory(Object value) {
+        if (fixed) {
             return;
-        if ( categorical ) {
-            if ( !fCategories.contains( value ) )
-                fCategories.add( value );
+        }
+        if (categorical) {
+            if (!fCategories.contains(value)) {
+                fCategories.add(value);
+            }
         } else {
             return;
         }
-
     }
 
-    public Object getCategory( int idx ) {
-        return fCategories.get( idx );
+    public Object getCategory(int idx) {
+        return fCategories.get(idx);
     }
 
     public int getCategoryCount() {
         return fCategories.size();
     }
 
-    public boolean isPossible( Object value ) throws Exception {
+    public boolean isPossible(Object value) throws Exception {
         //System.out.println("Domain.isPossible() start "+ value+ " ?");
         //		since the value is coming from the extractor i dont check the type	
         //		if (_value.getClass()!= this.fType)
         //			return false;
         //System.exit(0);
-        if ( fixed ) {// if it is boolean type actually you do not need to check for the contains function {TRUE, FALSE}
-            return this.containsValue( value );
+        if (fixed) {// if it is boolean type actually you do not need to check for the contains function {TRUE, FALSE}
+            return this.containsValue(value);
         } else {
             return true;
         }
-
     }
 
-    public boolean containsValue( Object value ) throws Exception {
-        if ( categorical ) {
-            return this.fCategories.contains( value );
+    public boolean containsValue(Object value) throws Exception {
+        if (categorical) {
+            return this.fCategories.contains(value);
         } else {
-            if ( fCategories.isEmpty() || fCategories.size() == 1 )
-                throw new Exception( " Domain " + fName + " is constant and not discrete but bounds are not set: possible values size: " + fCategories.size() );
+            if (fCategories.isEmpty() || fCategories.size() == 1) {
+                throw new Exception(" Domain " + fName + " is constant and not discrete but bounds are not set: possible values size: " + fCategories.size());
+            }
 
             // they must be sorted 
-            return ( AttributeValueComparator.instance.compare( value, fCategories.get( 0 ) ) >= 0
-                    && AttributeValueComparator.instance.compare( value, fCategories.get( getCategoryCount() - 1 ) ) <= 0 );
+            return (AttributeValueComparator.instance.compare(value, fCategories.get(0)) >= 0
+                && AttributeValueComparator.instance.compare(value, fCategories.get(getCategoryCount() - 1)) <= 0);
             //return (nComparator.compare((Number)value, fValues.get(0)) >= 0 && nComparator.compare((Number)value, fValues.get(fValues.size()-1)) <= 0);
 
             /*
@@ -139,12 +144,12 @@ public class Domain {
         }
     }
 
-    public Object getCategoryOf( Object value ) {
-        if ( categorical ) {
+    public Object getCategoryOf(Object value) {
+        if (categorical) {
             return value;
         } else {
 
-            int insertionPoint = Collections.binarySearch( this.fCategories, value, AttributeValueComparator.instance );
+            int insertionPoint = Collections.binarySearch(this.fCategories, value, AttributeValueComparator.instance);
             /*
              * index of the search key, if it is contained in the list;
              * otherwise, (-(insertion point) - 1). The insertion point is
@@ -154,31 +159,31 @@ public class Domain {
              * specified key. Note that this guarantees that the return value
              * will be >= 0 if and only if the key is found.
              */
-            if ( insertionPoint >= 0 ) {
-                return this.fCategories.get( insertionPoint );
+            if (insertionPoint >= 0) {
+                return this.fCategories.get(insertionPoint);
             } else {
-                int unfoundInsertionPoint = - ( insertionPoint ) - 1;
-                if ( unfoundInsertionPoint >= this.fCategories.size() ) {
+                int unfoundInsertionPoint = -(insertionPoint) - 1;
+                if (unfoundInsertionPoint >= this.fCategories.size()) {
                     //System.out.println("insestion point is the size domain "+this);
                     unfoundInsertionPoint = this.fCategories.size() - 1;
                 }
-                return this.fCategories.get( unfoundInsertionPoint );
+                return this.fCategories.get(unfoundInsertionPoint);
             }
         }
-
     }
 
     public boolean ignore() {
         return ignore;
     }
 
-    public void ignore( boolean ignoreField ) {
+    public void ignore(boolean ignoreField) {
         ignore = ignoreField;
     }
 
-    public boolean isNotJustSelected( Domain exceptDomain ) {
-        if ( this.objKlass.equals( exceptDomain.getObjKlass() ) )
-            return !this.getFName().equals( exceptDomain.getFName() );
+    public boolean isNotJustSelected(Domain exceptDomain) {
+        if (this.objKlass.equals(exceptDomain.getObjKlass())) {
+            return !this.getFName().equals(exceptDomain.getFName());
+        }
         return true;
     }
 
@@ -187,12 +192,10 @@ public class Domain {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer( fName + "" );
+        StringBuffer sb = new StringBuffer(fName + "");
         //		for (Object v: fValues) {
         //			sb.append("-" + v);
         //		}
         return sb.toString();
-
     }
-
 }

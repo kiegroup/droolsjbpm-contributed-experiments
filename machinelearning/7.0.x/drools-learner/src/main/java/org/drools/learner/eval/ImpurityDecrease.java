@@ -4,15 +4,15 @@ public class ImpurityDecrease implements StoppingCriterion {
 
     private double beta = 0.1;
 
-    public ImpurityDecrease( double beta ) {
+    public ImpurityDecrease(double beta) {
         this.beta = beta;
     }
 
-    public boolean stop( InformationContainer bestAttrEval ) {
-        if ( bestAttrEval.attributeEval < beta )
+    public boolean stop(InformationContainer bestAttrEval) {
+        if (bestAttrEval.attributeEval < beta) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
-
 }

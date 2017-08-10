@@ -7,15 +7,15 @@ public class MaximumDepth implements StoppingCriterion {
     private int limitDepth;
     private int numPrunned;
 
-    public MaximumDepth( int depth ) {
+    public MaximumDepth(int depth) {
         limitDepth = depth;
         numPrunned = 0;
     }
 
-    public boolean stop( InformationContainer bestAttrEval ) {
-        if ( bestAttrEval.getDepth() <= limitDepth )
+    public boolean stop(InformationContainer bestAttrEval) {
+        if (bestAttrEval.getDepth() <= limitDepth) {
             return false;
-        else {
+        } else {
             numPrunned++;
             return true;
         }
@@ -25,8 +25,7 @@ public class MaximumDepth implements StoppingCriterion {
         return numPrunned;
     }
 
-    public void setDepth( int maxDepth ) {
+    public void setDepth(int maxDepth) {
         limitDepth = maxDepth;
     }
-
 }

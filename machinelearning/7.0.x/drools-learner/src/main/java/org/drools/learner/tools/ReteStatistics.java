@@ -158,5 +158,4 @@ public class ReteStatistics {
     //		StatsPrinter.print2file(sb, executionSignature, true);
     //		
     //	}
-
 }

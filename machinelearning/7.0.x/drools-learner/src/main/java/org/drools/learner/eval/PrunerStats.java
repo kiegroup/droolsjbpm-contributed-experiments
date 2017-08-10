@@ -12,27 +12,27 @@ public class PrunerStats extends TreeStats {
         iterationId = 0;
     }
 
-    public PrunerStats( TreeStats ts ) {
-        super( ts.getTrainError(), ts.getErrorEstimation() );
+    public PrunerStats(TreeStats ts) {
+        super(ts.getTrainError(), ts.getErrorEstimation());
         iterationId = 0;
     }
 
     // to set an node update with the worst cross validated error
-    public PrunerStats( double error1 ) {
-        super( error1 );
+    public PrunerStats(double error1) {
+        super(error1);
         iterationId = 0;
         //test_cost = error;
 
     }
 
-    public PrunerStats( double error1, double error2 ) {
-        super( error1, error2 );
+    public PrunerStats(double error1, double error2) {
+        super(error1, error2);
         iterationId = 0;
         //test_cost = error;
 
     }
 
-    public void iterationId( int i ) {
+    public void iterationId(int i) {
         iterationId = i;
     }
 
@@ -44,7 +44,7 @@ public class PrunerStats extends TreeStats {
         return costComplexity;
     }
 
-    public void setCostComplexity( double costComplexity ) {
+    public void setCostComplexity(double costComplexity) {
         this.costComplexity = costComplexity;
     }
 
@@ -52,8 +52,7 @@ public class PrunerStats extends TreeStats {
         return alpha;
     }
 
-    public void setAlpha( double alpha ) {
+    public void setAlpha(double alpha) {
         this.alpha = alpha;
     }
-
 }

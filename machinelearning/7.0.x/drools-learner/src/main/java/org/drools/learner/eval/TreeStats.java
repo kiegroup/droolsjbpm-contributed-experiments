@@ -3,7 +3,7 @@ package org.drools.learner.eval;
 public class TreeStats {
 
     //private int iteration_id;
-    private int numTerminalNodes;
+    private int    numTerminalNodes;
     private double testError;
     private double trainError;
 
@@ -11,13 +11,13 @@ public class TreeStats {
 
     }
 
-    public TreeStats( double error1, double error2 ) {
+    public TreeStats(double error1, double error2) {
         trainError = error1;
         testError = error2;
     }
 
     // to set an node update with the worst cross validated error
-    public TreeStats( double error ) {
+    public TreeStats(double error) {
         //		iteration_id = 0;
         testError = error;
         trainError = 1.0d - error;
@@ -27,7 +27,7 @@ public class TreeStats {
         return numTerminalNodes;
     }
 
-    public void setNumTerminalNodes( int numTerminalNodes ) {
+    public void setNumTerminalNodes(int numTerminalNodes) {
         this.numTerminalNodes = numTerminalNodes;
     }
 
@@ -35,7 +35,7 @@ public class TreeStats {
         return testError;
     }
 
-    public void setErrorEstimation( double validCost ) {
+    public void setErrorEstimation(double validCost) {
         this.testError = validCost;
     }
 
@@ -43,8 +43,7 @@ public class TreeStats {
         return trainError;
     }
 
-    public void setTrainError( double resubstitutionCost ) {
+    public void setTrainError(double resubstitutionCost) {
         this.trainError = resubstitutionCost;
     }
-
 }

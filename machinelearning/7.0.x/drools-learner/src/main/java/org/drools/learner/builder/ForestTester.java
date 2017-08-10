@@ -14,72 +14,72 @@ import org.drools.learner.tools.Util;
 
 public class ForestTester extends Tester {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger( ForestTester.class, SimpleLogger.DEFAULT_LEVEL );
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger( ForestTester.class, SimpleLogger.DEFAULT_LEVEL );
+    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(ForestTester.class, SimpleLogger.DEFAULT_LEVEL);
+    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(ForestTester.class, SimpleLogger.DEFAULT_LEVEL);
 
     private ArrayList<DecisionTree> trees;
-    private Domain targetDomain;
+    private Domain                  targetDomain;
 
-    public ForestTester( ArrayList<DecisionTree> forest ) {
+    public ForestTester(ArrayList<DecisionTree> forest) {
         trees = forest;
-        targetDomain = forest.get( 0 ).getTargetDomain();
+        targetDomain = forest.get(0).getTargetDomain();
     }
 
-    public Stats test( InstanceList data ) {
+    public Stats test(InstanceList data) {
 
-        Stats evaluation = new Stats( data.getSchema().getObjectClass() ); //represent.getObjClass());
+        Stats evaluation = new Stats(data.getSchema().getObjectClass()); //represent.getObjClass());
 
         int i = 0;
-        for ( Instance instance : data.getInstances() ) {
-            Object forestDecision = this.voteOn( instance );
-            Integer result = evaluate( targetDomain, instance, forestDecision );
+        for (Instance instance : data.getInstances()) {
+            Object  forestDecision = this.voteOn(instance);
+            Integer result         = evaluate(targetDomain, instance, forestDecision);
 
             //flog.debug(Util.ntimes("#\n", 1)+i+ " <START> TEST: instant="+ instance + " = target "+ result);			
-            if ( i % 1000 == 0 && slog.stat() != null )
-                slog.stat().stat( "." );
+            if (i % 1000 == 0 && slog.stat() != null) {
+                slog.stat().stat(".");
+            }
 
-            evaluation.change( result, 1 );
+            evaluation.change(result, 1);
             i++;
         }
 
         return evaluation;
     }
 
-    public Object voteOn( Instance i ) {
-        ClassDistribution classification = new ClassDistribution( targetDomain );
+    public Object voteOn(Instance i) {
+        ClassDistribution classification = new ClassDistribution(targetDomain);
 
-        for ( int j = 0; j < trees.size(); j++ ) {
-            Object vote = trees.get( j ).vote( i );
-            if ( vote != null ) {
-                classification.change( vote, 1 );
+        for (int j = 0; j < trees.size(); j++) {
+            Object vote = trees.get(j).vote(i);
+            if (vote != null) {
+                classification.change(vote, 1);
                 //classification.change(Util.sum(), 1);
             } else {
                 // TODO add an unknown value
                 //classification.change(-1, 1);
-                if ( flog.error() != null )
-                    flog.error().log( Util.ntimes( "\n", 10 ) + "Unknown situation at tree: " + j + " for fact " + i );
-                System.exit( 0 );
+                if (flog.error() != null) {
+                    flog.error().log(Util.ntimes("\n", 10) + "Unknown situation at tree: " + j + " for fact " + i);
+                }
+                System.exit(0);
             }
         }
         classification.evaluateMajority();
         Object winner = classification.getWinnerClass();
 
         double ratio = 0.0;
-        if ( classification.getNumIdeas() == 1 ) {
+        if (classification.getNumIdeas() == 1) {
             //100 %
             ratio = 1;
             return winner;
         } else {
-            double numVotes = classification.getVoteFor( winner );
-            ratio = ( numVotes / (double) trees.size() );
+            double numVotes = classification.getVoteFor(winner);
+            ratio = (numVotes / (double) trees.size());
             // TODO if the ratio is smaller than some number => reject
         }
         return winner;
-
     }
 
-    public void printStats( final Stats evaluation, String executionSignature, boolean append ) {
-        super.printStats( evaluation, executionSignature, append );
+    public void printStats(final Stats evaluation, String executionSignature, boolean append) {
+        super.printStats(evaluation, executionSignature, append);
     }
-
 }

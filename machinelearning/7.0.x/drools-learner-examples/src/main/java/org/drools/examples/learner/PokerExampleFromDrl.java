@@ -1,17 +1,15 @@
 package org.drools.examples.learner;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
+
 import org.drools.learner.tools.ObjectFactory;
-import org.drools.learner.tools.ReteStatistics;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
 public class PokerExampleFromDrl {
-	
-	public static final void main(final String[] args) throws Exception {
+
+    public static final void main(final String[] args) throws Exception {
 //        //read in the source
 //        //final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
 //    	final Reader source = new InputStreamReader( Restaurant.class.getResourceAsStream( "poker_c45_one.drl" ) );
@@ -56,10 +54,10 @@ public class PokerExampleFromDrl {
 ////        logger.writeToDisk();
 //
 //        session.dispose();
-        KieSession ksession = new KieHelper( ).addResource( ResourceFactory.newInputStreamResource( Car.class.getResourceAsStream( "poker_c45_one.drl" ) ) ).build().newKieSession();
-        String inputFile = new String("data/poker/poker-hand-training-true.data.txt");
-        Class<?> obj_class = Poker.class;
-        List<Object> objects = ObjectFactory.getObjects(obj_class, inputFile);
+        KieSession   ksession  = new KieHelper().addResource(ResourceFactory.newInputStreamResource(Car.class.getResourceAsStream("poker_c45_one.drl"))).build().newKieSession();
+        String       inputFile = new String("data/poker/poker-hand-training-true.data.txt");
+        Class<?>     obj_class = Poker.class;
+        List<Object> objects   = ObjectFactory.getObjects(obj_class, inputFile);
         for (Object r : objects) {
             ksession.insert(r);
         }
@@ -68,5 +66,4 @@ public class PokerExampleFromDrl {
 
         ksession.dispose();
     }
-
 }

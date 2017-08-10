@@ -20,74 +20,73 @@ public class DecisionTreeVisitor {
         numPathsFound = 0;
     }
 
-    public void visit( DecisionTree dt ) {
-        dfs( dt.getRoot(), dt.getId() );
+    public void visit(DecisionTree dt) {
+        dfs(dt.getRoot(), dt.getId());
         //		if (!nodes.empty())
         //			nodes.pop(); // POP the root
 
     }
 
     // memory optimized
-    public void visit2( DecisionTree dt ) {
-        dfs2( dt.getRoot(), dt.getId() );
+    public void visit2(DecisionTree dt) {
+        dfs2(dt.getRoot(), dt.getId());
         //if (!nodes.empty())
         nodes.pop(); // POP the root
-
     }
 
-    private void dfs( TreeNode mynode, int treeId ) {
+    private void dfs(TreeNode mynode, int treeId) {
         //System.out.println("How many guys there of "+my_node.getDomain().getName() +"  : "+my_node.getDomain().getValues().size());
 
-        if ( mynode instanceof LeafNode ) {
-            NodeValue leafValue = new NodeValue( mynode );
-            leafValue.setValue( ( (LeafNode) mynode ).getCategory() ); //getValue(null));
-            nodes.push( leafValue );
-            Path p = spitPath( nodes );
-            p.setTreeId( treeId );
+        if (mynode instanceof LeafNode) {
+            NodeValue leafValue = new NodeValue(mynode);
+            leafValue.setValue(((LeafNode) mynode).getCategory()); //getValue(null));
+            nodes.push(leafValue);
+            Path p = spitPath(nodes);
+            p.setTreeId(treeId);
             numPathsFound++;
-            if ( !paths.containsKey( p.hashCode() ) ) {
-                paths.put( p.hashCode(), p );
+            if (!paths.containsKey(p.hashCode())) {
+                paths.put(p.hashCode(), p);
             }
             nodes.pop();
             return;
         }
 
-        for ( Object attributeValue : mynode.getChildrenKeys() ) {
+        for (Object attributeValue : mynode.getChildrenKeys()) {
             //System.out.println("Domain: "+ my_node.getDomain().getName() + " the value:"+ attributeValue);
-            NodeValue nodeValue = new NodeValue( mynode );
-            nodeValue.setValue( attributeValue );
-            nodes.push( nodeValue );
-            TreeNode child = mynode.getChild( attributeValue );
-            dfs( child, treeId );
+            NodeValue nodeValue = new NodeValue(mynode);
+            nodeValue.setValue(attributeValue);
+            nodes.push(nodeValue);
+            TreeNode child = mynode.getChild(attributeValue);
+            dfs(child, treeId);
             nodes.pop();
         }
         return;
     }
 
     // memory optimized
-    private void dfs2( TreeNode myNode, int treeId ) {
+    private void dfs2(TreeNode myNode, int treeId) {
         //System.out.println("How many guys there of "+my_node.getDomain().getName() +"  : "+my_node.getDomain().getValues().size());
-        NodeValue nodeValue = new NodeValue( myNode );
-        nodes.push( nodeValue );
-        if ( myNode instanceof LeafNode ) {
+        NodeValue nodeValue = new NodeValue(myNode);
+        nodes.push(nodeValue);
+        if (myNode instanceof LeafNode) {
             //NodeValue leaf_value = new NodeValue(my_node);
-            nodeValue.setValue( ( (LeafNode) myNode ).getCategory() ); //getValue(null));
+            nodeValue.setValue(((LeafNode) myNode).getCategory()); //getValue(null));
             //nodes.push(leaf_value);
             //paths.add(getPath(nodes)); // if i can spit the rule here it would work
-            Path p = spitPath( nodes );
-            p.setTreeId( treeId );
+            Path p = spitPath(nodes);
+            p.setTreeId(treeId);
 
-            if ( !paths.containsKey( p.hashCode() ) ) {
-                paths.put( p.hashCode(), p );
+            if (!paths.containsKey(p.hashCode())) {
+                paths.put(p.hashCode(), p);
             }
             return;
         }
 
-        for ( Object attributeValue : myNode.getChildrenKeys() ) {
+        for (Object attributeValue : myNode.getChildrenKeys()) {
             //System.out.println("Domain: "+ my_node.getDomain().getName() + " the value:"+ attributeValue);
-            nodeValue.setValue( attributeValue );
-            TreeNode child = myNode.getChild( attributeValue );
-            dfs2( child, treeId );
+            nodeValue.setValue(attributeValue);
+            TreeNode child = myNode.getChild(attributeValue);
+            dfs2(child, treeId);
             nodes.pop();
         }
         return;
@@ -105,18 +104,18 @@ public class DecisionTreeVisitor {
         return paths.values();
     }
 
-    private Path spitPath( Stack<NodeValue> nodes ) {
+    private Path spitPath(Stack<NodeValue> nodes) {
         //, Stack<NodeValue> leaves // if more than one leaf
-        Path newPath = new Path( nodes.size() );// (nodes, leaves) //if more than one leaf
+        Path newPath = new Path(nodes.size());// (nodes, leaves) //if more than one leaf
         //newRule.setObjectClass(this.getRuleClass());
         Iterator<NodeValue> it = nodes.iterator();
-        while ( it.hasNext() ) {
+        while (it.hasNext()) {
 
             NodeValue current = it.next();
-            if ( it.hasNext() ) {
-                newPath.addStep( current );
+            if (it.hasNext()) {
+                newPath.addStep(current);
             } else {
-                newPath.setStats( current );
+                newPath.setStats(current);
             }
         }
 
@@ -136,5 +135,4 @@ public class DecisionTreeVisitor {
     //		}
     //		return path;	
     //	}
-
 }
