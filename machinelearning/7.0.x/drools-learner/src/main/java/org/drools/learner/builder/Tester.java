@@ -12,9 +12,6 @@ import org.drools.learner.eval.stopping.StoppingCriterion;
 
 public abstract class Tester {
 
-    //private static final Logger log = LoggerFactory.getSysOutLogger(LogLevel.ERROR); 
-    //private static final Logger flog = LoggerFactory.getFileLogger(Tester.class, LogLevel.ERROR, Util.log_file);
-
     public static Integer evaluate(Domain targetDomain, Instance i, Object treeDecision) {
         String targetFName = targetDomain.getFReferenceName();
 

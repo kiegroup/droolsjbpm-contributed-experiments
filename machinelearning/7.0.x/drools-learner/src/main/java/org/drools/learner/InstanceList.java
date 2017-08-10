@@ -6,13 +6,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InstanceList {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(InstanceList.class, SimpleLogger.WARN);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(InstanceList.class, SimpleLogger.DEFAULT_LEVEL);
+    protected static final transient Logger log = LoggerFactory.getLogger(InstanceList.class);
 
     private Schema              schema;
     private ArrayList<Instance> instances;
@@ -48,8 +47,8 @@ public class InstanceList {
             //System.out.println(inst);
             instances.add(inst);
         } else {
-            if (slog.warn() != null) {
-                slog.warn().log("The object " + obj.getClass() + " is not related to the structure, couldnot create the instance\n");
+            if (log.isWarnEnabled()) {
+                log.warn("The object " + obj.getClass() + " is not related to the structure, couldnot create the instance\n");
             }
             //System.exit(0);
         }

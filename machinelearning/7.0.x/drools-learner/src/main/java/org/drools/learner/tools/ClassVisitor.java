@@ -13,18 +13,18 @@ import org.drools.learner.Schema;
 import org.drools.learner.builder.Learner;
 import org.drools.learner.builder.Learner.DataType;
 import org.drools.learner.builder.Learner.DomainAlgo;
-
-//import org.drools.spi.Extractor;ReadAccessor
+import org.drools.learner.eval.CrossValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClassVisitor {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(ClassVisitor.class, SimpleLogger.WARN);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(ClassVisitor.class, SimpleLogger.WARN);
-    private static ClassFieldAccessorCache cache = new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader());
+    protected static final transient Logger                  log        = LoggerFactory.getLogger(CrossValidation.class);
+    private static               ClassFieldAccessorCache cache      = new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader());
     //private static ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
-    private        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-    private DomainAlgo domainType = Learner.DEFAULT_DOMAIN;
-    private DataType   dataType   = Learner.DEFAULT_DATA;
+    private                      ClassFieldAccessorStore store      = new ClassFieldAccessorStore();
+    private                      DomainAlgo              domainType = Learner.DEFAULT_DOMAIN;
+    private                      DataType                dataType   = Learner.DEFAULT_DATA;
 
     private Schema       classSchema;
     private Stack<Field> classRelation;
@@ -63,8 +63,8 @@ public class ClassVisitor {
 
     public void getStructuredSuperFields(
         Class<?> clazz/* , Class<?> owner_clazz */) {
-        if (slog.debug() != null) {
-            slog.debug().log("On the class " + clazz + " the structure exists " + classSchema.getClassStructure().containsKey(clazz));
+        if (log.isDebugEnabled()) {
+            log.debug("On the class " + clazz + " the structure exists " + classSchema.getClassStructure().containsKey(clazz));
         }
         if (classSchema.getClassStructure().containsKey(clazz) && classSchema.getClassStructure().get(clazz).isDone()) {
             return;
@@ -82,8 +82,8 @@ public class ClassVisitor {
             try {
                 decomposeField(structure, f /* , owner_clazz */);
             } catch (FeatureNotSupported e) {
-                if (slog.error() != null) {
-                    slog.error().log("FeatureNotSupported " + e + ")\n");
+                if (log.isErrorEnabled()) {
+                    log.error("FeatureNotSupported " + e + ")\n");
                 }
             }
         }
@@ -100,8 +100,8 @@ public class ClassVisitor {
 
     public void decomposeField(ClassStructure structure, Field field) throws FeatureNotSupported {
 
-        //		if (slog.warn() != null)
-        //			slog.warn().log("!!!!!!!!!The field "+f+"  " +f.getName()+ "\n");
+        //		if (log.warn() != null)
+        //			log.warn().log("!!!!!!!!!The field "+f+"  " +f.getName()+ "\n");
         // can get the field annotation
         // if it is ignored do not do anything
         FieldAnnotation fieldSpec = Util.getFieldAnnotations(field);
@@ -148,8 +148,8 @@ public class ClassVisitor {
 
             ///////////
             if (dataType != DataType.COLLECTION) { // TODO
-                if (slog.warn() != null) {
-                    slog.warn().log("The field " + fieldName + " of the obj klass:" + objClass + " and the loader:" + objClass.getClassLoader() + "\n");
+                if (log.isWarnEnabled()) {
+                    log.warn("The field " + fieldName + " of the obj klass:" + objClass + " and the loader:" + objClass.getClassLoader() + "\n");
                 }
                 try {
                     //					if (f_name.startsWith("get")) {//TODO check
@@ -196,16 +196,16 @@ public class ClassVisitor {
                             //throw new Exception("What type of data is this");	
                     }
                 } catch (RuntimeException e) {
-                    if (slog.warn() != null) {
-                        slog.warn().log("Exception e:" + e + " skip\n");
+                    if (log.isWarnEnabled()) {
+                        log.warn("Exception e:" + e + " skip\n");
                     }
-                    if (flog.warn() != null) {
-                        flog.warn().log("Exception e:" + e + " skip");
+                    if (log.isWarnEnabled()) {
+                        log.warn("Exception e:" + e + " skip");
                     }
                 }
             } else { //case COLLECTION:
-                if (slog.warn() != null) {
-                    slog.warn().log("Case Collection(f_name " + fieldName + " What is the obj klass:" + objClass + ")\n");
+                if (log.isWarnEnabled()) {
+                    log.warn("Case Collection(f_name " + fieldName + " What is the obj klass:" + objClass + ")\n");
                 }
                 throw new FeatureNotSupported("Can not deal with collections as an attribute");
             }
@@ -254,8 +254,8 @@ public class ClassVisitor {
                     }
                     classSchema.addTarget(fRefName);
                     TARGET_FOUND = true;
-                    if (slog.warn() != null) {
-                        slog.warn().log("!!!!!:processClassLabel: TARGET FOUND " + fRefName + " " + classLabel.labelElement() + ")\n");
+                    if (log.isWarnEnabled()) {
+                        log.warn("!!!!!:processClassLabel: TARGET FOUND " + fRefName + " " + classLabel.labelElement() + ")\n");
                     }
 
                     //break; // if the ClassAnnotation is found then stop

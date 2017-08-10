@@ -3,6 +3,7 @@ package org.drools.learner.eval.heuristic;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.phreak.RuleExecutor;
 import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.QuantitativeDomain;
@@ -10,9 +11,9 @@ import org.drools.learner.eval.Categorizer;
 import org.drools.learner.eval.ClassDistribution;
 import org.drools.learner.eval.CondClassDistribution;
 import org.drools.learner.eval.InstDistribution;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Entropy implements Heuristic {
 
@@ -25,7 +26,8 @@ public class Entropy implements Heuristic {
      * 
      * used by: c45Alternator, c45Learner, c45Iterator
      */
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Entropy.class, SimpleLogger.DEFAULT_LEVEL);
+
+    protected static final transient Logger   log = LoggerFactory.getLogger(Entropy.class);
     protected double              dataEval;
     protected InstDistribution    instsByTarget;
     protected ArrayList<Instance> sortedInstances;
@@ -53,15 +55,15 @@ public class Entropy implements Heuristic {
 
                 if (totalNumAttr > 0) {
                     double prob = totalNumAttr / dataSize;
-                    //flog.debug("{("+total_num_attr +"/"+data_size +":"+prob +")* [");
+                    //log.debug("{("+total_num_attr +"/"+data_size +":"+prob +")* [");
                     double info = calcInfo(instancesByAttr.getDistributionOf(attCategory));
 
                     sum += prob * info;
-                    //flog.debug("]} ");
+                    //log.debug("]} ");
                 }
             }
         }
-        //flog.debug("\n == "+sum);
+        //log.debug("\n == "+sum);
         return sum;
     }
 
@@ -86,12 +88,12 @@ public class Entropy implements Heuristic {
                 if (numInClass > 0) {
                     prob = numInClass / dataSize;
                     /* TODO what if it is a sooo small number ???? */
-                    //flog.debug("("+num_in_class+ "/"+data_size+":"+prob+")" +"*"+ Util.log2(prob) + " + ");
+                    //log.debug("("+num_in_class+ "/"+data_size+":"+prob+")" +"*"+ Util.log2(prob) + " + ");
                     sum -= prob * Util.log2(prob);
                 }
             }
         }
-        //flog.debug("= " +sum);
+        //log.debug("= " +sum);
         return sum;
     }
 
@@ -145,13 +147,13 @@ public class Entropy implements Heuristic {
 
         Domain targetDomain = instsByTarget.getClassDomain();
 
-        //flog.debug("What is the attributeToSplit? " + attr_domain);
+        //log.debug("What is the attributeToSplit? " + attr_domain);
 
         /* initialize the hashtable */
         CondClassDistribution instsByAttr = new CondClassDistribution(attrDomain, targetDomain);
         instsByAttr.setTotal(instsByTarget.getSum());
 
-        //flog.debug("Cond distribution for "+ attr_domain + " \n"+ insts_by_attr);
+        //log.debug("Cond distribution for "+ attr_domain + " \n"+ insts_by_attr);
 
         for (int category = 0; category < targetDomain.getCategoryCount(); category++) {
             Object targetCategory = targetDomain.getCategory(category);
@@ -162,9 +164,7 @@ public class Entropy implements Heuristic {
                 Object instClass = inst.getAttrValue(targetDomain.getFReferenceName());
 
                 if (!targetCategory.equals(instClass)) {
-                    if (flog.error() != null) {
-                        flog.error().log("How the fuck they are not the same ? " + targetCategory + " " + instClass);
-                    }
+                    log.error("How the fuck they are not the same ? {} {}", targetCategory, instClass);
                     System.exit(0);
                 }
                 instsByAttr.change(instAttrCategory, targetCategory, inst.getWeight()); //+1

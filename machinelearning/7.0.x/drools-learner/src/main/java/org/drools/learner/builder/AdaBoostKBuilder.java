@@ -7,18 +7,17 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.Instance;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AdaBoostKBuilder extends DecisionTreeBuilder {
 
-    private static final double  TREE_SIZE_RATIO = 0.9;
-    private static final boolean WITH_REP        = false;
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(AdaBoostKBuilder.class, SimpleLogger.DEFAULT_LEVEL);
+    private static final         double  TREE_SIZE_RATIO = 0.9;
+    private static final         boolean WITH_REP        = false;
+    protected static final transient Logger  log             = LoggerFactory.getLogger(AdaBoostKBuilder.class);
 
     //	private double trainRatio = Util.TRAINING_RATIO, testRatio = Util.TESTING_RATIO;
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(AdaBoostKBuilder.class, SimpleLogger.DEBUG);
     private static       int     FOREST_SIZE     = 10;
     private TreeAlgo algorithm = TreeAlgo.BOOST_K; // default bagging, TODO boosting
     private ArrayList<DecisionTree> forest;
@@ -46,14 +45,14 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
 
         if (sol.getInputSpec().getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if (flog.error() != null) {
-                flog.error().log("There is more than 1 target candidates");
+            if (log.isErrorEnabled()) {
+                log.error("There is more than 1 target candidates");
             }
             System.exit(0);
             // TODO put the feature not supported exception || implement it
         } else if (trainer.getTargetDomain().getCategoryCount() <= 2) {
-            if (flog.warn() != null) {
-                flog.warn().log("The target domain is binary!!! Do u really need that one");
+            if (log.isWarnEnabled()) {
+                log.warn("The target domain is binary!!! Do u really need that one");
             }
         }
 
@@ -133,8 +132,8 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
                                 //distribution.set(index_i, distribution.get(index_i) * Util.exp(-1.0d * alpha));
                                 break;
                             case Stats.UNKNOWN:
-                                if (slog.error() != null) {
-                                    slog.error().log("Unknown situation bok");
+                                if (log.isErrorEnabled()) {
+                                    log.error("Unknown situation bok");
                                 }
                                 System.exit(0);
                                 break;
@@ -146,18 +145,18 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
                         //distribution.set(index_i, distribution.get(index_i) / norm_fact);
                     }
                 } else {
-                    if (slog.debug() != null) {
-                        slog.debug().log("The error=" + error + " alpha:" + alpha + "\n");
+                    if (log.isDebugEnabled()) {
+                        log.debug("The error=" + error + " alpha:" + alpha + "\n");
                     }
-                    if (slog.error() != null) {
-                        slog.error().log("error:" + error + " alpha will be negative and the weights of the training samples will be updated in the wrong direction" + "\n");
+                    if (log.isErrorEnabled()) {
+                        log.error("error:" + error + " alpha will be negative and the weights of the training samples will be updated in the wrong direction" + "\n");
                     }
                     FOREST_SIZE = i - 1;//ignore the current tree
                     break;
                 }
             } else {
-                if (slog.stat() != null) {
-                    slog.stat().log("All instances classified correctly TERMINATE, forest size:" + i + "\n");
+                if (log.isInfoEnabled()) {
+                    log.info("All instances classified correctly TERMINATE, forest size:" + i + "\n");
                 }
                 // What to do here??
                 FOREST_SIZE = i;
@@ -169,8 +168,8 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
             // the DecisionTreeMerger will visit the decision tree and add the paths that have not been seen yet to the list
             merger.add(dt);
 
-            if (slog.stat() != null) {
-                slog.stat().stat(".");
+            if (log.isInfoEnabled()) {
+                log.info(".");
             }
         }
         // TODO how to compute a best tree from the forest

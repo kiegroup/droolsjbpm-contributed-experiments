@@ -105,8 +105,8 @@ public class C45Learner extends Learner {
             }
         }
         Domain nodeDomain = bestAttrEval.domain;
-        if (slog.debug() != null) {
-            slog.debug().log("\n" + Util.ntimes("*", 20) + " 1st best attr: " + nodeDomain);
+        if (log.isDebugEnabled()) {
+            log.debug("\n" + Util.ntimes("*", 20) + " 1st best attr: " + nodeDomain);
         }
 
         TreeNode currentNode = new TreeNode(nodeDomain);
@@ -131,8 +131,8 @@ public class C45Learner extends Learner {
         for (int c = 0; c < nodeDomain.getCategoryCount(); c++) {
             /* split the last two class at the same time */
             Object category = nodeDomain.getCategory(c);
-            if (slog.debug() != null) {
-                slog.debug().log("{" + nodeDomain + ":" + category + "}" + (c == nodeDomain.getCategoryCount() - 1 ? "\n" : ""));
+            if (log.isDebugEnabled()) {
+                log.debug("{" + nodeDomain + ":" + category + "}" + (c == nodeDomain.getCategoryCount() - 1 ? "\n" : ""));
             }
 
             /* list of domains except the choosen one (&target domain) */

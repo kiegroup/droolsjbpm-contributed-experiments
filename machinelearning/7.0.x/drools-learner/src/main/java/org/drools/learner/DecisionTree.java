@@ -6,13 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import org.drools.learner.eval.TreeStats;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DecisionTree {
-
-    protected static SimpleLogger slog = LoggerFactory.getSysOutLogger(DecisionTree.class, SimpleLogger.DEFAULT_LEVEL);
-    public long FACTS_READ = 0;
+    protected static final transient Logger       log        = LoggerFactory.getLogger(DecisionTree.class);
+    public                           long         FACTS_READ = 0;
     //private Class<?> obj_clazz;
     private Schema objSchema;
     /* the target attribute */
@@ -34,21 +33,21 @@ public class DecisionTree {
         this.objSchema = instSchema; //inst_schema.getObjectClass();
         this.numNonterminalNodes = 0;
 
-        if (slog.debug() != null) {
-            slog.debug().log("The target attribute: " + targetAttributeName + "\n");
+        if (log.isDebugEnabled()) {
+            log.debug("The target attribute: " + targetAttributeName + "\n");
         }
 
         this.target = instSchema.getAttrDomain(targetAttributeName);
 
-        if (slog.debug() != null) {
-            slog.debug().log("The target domain: " + target + "\n");
+        if (log.isDebugEnabled()) {
+            log.debug("The target domain: " + target + "\n");
         }
         this.attrsToClassify = new ArrayList<Domain>(instSchema.getAttrNames().size() - 1);
         for (String attrName : instSchema.getAttrNames()) {
             if (!attrName.equals(targetAttributeName)) {
                 //flog.debug("Adding the attribute: "+ attr_name);
-                if (slog.debug() != null) {
-                    slog.debug().log("Adding the attribute: " + attrName + "\n");
+                if (log.isDebugEnabled()) {
+                    log.debug("Adding the attribute: " + attrName + "\n");
                 }
                 this.attrsToClassify.add(instSchema.getAttrDomain(attrName));
             }

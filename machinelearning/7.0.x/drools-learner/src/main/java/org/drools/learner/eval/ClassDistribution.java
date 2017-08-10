@@ -9,9 +9,6 @@ import org.drools.learner.tools.Util;
  * class: categories of the target attribute*/
 public class ClassDistribution {
 
-    //private static final Logger log = LoggerFactory.getSysOutLogger(LogLevel.ERROR);
-    //protected static final Logger flog = LoggerFactory.getFileLogger(ClassDistribution.class, LogLevel.ERROR, Util.log_file); 
-
     protected Domain                    targetAttr;
     private   Hashtable<Object, Double> quantityByClass;
 

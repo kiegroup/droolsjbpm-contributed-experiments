@@ -8,14 +8,13 @@ import org.drools.learner.Instance;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
 import org.drools.learner.eval.ClassDistribution;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ForestTester extends Tester {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(ForestTester.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(ForestTester.class, SimpleLogger.DEFAULT_LEVEL);
+    protected static final transient Logger log = LoggerFactory.getLogger(ForestTester.class);
 
     private ArrayList<DecisionTree> trees;
     private Domain                  targetDomain;
@@ -34,9 +33,9 @@ public class ForestTester extends Tester {
             Object  forestDecision = this.voteOn(instance);
             Integer result         = evaluate(targetDomain, instance, forestDecision);
 
-            //flog.debug(Util.ntimes("#\n", 1)+i+ " <START> TEST: instant="+ instance + " = target "+ result);			
-            if (i % 1000 == 0 && slog.stat() != null) {
-                slog.stat().stat(".");
+            //log.debug(Util.ntimes("#\n", 1)+i+ " <START> TEST: instant="+ instance + " = target "+ result);			
+            if (i % 1000 == 0 && log.isInfoEnabled()) {
+                log.info(".");
             }
 
             evaluation.change(result, 1);
@@ -57,8 +56,8 @@ public class ForestTester extends Tester {
             } else {
                 // TODO add an unknown value
                 //classification.change(-1, 1);
-                if (flog.error() != null) {
-                    flog.error().log(Util.ntimes("\n", 10) + "Unknown situation at tree: " + j + " for fact " + i);
+                if (log.isErrorEnabled()) {
+                    log.error(Util.ntimes("\n", 10) + "Unknown situation at tree: " + j + " for fact " + i);
                 }
                 System.exit(0);
             }

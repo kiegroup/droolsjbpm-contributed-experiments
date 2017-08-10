@@ -6,14 +6,13 @@ import java.lang.reflect.Method;
 import org.drools.core.spi.ReadAccessor;
 import org.drools.learner.builder.Learner.DataType;
 import org.drools.learner.tools.ClassStructure;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InstanceFactory {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(InstanceFactory.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(InstanceFactory.class, SimpleLogger.DEFAULT_LEVEL);
+    protected static final transient Logger log = LoggerFactory.getLogger(InstanceFactory.class);
 
     private Schema schema;
 
@@ -28,8 +27,8 @@ public class InstanceFactory {
                 Instance i   = new Instance();
                 boolean  bok = instantiateAttributes(i, obj, obj.getClass());
                 if (!bok) {
-                    if (slog.error() != null) {
-                        slog.error().log("What is going on, how come it is wrong : ");
+                    if (log.isErrorEnabled()) {
+                        log.error("What is going on, how come it is wrong : ");
                     }
                     System.exit(0);
                 }
@@ -51,20 +50,20 @@ public class InstanceFactory {
 
     public boolean instantiateAttributes(Instance inst, Object obj, Class<?> klass) throws Exception {
 
-        if (slog.info() != null) {
-            slog.info().log("Klass : " + klass);
+        if (log.isInfoEnabled()) {
+            log.info("Klass : " + klass);
         }
         ClassStructure struct = schema.getClassStructure().get(klass);
-        if (slog.info() != null) {
-            slog.info().log("\t ClassStructure : " + struct + "\n");
+        if (log.isInfoEnabled()) {
+            log.info("\t ClassStructure : " + struct + "\n");
         }
         if (struct == null) {
             return false;
         }
 
         if (struct.hasLabel()) {// it has a method or label
-            if (slog.debug() != null) {
-                slog.debug().log(":instantiateAttributes:structure has a label ");
+            if (log.isDebugEnabled()) {
+                log.debug(":instantiateAttributes:structure has a label ");
             }
             for (Method m : struct.getMethods()) {
                 String mName = m.getName();
@@ -73,8 +72,8 @@ public class InstanceFactory {
                 //				}
 
                 DataType mType = DataType.PRIMITIVE;// must be primitive
-                if (slog.debug() != null) {
-                    slog.debug().log("method= " + mName + " m_type=" + mType + "\n");
+                if (log.isDebugEnabled()) {
+                    log.debug("method= " + mName + " m_type=" + mType + "\n");
                 }
                 getAttributeValue(inst, obj, mName, mType);
             }
@@ -99,8 +98,8 @@ public class InstanceFactory {
             case PRIMITIVE: // domain exist only for primitive types
                 Domain fieldDomain = schema.getAttrDomain(fieldReference);
                 ReadAccessor fieldExtractor = schema.getAttrExtractor(fieldReference);
-                if (slog.info() != null) {
-                    slog.info().log("Field name : " + name + " of the object " + obj + " the extract:" + fieldExtractor + "\n");
+                if (log.isInfoEnabled()) {
+                    log.info("Field name : " + name + " of the object " + obj + " the extract:" + fieldExtractor + "\n");
                 }
 
                 //Object f_value = f_extractor.getValue( (InternalWorkingMemory) session, _obj);
@@ -112,17 +111,17 @@ public class InstanceFactory {
                             inst.setAttr(fieldReference, fieldValue);
                         }
                     } catch (Exception e) {
-                        if (slog.debug() != null) {
-                            slog.debug().log("Domain: " + fieldDomain + " could not add the value " + fieldValue + "\n");
+                        if (log.isDebugEnabled()) {
+                            log.debug("Domain: " + fieldDomain + " could not add the value " + fieldValue + "\n");
                         }
                         e.printStackTrace();
                     }
                 } else {
-                    if (slog.debug() != null) {
-                        slog.debug().log("Field name : " + name + " of the object " + obj + " the extract:" + fieldExtractor + "\n");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Field name : " + name + " of the object " + obj + " the extract:" + fieldExtractor + "\n");
                     }
-                    if (slog.debug() != null) {
-                        slog.debug().log("The attribute value cannot be read, check the attribute\n");
+                    if (log.isDebugEnabled()) {
+                        log.debug("The attribute value cannot be read, check the attribute\n");
                     }
                     System.exit(0);
                 }

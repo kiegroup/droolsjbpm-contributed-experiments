@@ -62,7 +62,6 @@ public class StatsPrinter {
     }
 
     public static void print2file(StringBuffer sb, String fileSignature, boolean append) {
-        System.out.println(sb);
         //String dataFileName = "src/main/rules/"+_packageNames+"/"+ fileName; 
 
         if (!fileSignature.endsWith(".stats")) {

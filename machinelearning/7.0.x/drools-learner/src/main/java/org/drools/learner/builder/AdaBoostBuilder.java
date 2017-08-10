@@ -5,21 +5,20 @@ import java.util.ArrayList;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * 
  */
 public class AdaBoostBuilder extends DecisionTreeBuilder {
 
-    private static final double  TREE_SIZE_RATIO = 1.0d;
-    private static final boolean WITH_REP        = false;
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(AdaBoostBuilder.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(AdaBoostBuilder.class, SimpleLogger.DEFAULT_LEVEL);
-    private static       int     FOREST_SIZE     = Util.NUM_TREES;
-    private TreeAlgo algorithm = TreeAlgo.BOOST; // default bagging, TODO boosting
+    private static final         double   TREE_SIZE_RATIO = 1.0d;
+    private static final         boolean  WITH_REP        = false;
+    protected static final transient Logger   log             = LoggerFactory.getLogger(AdaBoostBuilder.class);
+    private static               int      FOREST_SIZE     = Util.NUM_TREES;
+    private                      TreeAlgo algorithm       = TreeAlgo.BOOST; // default bagging, TODO boosting
     private ArrayList<DecisionTree> forest;
     private ArrayList<Double>       classifierAccuracy;
 
@@ -40,15 +39,15 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
         trainer.setInputSpec(solSet.getInputSpec());
         if (solSet.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if (flog.error() != null) {
-                flog.error().log("There is more than 1 target candidates");
+            if (log.isErrorEnabled()) {
+                log.error("There is more than 1 target candidates");
             }
 
             System.exit(0);
             // TODO put the feature not supported exception || implement it
         } else if (trainer.getTargetDomain().getCategoryCount() > 2) {
-            if (slog.error() != null) {
-                slog.error().log("The target domain is not binary!!!\n");
+            if (log.isErrorEnabled()) {
+                log.error("The target domain is not binary!!!\n");
             }
             System.exit(0);
         }
@@ -70,8 +69,8 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
             weights[indexI] = 1.0d / (double) NUM_DATA;
             //			class_instances.getInstance(index_i).setWeight(weights[index_i] * (double)NUM_DATA);
             solSet.getTrainSet().getInstance(indexI).setWeight(weights[indexI] * (double) NUM_DATA);
-            if (slog.debug() != null) {
-                slog.debug().log(indexI + " new weight:" + solSet.getTrainSet().getInstance(indexI).getWeight() + "\n");
+            if (log.isDebugEnabled()) {
+                log.debug(indexI + " new weight:" + solSet.getTrainSet().getInstance(indexI).getWeight() + "\n");
             }
         }
 
@@ -95,8 +94,8 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
                 sumWeight += weights[indexI];
                 if (result == Stats.INCORRECT) {
                     error += weights[indexI];
-                    if (slog.debug() != null) {
-                        slog.debug().log("[e:" + error + " w:" + weights[indexI] + "] ");
+                    if (log.isDebugEnabled()) {
+                        log.debug("[e:" + error + " w:" + weights[indexI] + "] ");
                     }
                 }
             }
@@ -123,8 +122,8 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
                                 //weights[index_i] = weights[index_i] * Util.exp(-1.0d * alpha);
                                 break;
                             case Stats.UNKNOWN:
-                                if (slog.error() != null) {
-                                    slog.error().log("Unknown situation bok\n");
+                                if (log.isErrorEnabled()) {
+                                    log.error("Unknown situation bok\n");
                                 }
                                 System.exit(0);
                                 break;
@@ -138,19 +137,19 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
                         workingInstances.getInstance(indexI).setWeight(weights[indexI] * (double) NUM_DATA);
                     }
                 } else {
-                    if (slog.debug() != null) {
-                        slog.debug().log("The error=" + error + " alpha:" + alpha + "\n");
+                    if (log.isDebugEnabled()) {
+                        log.debug("The error=" + error + " alpha:" + alpha + "\n");
                     }
-                    if (slog.error() != null) {
-                        slog.error().log("error:" + error + " alpha will be negative and the weights of the training samples will be updated in the wrong direction" + "\n");
+                    if (log.isErrorEnabled()) {
+                        log.error("error:" + error + " alpha will be negative and the weights of the training samples will be updated in the wrong direction" + "\n");
                     }
                     FOREST_SIZE = i - 1;//ignore the current tree
                     break;
                 }
             } else {
-                if (slog.stat() != null) {
-                    slog.stat().log("\n Boosting ends: ");
-                    slog.stat().log("All instances classified correctly TERMINATE, forest size:" + i + "\n");
+                if (log.isInfoEnabled()) {
+                    log.info("\n Boosting ends: ");
+                    log.info("All instances classified correctly TERMINATE, forest size:" + i + "\n");
                 }
                 // What to do here??
                 FOREST_SIZE = i;
@@ -171,8 +170,8 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
             one.setTestStats(test);
             solSet.addSolution(one);
 
-            if (slog.stat() != null) {
-                slog.stat().stat(".");
+            if (log.isInfoEnabled()) {
+                log.info(".");
             }
         }
 
@@ -203,13 +202,13 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
     //		
     //		if (class_instances.getTargets().size()>1 ) {
     //			//throw new FeatureNotSupported("There is more than 1 target candidates");
-    //			if (slog.error() !=null)
-    //				slog.error().log("There is more than 1 target candidates\n");
+    //			if (log.error() !=null)
+    //				log.error().log("There is more than 1 target candidates\n");
     //			System.exit(0);
     //			// TODO put the feature not supported exception || implement it
     //		} else if (_trainer.getTargetDomain().getCategoryCount() >2) {
-    //			if (slog.error() !=null)
-    //				slog.error().log("The target domain is not binary!!!\n");
+    //			if (log.error() !=null)
+    //				log.error().log("The target domain is not binary!!!\n");
     //			System.exit(0);
     //		}
     //		
@@ -242,8 +241,8 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
     //			weights[index_i] = 1.0d/(double)NUM_DATA;
     ////			class_instances.getInstance(index_i).setWeight(weights[index_i] * (double)NUM_DATA);
     //			train_instances.getInstance(index_i).setWeight(weights[index_i] * (double)NUM_DATA);
-    //			if (slog.debug() != null)
-    //				slog.debug().log(index_i+" new weight:"+train_instances.getInstance(index_i).getWeight()+ "\n");
+    //			if (log.debug() != null)
+    //				log.debug().log(index_i+" new weight:"+train_instances.getInstance(index_i).getWeight()+ "\n");
     //		}
     //		
     //		int i = 0;
@@ -266,8 +265,8 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
     //				sum_weight += weights[index_i];
     //				if (result == Stats.INCORRECT) {
     //					error += weights[index_i];
-    //					if (slog.debug() != null)
-    //						slog.debug().log("[e:"+error+" w:"+weights[index_i]+ "] ");
+    //					if (log.debug() != null)
+    //						log.debug().log("[e:"+error+" w:"+weights[index_i]+ "] ");
     //				}
     //			}
     //			
@@ -293,8 +292,8 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
     //							//weights[index_i] = weights[index_i] * Util.exp(-1.0d * alpha);
     //							break;
     //						case Stats.UNKNOWN:
-    //							if (slog.error() !=null)
-    //								slog.error().log("Unknown situation bok\n");
+    //							if (log.error() !=null)
+    //								log.error().log("Unknown situation bok\n");
     //							System.exit(0);
     //							break;
     //						}
@@ -307,18 +306,18 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
     //						working_instances.getInstance(index_i).setWeight(weights[index_i] * (double)NUM_DATA);
     //					}
     //				} else {
-    //					if (slog.debug() != null)
-    //						slog.debug().log("The error="+error+" alpha:"+alpha+ "\n");
-    //					if (slog.error() != null)
-    //						slog.error().log("error:"+error + " alpha will be negative and the weights of the training samples will be updated in the wrong direction"+"\n");
+    //					if (log.debug() != null)
+    //						log.debug().log("The error="+error+" alpha:"+alpha+ "\n");
+    //					if (log.error() != null)
+    //						log.error().log("error:"+error + " alpha will be negative and the weights of the training samples will be updated in the wrong direction"+"\n");
     //					FOREST_SIZE = i-1;//ignore the current tree
     //					break;
     //				}
     //				
     //			} else {
-    //				if (slog.stat() != null) {
-    //					slog.stat().log("\n Boosting ends: ");
-    //					slog.stat().log("All instances classified correctly TERMINATE, forest size:"+i+ "\n");
+    //				if (log.stat() != null) {
+    //					log.stat().log("\n Boosting ends: ");
+    //					log.stat().log("All instances classified correctly TERMINATE, forest size:"+i+ "\n");
     //				}
     //				// What to do here??
     //				FOREST_SIZE = i;
@@ -333,8 +332,8 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
     //			// the DecisionTreeMerger will visit the decision tree and add the paths that have not been seen yet to the list
     //			merger.add(dt);	
     //
-    //			if (slog.stat() !=null)
-    //				slog.stat().stat(".");
+    //			if (log.stat() !=null)
+    //				log.stat().stat(".");
     //
     //		}
     //		

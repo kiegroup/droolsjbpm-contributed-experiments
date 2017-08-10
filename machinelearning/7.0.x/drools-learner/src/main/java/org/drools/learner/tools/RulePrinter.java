@@ -16,6 +16,8 @@ import org.drools.learner.DecisionTreeVisitor;
 import org.drools.learner.LeafNode;
 import org.drools.learner.NodeValue;
 import org.drools.learner.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 interface Reference {
 
@@ -24,8 +26,7 @@ interface Reference {
 
 public class RulePrinter {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(RulePrinter.class, SimpleLogger.WARN);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(RulePrinter.class, SimpleLogger.DEBUG);
+    protected static final transient Logger log = LoggerFactory.getLogger(RulePrinter.class);
     private Class<?> ruleClazz;
     private DecisionTreeVisitor visitor;
     private ArrayList<Rule>     rules;
@@ -113,12 +114,12 @@ public class RulePrinter {
         Iterator<NodeValue> it = p.getConditionIterator();
         while (it.hasNext()) {
             NodeValue current = it.next();
-            if (slog.error() != null) {
-                slog.error().log("NodeValue " + current + "\n");
+            if (log.isErrorEnabled()) {
+                log.error("NodeValue " + current + "\n");
             }
 
-            if (slog.error() != null) {
-                slog.error().log("attrRelations [" + attrRelations.size() + "]\n");
+            if (log.isErrorEnabled()) {
+                log.error("attrRelations [" + attrRelations.size() + "]\n");
             }
             //			if (it.hasNext()) {
             ArrayList<Field> nodeRelations = attrRelations.get(current.getFReference());
@@ -130,12 +131,12 @@ public class RulePrinter {
                 for (Field f : nodeRelations) {
                     // i need the class that the field belongs to boooook
                     String referenceOfCondition = Util.getDecReference(f);
-                    if (slog.error() != null) {
-                        slog.error().log("[" + referenceOfCondition + "],");
+                    if (log.isErrorEnabled()) {
+                        log.error("[" + referenceOfCondition + "],");
                     }
                 }
-                if (slog.error() != null) {
-                    slog.error().log("\n");
+                if (log.isErrorEnabled()) {
+                    log.error("\n");
                 }
                 // call with rule_decs.get(0)
                 newRule.processNodeValue(current, nodeRelations, newRule.getMainDeclaration(), 0, 1); //int condition_or_action = condition = 1
@@ -160,7 +161,7 @@ public class RulePrinter {
         if (!fileSignature.endsWith(".drl")) {
             fileSignature += ".drl";
         }
-        System.out.println("file:" + fileSignature);
+
         File file = new File(fileSignature);
         if (append) {
             if (!file.exists())
@@ -170,7 +171,6 @@ public class RulePrinter {
                     BufferedWriter out = new BufferedWriter(new FileWriter(fileSignature, true));
                     out.write(toWrite);
                     out.close();
-                    //System.out.println("I wrote "+ toWrite);
                 } catch (IOException e) {
                     //flog.error("No I couldnot append to the file e:"+ e);
                     /* TODO */

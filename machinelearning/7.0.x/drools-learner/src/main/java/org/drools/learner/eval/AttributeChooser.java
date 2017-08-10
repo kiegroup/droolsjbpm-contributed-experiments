@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.drools.learner.Domain;
 import org.drools.learner.eval.heuristic.Heuristic;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AttributeChooser {
-
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(AttributeChooser.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(AttributeChooser.class, SimpleLogger.DEFAULT_LEVEL);
+    protected static final transient Logger   log = LoggerFactory.getLogger(AttributeChooser.class);
 
     private Heuristic function;
 
@@ -41,8 +39,8 @@ public class AttributeChooser {
                 attributeEval = function.getEval(attrDomain);//data_eval - function.info_attr(insts_by_target, attr_domain);
                 container.attributeEval = attributeEval;
                 container.domain = attrDomain;
-                if (slog.debug() != null) {
-                    slog.debug().log("CatAttribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
+                if (log.isDebugEnabled()) {
+                    log.debug("CatAttribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
                 }
             } else {
                 //				the continuous domain
@@ -50,16 +48,16 @@ public class AttributeChooser {
                 container.attributeEval = attributeEval;
                 container.domain = function.getDomain();
                 container.sortedData = function.getSortedInstances();
-                if (slog.debug() != null) {
-                    slog.debug().log("ContAttribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
+                if (log.isDebugEnabled()) {
+                    log.debug("ContAttribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
                 }
 
                 //				attr_domain = function.getDomain();
                 //				sorted_instances = visitor.getSortedInstances();
 
             }
-            if (slog.warn() != null) {
-                slog.warn().log("Attribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
+            if (log.isWarnEnabled()) {
+                log.warn("Attribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
             }
             if (attributeEval > greatestEval) {// TODO implement a comparator
                 greatestEval = attributeEval;

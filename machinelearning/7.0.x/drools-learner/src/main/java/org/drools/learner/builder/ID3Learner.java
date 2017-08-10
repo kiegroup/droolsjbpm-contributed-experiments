@@ -67,8 +67,8 @@ public class ID3Learner extends Learner {
          */
         Domain nodeDomain = chooser.chooseAttributeAsCategorical(dataStats, attributeDomains);
 
-        if (flog.stat() != null) {
-            flog.stat().log(Util.ntimes("*", 20) + " 1st best attr: " + nodeDomain);
+        if (log.isInfoEnabled()) {
+            log.info(Util.ntimes("*", 20) + " 1st best attr: " + nodeDomain);
         }
 
         TreeNode currentNode = new TreeNode(nodeDomain);

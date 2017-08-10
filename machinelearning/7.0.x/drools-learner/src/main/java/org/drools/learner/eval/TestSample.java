@@ -6,15 +6,15 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
 import org.drools.learner.builder.Learner;
+import org.drools.learner.builder.SingleTreeBuilder;
 import org.drools.learner.builder.SingleTreeTester;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestSample implements ErrorEstimate {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(TestSample.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(TestSample.class, SimpleLogger.DEBUG);
+    protected static final transient Logger log = LoggerFactory.getLogger(SingleTreeBuilder.class);
 
     private int TEST_SET_0 = 0, TEST_SET_1 = 0;
 
@@ -48,8 +48,8 @@ public class TestSample implements ErrorEstimate {
         numInstances = classInstances.getSize();
         if (classInstances.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if (flog.error() != null) {
-                flog.error().log("There is more than 1 target candidates\n");
+            if (log.isErrorEnabled()) {
+                log.error("There is more than 1 target candidates\n");
             }
             System.exit(0);
             // TODO put the feature not supported exception || implement it
@@ -69,13 +69,13 @@ public class TestSample implements ErrorEstimate {
 
         int              error = 0;
         SingleTreeTester t     = new SingleTreeTester(dt);
-        if (slog.debug() != null) {
-            slog.debug().log("validation fold_size " + testSet.getSize() + "\n");
+        if (log.isDebugEnabled()) {
+            log.debug("validation fold_size " + testSet.getSize() + "\n");
         }
         for (int indexI = 0; indexI < testSet.getSize(); indexI++) {
 
-            if (slog.warn() != null) {
-                slog.warn().log(" validation index_i " + indexI + (indexI == testSet.getSize() - 1 ? "\n" : ""));
+            if (log.isWarnEnabled()) {
+                log.warn(" validation index_i " + indexI + (indexI == testSet.getSize() - 1 ? "\n" : ""));
             }
             Integer result = t.test(testSet.getInstance(indexI));
             if (result == Stats.INCORRECT) {
@@ -85,19 +85,19 @@ public class TestSample implements ErrorEstimate {
         //TODO dt.setValidationError(Util.division(error, test_set.getSize()));
         dt.calcNumNodeLeaves(dt.getRoot());
 
-        //		if (slog.error() !=null)
-        //			slog.error().log("The estimate of : "+(0)+" training=" +dt.getTrainingError() +" valid=" + dt.getValidationError() +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
+        //		if (log.error() !=null)
+        //			log.error().log("The estimate of : "+(0)+" training=" +dt.getTrainingError() +" valid=" + dt.getValidationError() +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
 
         /* moving averages */
         //TODO error_estimate = dt.getValidationError();
         //TODO training_error_estimate = (double)dt.getTrainingError();
         numLeavesEstimate = (double) dt.getRoot().getNumLeaves();
 
-        //		if (slog.stat() !=null)
-        //			slog.stat().stat("."+ (i == k_fold?"\n":""));
+        //		if (log.stat() !=null)
+        //			log.stat().stat("."+ (i == k_fold?"\n":""));
         alphaEstimate = (errorEstimate - trainingErrorEstimate) / numLeavesEstimate;
-        if (slog.stat() != null) {
-            slog.stat().log(" The estimates: training=" + trainingErrorEstimate + " valid=" + errorEstimate + " num_leaves=" + numLeavesEstimate + " the alpha" + alphaEstimate + "\n");
+        if (log.isInfoEnabled()) {
+            log.info(" The estimates: training=" + trainingErrorEstimate + " valid=" + errorEstimate + " num_leaves=" + numLeavesEstimate + " the alpha" + alphaEstimate + "\n");
         }
         // TODO how to compute a best tree from the forest
     }
@@ -110,13 +110,13 @@ public class TestSample implements ErrorEstimate {
         InstanceList validationSet = new InstanceList(classInstances, TEST_SET_1);
         for (int divideIndex = 0; divideIndex < numInstances; divideIndex++) {
 
-            if (slog.info() != null) {
-                slog.info().log("index " + divideIndex + " fold_size" + TEST_SET_1 + " = from " + TEST_SET_0 + " to " + TEST_SET_1 + " num_instances " + numInstances + "\n");
+            if (log.isInfoEnabled()) {
+                log.info("index " + divideIndex + " fold_size" + TEST_SET_1 + " = from " + TEST_SET_0 + " to " + TEST_SET_1 + " num_instances " + numInstances + "\n");
             }
             if (divideIndex >= TEST_SET_0 && divideIndex <= TEST_SET_1) { // validation
                 // validation [fold_size*i, fold_size*(i+1))
-                if (slog.info() != null) {
-                    slog.info().log("validation one " + divideIndex + "\n");
+                if (log.isInfoEnabled()) {
+                    log.info("validation one " + divideIndex + "\n");
                 }
                 validationSet.addAsInstance(classInstances.getInstance(crossedSet[divideIndex]));
             } else { // learninf part 

@@ -7,9 +7,6 @@ import org.drools.learner.tools.Util;
 
 public class TreeNode {
 
-    //private static final Logger log = LoggerFactory.getSysOutLogger(TreeNode.class, LogLevel.ERROR);
-    //private static final Logger flog = LoggerFactory.getFileLogger(TreeNode.class);	
-
     private Domain                      domain;
     private TreeNode                    father;
     private Hashtable<Object, TreeNode> children;

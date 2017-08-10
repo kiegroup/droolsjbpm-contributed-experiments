@@ -7,15 +7,14 @@ import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
 import org.drools.learner.builder.Learner;
 import org.drools.learner.builder.SingleTreeTester;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CrossValidation implements ErrorEstimate {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(CrossValidation.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(CrossValidation.class, SimpleLogger.DEBUG);
-    private final int MIN_NUM_FOLDS = 2;
+    protected static final transient Logger   log = LoggerFactory.getLogger(CrossValidation.class);
+    private final                int    MIN_NUM_FOLDS = 2;
     private int kFold;
     private int numInstances;
     /*
@@ -34,8 +33,8 @@ public class CrossValidation implements ErrorEstimate {
 
     public CrossValidation(int k) {
         if (k <= 1) {
-            if (flog.warn() != null) {
-                flog.warn().log("There is 1 or less number of folds specified, i am setting " + MIN_NUM_FOLDS + " folds\n");
+            if (log.isWarnEnabled()) {
+                log.warn("There is 1 or less number of folds specified, i am setting " + MIN_NUM_FOLDS + " folds\n");
             }
             kFold = MIN_NUM_FOLDS;
         } else {
@@ -64,8 +63,8 @@ public class CrossValidation implements ErrorEstimate {
         numInstances = classInstances.getSize();
         if (classInstances.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if (flog.error() != null) {
-                flog.error().log("There is more than 1 target candidates\n");
+            if (log.isErrorEnabled()) {
+                log.error("There is more than 1 target candidates\n");
             }
             System.exit(0);
             // TODO put the feature not supported exception || implement it
@@ -80,8 +79,8 @@ public class CrossValidation implements ErrorEstimate {
         //			int[] bag;		
         while (i++ < kFold) {
             int foldSize = getTestDataSize(i);
-            if (slog.debug() != null) {
-                slog.debug().log("i " + (i - 1) + "/" + kFold);
+            if (log.isDebugEnabled()) {
+                log.debug("i " + (i - 1) + "/" + kFold);
             }
             ArrayList<InstanceList> sets          = getSets(i - 1);
             InstanceList            learningSset  = sets.get(0);
@@ -93,13 +92,13 @@ public class CrossValidation implements ErrorEstimate {
 
             int              error = 0;
             SingleTreeTester t     = new SingleTreeTester(dt);
-            if (slog.debug() != null) {
-                slog.debug().log("validation fold_size " + foldSize + "\n");
+            if (log.isDebugEnabled()) {
+                log.debug("validation fold_size " + foldSize + "\n");
             }
             for (int indexI = 0; indexI < foldSize; indexI++) {
 
-                if (slog.warn() != null) {
-                    slog.warn().log(" validation index_i " + indexI + (indexI == foldSize - 1 ? "\n" : ""));
+                if (log.isDebugEnabled()) {
+                    log.warn(" validation index_i " + indexI + (indexI == foldSize - 1 ? "\n" : ""));
                 }
                 Integer result = t.test(validationSet.getInstance(indexI));
                 if (result == Stats.INCORRECT) {
@@ -109,21 +108,21 @@ public class CrossValidation implements ErrorEstimate {
             //TODO dt.setTrainError(Util.division(error, fold_size));
             dt.calcNumNodeLeaves(dt.getRoot());
 
-            //			if (slog.error() !=null)
-            //				slog.error().log("The estimate of : "+(i-1)+" training=" +dt.getTrainingError() +" valid=" + dt.getValidationError() +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
+            //			if (log.error() !=null)
+            //				log.error().log("The estimate of : "+(i-1)+" training=" +dt.getTrainingError() +" valid=" + dt.getValidationError() +" num_leaves=" + dt.getRoot().getNumLeaves()+"\n");
 
             /* moving averages */
             validationErrorEstimate += ((double) error / (double) foldSize) / (double) kFold;
             //TODO training_error_estimate += ((double)dt.getTrainingError())/(double)k_fold;//((double)dt.getTrainingError()/(double)(num_instances-fold_size))/(double)k_fold;
             numLeavesEstimate += (double) dt.getRoot().getNumLeaves() / (double) kFold;
 
-            //			if (slog.stat() !=null)
-            //				slog.stat().stat("."+ (i == k_fold?"\n":""));
+            //			if (log.stat() !=null)
+            //				log.stat().stat("."+ (i == k_fold?"\n":""));
 
         }
         alphaEstimate = (validationErrorEstimate - trainingErrorEstimate) / numLeavesEstimate;
-        if (slog.stat() != null) {
-            slog.stat().log(" The estimates: training=" + trainingErrorEstimate + " valid=" + validationErrorEstimate + " num_leaves=" + numLeavesEstimate + " the alpha" + alphaEstimate + "\n");
+        if (log.isInfoEnabled()) {
+            log.info(" The estimates: training=" + trainingErrorEstimate + " valid=" + validationErrorEstimate + " num_leaves=" + numLeavesEstimate + " the alpha" + alphaEstimate + "\n");
         }
         // TODO how to compute a best tree from the forest
     }
@@ -154,14 +153,14 @@ public class CrossValidation implements ErrorEstimate {
         InstanceList validationSet = new InstanceList(classInstances, validFoldSize);
         for (int divideIndex = 0; divideIndex < numInstances; divideIndex++) {
 
-            if (slog.info() != null) {
-                slog.info().log("index " + divideIndex + " fold_size" + validFoldSize + " i " + i + " = from " + foldIndices[i][VALID_SET_0] + " to " + foldIndices[i][VALID_SET_1] + " num_instances "
+            if (log.isInfoEnabled()) {
+                log.info("index " + divideIndex + " fold_size" + validFoldSize + " i " + i + " = from " + foldIndices[i][VALID_SET_0] + " to " + foldIndices[i][VALID_SET_1] + " num_instances "
                                     + numInstances + "\n");
             }
             if (divideIndex >= foldIndices[i][VALID_SET_0] && divideIndex <= foldIndices[i][VALID_SET_1]) { // validation
                 // validation [fold_size*i, fold_size*(i+1))
-                if (slog.info() != null) {
-                    slog.info().log("validation one " + divideIndex + "\n");
+                if (log.isInfoEnabled()) {
+                    log.info("validation one " + divideIndex + "\n");
                 }
                 validationSet.addAsInstance(classInstances.getInstance(crossedSet[divideIndex]));
             } else { // learninf part 

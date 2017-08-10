@@ -6,14 +6,12 @@ import java.util.Collections;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.DecisionTreeVisitor;
 import org.drools.learner.Path;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DecisionTreeMerger {
 
-    //private static SimpleLogger flog = LoggerFactory.getFileLogger(DecisionTreeMerger.class, SimpleLogger.WARN, "rules_gizil2");
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(DecisionTreeMerger.class, SimpleLogger.WARN);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(DecisionTreeMerger.class, SimpleLogger.WARN);
+    protected static final transient Logger log = LoggerFactory.getLogger(DecisionTreeMerger.class);
 
     private DecisionTreeVisitor visitor;
 
@@ -52,21 +50,19 @@ public class DecisionTreeMerger {
     }
 
     public void printPaths() {
-        if (flog.warn() != null) {
+        if (log.isWarnEnabled()) {
             for (Path p : visitor.getPathList()) {
-                flog.warn().log(p.hashCode() + "-" + p.getRank() + " : " + p + "\n");
+                log.warn(p.hashCode() + "-" + p.getRank() + " : " + p + "\n");
             }
         }
     }
 
     public void printSortedPaths() {
 
-        if (flog.warn() != null) {
-            flog.warn().log("Sorted paths: Total num of paths " + getNumPathsfound() + " num paths different" + getNumPaths() + "\n");
-            slog.warn().log("Total num of paths " + getNumPathsfound() + " num paths different" + getNumPaths() + "\n");
+        if (log.isWarnEnabled()) {
+            log.warn("Sorted paths: Total num of paths " + getNumPathsfound() + " num paths different" + getNumPaths() + "\n");
             for (Path p : sortedPaths) {
-                flog.warn().log(p.hashCode() + "-" + p.getTreeId() + "-" + p.getRank() + " : " + p + "\n");
-                slog.warn().log(p.hashCode() + "-" + p.getTreeId() + "-" + p.getRank() + " : " + p + "\n");
+                log.warn(p.hashCode() + "-" + p.getTreeId() + "-" + p.getRank() + " : " + p + "\n");
             }
         }
     }

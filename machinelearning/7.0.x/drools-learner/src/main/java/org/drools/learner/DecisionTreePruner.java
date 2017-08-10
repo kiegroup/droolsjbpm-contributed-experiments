@@ -6,21 +6,17 @@ import org.drools.learner.builder.SingleTreeTester;
 import org.drools.learner.builder.Solution;
 import org.drools.learner.builder.SolutionSet;
 import org.drools.learner.eval.PrunerStats;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
-
-//import org.drools.learner.eval.ErrorEstimate;
-//import org.drools.learner.eval.TestSample;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DecisionTreePruner {
 
     private static final double EPSILON    = 0.0d;//0.0000000001;
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(DecisionTreePruner.class, SimpleLogger.DEFAULT_LEVEL);
 
     //	private PrunerStats best_stats;
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(DecisionTreePruner.class, SimpleLogger.DEBUG);
-    private              double INIT_ALPHA = 0.5d;
+    protected static final transient Logger log        = LoggerFactory.getLogger(DecisionTreePruner.class);
+    private                          double INIT_ALPHA = 0.5d;
     //	private double best_error;
     private Solution            bestSolution;
     private ArrayList<Solution> prunedSol;
@@ -149,8 +145,8 @@ public class DecisionTreePruner {
 
     // returns the node missclassification cost
     private int R(TreeNode t) {
-        if (slog.debug() != null) {
-            slog.debug().log(":R:num_misclassified " + t.getNumMatch() + " " + t.getNumLabeled());
+        if (log.isDebugEnabled()) {
+            log.debug(":R:num_misclassified " + t.getNumMatch() + " " + t.getNumLabeled());
         }
         return (int) (t.getNumMatch() - t.getNumLabeled());
     }
@@ -158,20 +154,20 @@ public class DecisionTreePruner {
     private int numExtraMisClassIfPrun(TreeNode myNode) {
         int numMisclassified = R(myNode); // needs to be cast because of
 
-        if (slog.debug() != null) {
-            slog.debug().log(":numExtraMisClassIfPrun:num_misclassified " + numMisclassified);
+        if (log.isDebugEnabled()) {
+            log.debug(":numExtraMisClassIfPrun:num_misclassified " + numMisclassified);
         }
 
         int kidsMisclassified = 0;
         for (Object key : myNode.getChildrenKeys()) {
             TreeNode child = myNode.getChild(key);
             kidsMisclassified += child.getMissClassified();
-            if (slog.debug() != null) {
-                slog.debug().log(" kid=" + kidsMisclassified);
+            if (log.isDebugEnabled()) {
+                log.debug(" kid=" + kidsMisclassified);
             }
         }
-        if (slog.debug() != null) {
-            slog.debug().log("\n");
+        if (log.isDebugEnabled()) {
+            log.debug("\n");
         }
         if (numMisclassified < kidsMisclassified) {
             System.out.println("Problem ++++++");
@@ -287,19 +283,19 @@ public class DecisionTreePruner {
         }
 
         private void iterateTrees(int i) {
-            if (slog.debug() != null) {
-                slog.debug().log(treeSol.getTree().toString() + "\n");
+            if (log.isDebugEnabled()) {
+                log.debug(treeSol.getTree().toString() + "\n");
             }
             // if number of non-terminal nodes in the tree is more than 1
             // = if there exists at least one non-terminal node different than root
             if (treeSol.getTree().getNumNonTerminalNodes() < 1) {
-                if (slog.debug() != null) {
-                    slog.debug().log(":sequence_trees:TERMINATE-There is no non-terminal nodes? " + treeSol.getTree().getNumNonTerminalNodes() + "\n");
+                if (log.isDebugEnabled()) {
+                    log.debug(":sequence_trees:TERMINATE-There is no non-terminal nodes? " + treeSol.getTree().getNumNonTerminalNodes() + "\n");
                 }
                 return;
             } else if (treeSol.getTree().getNumNonTerminalNodes() == 1 && treeSol.getTree().getRoot().getNumLeaves() <= 1) {
-                if (slog.debug() != null) {
-                    slog.debug().log(":sequence_trees:TERMINATE-There is only one node left which is root node " + treeSol.getTree().getNumNonTerminalNodes() + " and it has only one leaf (pruned)"
+                if (log.isDebugEnabled()) {
+                    log.debug(":sequence_trees:TERMINATE-There is only one node left which is root node " + treeSol.getTree().getNumNonTerminalNodes() + " and it has only one leaf (pruned)"
                                          + treeSol.getTree().getRoot().getNumLeaves() + "\n");
                 }
                 return;
@@ -332,16 +328,16 @@ public class DecisionTreePruner {
                 PrunerStats stats = new PrunerStats();
                 stats.iterationId(i);
                 updateTreeStats(stats, minAlpha, changeInTrainingMisclass);
-                //				if (slog.debug() !=null)
-                //					slog.debug().log(":sequence_trees:error "+ stats.getCostEstimation() +"<?"+ procedure.getErrorEstimate() * 1.6 +"\n");
+                //				if (log.debug() !=null)
+                //					log.debug().log(":sequence_trees:error "+ stats.getCostEstimation() +"<?"+ procedure.getErrorEstimate() * 1.6 +"\n");
 
                 if (stats.getErrorEstimation() < MAX_ERROR_RATIO) { //procedure.getValidationErrorEstimate() * 1.6) {
                     // if the error of the tree is not that bad
 
                     if (stats.getErrorEstimation() < bestTreeStats.getErrorEstimation()) {
                         bestTreeStats = stats;
-                        if (slog.debug() != null) {
-                            slog.debug().log(":sequence_trees:best node updated \n");
+                        if (log.isDebugEnabled()) {
+                            log.debug(":sequence_trees:best node updated \n");
                         }
                     }
                     //	TODO update alpha_proc by increasing the min_alpha				the_alpha += 10;
@@ -352,8 +348,8 @@ public class DecisionTreePruner {
                     return;
                 }
             } else {
-                if (slog.debug() != null) {
-                    slog.debug().log(":sequence_trees:no candidate node is found ???? \n");
+                if (log.isDebugEnabled()) {
+                    log.debug(":sequence_trees:no candidate node is found ???? \n");
                 }
             }
         }
@@ -434,8 +430,8 @@ public class DecisionTreePruner {
             //tree_sol.setError();
             double costComplexity = treeSol.getTrainError() + computedAlpha * (newNumLeaves);
 
-            if (slog.debug() != null) {
-                slog.debug().log(":sequence_trees:cost_complexity of selected tree " + costComplexity + "\n");
+            if (log.isDebugEnabled()) {
+                log.debug(":sequence_trees:cost_complexity of selected tree " + costComplexity + "\n");
             }
 
             stats.setAlpha(computedAlpha);
@@ -461,14 +457,14 @@ public class DecisionTreePruner {
                 int numLeaves = myNode.getNumLeaves();
 
                 if (k == 0) {
-                    if (slog.debug() != null) {
-                        slog.debug().log(":search_alphas:k == 0\n");
+                    if (log.isDebugEnabled()) {
+                        log.debug(":search_alphas:k == 0\n");
                     }
                 }
                 double numTrainingData = (double) treeSol.getList().getSize();
                 double alpha           = ((double) k / numTrainingData) / ((double) (numLeaves - 1));
-                if (slog.debug() != null) {
-                    slog.debug().log(":search_alphas:alpha " + alpha + "/" + alphaProc.getAlpha() + " k " + k + " num_leaves " + numLeaves + " all " + treeSol.getList().getSize() + "\n");
+                if (log.isDebugEnabled()) {
+                    log.debug(":search_alphas:alpha " + alpha + "/" + alphaProc.getAlpha() + " k " + k + " num_leaves " + numLeaves + " all " + treeSol.getList().getSize() + "\n");
                 }
 
                 //the_alpha = alpha_proc.check_node(alpha, the_alpha, my_node, nodes);
@@ -545,8 +541,8 @@ public class DecisionTreePruner {
 
         public double checkNode(double curAlpha, TreeNode curNode, ArrayList<TreeNode> nodes) {
             double averageOfMinAlphas = getAlpha();
-            if (slog.debug() != null) {
-                slog.debug().log(":search_alphas:alpha " + curAlpha + "/" + averageOfMinAlphas + " diff " + (curAlpha - averageOfMinAlphas) + "\n");
+            if (log.isDebugEnabled()) {
+                log.debug(":search_alphas:alpha " + curAlpha + "/" + averageOfMinAlphas + " diff " + (curAlpha - averageOfMinAlphas) + "\n");
             }
 
             if (Util.epsilon(curAlpha - averageOfMinAlphas, CART_EPSILON)) {

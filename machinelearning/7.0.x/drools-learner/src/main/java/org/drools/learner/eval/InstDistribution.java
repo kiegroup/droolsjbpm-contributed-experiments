@@ -9,16 +9,15 @@ import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.QuantitativeDomain;
 import org.drools.learner.tools.FeatureNotSupported;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /* addition to the ClassDistribution 
  * it keeps the instances themselves by their target value in an hashmap */
 public class InstDistribution extends ClassDistribution {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(InstDistribution.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(InstDistribution.class, SimpleLogger.DEFAULT_LEVEL);
+    protected static final transient Logger log = LoggerFactory.getLogger(InstDistribution.class);
 
     private String attSum = Util.sum();
     private Hashtable<Object, List<Instance>> instanceByClass;
@@ -39,12 +38,12 @@ public class InstDistribution extends ClassDistribution {
     public void calculateDistribution(List<Instance> instances) {
         double dataSize = 0.0;
         String tName    = super.getClassDomain().getFReferenceName();
-        if (slog.debug() != null) {
-            slog.debug().log("tName : " + tName + "\n");
+        if (log.isDebugEnabled()) {
+            log.debug("tName : " + tName + "\n");
         }
         for (Instance inst : instances) {
-            if (slog.debug() != null) {
-                slog.debug().log("inst : " + inst + "\n");
+            if (log.isDebugEnabled()) {
+                log.debug("inst : " + inst + "\n");
             }
             dataSize += inst.getWeight();
 

@@ -8,17 +8,16 @@ import org.drools.learner.Instance;
 import org.drools.learner.InstanceComparator;
 import org.drools.learner.QuantitativeDomain;
 import org.drools.learner.eval.heuristic.Entropy;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
 
 public class Categorizer {
 
     /* TODO make it singleton */
-    private static final Object key0         = Integer.valueOf(0);
-    private static final Object key1         = Integer.valueOf(1);
-    private static final Domain binaryDomain = initBinaryDomain();
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Categorizer.class, SimpleLogger.DEFAULT_LEVEL);
+    private static final             Object key0         = Integer.valueOf(0);
+    private static final             Object key1         = Integer.valueOf(1);
+    private static final             Domain binaryDomain = initBinaryDomain();
+    protected static final transient Logger log          = org.slf4j.LoggerFactory.getLogger(Categorizer.class);
     private ArrayList<Instance> data;
     private QuantitativeDomain  splitDomain;
     private Domain              targetDomain;
@@ -77,12 +76,12 @@ public class Categorizer {
 
     private double findASplit(int beginIndex, int size, int depth, ClassDistribution factsInClass) {
 
-        if (flog.debug() != null) {
-            flog.debug().log("./n");
+        if (log.isDebugEnabled()) {
+            log.debug("./n");
         }
         if (data.size() <= 1 || (size - beginIndex) < 2) {
-            if (flog.warn() != null) {
-                flog.warn().log("fact.size <=1 returning 0.0....");
+            if (log.isWarnEnabled()) {
+                log.warn("fact.size <=1 returning 0.0....");
             }
             return 0.0;
         }
@@ -91,15 +90,15 @@ public class Categorizer {
         //		}
         factsInClass.evaluateMajority();
         if (factsInClass.getNumIdeas() == 1) {
-            if (flog.warn() != null) {
-                flog.warn().log("getNum_supported_target_classes=1 returning 0.0....");
+            if (log.isWarnEnabled()) {
+                log.warn("getNum_supported_target_classes=1 returning 0.0....");
             }
             return 0.0; //?
         }
 
         if (depth == 0) {
-            if (flog.warn() != null) {
-                flog.warn().log("depth == 0  returning 0.0....");
+            if (log.isWarnEnabled()) {
+                log.warn("depth == 0  returning 0.0....");
             }
             return 0.0;
         }
@@ -118,8 +117,8 @@ public class Categorizer {
         CondClassDistribution bestDistribution = null;//instances_by_attr;
         Instance              i1               = data.get(beginIndex), i2;
 
-        if (flog.debug() != null) {
-            flog.debug().log("\nentropy.info_cont() SEARCHING: " + beginIndex + " until " + size + " attr " + this.splitDomain.getFName() + " " + i1);
+        if (log.isDebugEnabled()) {
+            log.debug("\nentropy.info_cont() SEARCHING: " + beginIndex + " until " + size + " attr " + this.splitDomain.getFName() + " " + i1);
         }
         for (int index = beginIndex + 1; index < size; index++) {
             i2 = data.get(index);
@@ -131,8 +130,8 @@ public class Categorizer {
             instancesByAttr.change(key0, i1.getAttrValue(this.targetDomain.getFReferenceName()), +1.0d * i1.getWeight()); //+1
             instancesByAttr.change(key1, i1.getAttrValue(this.targetDomain.getFReferenceName()), -1.0d * i1.getWeight()); //-1
 
-            if (flog.debug() != null) {
-                flog.debug().log("Instances " + i1 + " vs " + i2);
+            if (log.isDebugEnabled()) {
+                log.debug("Instances " + i1 + " vs " + i2);
             }
             /*
              * CATEGORIZATION 2.1. Cut points are points in the sorted list
@@ -145,8 +144,8 @@ public class Categorizer {
             if (targetComp.compare(i1, i2) != 0 && attrComp.compare(i1, i2) != 0) {
                 numSplitPoints++;
 
-                if (flog.debug() != null) {
-                    flog.debug().log("entropy.info_cont() SEARCHING: " + (index) + " attr " + this.splitDomain.getFName() + " " + i2);
+                if (log.isDebugEnabled()) {
+                    log.debug("entropy.info_cont() SEARCHING: " + (index) + " attr " + this.splitDomain.getFName() + " " + i2);
                 }
                 // the cut point
                 Object cpI     = i1.getAttrValue(this.splitDomain.getFReferenceName());
@@ -166,8 +165,8 @@ public class Categorizer {
                     bestSum = sum;
                     splitIndex = index;
 
-                    if (flog.debug() != null) {
-                        flog.debug().log(Util.ntimes("?", 10) + "** FOUND: @" + (index) + " target (" + i1.getAttrValue(this.targetDomain.getFName()) + "-|T|-"
+                    if (log.isDebugEnabled()) {
+                        log.debug(Util.ntimes("?", 10) + "** FOUND: @" + (index) + " target (" + i1.getAttrValue(this.targetDomain.getFName()) + "-|T|-"
                                              + i2.getAttrValue(this.targetDomain.getFName()) + ")");
                     }
                     bestPoint = new SplitPoint(index - 1, cutPoint);
@@ -181,8 +180,8 @@ public class Categorizer {
             i1 = i2;
         }
         if (bestDistribution != null) {
-            if (flog.debug() != null) {
-                flog.debug().log("bp:" + bestPoint);
+            if (log.isDebugEnabled()) {
+                log.debug("bp:" + bestPoint);
             }
 
             this.splitDomain.addSplitPoint(bestPoint);
@@ -192,8 +191,8 @@ public class Categorizer {
              * correct place instead of the split
              */
 
-            if (flog.debug() != null) {
-                flog.debug().log("bd:" + bestDistribution.getNumCondClasses());
+            if (log.isDebugEnabled()) {
+                log.debug("bd:" + bestDistribution.getNumCondClasses());
             }
             double sum1 = findASplit(beginIndex, splitIndex, depth - 1, bestDistribution.getDistributionOf(key0));
 

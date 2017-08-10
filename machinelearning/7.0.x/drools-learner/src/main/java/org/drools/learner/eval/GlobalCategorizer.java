@@ -11,21 +11,20 @@ import org.drools.learner.InstanceList;
 import org.drools.learner.Memory;
 import org.drools.learner.QuantitativeDomain;
 import org.drools.learner.tools.FeatureNotSupported;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GlobalCategorizer {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(GlobalCategorizer.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(GlobalCategorizer.class, SimpleLogger.DEFAULT_LEVEL);
+    protected static final transient Logger log = LoggerFactory.getLogger(GlobalCategorizer.class);
 
     public GlobalCategorizer(Memory mem) {
         InstanceList classInstances = mem.getClassInstances();
 
         if (classInstances.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if (flog.error() != null) {
-                flog.error().log("There is more than 1 target candidates");
+            if (log.isErrorEnabled()) {
+                log.error("There is more than 1 target candidates");
             }
 
             System.exit(0);
@@ -41,14 +40,14 @@ public class GlobalCategorizer {
 
         DecisionTree dt = new DecisionTree(workingInstances.getSchema(), target);
 
-        //flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
+        //log.debug("Num of attributes: "+ dt.getAttrDomains().size());
 
         InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain());
         statsByClass.calculateDistribution(workingInstances.getInstances());
         dt.FACTS_READ += workingInstances.getSize();//
 
         categorize(statsByClass, dt.getAttrDomains());
-        //flog.debug("Result tree\n" + dt);
+        //log.debug("Result tree\n" + dt);
         return;// dt;
     }
 

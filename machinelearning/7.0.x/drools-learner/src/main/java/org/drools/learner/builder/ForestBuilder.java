@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Stats;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ForestBuilder extends DecisionTreeBuilder {
 
@@ -16,9 +16,8 @@ public class ForestBuilder extends DecisionTreeBuilder {
     private static final boolean WITH_REP        = true;
 
     //	private double trainRatio = Util.TRAINING_RATIO, testRatio = Util.TESTING_RATIO;
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(ForestBuilder.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(ForestBuilder.class, SimpleLogger.DEFAULT_LEVEL);
-    private TreeAlgo algorithm = TreeAlgo.BAG; // default bagging, TODO boosting
+    protected static final transient Logger   log       = LoggerFactory.getLogger(ForestBuilder.class);
+    private                      TreeAlgo algorithm = TreeAlgo.BAG; // default bagging, TODO boosting
     private ArrayList<DecisionTree> forest;
     //private Learner trainer;
 
@@ -39,15 +38,15 @@ public class ForestBuilder extends DecisionTreeBuilder {
         trainer.setInputSpec(solSet.getInputSpec());
         if (solSet.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if (flog.error() != null) {
-                flog.error().log("There is more than 1 target candidates");
+            if (log.isErrorEnabled()) {
+                log.error("There is more than 1 target candidates");
             }
 
             System.exit(0);
             // TODO put the feature not supported exception || implement it
         } else if (trainer.getTargetDomain().getCategoryCount() > 2) {
-            if (slog.error() != null) {
-                slog.error().log("The target domain is not binary!!!\n");
+            if (log.isErrorEnabled()) {
+                log.error("The target domain is not binary!!!\n");
             }
             System.exit(0);
         }
@@ -75,20 +74,20 @@ public class ForestBuilder extends DecisionTreeBuilder {
             InstanceList workingInstances = solSet.getTrainSet().getInstances(bag);
 
             DecisionTree dt = trainer.instantiateTree();
-            if (slog.debug() != null) {
-                slog.debug().log("\n" + "Training a tree" + "\n");
+            if (log.isDebugEnabled()) {
+                log.debug("\n" + "Training a tree" + "\n");
             }
             trainer.trainTree(dt, workingInstances);
-            if (slog.debug() != null) {
-                slog.debug().log("\n" + "the end" + "\n");
+            if (log.isDebugEnabled()) {
+                log.debug("\n" + "the end" + "\n");
             }
             dt.setID(i);
             forest.add(dt);
             // the DecisionTreeMerger will visit the decision tree and add the paths that have not been seen yet to the list
             merger.add(dt);
 
-            if (slog.stat() != null) {
-                slog.stat().stat(".");
+            if (log.isInfoEnabled()) {
+                log.info(".");
             }
             //			SingleTreeTester single_tester = new SingleTreeTester(dt);
             //			train_evaluation.add(single_tester.test(sol_set.getTrainSet()));

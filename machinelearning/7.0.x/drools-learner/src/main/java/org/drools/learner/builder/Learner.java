@@ -11,15 +11,14 @@ import org.drools.learner.InstanceList;
 import org.drools.learner.TreeNode;
 import org.drools.learner.eval.InstDistribution;
 import org.drools.learner.eval.stopping.StoppingCriterion;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Learner {
 
-    public static DomainAlgo DEFAULT_DOMAIN = DomainAlgo.QUANTITATIVE;
-    public static DataType DEFAULT_DATA = DataType.PRIMITIVE;
-    protected static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(Learner.class, SimpleLogger.DEFAULT_LEVEL);
-    protected static SimpleLogger slog = LoggerFactory.getSysOutLogger(Learner.class, SimpleLogger.DEFAULT_LEVEL);
+    public static                DomainAlgo DEFAULT_DOMAIN = DomainAlgo.QUANTITATIVE;
+    public static                DataType   DEFAULT_DATA   = DataType.PRIMITIVE;
+    protected static final transient Logger     log            = LoggerFactory.getLogger(Learner.class);
     protected HashSet<Instance> missclassifiedData;
     protected ArrayList<StoppingCriterion> criteria;
     private int dataSize, dataSizePerTree;

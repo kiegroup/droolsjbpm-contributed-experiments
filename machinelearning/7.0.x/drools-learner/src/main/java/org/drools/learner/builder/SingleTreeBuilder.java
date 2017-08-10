@@ -2,13 +2,12 @@ package org.drools.learner.builder;
 
 import org.drools.learner.DecisionTree;
 import org.drools.learner.Stats;
-import org.drools.learner.tools.LoggerFactory;
-import org.drools.learner.tools.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SingleTreeBuilder extends DecisionTreeBuilder {
 
-    private static SimpleLogger flog = LoggerFactory.getUniqueFileLogger(SingleTreeBuilder.class, SimpleLogger.DEFAULT_LEVEL);
-    private static SimpleLogger slog = LoggerFactory.getSysOutLogger(SingleTreeBuilder.class, SimpleLogger.DEFAULT_LEVEL);
+    protected static final transient Logger log = LoggerFactory.getLogger(SingleTreeBuilder.class);
 
     private TreeAlgo algorithm = TreeAlgo.SINGLE; // default bagging, TODO boosting
 
@@ -29,8 +28,8 @@ public class SingleTreeBuilder extends DecisionTreeBuilder {
 
         if (sol.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if (flog.error() != null) {
-                flog.error().log("There is more than 1 target candidates");
+            if (log.isErrorEnabled()) {
+                log.error("There is more than 1 target candidates");
             }
 
             System.exit(0);
@@ -40,8 +39,8 @@ public class SingleTreeBuilder extends DecisionTreeBuilder {
         trainer.setInputSpec(sol.getInputSpec());
         trainer.setTrainingDataSize(sol.getTrainSet().getSize());
         DecisionTree oneTree = trainer.instantiateTree();
-        if (slog.debug() != null) {
-            slog.debug().log("\n" + "Training a tree" + "\n");
+        if (log.isDebugEnabled()) {
+            log.debug("\n" + "Training a tree" + "\n");
         }
         trainer.trainTree(oneTree, sol.getTrainSet());
         oneTree.setID(0);
