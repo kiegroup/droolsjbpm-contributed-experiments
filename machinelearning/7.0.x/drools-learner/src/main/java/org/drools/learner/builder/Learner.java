@@ -8,7 +8,6 @@ import org.drools.learner.InstanceList;
 import org.drools.learner.eval.stopping.StoppingCriterion;
 
 public interface Learner {
-    DomainAlgo DEFAULT_DOMAIN = DomainAlgo.QUANTITATIVE;
     DataType   DEFAULT_DATA   = DataType.PRIMITIVE;
 
     DecisionTree instantiateTree();
@@ -31,15 +30,7 @@ public interface Learner {
 
     void setTrainingDataSize(int num);
 
-    DomainAlgo getDomainAlgo();
-
-    void setDomainAlgo(DomainAlgo type);
-
     void setInputSpec(InstanceList classInstances);
-
-    enum DomainAlgo {
-        CATEGORICAL, QUANTITATIVE
-    }
 
     enum DataType {
         PRIMITIVE, STRUCTURED, COLLECTION

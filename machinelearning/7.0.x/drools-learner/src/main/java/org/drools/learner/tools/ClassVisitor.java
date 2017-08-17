@@ -12,7 +12,6 @@ import org.drools.learner.Domain;
 import org.drools.learner.Schema;
 import org.drools.learner.builder.Learner;
 import org.drools.learner.builder.Learner.DataType;
-import org.drools.learner.builder.Learner.DomainAlgo;
 import org.drools.learner.eval.CrossValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,6 @@ public class ClassVisitor {
     private static               ClassFieldAccessorCache cache      = new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader());
     //private static ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
     private                      ClassFieldAccessorStore store      = new ClassFieldAccessorStore();
-    private                      DomainAlgo              domainType = Learner.DEFAULT_DOMAIN;
     private                      DataType                dataType   = Learner.DEFAULT_DATA;
 
     private Schema       classSchema;
@@ -37,14 +35,13 @@ public class ClassVisitor {
         store.setClassFieldAccessorCache(cache);
     }
 
-    public ClassVisitor(DomainAlgo domainType, DataType dataType) {
-        this(null, domainType, dataType);
+    public ClassVisitor(DataType dataType) {
+        this(null, dataType);
     }
 
-    public ClassVisitor(Schema classSchema, DomainAlgo domainType, DataType dataType) {
+    public ClassVisitor(Schema classSchema, DataType dataType) {
         this();
         this.classSchema = classSchema;
-        this.domainType = domainType;
         this.dataType = dataType;
     }
 
@@ -113,21 +110,8 @@ public class ClassVisitor {
             if (!fieldSpec.ignore() && field.getType() == String.class && !fieldSpec.discrete()) {
                 throw new FeatureNotSupported("String categorization not supported");
             }
-            switch (domainType) {
-                case CATEGORICAL: //ID3 can work only with categorical types
-                    if (fieldSpec.skip() || !fieldSpec.discrete()) {
-                        skip = true;
-                    }
-                    break;
-                case QUANTITATIVE: // C45 can work with categorical || quantitative domain
-                    if (fieldSpec.skip()) {
-                        skip = true;
-                    }
-                    break;
-                default:
-                    if (fieldSpec.skip()) {
-                        skip = true;
-                    }
+            if (fieldSpec.skip()) {
+                skip = true;
             }
             ignoreField = fieldSpec.ignore();
             if (ignoreField) {

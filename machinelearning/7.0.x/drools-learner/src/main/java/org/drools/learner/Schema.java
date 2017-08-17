@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.drools.core.spi.ReadAccessor;
 import org.drools.learner.builder.Learner.DataType;
-import org.drools.learner.builder.Learner.DomainAlgo;
 import org.drools.learner.tools.ClassStructure;
 import org.drools.learner.tools.ClassVisitor;
 import org.drools.learner.tools.FeatureNotSupported;
@@ -38,13 +37,13 @@ public class Schema {
         this.targets = new HashSet<String>();
     }
 
-    public static Schema createSchemaStructure(Class<?> clazz, DomainAlgo domainType,
+    public static Schema createSchemaStructure(Class<?> clazz,
                                                DataType dataType) throws Exception {
         Schema schema = new Schema(clazz);
         //�ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
 
         // schema is modified
-        ClassVisitor visitor = new ClassVisitor(schema, domainType, dataType);
+        ClassVisitor visitor = new ClassVisitor(schema, dataType);
         visitor.visit();
 
         /*

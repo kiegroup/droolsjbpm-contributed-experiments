@@ -30,12 +30,10 @@ public class C45Learner  implements Learner {
     // must be deleted, goes to builder
     //	private DecisionTree best_tree;
     private InstanceList     inputData;
-    private DomainAlgo       algorithm;
 
     private AttributeChooser chooser;
 
     public C45Learner(Heuristic hf) {
-        setDomainAlgo(DomainAlgo.QUANTITATIVE);
         chooser = new AttributeChooser(hf);
 
         this.dataSize = 0;
@@ -259,13 +257,6 @@ public class C45Learner  implements Learner {
         this.dataSize = num;
     }
 
-    @Override public DomainAlgo getDomainAlgo() {
-        return this.algorithm;
-    }
-
-    @Override public void setDomainAlgo(DomainAlgo type) {
-        this.algorithm = type;
-    }
     // must be deleted, goes to builder
     //	public DecisionTree getTree() {
     //		return best_tree;

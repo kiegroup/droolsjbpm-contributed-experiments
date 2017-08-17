@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.learner.builder.Learner.DataType;
-import org.drools.learner.builder.Learner.DomainAlgo;
 import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.Util;
 
@@ -25,7 +24,7 @@ public class Memory {
         this.instances = new HashMap<Class<?>, InstanceList>();
     }
 
-    public static Memory createFromObjects(List<Object> objects, Class<?> clazz, DomainAlgo domain,
+    public static Memory createFromObjects(List<Object> objects, Class<?> clazz,
                                            DataType data) throws FeatureNotSupported {
         // if mem == null
         Memory mem = new Memory();
@@ -34,7 +33,7 @@ public class Memory {
         // create schema from clazz
         Schema instSchema = null;
         try {
-            instSchema = Schema.createSchemaStructure(clazz, domain, data);
+            instSchema = Schema.createSchemaStructure(clazz, data);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
