@@ -2,7 +2,7 @@ package org.drools.learner.eval;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import org.drools.learner.Domain;
@@ -20,18 +20,18 @@ public class InstDistribution extends ClassDistribution {
     protected static final transient Logger log = LoggerFactory.getLogger(InstDistribution.class);
 
     private String attSum = Util.sum();
-    private Hashtable<Object, List<Instance>> instanceByClass;
+    private HashMap<Object, List<Instance>> instanceByValue;
 
-    //private Hashtable<Object, List<Instance>>
+    //private HashMap<Object, List<Instance>>
 
     public InstDistribution(Domain targetDomain) {
         super(targetDomain);
 
-        instanceByClass = new Hashtable<Object, List<Instance>>(targetDomain.getCategoryCount());
+        instanceByValue = new HashMap<Object, List<Instance>>(targetDomain.getCategoryCount());
         for (int t = 0; t < targetDomain.getCategoryCount(); t++) {
             // mireynol - FWIW this variable was formerly named obj_t, just guessing at the meaning FIXME
             Object objType = targetDomain.getCategory(t);
-            instanceByClass.put(objType, new ArrayList<Instance>());
+            instanceByValue.put(objType, new ArrayList<Instance>());
         }
     }
 
@@ -58,16 +58,16 @@ public class InstDistribution extends ClassDistribution {
     }
 
     public List<Instance> getSupportersFor(Object category) {
-        return instanceByClass.get(category);
+        return instanceByValue.get(category);
     }
 
     private void addSupporter(Object targetCategory, Instance inst) {
-        this.instanceByClass.get(targetCategory).add(inst);
+        this.instanceByValue.get(targetCategory).add(inst);
     }
 
-    private Hashtable<Object, InstDistribution> instantiateLists(Domain splitDomain) {
-        Domain                              targetDomain = super.getClassDomain();
-        Hashtable<Object, InstDistribution> instLists    = new Hashtable<Object, InstDistribution>(splitDomain.getCategoryCount());
+    private HashMap<Object, InstDistribution> instantiateLists(Domain splitDomain) {
+        Domain targetDomain = super.getClassDomain();
+        HashMap<Object, InstDistribution> instLists  = new HashMap<Object, InstDistribution>(splitDomain.getCategoryCount());
         for (int c = 0; c < splitDomain.getCategoryCount(); c++) {
             Object category = splitDomain.getCategory(c);
             instLists.put(category, new InstDistribution(targetDomain));
@@ -76,9 +76,9 @@ public class InstDistribution extends ClassDistribution {
     }
 
     /* spliting during the training for C45TreeIterator */
-    public Hashtable<Object, InstDistribution> split(InformationContainer splitDomainEval) throws FeatureNotSupported {
+    public HashMap<Object, InstDistribution> split(InformationContainer splitDomainEval) throws FeatureNotSupported {
         Domain                              splitDomain = splitDomainEval.domain;
-        Hashtable<Object, InstDistribution> instLists   = this.instantiateLists(splitDomain);
+        HashMap<Object, InstDistribution> instLists   = this.instantiateLists(splitDomain);
 
         if (splitDomain.isCategorical()) {
             this.splitFromCategorical(splitDomain, instLists);
@@ -96,8 +96,8 @@ public class InstDistribution extends ClassDistribution {
         return instLists;
     }
 
-    public Hashtable<Object, InstDistribution> splitFromCategorical(Domain splitDomain,
-                                                                    Hashtable<Object, InstDistribution> instLists) {
+    public HashMap<Object, InstDistribution> splitFromCategorical(Domain splitDomain,
+                                                                    HashMap<Object, InstDistribution> instLists) {
         if (instLists == null) {
             instLists = this.instantiateLists(splitDomain);
         }
@@ -109,18 +109,18 @@ public class InstDistribution extends ClassDistribution {
             //this.calculateDistribution(this.getSupportersFor(targetCategory));
 
             for (Instance inst : this.getSupportersFor(targetCategory)) {
-                Object instAttrCategory = inst.getAttrValue(attrName);
+                Object value = inst.getAttrValue(attrName);
 
-                instLists.get(instAttrCategory).change(targetCategory, inst.getWeight()); // add one for vote for the target value : target_key
-                instLists.get(instAttrCategory).change(attSum, inst.getWeight());
-                instLists.get(instAttrCategory).addSupporter(targetCategory, inst);
+                instLists.get(value).change(targetCategory, inst.getWeight()); // add one for vote for the target value : target_key
+                instLists.get(value).change(attSum, inst.getWeight());
+                instLists.get(value).addSupporter(targetCategory, inst);
             }
         }
         return instLists;
     }
 
     private void splitFromQuantitative(ArrayList<Instance> data, QuantitativeDomain attributeDomain,
-                                       Hashtable<Object, InstDistribution> instLists) {
+                                       HashMap<Object, InstDistribution> instLists) {
 
         String attributeName = attributeDomain.getFName();
         String targetName    = super.getClassDomain().getFReferenceName();

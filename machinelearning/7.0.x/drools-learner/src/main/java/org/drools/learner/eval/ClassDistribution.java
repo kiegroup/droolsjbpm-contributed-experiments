@@ -13,7 +13,7 @@ public class ClassDistribution {
     private   Hashtable<Object, Double> quantityByClass;
 
     private String sumKey = Util.sum();
-    private int    numCategoryIdeas;
+    private int    numberOfSupportedCaegories;
     private Object winnerCategory;
 
     public ClassDistribution(Domain targetDomain) {
@@ -27,7 +27,7 @@ public class ClassDistribution {
 
         quantityByClass.put(sumKey, 0.0d);
 
-        numCategoryIdeas = 0;
+        numberOfSupportedCaegories = 0;
     }
 
     public ClassDistribution(ClassDistribution copyDist) {
@@ -35,7 +35,7 @@ public class ClassDistribution {
         this.quantityByClass = new Hashtable<Object, Double>(this.targetAttr.getCategoryCount() + 1);
         this.setDistribution(copyDist);
 
-        this.numCategoryIdeas = copyDist.getNumIdeas();
+        this.numberOfSupportedCaegories = copyDist.getNumberOfSupportedCategories();
         this.winnerCategory = copyDist.getWinnerClass();
     }
 
@@ -89,12 +89,12 @@ public class ClassDistribution {
         this.setWinnerClass(winner);
     }
 
-    public int getNumIdeas() {
-        return this.numCategoryIdeas;
+    public int getNumberOfSupportedCategories() {
+        return this.numberOfSupportedCaegories;
     }
 
-    public void setNumIdeas(int numSuppertedTargetClasses) {
-        this.numCategoryIdeas = numSuppertedTargetClasses;
+    public void setNumIdeas(int numberOfSupportedCaegories) {
+        this.numberOfSupportedCaegories = numberOfSupportedCaegories;
     }
 
     public Object getWinnerClass() {

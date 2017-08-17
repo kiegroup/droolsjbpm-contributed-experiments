@@ -47,7 +47,7 @@ public class PokerExample {
         List<Object> objects   = ObjectFactory.getObjects(obj_class, inputFile);
 
         // instantiate a learner for a specific object class and pass session to train
-        DecisionTree decision_tree;
+        DecisionTree decision_tree = null;
         int          ALGO = 141;//241;//341
         /*
 		 * Single	1xx, Bag 	2xx, Boost 3xx
@@ -55,12 +55,6 @@ public class PokerExample {
 		 * Entropy	xx1, Gain	xx2
 		 */
         switch (ALGO) {
-            case 111:
-                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
-                break;
-            case 112:
-                decision_tree = DecisionTreeFactory.createSingleID3G(objects, obj_class);
-                break;
             case 121:
                 decision_tree = DecisionTreeFactory.createSingleC45E(objects, obj_class);
                 break;
@@ -121,8 +115,6 @@ public class PokerExample {
             case 342:
                 decision_tree = DecisionTreeFactory.createBoostC45GPrunStop(objects, obj_class);
                 break;
-            default:
-                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
         }
 
 //		final PackageBuilder builder = new PackageBuilder();

@@ -44,12 +44,7 @@ public class Memory {
         // create a instance list that can hold objects from our schema
         mem.instances.put(clazz, new InstanceList(instSchema));
 
-        /*
-         * do they create an ObjectTypeNode for each new inserted object type?
-         * even if there is no rule exists. No probably they do not
-         */
-
-        Iterator<Object> itObject = objects.iterator(); // how can i get the object type nodes
+        Iterator<Object> itObject = objects.iterator();
         while (itObject.hasNext()) {
             Object obj = itObject.next();
             // validating in the the factory during instantiation
@@ -77,12 +72,13 @@ public class Memory {
     }
 
     public void processTestSet() {
-        int splitIdx = (int) (trainRatio * instances.get(this.clazzToClassify).getSize());
+        InstanceList list = instances.get(this.clazzToClassify);
+        int splitIdx = (int) (trainRatio * list.getSize());
         //int split_idx2 =  split_idx + (int)(testRatio * instances.get(this.clazzToClassify).getSize());
-        int splitIdx2 = instances.get(this.clazzToClassify).getSize();
+        int splitIdx2 = list.getSize();
 
-        trainInstances = instances.get(this.clazzToClassify).subList(0, splitIdx);
-        testInstances = instances.get(this.clazzToClassify).subList(splitIdx, splitIdx2);//class_instances.getSize());
+        trainInstances = list.subList(0, splitIdx);
+        testInstances = list.subList(splitIdx, splitIdx2);//class_instances.getSize());
         return;
     }
 

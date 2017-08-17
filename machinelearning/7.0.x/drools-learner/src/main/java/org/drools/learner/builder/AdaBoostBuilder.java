@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.drools.learner.DecisionTree;
 import org.drools.learner.InstanceList;
+import org.drools.learner.Memory;
 import org.drools.learner.Stats;
 import org.drools.learner.tools.Util;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /*
  * 
  */
-public class AdaBoostBuilder extends DecisionTreeBuilder {
+public class AdaBoostBuilder implements DecisionTreeBuilder  {
 
     private static final         double   TREE_SIZE_RATIO = 1.0d;
     private static final         boolean  WITH_REP        = false;
@@ -35,7 +36,9 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
         //		test_evaluation = new ArrayList<Stats>(FOREST_SIZE);
     }
 
-    public void internalBuild(SolutionSet solSet, Learner trainer) {
+    public SolutionSet build(Memory wm, Learner trainer) {
+        SolutionSet solSet =  new SolutionSet(wm);
+
         trainer.setInputSpec(solSet.getInputSpec());
         if (solSet.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
@@ -161,7 +164,7 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
             merger.add(dt);
 
             // adding to the set of solutions
-            Tester   t     = getTester(dt);
+            Tester   t     = DecisionTreeBuilder.getTester(dt);
             Stats    train = t.test(solSet.getTrainSet());
             Stats    test  = t.test(solSet.getTestSet());
             Solution one   = new Solution(dt, solSet.getTrainSet());
@@ -191,7 +194,7 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
         //		best_solution
         solSet.setBestSolutionId(bestId);
 
-        return;
+        return solSet;
     }
 
     //	public void build(Memory mem, Learner _trainer) {
@@ -374,10 +377,6 @@ public class AdaBoostBuilder extends DecisionTreeBuilder {
 
     public Tester getTester(ArrayList<DecisionTree> boostedForest, ArrayList<Double> acc) {
         return new BoostedTester(boostedForest, acc);
-    }
-
-    public Solution getBestSolution() {
-        return solutions.getBestSolution();
     }
 
     //	public void printResults(String executionSignature) {

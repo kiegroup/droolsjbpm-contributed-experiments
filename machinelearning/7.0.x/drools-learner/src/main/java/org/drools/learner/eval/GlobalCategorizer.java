@@ -1,6 +1,6 @@
 package org.drools.learner.eval;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class GlobalCategorizer {
                 categorizedEval.domain = trialDomain;
                 categorizedEval.sortedData = visitor.getSortedInstances();
 
-                Hashtable<Object, InstDistribution> filteredStats = null;
+                HashMap<Object, InstDistribution> filteredStats = null;
                 try {
                     filteredStats = instsByTarget.split(categorizedEval);
 

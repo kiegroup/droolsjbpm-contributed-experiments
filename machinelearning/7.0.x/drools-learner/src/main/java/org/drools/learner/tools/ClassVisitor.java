@@ -27,11 +27,11 @@ public class ClassVisitor {
     private                      DataType                dataType   = Learner.DEFAULT_DATA;
 
     private Schema       classSchema;
-    private Stack<Field> classRelation;
+    private Stack<Field> classRelation; // for traversing to child objects
 
     //@mireynol - need to change these from contstant style to camel case
-    private boolean TARGET_FOUND;
-    private boolean MULTIPLE_TARGETS = false;
+    private boolean targetFound;
+    private boolean multpleTargets;
 
     public ClassVisitor() {
         store.setClassFieldAccessorCache(cache);
@@ -50,7 +50,6 @@ public class ClassVisitor {
 
     public void visit() throws FeatureNotSupported {
         //		this.all_klasses = new HashMap<Class<?>,ClassStructure>();
-        TARGET_FOUND = false;
         classRelation = new Stack<Field>();
         getStructuredSuperFields(classSchema.getObjectClass()/* , null */);
 
@@ -71,7 +70,7 @@ public class ClassVisitor {
         }
         // process if the parent_klass.equals(Object.class) ?????
         ClassStructure structure = new ClassStructure(clazz);
-        if (MULTIPLE_TARGETS || !TARGET_FOUND) {
+        if (multpleTargets || !targetFound) {
             processClassLabel(structure);
         }
         classSchema.putStructure(clazz, structure);
@@ -108,6 +107,7 @@ public class ClassVisitor {
 
         boolean skip        = false;
         boolean ignoreField = false;
+        // FIXME, surely this should error if ID3 gets quantitive domain mdp
         if (fieldSpec != null) {
             // the type of the fields that cannot be processed
             if (!fieldSpec.ignore() && field.getType() == String.class && !fieldSpec.discrete()) {
@@ -167,7 +167,6 @@ public class ClassVisitor {
 
                     ReadAccessor fieldExtractor = store.getReader(objClass, fieldName);
                     classSchema.putExtractor(fieldReferenceName, fieldExtractor);
-                    structure.addField(field, dataType);
 
                     switch (dataType) {
                         case PRIMITIVE: // domain will be created only for primitive types
@@ -175,9 +174,9 @@ public class ClassVisitor {
                             //fieldDomain.setOwner(owner_clazz);
                             if (fieldSpec != null) {
                                 fieldDomain.setCategorical(fieldSpec.discrete());
-                                if ((MULTIPLE_TARGETS || !TARGET_FOUND) && fieldSpec.target()) {
+                                if ((multpleTargets || !targetFound) && fieldSpec.target()) {
                                     classSchema.addTarget(fieldReferenceName);
-                                    TARGET_FOUND = true;
+                                    targetFound = true;
                                 }
                             }
                             Util.processDomain(fieldDomain, field.getType());
@@ -213,13 +212,14 @@ public class ClassVisitor {
         return;
     }
 
+    /**
+     * The ClassAnnotation has a label field, which refers to a method on the Class.
+     * @param clazzStructure
+     */
     public void processClassLabel(ClassStructure clazzStructure) {
 
         Class<?> clazz = clazzStructure.getOwnerClass();
-        /*
-         * Apperantly the getAnnotation function recurse on the superclasses so
-         * use the getDeclaredAnnotations() not to recurse
-         */
+         // use getDeclaredAnnotations() to not recurse super
         ClassAnnotation classLabel = Util.getDecClassAnnotations(clazz);
         if (classLabel != null && classLabel.labelElement() != "") {
             // the targetting label is set, put the function that gets that value somewhere
@@ -249,11 +249,11 @@ public class ClassVisitor {
                     ReadAccessor mExtractor = new PseudoFieldExtractor(clazz, m);
                     //cache.getExtractor( clazz, lab.label_element(), clazz.getClassLoader() );
                     classSchema.putExtractor(fRefName, mExtractor);
-                    if (!MULTIPLE_TARGETS) {
+                    if (!multpleTargets) {
                         classSchema.clearTargets();
                     }
                     classSchema.addTarget(fRefName);
-                    TARGET_FOUND = true;
+                    targetFound = true;
                     if (log.isWarnEnabled()) {
                         log.warn("!!!!!:processClassLabel: TARGET FOUND " + fRefName + " " + classLabel.labelElement() + ")\n");
                     }
@@ -272,6 +272,6 @@ public class ClassVisitor {
 
     public boolean isTargetFound() {
         // TODO Auto-generated method stub
-        return TARGET_FOUND;
+        return targetFound;
     }
 }

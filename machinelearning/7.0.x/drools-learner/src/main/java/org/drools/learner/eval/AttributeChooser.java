@@ -10,19 +10,19 @@ import org.slf4j.LoggerFactory;
 public class AttributeChooser {
     protected static final transient Logger   log = LoggerFactory.getLogger(AttributeChooser.class);
 
-    private Heuristic function;
+    private Heuristic heuristic;
 
-    public AttributeChooser(Heuristic function) {
-        this.function = function;
+    public AttributeChooser(Heuristic heuristic) {
+        this.heuristic = heuristic;
     }
 
     public Domain chooseAttribute(InformationContainer eval, InstDistribution instsByTarget, List<Domain> attrDomains) {
         // List<Instance> instances
 
-        //		double data_eval = function.calc_info(insts_by_target);
-        function.init(instsByTarget);
+        //		double data_eval = heuristic.calc_info(insts_by_target);
+        heuristic.init(instsByTarget);
 
-        double greatestEval = function.getWorstEval();//-1000;
+        double greatestEval = heuristic.getWorstEval();//-1000;
         //		ArrayList<Instance> sorted_instances = null, best_sorted_instances = null;
         //		Domain best_attr = attr_domains.get(0);
 
@@ -36,7 +36,7 @@ public class AttributeChooser {
              */
             double attributeEval = 0.0;
             if (attrDomain.isCategorical()) {
-                attributeEval = function.getEval(attrDomain);//data_eval - function.info_attr(insts_by_target, attr_domain);
+                attributeEval = heuristic.getEval(attrDomain);//data_eval - heuristic.info_attr(insts_by_target, attr_domain);
                 container.attributeEval = attributeEval;
                 container.domain = attrDomain;
                 if (log.isDebugEnabled()) {
@@ -44,15 +44,15 @@ public class AttributeChooser {
                 }
             } else {
                 //				the continuous domain
-                attributeEval = function.getEvalCont(attrDomain);
+                attributeEval = heuristic.getEvalCont(attrDomain);
                 container.attributeEval = attributeEval;
-                container.domain = function.getDomain();
-                container.sortedData = function.getSortedInstances();
+                container.domain = heuristic.getDomain();
+                container.sortedData = heuristic.getSortedInstances();
                 if (log.isDebugEnabled()) {
                     log.debug("ContAttribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
                 }
 
-                //				attr_domain = function.getDomain();
+                //				attr_domain = heuristic.getDomain();
                 //				sorted_instances = visitor.getSortedInstances();
 
             }
@@ -90,9 +90,9 @@ public class AttributeChooser {
      */
     public Domain chooseAttributeAsCategorical(InstDistribution instsByTarget, List<Domain> attrDomains) {
 
-        //double dt_info = function.calc_info(insts_by_target);
-        function.init(instsByTarget);
-        double greatestEval = function.getWorstEval(); //-1000;
+        //double dt_info = heuristic.calc_info(insts_by_target);
+        heuristic.init(instsByTarget);
+        double greatestEval = heuristic.getWorstEval(); //-1000;
         Domain bestAttr     = attrDomains.get(0);
         for (Domain attrDomain : attrDomains) {
             /*
@@ -100,8 +100,8 @@ public class AttributeChooser {
              * domain All domains are categorical so i will use them the way
              * they are
              */
-            //double attribute_eval = dt_info - function.info_attr(insts_by_target, attr_domain);
-            double attributeEval = function.getEval(attrDomain);
+            //double attribute_eval = dt_info - heuristic.info_attr(insts_by_target, attr_domain);
+            double attributeEval = heuristic.getEval(attrDomain);
             //			flog.debug("Attribute: " + attr_domain.getFName() + " the gain: " + gain);
             if (attributeEval > greatestEval) {
                 greatestEval = attributeEval;

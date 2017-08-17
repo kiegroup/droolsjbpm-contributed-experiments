@@ -1,11 +1,12 @@
 package org.drools.learner.builder;
 
 import org.drools.learner.DecisionTree;
+import org.drools.learner.Memory;
 import org.drools.learner.Stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SingleTreeBuilder extends DecisionTreeBuilder {
+public class SingleTreeBuilder implements DecisionTreeBuilder {
 
     protected static final transient Logger log = LoggerFactory.getLogger(SingleTreeBuilder.class);
 
@@ -24,9 +25,9 @@ public class SingleTreeBuilder extends DecisionTreeBuilder {
      * instance (Class<?>) klass, String targetField, List<String>
      * workingAttributes
      */
-    public void internalBuild(SolutionSet sol, Learner trainer) {
-
-        if (sol.getTargets().size() > 1) {
+    public SolutionSet build(Memory wm, Learner trainer) {
+        SolutionSet solSet =  new SolutionSet(wm);
+        if (solSet.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
             if (log.isErrorEnabled()) {
                 log.error("There is more than 1 target candidates");
@@ -36,33 +37,29 @@ public class SingleTreeBuilder extends DecisionTreeBuilder {
             // TODO put the feature not supported exception || implement it
         }
 
-        trainer.setInputSpec(sol.getInputSpec());
-        trainer.setTrainingDataSize(sol.getTrainSet().getSize());
+        trainer.setInputSpec(solSet.getInputSpec());
+        trainer.setTrainingDataSize(solSet.getTrainSet().getSize());
         DecisionTree oneTree = trainer.instantiateTree();
         if (log.isDebugEnabled()) {
             log.debug("\n" + "Training a tree" + "\n");
         }
-        trainer.trainTree(oneTree, sol.getTrainSet());
+        trainer.trainTree(oneTree, solSet.getTrainSet());
         oneTree.setID(0);
 
-        Tester   t     = getTester(oneTree);
-        Stats    train = t.test(sol.getTrainSet());
-        Stats    test  = t.test(sol.getTestSet());
-        Solution best  = new Solution(oneTree, sol.getTrainSet());
-        best.setTestList(sol.getTestSet());
+        Tester   t     = DecisionTreeBuilder.getTester(oneTree);
+        Stats    train = t.test(solSet.getTrainSet());
+        Stats    test  = t.test(solSet.getTestSet());
+        Solution best  = new Solution(oneTree, solSet.getTrainSet());
+        best.setTestList(solSet.getTestSet());
         best.setTrainStats(train);
         best.setTestStats(test);
-        sol.addSolution(best);
+        solSet.addSolution(best);
 
-        return;
+        return solSet;
     }
 
     public TreeAlgo getTreeAlgo() {
         return this.algorithm; // default
-    }
-
-    public Solution getBestSolution() {
-        return solutions.getBestSolution();
     }
 
     //	public void printResults(String executionSignature) {

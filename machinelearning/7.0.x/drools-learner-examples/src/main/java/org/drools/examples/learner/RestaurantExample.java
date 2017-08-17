@@ -35,20 +35,14 @@ public class RestaurantExample {
 //		}
 
         // instantiate a learner for a specific object class and pass session to train
-        DecisionTree decision_tree;
-        int          ALGO = 111;
+        DecisionTree decision_tree = null;
+        int          ALGO = 121;
         /*
 		 * Single	1xx, Bag 	2xx, Boost 3xx
 		 * ID3 		x1x, C45 	x2x
 		 * Entropy	xx1, Gain	xx2
 		 */
         switch (ALGO) {
-            case 111:
-                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
-                break;
-            case 112:
-                decision_tree = DecisionTreeFactory.createSingleID3G(objects, obj_class);
-                break;
             case 121:
                 decision_tree = DecisionTreeFactory.createSingleC45E(objects, obj_class);
                 break;
@@ -61,8 +55,6 @@ public class RestaurantExample {
             case 222:
                 decision_tree = DecisionTreeFactory.createBagC45G(objects, obj_class);
                 break;
-            default:
-                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
         }
 
 //		final PackageBuilder builder = new PackageBuilder();

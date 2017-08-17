@@ -53,6 +53,7 @@ public class Categorizer {
         this.splitDomain = attrDomain;
         this.attrComp = new InstanceComparator(attrDomain.getFReferenceName());
 
+        // this is doing nothing FIXME mdp
         initBinaryDomain();
 
         // CATEGORIZATION 1. sort the values
@@ -89,7 +90,7 @@ public class Categorizer {
         //			return 0.0;	// there is no one in it
         //		}
         factsInClass.evaluateMajority();
-        if (factsInClass.getNumIdeas() == 1) {
+        if (factsInClass.getNumberOfSupportedCategories() == 1) {
             if (log.isWarnEnabled()) {
                 log.warn("getNum_supported_target_classes=1 returning 0.0....");
             }

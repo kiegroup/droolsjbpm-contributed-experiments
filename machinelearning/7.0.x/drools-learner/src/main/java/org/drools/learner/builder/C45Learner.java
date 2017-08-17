@@ -1,10 +1,15 @@
 package org.drools.learner.builder;
 
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.learner.DecisionTree;
 import org.drools.learner.Domain;
+import org.drools.learner.Instance;
+import org.drools.learner.InstanceList;
 import org.drools.learner.LeafNode;
 import org.drools.learner.TreeNode;
 import org.drools.learner.eval.AttributeChooser;
@@ -14,15 +19,30 @@ import org.drools.learner.eval.heuristic.Heuristic;
 import org.drools.learner.eval.stopping.StoppingCriterion;
 import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class C45Learner extends Learner {
+public class C45Learner  implements Learner {
+    protected static final transient Logger     log            = LoggerFactory.getLogger(C45Learner.class);
+    protected HashSet<Instance>            missclassifiedData;
+    protected ArrayList<StoppingCriterion> criteria;
+    private   int                          dataSize, dataSizePerTree;
+    // must be deleted, goes to builder
+    //	private DecisionTree best_tree;
+    private InstanceList     inputData;
+    private DomainAlgo       algorithm;
 
     private AttributeChooser chooser;
 
     public C45Learner(Heuristic hf) {
-        super();
-        super.setDomainAlgo(DomainAlgo.QUANTITATIVE);
+        setDomainAlgo(DomainAlgo.QUANTITATIVE);
         chooser = new AttributeChooser(hf);
+
+        this.dataSize = 0;
+        this.dataSizePerTree = 0;
+
+        criteria = new ArrayList<StoppingCriterion>(4);
+        missclassifiedData = new HashSet<Instance>();
     }
 
     protected TreeNode train(DecisionTree dt, InstDistribution dataStats, int depth) {//List<Instance> data) {
@@ -31,18 +51,15 @@ public class C45Learner extends Learner {
             throw new RuntimeException("Nothing to classify, factlist is empty");
         }
 
-        /* let's get the statistics of the results */
+        // let's get the statistics of the results
         //InstDistribution stats_by_class = new InstDistribution(dt.getTargetDomain());///* the target domain*/);
         dataStats.evaluateMajority();
 
-        /* if all elements are classified to the same value */
-        if (dataStats.getNumIdeas( /* number of supported target categories */) == 1) {
+        // if all elements are classified to the same value
+        if (dataStats.getNumberOfSupportedCategories() == 1) {  // number of supported target categories
 
-            LeafNode classifiedNode = new LeafNode(
-                dt.getTargetDomain() /* target domain */,
-                dataStats.getWinnerClass() /* winner target category */);
-            classifiedNode.setRank(dataStats.getSum() / (double) this
-                .getTrainingDataSize()/* total size of data fed to dt */);
+            LeafNode classifiedNode = new LeafNode(dt.getTargetDomain(), dataStats.getWinnerClass() );
+            classifiedNode.setRank(dataStats.getSum() / this.getTrainingDataSize()/* total size of data fed to dt */);
             classifiedNode.setNumMatch(dataStats.getSum()); //num of matching instances to the leaf node
             classifiedNode.setNumClassification(dataStats.getSum()); //num of classified instances at the leaf node
 
@@ -54,12 +71,9 @@ public class C45Learner extends Learner {
         /* if there is no attribute left in order to continue */
         if (attributeDomains.size() == 0) {
             /* an heuristic of the leaf classification */
-            Object winner = dataStats
-                .getWinnerClass(); /* winner target category */
-            LeafNode noAttributeLeftNode = new LeafNode(
-                dt.getTargetDomain() /* target domain */, winner);
-            noAttributeLeftNode.setRank(dataStats.getVoteFor(winner) / (double) this
-                .getTrainingDataSize() /* total size of data fed to dt */);
+            Object winner = dataStats.getWinnerClass(); // winner target category
+            LeafNode noAttributeLeftNode = new LeafNode(dt.getTargetDomain() /* target domain */, winner);
+            noAttributeLeftNode.setRank(dataStats.getVoteFor(winner) / this.getTrainingDataSize() ); // total size of data fed to dt
             noAttributeLeftNode.setNumMatch(dataStats.getSum()); //num of matching instances to the leaf node
             noAttributeLeftNode.setNumClassification(dataStats.getVoteFor(winner)); //num of classified instances at the leaf node
             //noAttributeLeftNode.setInfoMea(best_attr_eval.attribute_eval);
@@ -81,16 +95,12 @@ public class C45Learner extends Learner {
         /* choosing the best attribute in order to branch at the current node */
         chooser.chooseAttribute(bestAttrEval, dataStats, attributeDomains);
 
-        if (super.criteria != null && criteria.size() > 0) {
+        if (criteria != null && criteria.size() > 0) {
             for (StoppingCriterion sc : criteria) {
                 if (sc.stop(bestAttrEval)) {
                     Object   winner       = dataStats.getWinnerClass();
                     LeafNode majorityNode = new LeafNode(dt.getTargetDomain(), winner);
-                    majorityNode.setRank((double) dataStats.getVoteFor(winner) / (double) this
-                        .getTrainingDataSize() /*
-                                                    * total size of data fed to
-                                                    * trainer
-                                                    */);
+                    majorityNode.setRank(dataStats.getVoteFor(winner) / this.getTrainingDataSize() ); // total size of data fed to trainer
                     majorityNode.setNumMatch(dataStats.getSum());
                     majorityNode.setNumClassification(dataStats.getVoteFor(winner));
 
@@ -111,14 +121,13 @@ public class C45Learner extends Learner {
 
         TreeNode currentNode = new TreeNode(nodeDomain);
         currentNode.setNumMatch(dataStats.getSum()); //num of matching instances to the leaf node
-        currentNode.setRank(dataStats.getSum() / (double) this
-            .getTrainingDataSize() /* total size of data fed to trainer */);
+        currentNode.setRank(dataStats.getSum() / this.getTrainingDataSize() ); // total size of data fed to trainer
         currentNode.setInfoMea(bestAttrEval.attributeEval);
         //what the highest represented class is and what proportion of items at that node actually are that class
         currentNode.setLabel(dataStats.getWinnerClass());
         currentNode.setNumLabeled(dataStats.getSupportersFor(dataStats.getWinnerClass()).size());
 
-        Hashtable<Object, InstDistribution> filteredStats = null;
+        HashMap<Object, InstDistribution> filteredStats = null;
         try {
             filteredStats = dataStats.split(bestAttrEval);
         } catch (FeatureNotSupported e) {
@@ -159,4 +168,119 @@ public class C45Learner extends Learner {
 
         return currentNode;
     }
+
+    @Override public DecisionTree instantiateTree() {
+        String targetReference = this.getTargetDomain().getFReferenceName();
+        //System.out.println("(Learner) target   "+ target_reference);
+        DecisionTree dt = new DecisionTree(inputData.getSchema(), targetReference);
+
+        //flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
+        return dt;
+    }
+
+    @Override public void trainTree(DecisionTree dt, InstanceList workingInstances) {
+        InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain());
+        statsByClass.calculateDistribution(workingInstances.getInstances());
+
+        dt.FACTS_READ += workingInstances.getSize();
+
+        TreeNode root = train(dt, statsByClass, 0);
+        dt.setRoot(root);
+        //flog.debug("Result tree\n" + dt);
+        //		return dt;
+    }
+
+    @Override public DecisionTree trainTree(InstanceList workingInstances) {
+        String targetReference = this.getTargetDomain().getFReferenceName();
+        //System.out.println("(Learner) target   "+ target_reference);
+        DecisionTree dt = new DecisionTree(inputData.getSchema(), targetReference);
+
+        //flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
+
+        InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain());
+        statsByClass.calculateDistribution(workingInstances.getInstances());
+
+        dt.FACTS_READ += workingInstances.getSize();
+
+        TreeNode root = train(dt, statsByClass, 0);
+        dt.setRoot(root);
+        //flog.debug("Result tree\n" + dt);
+        return dt;
+    }
+
+    @Override public Domain getTargetDomain() {
+        Iterator<String> itTarget = inputData.getTargets().iterator();
+        // TODO check if there is a target candidate
+        String target = itTarget.next();
+        //System.out.println("(Learner) What is target?? "+ target +" and the domain "+ input_data.getSchema().getAttrDomain(target));
+        return inputData.getSchema().getAttrDomain(target);
+    }
+
+    // TODO how are we going to select the target domain if there is more than one candidate
+    private DecisionTree selectTarget(InstanceList workingInstances) {
+        DecisionTree dt = null;
+        for (String target : inputData.getTargets()) {
+            dt = new DecisionTree(inputData.getSchema(), target);
+
+            //flog.debug("Num of attributes: "+ dt.getAttrDomains().size());
+
+            InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain());
+            statsByClass.calculateDistribution(workingInstances.getInstances());
+            dt.FACTS_READ += workingInstances.getSize();
+
+            TreeNode root = train(dt, statsByClass, 0);
+            dt.setRoot(root);
+            //flog.debug("Result tree\n" + dt);
+        }
+        return dt;
+    }
+
+    @Override public ArrayList<StoppingCriterion> getStoppingCriteria() {
+        return criteria;
+    }
+
+    @Override public void addStoppingCriteria(StoppingCriterion c) {
+        criteria.add(c);
+    }
+
+    @Override public int getTrainingDataSizePerTree() {
+        return this.dataSizePerTree;
+    }
+
+    @Override public void setTrainingDataSizePerTree(int num) {
+        this.dataSizePerTree = num;
+    }
+
+    @Override public int getTrainingDataSize() {
+        return this.dataSize;
+    }
+
+    @Override public void setTrainingDataSize(int num) {
+        this.dataSize = num;
+    }
+
+    @Override public DomainAlgo getDomainAlgo() {
+        return this.algorithm;
+    }
+
+    @Override public void setDomainAlgo(DomainAlgo type) {
+        this.algorithm = type;
+    }
+    // must be deleted, goes to builder
+    //	public DecisionTree getTree() {
+    //		return best_tree;
+    //	}
+
+    @Override public void setInputSpec(InstanceList classInstances) {
+        this.inputData = classInstances;
+    }
+
+    //	public InstanceList getInputData() {
+    //		return input_data;
+    //	}
+
+    // must be deleted, goes to builder
+    //	public void setBestTree(DecisionTree dt) {
+    //		this.best_tree = dt;
+    //	}
 }

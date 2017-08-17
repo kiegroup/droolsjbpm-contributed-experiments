@@ -41,7 +41,7 @@ public class GolfExample {
         Class<?>     obj_class = Golf.class;
         List<Object> objects   = ObjectFactory.getObjects(obj_class, inputFile);
 
-        DecisionTree decision_tree;
+        DecisionTree decision_tree = null;
         int          ALGO = 121;
         /*
 		 * Single	1xx, Bag 	2xx, Boost 3xx
@@ -49,12 +49,6 @@ public class GolfExample {
 		 * Entropy	xx1, Gain	xx2
 		 */
         switch (ALGO) {
-            case 111:
-                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
-                break;
-            case 112:
-                decision_tree = DecisionTreeFactory.createSingleID3G(objects, obj_class);
-                break;
             case 121:
                 decision_tree = DecisionTreeFactory.createSingleC45E(objects, obj_class);
                 break;
@@ -67,9 +61,6 @@ public class GolfExample {
             case 222:
                 decision_tree = DecisionTreeFactory.createBagC45G(objects, obj_class);
                 break;
-
-            default:
-                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
         }
 
 //		final PackageBuilder builder = new PackageBuilder();

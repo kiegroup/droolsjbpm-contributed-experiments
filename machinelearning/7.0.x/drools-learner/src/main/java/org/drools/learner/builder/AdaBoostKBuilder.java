@@ -6,12 +6,13 @@ import org.drools.learner.AttributeValueComparator;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.Instance;
 import org.drools.learner.InstanceList;
+import org.drools.learner.Memory;
 import org.drools.learner.Stats;
 import org.drools.learner.tools.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AdaBoostKBuilder extends DecisionTreeBuilder {
+public class AdaBoostKBuilder implements DecisionTreeBuilder  {
 
     private static final         double  TREE_SIZE_RATIO = 0.9;
     private static final         boolean WITH_REP        = false;
@@ -39,11 +40,12 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
     //	public void setTestRatio(double ratio) {
     //		testRatio = ratio;
     //	}
-    public void internalBuild(SolutionSet sol, Learner trainer) {
+    public SolutionSet build(Memory wm, Learner trainer) {
+        SolutionSet solSet =  new SolutionSet(wm);
 
-        trainer.setInputSpec(sol.getInputSpec());
+        trainer.setInputSpec(solSet.getInputSpec());
 
-        if (sol.getInputSpec().getTargets().size() > 1) {
+        if (solSet.getInputSpec().getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
             if (log.isErrorEnabled()) {
                 log.error("There is more than 1 target candidates");
@@ -56,7 +58,7 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
             }
         }
 
-        int N = sol.getTrainSet().getSize();
+        int N = solSet.getTrainSet().getSize();
         //_trainer.setTrainingDataSize(N); not only N data is fed. 
 
         int K = trainer.getTargetDomain().getCategoryCount();
@@ -71,7 +73,7 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
         double[][] weight = new double[M][K];
         for (int indexI = 0; indexI < M; indexI++) {
             for (int indexJ = 0; indexJ < K; indexJ++) {
-                Instance instI = sol.getTrainSet().getInstance(indexI);
+                Instance instI = solSet.getTrainSet().getInstance(indexI);
 
                 Object instanceTarget         = instI.getAttrValue(trainer.getTargetDomain().getFReferenceName());
                 Object instanceTargetCategory = trainer.getTargetDomain().getCategoryOf(instanceTarget);
@@ -99,14 +101,14 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
 
             // b. Train h_t(x) by minimizing loss function
 
-            InstanceList workingInstances = sol.getTrainSet().getInstances(bag);
+            InstanceList workingInstances = solSet.getTrainSet().getInstances(bag);
             DecisionTree dt               = trainer.trainTree(workingInstances);
             dt.setID(i);
 
             double           error = 0.0;
             SingleTreeTester t     = new SingleTreeTester(dt);
             for (int indexI = 0; indexI < M; indexI++) {
-                Integer result = t.test(sol.getTrainSet().getInstance(indexI));
+                Integer result = t.test(solSet.getTrainSet().getInstance(indexI));
                 if (result == Stats.INCORRECT) {
 
                     //error += distribution.get(index_i);
@@ -123,7 +125,7 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
                     double normFact = 0.0d;
                     // Update the weight matrix wij:
                     for (int indexI = 0; indexI < M; indexI++) {
-                        Integer result = t.test(sol.getTrainSet().getInstance(indexI));//TODO dont need to test two times
+                        Integer result = t.test(solSet.getTrainSet().getInstance(indexI));//TODO dont need to test two times
                         switch (result) {
                             case Stats.INCORRECT:
                                 //distribution.set(index_i, distribution.get(index_i) * Util.exp(alpha));
@@ -178,6 +180,8 @@ public class AdaBoostKBuilder extends DecisionTreeBuilder {
         //		if (best == null)
         //			best = forest.get(0);
         //this.c45 = dt;
+
+        return solSet;
     }
 
     public ArrayList<DecisionTree> getTrees() {

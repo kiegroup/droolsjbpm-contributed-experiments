@@ -41,6 +41,13 @@ public class Entropy implements Heuristic {
         multiplier = m;
     }
 
+    public void init(InstDistribution instsByTarget) {
+        this.instsByTarget = instsByTarget;
+        dataEval = calcInfo(instsByTarget);
+        sortedInstances = null;
+        domain = null;
+    }
+
     /*
      * for both
      */
@@ -95,13 +102,6 @@ public class Entropy implements Heuristic {
         }
         //log.debug("= " +sum);
         return sum;
-    }
-
-    public void init(InstDistribution instsByTarget) {
-        this.instsByTarget = instsByTarget;
-        dataEval = calcInfo(instsByTarget);
-        sortedInstances = null;
-        domain = null;
     }
 
     public double getEval(Domain attrDomain) {

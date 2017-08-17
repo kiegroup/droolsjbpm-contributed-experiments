@@ -75,7 +75,7 @@ public class BoostedTester extends Tester {
         }
 
         double ratio = 0.0;
-        if (classification.getNumIdeas() == 1) {
+        if (classification.getNumberOfSupportedCategories() == 1) {
             //100 %
             ratio = 1.0d;
             return winner;

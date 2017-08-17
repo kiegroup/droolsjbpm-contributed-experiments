@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 import org.drools.learner.DecisionTree;
 import org.drools.learner.InstanceList;
+import org.drools.learner.Memory;
 import org.drools.learner.Stats;
 import org.drools.learner.tools.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ForestBuilder extends DecisionTreeBuilder {
+public class ForestBuilder implements DecisionTreeBuilder {
 
     private static final int     FOREST_SIZE     = Util.NUM_TREES;
     private static final double  TREE_SIZE_RATIO = 0.9;
@@ -18,7 +19,7 @@ public class ForestBuilder extends DecisionTreeBuilder {
     //	private double trainRatio = Util.TRAINING_RATIO, testRatio = Util.TESTING_RATIO;
     protected static final transient Logger   log       = LoggerFactory.getLogger(ForestBuilder.class);
     private                      TreeAlgo algorithm = TreeAlgo.BAG; // default bagging, TODO boosting
-    private ArrayList<DecisionTree> forest;
+
     //private Learner trainer;
 
     private DecisionTreeMerger merger;
@@ -34,7 +35,8 @@ public class ForestBuilder extends DecisionTreeBuilder {
         //		test_evaluation = new ArrayList<Stats>(FOREST_SIZE);
     }
 
-    public void internalBuild(SolutionSet solSet, Learner trainer) {
+    public SolutionSet build(Memory wm, Learner trainer) {
+        SolutionSet solSet =  new SolutionSet(wm);
         trainer.setInputSpec(solSet.getInputSpec());
         if (solSet.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
@@ -60,7 +62,7 @@ public class ForestBuilder extends DecisionTreeBuilder {
          */
         trainer.setTrainingDataSize(treeCapacity * FOREST_SIZE);
 
-        forest = new ArrayList<DecisionTree>(FOREST_SIZE);
+        ArrayList<DecisionTree> forest = new ArrayList<DecisionTree>(FOREST_SIZE);
         int   i = 0;
         int[] bag;
         while (i++ < FOREST_SIZE) {
@@ -94,7 +96,7 @@ public class ForestBuilder extends DecisionTreeBuilder {
             //			test_evaluation.add(single_tester.test(sol_set.getTestSet()));
 
             // adding to the set of solutions
-            Tester   t     = getTester(dt);
+            Tester   t     = DecisionTreeBuilder.getTester(dt);
             Stats    train = t.test(workingInstances);
             Stats    test  = t.test(solSet.getTestSet());
             Solution one   = new Solution(dt, workingInstances);
@@ -119,7 +121,7 @@ public class ForestBuilder extends DecisionTreeBuilder {
         int bestId = solSet.getMinTestId();
         solSet.setBestSolutionId(bestId);
 
-        return;
+        return solSet;
     }
 
     public Tester getTester(ArrayList<DecisionTree> forest) {
@@ -130,11 +132,4 @@ public class ForestBuilder extends DecisionTreeBuilder {
         return algorithm; //TreeAlgo.BAG; // default
     }
 
-    public ArrayList<DecisionTree> getTrees() {
-        return forest;
-    }
-
-    public Solution getBestSolution() {
-        return solutions.getBestSolution();
-    }
 }

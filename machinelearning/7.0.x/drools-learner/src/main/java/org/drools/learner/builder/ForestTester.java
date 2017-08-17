@@ -66,7 +66,7 @@ public class ForestTester extends Tester {
         Object winner = classification.getWinnerClass();
 
         double ratio = 0.0;
-        if (classification.getNumIdeas() == 1) {
+        if (classification.getNumberOfSupportedCategories() == 1) {
             //100 %
             ratio = 1;
             return winner;

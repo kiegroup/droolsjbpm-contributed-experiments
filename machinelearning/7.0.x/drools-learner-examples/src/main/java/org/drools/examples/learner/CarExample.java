@@ -27,7 +27,7 @@ public class CarExample {
         List<Object> objects   = ObjectFactory.getObjects(obj_class, inputFile);
 
         // instantiate a learner for a specific object class and pass session to train
-        DecisionTree decision_tree;
+        DecisionTree decision_tree = null;
         int          ALGO = 121;
         /*
 		 * Single	1xx, Bag 	2xx, Boost 3xx
@@ -35,12 +35,6 @@ public class CarExample {
 		 * Entropy	xx1, Gain	xx2
 		 */
         switch (ALGO) {
-            case 111:
-                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
-                break;
-            case 112:
-                decision_tree = DecisionTreeFactory.createSingleID3G(objects, obj_class);
-                break;
             case 121:
                 decision_tree = DecisionTreeFactory.createSingleC45E(objects, obj_class);
                 break;
@@ -101,8 +95,6 @@ public class CarExample {
             case 342:
                 decision_tree = DecisionTreeFactory.createBoostC45GPrunStop(objects, obj_class);
                 break;
-            default:
-                decision_tree = DecisionTreeFactory.createSingleID3E(objects, obj_class);
         }
 
         String     drl      = RulePrinter.readRules(decision_tree);
