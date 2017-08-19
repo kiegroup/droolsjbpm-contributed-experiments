@@ -45,7 +45,7 @@ public class ClassVisitor {
         this.dataType = dataType;
     }
 
-    public void visit() throws FeatureNotSupported {
+    public void visit() {
         //		this.all_klasses = new HashMap<Class<?>,ClassStructure>();
         classRelation = new Stack<Field>();
         getStructuredSuperFields(classSchema.getObjectClass()/* , null */);

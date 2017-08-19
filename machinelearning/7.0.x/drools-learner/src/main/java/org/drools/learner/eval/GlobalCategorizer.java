@@ -19,7 +19,7 @@ public class GlobalCategorizer {
     protected static final transient Logger log = LoggerFactory.getLogger(GlobalCategorizer.class);
 
     public GlobalCategorizer(Memory mem) {
-        InstanceList classInstances = mem.getClassInstances();
+        InstanceList classInstances = mem.getInstances();
 
         if (classInstances.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");

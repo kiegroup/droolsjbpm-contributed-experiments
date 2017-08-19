@@ -25,7 +25,6 @@ public class DecisionTreePruner {
 
     public DecisionTreePruner() {
         //		best_error = 1.0;
-
         bestStatsEverFound = new PrunerStats(1.0);//proc.getAlphaEstimate());
         prunedSol = new ArrayList<Solution>();
     }
@@ -356,7 +355,9 @@ public class DecisionTreePruner {
 
         private void pruneOff(TreeNode candidateNode, int i) {
             System.out.println(treeSol.getTree().getTargetDomain() + " " + candidateNode.getLabel());
-            LeafNode bestClone = new LeafNode(treeSol.getTree().getTargetDomain(), candidateNode.getLabel());
+
+            // initially LeafNode father is null, it'll be set if it's later added as a child
+            LeafNode bestClone = new LeafNode(treeSol.getTree().getTargetDomain(), candidateNode.getLabel(), null, null, treeSol.getTree());
             bestClone.setRank(candidateNode.getRank());
             bestClone.setNumMatch(candidateNode.getNumMatch()); //num of matching instances to the leaf node
             bestClone.setNumClassification(candidateNode.getNumLabeled()); //num of (correctly) classified instances at the leaf node
@@ -373,8 +374,7 @@ public class DecisionTreePruner {
             if (fatherNode != null) {
                 for (Object key : fatherNode.getChildrenKeys()) {
                     if (fatherNode.getChild(key).equals(candidateNode)) {
-                        fatherNode.putNode(key, bestClone);
-                        bestClone.setFather(fatherNode);
+                        fatherNode.addChild(key, bestClone);
                         break;
                     }
                 }
@@ -397,8 +397,7 @@ public class DecisionTreePruner {
                 int numLeaves = originalNode.getNumLeaves();
                 for (Object key : father.getChildrenKeys()) {
                     if (father.getChild(key).equals(leafNode)) {
-                        father.putNode(key, originalNode);
-                        originalNode.setFather(father);
+                        father.addChild(key, originalNode);
                         updateLeaves(father, numLeaves - 1);
                         break;
                     }

@@ -207,25 +207,31 @@ public class ObjectFactory {
         List<Object> objRead = new ArrayList<Object>();
 
         /**/
-        File file = new File(filename);
-        if (!file.exists()) {
-            System.out.println("where is the file ? " + filename);
-            //System.exit(0);
-
-            file = new File("src/main/java/org/drools/examples/learner/" + filename);
-            if (!file.exists()) {
-                file = new File("drools-examples/drools-examples-drl/src/main/java/org/drools/examples/learner/" + filename);
-
-                System.out.println("where is still the file ? " + file);
-                if (!file.exists()) {
-                    System.out.println("where is still still the file ? " + file);
-                    System.exit(0);
-                }
-            }
-        }
-
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+//        File file = new File(filename);
+//        if (!file.exists()) {
+//            System.out.println("where is the file ? " + filename);
+//            //System.exit(0);
+//
+//            file = new File("src/main/java/org/drools/examples/learner/" + filename);
+//            if (!file.exists()) {
+//                file = new File("drools-examples/drools-examples-drl/src/main/java/org/drools/examples/learner/" + filename);
+//
+//                System.out.println("where is still the file ? " + file);
+//                if (!file.exists()) {
+//                    System.out.println("where is still still the file ? " + file);
+//                    System.exit(0);
+//                }
+//            }
+//        }
+//
+//        BufferedReader reader = new BufferedReader(new FileReader(file));
         /**/
+
+        InputStream is = this.getClass().getResourceAsStream("/" + filename);
+        if (is == null) {
+            System.out.println("where is the file ? " + filename);
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
         //		BufferedReader reader = new BufferedReader(new InputStreamReader(
         //				this.obj_clazz.getResourceAsStream(filename)));// "../data/"

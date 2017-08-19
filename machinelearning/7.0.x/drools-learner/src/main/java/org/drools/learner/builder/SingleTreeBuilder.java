@@ -27,23 +27,12 @@ public class SingleTreeBuilder implements DecisionTreeBuilder {
      */
     public SolutionSet build(Memory wm, Learner trainer) {
         SolutionSet solSet =  new SolutionSet(wm);
-        if (solSet.getTargets().size() > 1) {
-            //throw new FeatureNotSupported("There is more than 1 target candidates");
-            if (log.isErrorEnabled()) {
-                log.error("There is more than 1 target candidates");
-            }
 
-            System.exit(0);
-            // TODO put the feature not supported exception || implement it
-        }
-
-        trainer.setInputSpec(solSet.getInputSpec());
+        trainer.setInputData(solSet.getInputData());
         trainer.setTrainingDataSize(solSet.getTrainSet().getSize());
-        DecisionTree oneTree = trainer.instantiateTree();
-        if (log.isDebugEnabled()) {
-            log.debug("\n" + "Training a tree" + "\n");
-        }
-        trainer.trainTree(oneTree, solSet.getTrainSet());
+
+        log.debug("Training a tree");
+        DecisionTree oneTree = trainer.trainTree(solSet.getTrainSet());
         oneTree.setID(0);
 
         Tester   t     = DecisionTreeBuilder.getTester(oneTree);

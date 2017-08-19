@@ -43,9 +43,9 @@ public class AdaBoostKBuilder implements DecisionTreeBuilder  {
     public SolutionSet build(Memory wm, Learner trainer) {
         SolutionSet solSet =  new SolutionSet(wm);
 
-        trainer.setInputSpec(solSet.getInputSpec());
+        trainer.setInputData(solSet.getInputData());
 
-        if (solSet.getInputSpec().getTargets().size() > 1) {
+        if (solSet.getInputData().getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
             if (log.isErrorEnabled()) {
                 log.error("There is more than 1 target candidates");

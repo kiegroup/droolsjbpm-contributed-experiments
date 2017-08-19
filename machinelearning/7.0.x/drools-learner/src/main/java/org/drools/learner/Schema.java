@@ -38,7 +38,7 @@ public class Schema {
     }
 
     public static Schema createSchemaStructure(Class<?> clazz,
-                                               DataType dataType) throws Exception {
+                                               DataType dataType) {
         Schema schema = new Schema(clazz);
         //�ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
 
@@ -51,10 +51,10 @@ public class Schema {
          * target specified 3- more than one target is specified
          */
         if (!visitor.isTargetFound()) {
-            throw new Exception("Target Not Found, please annotate the target field");
+            throw new RuntimeException("Target Not Found, please annotate the target field");
         } else if (schema.getTargets().size() > 1) {
             //System.out.println("More ");
-            throw new FeatureNotSupported("More than one target specified, feature not supported yet ");
+            throw new RuntimeException("More than one target specified, feature not supported yet ");
         }
         return schema;
     }

@@ -56,20 +56,6 @@ public class DecisionTree {
         errorStats = new TreeStats(0.0d, 0.0d);
     }
 
-    public DecisionTree(DecisionTree parentTree, Domain exceptDomain) {
-        //this.domainSet = new Hashtable<String, Domain<?>>();
-        this.objSchema = parentTree.getSchema();
-        this.target = parentTree.getTargetDomain();
-        this.errorStats = parentTree.errorStats;
-
-        this.attrsToClassify = new ArrayList<Domain>(parentTree.getAttrDomains().size() - 1);
-        for (Domain attrDomain : parentTree.getAttrDomains()) {
-            if (attrDomain.isNotJustSelected(exceptDomain)) {
-                this.attrsToClassify.add(attrDomain);
-            }
-        }
-    }
-
     private Schema getSchema() {
         return objSchema;
     }

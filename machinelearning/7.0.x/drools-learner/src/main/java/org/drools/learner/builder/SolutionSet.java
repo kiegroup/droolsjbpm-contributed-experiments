@@ -23,11 +23,11 @@ public class SolutionSet {
     }
 
     public Collection<String> getTargets() {
-        return mem.getClassInstances().getTargets();
+        return mem.getInstances().getTargets();
     }
 
-    public InstanceList getInputSpec() {
-        return mem.getClassInstances();
+    public InstanceList getInputData() {
+        return mem.getInstances();
     }
 
     //	public InstanceList getValidationSet

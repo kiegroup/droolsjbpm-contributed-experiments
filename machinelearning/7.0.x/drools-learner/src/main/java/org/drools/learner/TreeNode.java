@@ -23,10 +23,15 @@ public class TreeNode {
 
     private int depth;
 
-    public TreeNode(Domain domain) {
-        this.father = null;
+    public TreeNode(Domain domain, Object category, TreeNode father, DecisionTree tree) {
+        this.father = father;
         this.domain = domain;
         this.children = new Hashtable<Object, TreeNode>();
+        if (father != null) {
+            father.addChild(category, this);
+        } else {
+            tree.setRoot(this);
+        }
     }
 
     public int getDepth() {
@@ -57,8 +62,9 @@ public class TreeNode {
         return domain;
     }
 
-    public void putNode(Object attributeCategory, TreeNode node) {
-        children.put(attributeCategory, node);
+    public void addChild(Object key, TreeNode child) {
+        child.father = this;
+        children.put(key, child);
     }
 
     public Collection<Object> getChildrenKeys() {
@@ -103,10 +109,6 @@ public class TreeNode {
 
     public TreeNode getFather() {
         return father;
-    }
-
-    public void setFather(TreeNode currentNode) {
-        father = currentNode;
     }
 
     public Object voteFor(Instance i) {

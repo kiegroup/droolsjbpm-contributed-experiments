@@ -7,10 +7,10 @@ public class LeafNode extends TreeNode {
     private Object targetCategory;
     private double numIntancesClassified;
 
-    public LeafNode(Domain targetDomain, Object value) {
-        super(targetDomain);
+    public LeafNode(Domain targetDomain, Object value, Object incomingCategory, TreeNode father, DecisionTree tree) {
+        super(targetDomain, incomingCategory, father, tree);
         this.targetCategory = value;
-        numIntancesClassified = 0;
+        this.numIntancesClassified = 0;
     }
 
     public void putNode(Object attributeCategory, TreeNode node) {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.DecisionTreePruner;
 import org.drools.learner.Memory;
+import org.drools.learner.MemoryImpl;
 import org.drools.learner.Stats;
 import org.drools.learner.StatsPrinter;
 import org.drools.learner.builder.DecisionTreeBuilder.TreeAlgo;
@@ -154,13 +155,10 @@ public class DecisionTreeFactory {
 
         /* create the memory */
         Memory mem = Memory.createFromObjects(objects, objClass, data);
-        //		mem.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
-        //		mem.setTestRatio(Util.DEFAULT_TESTING_RATIO);
-        mem.processTestSet();
 
         for (StoppingCriterion sc : criteria) {
             if (sc instanceof MaximumDepth) {
-                int maxDepth = (int) ((mem.getClassInstances().getSchema().getAttrNames().size() - 1) * 0.70);
+                int maxDepth = (int) ((mem.getInstances().getSchema().getAttrNames().size() - 1) * 0.70);
                 ((MaximumDepth) sc).setDepth(maxDepth);
             }
             learner.addStoppingCriteria(sc);
@@ -253,13 +251,10 @@ public class DecisionTreeFactory {
 
         /* create the memory */
         Memory mem = Memory.createFromObjects(objects, objClass, data);
-        mem.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
-        mem.setTestRatio(Util.DEFAULT_TESTING_RATIO);
-        mem.processTestSet();
 
         for (StoppingCriterion sc : criteria) {
             if (sc instanceof MaximumDepth) {
-                int maxDepth = (int) ((mem.getClassInstances().getSchema().getAttrNames().size() - 1) * 0.70);
+                int maxDepth = (int) ((mem.getInstances().getSchema().getAttrNames().size() - 1) * 0.70);
                 ((MaximumDepth) sc).setDepth(maxDepth);
             }
             learner.addStoppingCriteria(sc);
@@ -371,13 +366,10 @@ public class DecisionTreeFactory {
 
         /* create the memory */
         Memory mem = Memory.createFromObjects(objects, objClass, data);
-        mem.setTrainRatio(Util.DEFAULT_TRAINING_RATIO);
-        mem.setTestRatio(Util.DEFAULT_TESTING_RATIO);
-        mem.processTestSet();
 
         for (StoppingCriterion sc : criteria) {
             if (sc instanceof MaximumDepth) {
-                int maxDepth = (int) ((mem.getClassInstances().getSchema().getAttrNames().size() - 1) * 0.70);
+                int maxDepth = (int) ((mem.getInstances().getSchema().getAttrNames().size() - 1) * 0.70);
                 ((MaximumDepth) sc).setDepth(maxDepth);
             }
             learner.addStoppingCriteria(sc);

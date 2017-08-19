@@ -191,6 +191,25 @@ public class Domain {
         return objKlass.hashCode() ^ fName.hashCode() ^ fCategories.hashCode(); // TODO
     }
 
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Domain domain = (Domain) o;
+
+        if (!fCategories.equals(domain.fCategories)) {
+            return false;
+        }
+        if (!fName.equals(domain.fName)) {
+            return false;
+        }
+        return objKlass.equals(domain.objKlass);
+    }
+
     public String toString() {
         StringBuffer sb = new StringBuffer(fName + "");
         //		for (Object v: fValues) {

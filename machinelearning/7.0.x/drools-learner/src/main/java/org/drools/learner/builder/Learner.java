@@ -10,10 +10,6 @@ import org.drools.learner.eval.stopping.StoppingCriterion;
 public interface Learner {
     DataType   DEFAULT_DATA   = DataType.PRIMITIVE;
 
-    DecisionTree instantiateTree();
-
-    void trainTree(DecisionTree dt, InstanceList workingInstances);
-
     DecisionTree trainTree(InstanceList workingInstances);
 
     Domain getTargetDomain();
@@ -30,7 +26,7 @@ public interface Learner {
 
     void setTrainingDataSize(int num);
 
-    void setInputSpec(InstanceList classInstances);
+    void setInputData(InstanceList inputData);
 
     enum DataType {
         PRIMITIVE, STRUCTURED, COLLECTION
