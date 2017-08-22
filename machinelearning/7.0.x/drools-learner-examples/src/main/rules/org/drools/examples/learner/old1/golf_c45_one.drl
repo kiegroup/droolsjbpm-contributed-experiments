@@ -1,6 +1,6 @@
 package org.drools.examples.learner;
 
-import org.drools.examples.learner.Golf
+import org.drools.examples.learner.models.Golf
 
 rule "#1 decision= Play  classifying 4.0 num of facts with rank:Infinity" 
 	 when

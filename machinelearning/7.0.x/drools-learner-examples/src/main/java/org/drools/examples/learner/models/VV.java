@@ -1,4 +1,4 @@
-package org.drools.examples.learner;
+package org.drools.examples.learner.models;
 
 public class VV extends Restaurant {
 

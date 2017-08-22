@@ -1,6 +1,6 @@
 package org.drools.examples.learner;
 
-import org.drools.examples.learner.Car
+import org.drools.examples.learner.models.Car
 
 rule "#132 target= unacc  classifying 576.0 num of facts with rank:0.3333333333333333" 
 	 when

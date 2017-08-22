@@ -1,4 +1,4 @@
-package org.drools.learner.tools;
+package org.drools.examples.learner.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,10 +14,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.drools.learner.tools.FieldAnnotation;
+import org.drools.learner.tools.Util;
+
 public class ObjectFactory {
 
-    private Class<?>                 objClazz;
-    private ArrayList<Field>         clazzFields;
+    private Class<?> objClazz;
+    private ArrayList<Field> clazzFields;
     private HashMap<String, Integer> fieldSequences;
 
     private int MAX_NUM = 30012;
@@ -60,15 +63,14 @@ public class ObjectFactory {
         return null;
     }
 
-    private static HashMap<String, Integer> getFieldReadingSeqs(Class<? extends Object> classObj,
-                                                                ArrayList<Field> elementFields) {
+    private static HashMap<String, Integer> getFieldReadingSeqs(Class<? extends Object> classObj, ArrayList<Field> elementFields) {
 
         HashMap<String, Integer> readingSeqs = new HashMap<String, Integer>(elementFields.size());
         for (Field f : elementFields) {
             String fName = f.getName();
 
-            Annotation[]    annotations = f.getAnnotations();
-            FieldAnnotation spec        = null;
+            Annotation[] annotations = f.getAnnotations();
+            FieldAnnotation spec = null;
             for (Annotation a : annotations) {
                 if (a instanceof FieldAnnotation) {
                     spec = (FieldAnnotation) a; // here it is !!!
@@ -159,25 +161,25 @@ public class ObjectFactory {
 
         List<Object> objRead = new ArrayList<Object>();
 
-//        /**/
-//        File file = new File( filename );
-//        if ( !file.exists() ) {
-//            System.out.println( "where is the file ? " + filename );
-//            //System.exit(0);
-//
-//            file = new File( "src/main/java/org/drools/examples/learner/" + filename );
-//            if ( !file.exists() ) {
-//                file = new File( "drools-examples/drools-examples-drl/src/main/java/org/drools/examples/learner/" + filename );
-//
-//                System.out.println( "where is still the file ? " + file );
-//                if ( !file.exists() ) {
-//                    System.out.println( "where is still still the file ? " + file );
-//                    System.exit( 0 );
-//                }
-//            }
-//        }
-//
-//        BufferedReader reader = new BufferedReader( new FileReader( file ) );
+        //        /**/
+        //        File file = new File( filename );
+        //        if ( !file.exists() ) {
+        //            System.out.println( "where is the file ? " + filename );
+        //            //System.exit(0);
+        //
+        //            file = new File( "src/main/java/org/drools/examples/learner/" + filename );
+        //            if ( !file.exists() ) {
+        //                file = new File( "drools-examples/drools-examples-drl/src/main/java/org/drools/examples/learner/" + filename );
+        //
+        //                System.out.println( "where is still the file ? " + file );
+        //                if ( !file.exists() ) {
+        //                    System.out.println( "where is still still the file ? " + file );
+        //                    System.exit( 0 );
+        //                }
+        //            }
+        //        }
+        //
+        //        BufferedReader reader = new BufferedReader( new FileReader( file ) );
         InputStream is = this.getClass().getResourceAsStream("/" + filename);
         if (is == null) {
             System.out.println("where is the file ? " + filename);
@@ -189,7 +191,7 @@ public class ObjectFactory {
         //		BufferedReader reader = new BufferedReader(new InputStreamReader(
         //				this.obj_clazz.getResourceAsStream(filename)));// "../data/"
         String line;
-        int    num = 0;
+        int num = 0;
         while ((line = reader.readLine()) != null && num < MAX_NUM) {
             line = line.trim();
             if (line.length() == 0) {
@@ -242,11 +244,10 @@ public class ObjectFactory {
                 break;
             }
             if (line.endsWith(".")) {
-                line = line.substring(0,
-                                      line.length() - 1);
+                line = line.substring(0, line.length() - 1);
             }
             List<String> fieldValues = Arrays.asList(line.split(separator));
-            Object       element     = this.readStructured(this.objClazz, fieldValues);
+            Object element = this.readStructured(this.objClazz, fieldValues);
             //System.out.println("New object "+ element);
             objRead.add(element);
         }
@@ -254,7 +255,7 @@ public class ObjectFactory {
     }
 
     private Object readStructured(Class<?> objClazz, List<String> fieldValues) throws Exception {
-        Object           element     = null;
+        Object element = null;
         ArrayList<Field> clazzFields = new ArrayList<Field>();
         Util.getSuperFields(objClazz, clazzFields);
         HashMap<String, Integer> fieldSequences = getFieldReadingSeqs(objClazz, clazzFields);
@@ -263,7 +264,7 @@ public class ObjectFactory {
 
             Method[] elementMethods = objClazz.getDeclaredMethods();
             for (Method m : elementMethods) {
-                String     mName         = m.getName();
+                String mName = m.getName();
                 Class<?>[] paramTypeName = m.getParameterTypes();
                 if (Util.isSetter(mName)) {
                     Object fieldValue = null;
@@ -332,7 +333,7 @@ public class ObjectFactory {
             Method[] elementMethods = this.objClazz.getDeclaredMethods();
 
             for (Method m : elementMethods) {
-                String     mName         = m.getName();
+                String mName = m.getName();
                 Class<?>[] paramTypeName = m.getParameterTypes();
                 if (Util.isSetter(mName) && Util.isSimpleMethod(paramTypeName)) {
                     String basicFieldName = Util.getFieldName(mName);
@@ -352,7 +353,7 @@ public class ObjectFactory {
                         throw new Exception("Field(" + basicFieldName + ") could not be found for the class(" + this.objClazz + ")");
                     } else {
                         String fieldString = fieldValues.get(this.fieldSequences.get(field.getName()));
-                        Object fieldValue  = readString(field, fieldString.trim());
+                        Object fieldValue = readString(field, fieldString.trim());
                         try {
                             m.invoke(element, fieldValue);
                         } catch (IllegalArgumentException e) {
