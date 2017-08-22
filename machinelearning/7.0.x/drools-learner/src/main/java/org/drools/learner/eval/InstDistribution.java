@@ -19,7 +19,6 @@ public class InstDistribution extends ClassDistribution {
 
     protected static final transient Logger log = LoggerFactory.getLogger(InstDistribution.class);
 
-    private String attSum = Util.sum();
     private HashMap<Object, List<Instance>> instanceByValue;
 
     //private HashMap<Object, List<Instance>>
@@ -35,26 +34,22 @@ public class InstDistribution extends ClassDistribution {
         }
     }
 
-    public void calculateDistribution(List<Instance> instances) {
-        double dataSize = 0.0;
+    public InstDistribution(Domain targetDomain, List<Instance> instances) {
+        this(targetDomain);
+
         String tName    = super.getClassDomain().getFReferenceName();
         if (log.isDebugEnabled()) {
-            log.debug("tName : " + tName + "\n");
+            log.debug("tName : {}", tName);
         }
         for (Instance inst : instances) {
             if (log.isDebugEnabled()) {
-                log.debug("inst : " + inst + "\n");
+                log.debug("inst : {}", inst);
             }
-            dataSize += inst.getWeight();
 
             Object targetKey = inst.getAttrValue(tName);
-            super.change(targetKey, inst.getWeight()); // add inst.getWeight() vote for the target value of the instance : target_key
-            //super.change(attr_sum, inst.getWeight());		// ?????
+            addSupporter(targetKey, inst); // add inst.getWeight() vote for the target value of the instance : target_key
 
-            this.addSupporter(targetKey, inst);
         }
-        //super.change(attr_sum, data_size);	// TODO should i write special function for changing the sum 
-        super.setSum(dataSize);
     }
 
     public List<Instance> getSupportersFor(Object category) {
@@ -63,6 +58,7 @@ public class InstDistribution extends ClassDistribution {
 
     private void addSupporter(Object targetCategory, Instance inst) {
         this.instanceByValue.get(targetCategory).add(inst);
+        super.change(targetCategory, inst.getWeight());
     }
 
     private HashMap<Object, InstDistribution> instantiateLists(Domain splitDomain) {
@@ -76,8 +72,8 @@ public class InstDistribution extends ClassDistribution {
     }
 
     /* spliting during the training for C45TreeIterator */
-    public HashMap<Object, InstDistribution> split(InformationContainer splitDomainEval) throws FeatureNotSupported {
-        Domain                              splitDomain = splitDomainEval.domain;
+    public HashMap<Object, InstDistribution> split(InformationContainer splitDomainEval) {
+        Domain                            splitDomain = splitDomainEval.domain;
         HashMap<Object, InstDistribution> instLists   = this.instantiateLists(splitDomain);
 
         if (splitDomain.isCategorical()) {
@@ -89,19 +85,15 @@ public class InstDistribution extends ClassDistribution {
                 //Collections.sort(facts, choosenDomain.factComparator()); /* hack*/
                 this.splitFromQuantitative(splitDomainEval.sortedData, qSplitDomain, instLists);
             } else {
-                throw new FeatureNotSupported("Can not split a quatitative domain if it's object type is not QuantitativeDomain " + splitDomain);
+                throw new RuntimeException("Can not split a quatitative domain if it's object type is not QuantitativeDomain " + splitDomain);
             }
         }
 
         return instLists;
     }
 
-    public HashMap<Object, InstDistribution> splitFromCategorical(Domain splitDomain,
-                                                                    HashMap<Object, InstDistribution> instLists) {
-        if (instLists == null) {
-            instLists = this.instantiateLists(splitDomain);
-        }
-
+    private HashMap<Object, InstDistribution> splitFromCategorical(Domain splitDomain,
+                                                                  HashMap<Object, InstDistribution> instLists) {
         Domain targetDomain = super.getClassDomain();
         String attrName     = splitDomain.getFReferenceName();
         for (int category = 0; category < targetDomain.getCategoryCount(); category++) {
@@ -110,10 +102,7 @@ public class InstDistribution extends ClassDistribution {
 
             for (Instance inst : this.getSupportersFor(targetCategory)) {
                 Object value = inst.getAttrValue(attrName);
-
-                instLists.get(value).change(targetCategory, inst.getWeight()); // add one for vote for the target value : target_key
-                instLists.get(value).change(attSum, inst.getWeight());
-                instLists.get(value).addSupporter(targetCategory, inst);
+                instLists.get(value).addSupporter(targetCategory, inst);  // add one for vote for the target value : target_key
             }
         }
         return instLists;
@@ -134,25 +123,17 @@ public class InstDistribution extends ClassDistribution {
             Object instAttrCategory = attributeDomain.getSplit(index).getValue(); //splitValues.get(index);
             //System.out.println("FactProcessor.splitFacts_cont() new category: "+ category);
 
-            try {
+            //flog.debug("FactProcessor.splitFacts_cont() new category: "+ inst_attr_category+
+            //		" ("+start_point+","+integer_index+")");
 
-                //flog.debug("FactProcessor.splitFacts_cont() new category: "+ inst_attr_category+
-                //		" ("+start_point+","+integer_index+")");
+            List<Instance> dataAtCategory = data.subList(startPoint, integerIndex + 1);
+            for (Instance inst : dataAtCategory) {
 
-                List<Instance> dataAtCategory = data.subList(startPoint, integerIndex + 1);
-                for (Instance inst : dataAtCategory) {
+                Object targetCategory = inst.getAttrValue(targetName);
 
-                    Object targetCategory = inst.getAttrValue(targetName);
-
-                    instLists.get(instAttrCategory).change(targetCategory, inst.getWeight()); // add one for vote for the target value : target_key
-                    instLists.get(instAttrCategory).change(attSum, inst.getWeight());
-                    instLists.get(instAttrCategory).addSupporter(targetCategory, inst);
-                }
-                startPoint = integerIndex + 1;
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                instLists.get(instAttrCategory).addSupporter(targetCategory, inst); // add one for vote for the target value : target_key
             }
+            startPoint = integerIndex + 1;
         }
     }
 

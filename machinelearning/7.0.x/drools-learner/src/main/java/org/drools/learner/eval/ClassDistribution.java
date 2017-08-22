@@ -11,8 +11,8 @@ public class ClassDistribution {
 
     protected Domain                    targetAttr;
     private   Hashtable<Object, Double> quantityByClass;
+    private   double                     sum;
 
-    private String sumKey = Util.sum();
     private int    numberOfSupportedCaegories;
     private Object winnerCategory;
 
@@ -24,8 +24,6 @@ public class ClassDistribution {
             Object category = this.targetAttr.getCategory(c);
             quantityByClass.put(category, 0.0d);
         }
-
-        quantityByClass.put(sumKey, 0.0d);
 
         numberOfSupportedCaegories = 0;
     }
@@ -40,11 +38,11 @@ public class ClassDistribution {
     }
 
     public double getSum() {
-        return quantityByClass.get(sumKey);
+        return sum;
     }
 
     public void setSum(double sum) {
-        quantityByClass.put(sumKey, sum);
+        this.sum = sum;
     }
 
     public Domain getClassDomain() {
@@ -52,14 +50,10 @@ public class ClassDistribution {
     }
 
     public void change(Object targetCategory, double i) {
-        /*
-         * TODO ???? if (target_category == sum_key) return;
-         */
         double num1 = quantityByClass.get(targetCategory);
         num1 += i;
         quantityByClass.put(targetCategory, num1);
-
-        //quantity_by_class.put(target_category, quantity_by_class.get(target_category)+i);
+        sum = sum + i;
     }
 
     public double getVoteFor(Object targetCategory) {
@@ -120,6 +114,6 @@ public class ClassDistribution {
             Object category = this.targetAttr.getCategory(c);
             this.quantityByClass.put(category, targetDist.getVoteFor(category));
         }
-        this.quantityByClass.put(sumKey, targetDist.getSum());
+        sum =  targetDist.getSum();
     }
 }

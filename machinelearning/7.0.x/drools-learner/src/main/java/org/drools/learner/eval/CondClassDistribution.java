@@ -1,23 +1,22 @@
 package org.drools.learner.eval;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.learner.Domain;
 import org.drools.learner.tools.Util;
 
 public class CondClassDistribution {
 
-    private String sumKey = Util.sum();
-
-    private Domain                               condAttr; // domain of the attr we distribute the instances conditionally
-    private Hashtable<Object, ClassDistribution> condQuantityByClass;
+    private Domain                         condAttr; // domain of the attr we distribute the instances conditionally
+    private Map<Object, ClassDistribution> condQuantityByClass;
 
     private double totalNum;
 
     public CondClassDistribution(Domain attributeDomain, Domain targetDomain) {
         this.condAttr = attributeDomain;
         //List<?> attributeValues = this.domain.getValues();
-        condQuantityByClass = new Hashtable<Object, ClassDistribution>(attributeDomain.getCategoryCount());
+        condQuantityByClass = new HashMap<Object, ClassDistribution>(attributeDomain.getCategoryCount());
 
         for (int i = 0; i < attributeDomain.getCategoryCount(); i++) {
             // @mireynol - FWIW, this variable was formerly named attr_category 
@@ -28,7 +27,7 @@ public class CondClassDistribution {
 
     public CondClassDistribution(CondClassDistribution copy) {
         this.condAttr = copy.getAttrDomain();
-        this.condQuantityByClass = new Hashtable<Object, ClassDistribution>(copy.getNumCondClasses());
+        this.condQuantityByClass = new HashMap<Object, ClassDistribution>(copy.getNumCondClasses());
 
         for (int cIdx = 0; cIdx < this.condAttr.getCategoryCount(); cIdx++) {
             Object attrCategory = this.condAttr.getCategory(cIdx);
@@ -69,7 +68,6 @@ public class CondClassDistribution {
         //		System.out.println(" the nums: "+cond_quantity_by_class.get(attr_category));
 
         condQuantityByClass.get(attrCategory).change(targetClass, i);
-        condQuantityByClass.get(attrCategory).change(sumKey, i);
     }
 
     public ClassDistribution getDistributionOf(Object attrValue) {

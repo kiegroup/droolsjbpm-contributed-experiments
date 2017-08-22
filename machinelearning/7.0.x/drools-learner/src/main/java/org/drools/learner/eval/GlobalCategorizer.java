@@ -42,8 +42,7 @@ public class GlobalCategorizer {
 
         //log.debug("Num of attributes: "+ dt.getAttrDomains().size());
 
-        InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain());
-        statsByClass.calculateDistribution(workingInstances.getInstances());
+        InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain(), workingInstances.getInstances());
         dt.FACTS_READ += workingInstances.getSize();//
 
         categorize(statsByClass, dt.getAttrDomains());
@@ -79,32 +78,27 @@ public class GlobalCategorizer {
                 categorizedEval.sortedData = visitor.getSortedInstances();
 
                 HashMap<Object, InstDistribution> filteredStats = null;
-                try {
-                    filteredStats = instsByTarget.split(categorizedEval);
+                filteredStats = instsByTarget.split(categorizedEval);
 
                     /*
                      * need to create a fake domain from trial domain with
                      * possible number of values =
                      * trialDomain.trialDomain.getNumIndices();
                      */
-                    trialDomain.setFName(attrDomain.getFReferenceName() + "_fake"); // TODO how do we know whose fake copy is that domain
-                    trialDomain.setCategorical(true);
+                trialDomain.setFName(attrDomain.getFReferenceName() + "_fake"); // TODO how do we know whose fake copy is that domain
+                trialDomain.setCategorical(true);
 
-                    for (Object category : filteredStats.keySet()) {
-                        InstDistribution categoryDist = filteredStats.get(category);
+                for (Object category : filteredStats.keySet()) {
+                    InstDistribution categoryDist = filteredStats.get(category);
 
-                        for (int targetCat = 0; targetCat < instsByTarget.getClassDomain().getCategoryCount(); targetCat++) {
-                            Object targetCategory = instsByTarget.getClassDomain().getCategory(targetCat);
-                            for (Instance i : categoryDist.getSupportersFor(targetCategory)) {
-                                i.setAttr(attrDomain.getFReferenceName() + "_fake", category);
-                            }
+                    for (int targetCat = 0; targetCat < instsByTarget.getClassDomain().getCategoryCount(); targetCat++) {
+                        Object targetCategory = instsByTarget.getClassDomain().getCategory(targetCat);
+                        for (Instance i : categoryDist.getSupportersFor(targetCategory)) {
+                            i.setAttr(attrDomain.getFReferenceName() + "_fake", category);
                         }
                     }
-                    attrDomains.add(trialDomain);
-                } catch (FeatureNotSupported e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
+                attrDomains.add(trialDomain);
             }
         }
         return;
