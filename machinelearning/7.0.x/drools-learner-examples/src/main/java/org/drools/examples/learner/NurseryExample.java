@@ -2,135 +2,43 @@ package org.drools.examples.learner;
 
 import java.util.List;
 
-import org.drools.learner.DecisionTree;
-import org.drools.learner.builder.DecisionTreeFactory;
-import org.drools.learner.tools.ObjectFactory;
-import org.drools.learner.tools.RulePrinter;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
+import org.drools.examples.learner.models.Car;
+import org.drools.examples.learner.models.Nursery;
+import org.drools.examples.learner.utils.CsvFileReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NurseryExample {
 
-    public static final void main(final String[] args) throws Exception {
-//		// my rule base
-//		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-//
-//		final StatefulSession session = ruleBase.newStatefulSession();	// LearningSession
-//
-//		// what are these listeners???
-////		session.addEventListener( new DebugAgendaEventListener() );
-////		session.addEventListener( new DebugWorkingMemoryEventListener() );
-//
-//		final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-//		logger.setFileName( "log/nursery" );
-//
-//		String inputFile = new String("data/nursery/nursery.data.txt");
-//		Class<?> obj_class = Nursery.class;
-//		List<Object> facts = ObjectFactory.getObjects(obj_class, inputFile);
-//		for (Object r : facts) {
-//			session.insert(r);
-//		}
+    private static final Logger LOG = LoggerFactory.getLogger( NurseryExample.class );
+    private static final boolean PRINT_DRL = true;
 
-        String       inputFile = new String("data/nursery/nursery.data.txt");
-        Class<?>     obj_class = Nursery.class;
-        List<Object> objects   = ObjectFactory.getObjects(obj_class, inputFile);
+    public static void main( String... args ) throws Exception {
+        String inputFile = System.getProperty( "user.dir" ) + "/src/main/resources/data/nursery/nursery.data.csv";
+        LOG.info( "parsing training data file " + inputFile );
+        List<Object> nursureyData = CsvFileReader.readObjects( inputFile, csv -> {
+            Nursery nursery = new Nursery();
+            nursery.setParents( csv.get( "parents" ).trim() );
+            nursery.setHas_nurs( csv.get( "has_nurs" ).trim() );
+            nursery.setChildren( csv.get( "children" ).trim() );
+            nursery.setForm( csv.get( "form" ).trim() );
+            nursery.setHousing( csv.get( "housing" ).trim() );
+            nursery.setFinance( csv.get( "finance" ).trim() );
+            nursery.setSocial( csv.get( "social" ).trim() );
+            nursery.setHealth( csv.get( "health" ).trim() );
+            nursery.setClassnursery( csv.get( "classnursery" ) );
+            return nursery;
+        } );
 
-        // instantiate a learner for a specific object class and pass session to train
-        DecisionTree decision_tree = null;
-        int          ALGO = 121;
-        /*
-		 * Single	1xx, Bag 	2xx, Boost 3xx
-		 * ID3 		x1x, C45 	x2x
-		 * Entropy	xx1, Gain	xx2
-		 */
-        switch (ALGO) {
-            case 121:
-                decision_tree = DecisionTreeFactory.createSingleC45E(objects, obj_class);
-                break;
-            case 122:
-                decision_tree = DecisionTreeFactory.createSingleC45G(objects, obj_class);
-                break;
-            case 123:
-                decision_tree = DecisionTreeFactory.createSingleC45EWorst(objects, obj_class);
-                break;
-            case 124:
-                decision_tree = DecisionTreeFactory.createSingleC45Random(objects, obj_class);
-                break;
-            case 131:
-                decision_tree = DecisionTreeFactory.createSingleC45EStop(objects, obj_class);
-                break;
-            case 132:
-                decision_tree = DecisionTreeFactory.createSingleC45GStop(objects, obj_class);
-                break;
-            case 141:
-                decision_tree = DecisionTreeFactory.createSingleC45EPrunStop(objects, obj_class);
-                break;
-            case 142:
-                decision_tree = DecisionTreeFactory.createSingleC45GPrunStop(objects, obj_class);
-                break;
-            case 221:
-                decision_tree = DecisionTreeFactory.createBagC45E(objects, obj_class);
-                break;
-            case 222:
-                decision_tree = DecisionTreeFactory.createBagC45G(objects, obj_class);
-                break;
-            case 231:
-                decision_tree = DecisionTreeFactory.createBagC45EStop(objects, obj_class);
-                break;
-            case 232:
-                decision_tree = DecisionTreeFactory.createBagC45GStop(objects, obj_class);
-                break;
-            case 241:
-                decision_tree = DecisionTreeFactory.createBagC45EPrunStop(objects, obj_class);
-                break;
-            case 242:
-                decision_tree = DecisionTreeFactory.createBagC45GPrunStop(objects, obj_class);
-                break;
-            case 321:
-                decision_tree = DecisionTreeFactory.createBoostC45E(objects, obj_class);
-                break;
-            case 322:
-                decision_tree = DecisionTreeFactory.createBoostC45G(objects, obj_class);
-                break;
-            case 331:
-                decision_tree = DecisionTreeFactory.createBoostC45EStop(objects, obj_class);
-                break;
-            case 332:
-                decision_tree = DecisionTreeFactory.createBoostC45GStop(objects, obj_class);
-                break;
-            case 341:
-                decision_tree = DecisionTreeFactory.createBoostC45EPrunStop(objects, obj_class);
-                break;
-            case 342:
-                decision_tree = DecisionTreeFactory.createBoostC45GPrunStop(objects, obj_class);
-                break;
+        LOG.info( "beginning training example" );
+        DroolsLearnerExample nurseryExample = new DroolsLearnerExample( DroolsLearnerExample.SINGLE_C45E );
+        nurseryExample.runTraningExample( Nursery.class, nursureyData );
+
+        if ( PRINT_DRL ) {
+            System.out.println( nurseryExample.getDrl() );
         }
 
-        String     drl      = RulePrinter.readRules(decision_tree);
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
-        ksession.fireAllRules();
-
-//		final PackageBuilder builder = new PackageBuilder();
-//		//this wil generate the rules, then parse and compile in one step
-//		builder.addPackageFromTree( decision_tree );
-//		ruleBase.addPackage( builder.getPackage() );
-//		//System.exit(0);
-//		/*
-//			final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
-//			//get the compiled package (which is serializable)
-//		    final Package pkg = builder.getPackage();
-//		    //add the package to a rulebase (deploy the rule package).
-//		    ruleBase.addPackage( pkg );
-//		 */
-//
-////		session.fireAllRules();
-//
-//		ReteStatistics stats = new ReteStatistics(ruleBase);
-//	    stats.calculateNumberOfNodes();
-//	    stats.print(Util.DRL_DIRECTORY + decision_tree.getSignature());
-//		logger.writeToDisk();
-//
-//		session.dispose();
+        LOG.info( "executing test data set against genearted rules" );
+        nurseryExample.runGeneratedRules( nursureyData );
     }
 }

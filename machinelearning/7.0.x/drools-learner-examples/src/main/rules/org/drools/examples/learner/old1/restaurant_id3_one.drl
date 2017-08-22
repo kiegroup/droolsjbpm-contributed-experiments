@@ -1,6 +1,6 @@
 package org.drools.examples.learner;
 
-import org.drools.examples.learner.Restaurant
+import org.drools.examples.learner.models.Restaurant
 
 rule "#2 will_wait= false  classifying 2.0 num of facts with rank:Infinity" 
 	 when
