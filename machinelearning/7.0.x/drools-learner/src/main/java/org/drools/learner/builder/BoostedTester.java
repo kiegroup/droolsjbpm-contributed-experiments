@@ -62,7 +62,7 @@ public class BoostedTester extends Tester {
                 if (log.isErrorEnabled()) {
                     log.error(Util.ntimes("\n", 10) + "Unknown situation at tree: " + j + " for fact " + i);
                 }
-                System.exit(0);
+                throw new RuntimeException("Unknown situation at tree: " + j + " for fact " + i);
             }
             if (log.isDebugEnabled()) {
                 log.debug("Vote " + accuracy.get(j) + " for " + vote + "\n");

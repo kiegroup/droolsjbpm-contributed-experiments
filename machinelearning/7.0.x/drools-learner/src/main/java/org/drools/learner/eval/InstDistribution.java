@@ -8,8 +8,6 @@ import java.util.List;
 import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.QuantitativeDomain;
-import org.drools.learner.tools.FeatureNotSupported;
-import org.drools.learner.tools.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,16 +19,13 @@ public class InstDistribution extends ClassDistribution {
 
     private HashMap<Object, List<Instance>> instanceByValue;
 
-    //private HashMap<Object, List<Instance>>
-
     public InstDistribution(Domain targetDomain) {
         super(targetDomain);
 
         instanceByValue = new HashMap<Object, List<Instance>>(targetDomain.getCategoryCount());
         for (int t = 0; t < targetDomain.getCategoryCount(); t++) {
-            // mireynol - FWIW this variable was formerly named obj_t, just guessing at the meaning FIXME
-            Object objType = targetDomain.getCategory(t);
-            instanceByValue.put(objType, new ArrayList<Instance>());
+            Object category = targetDomain.getCategory(t);
+            instanceByValue.put(category, new ArrayList<Instance>());
         }
     }
 
@@ -73,17 +68,17 @@ public class InstDistribution extends ClassDistribution {
 
     /* spliting during the training for C45TreeIterator */
     public HashMap<Object, InstDistribution> split(InformationContainer splitDomainEval) {
-        Domain                            splitDomain = splitDomainEval.domain;
+        Domain                            splitDomain = splitDomainEval.getDomain();
         HashMap<Object, InstDistribution> instLists   = this.instantiateLists(splitDomain);
 
         if (splitDomain.isCategorical()) {
             this.splitFromCategorical(splitDomain, instLists);
         } else {
-            if (splitDomain instanceof QuantitativeDomain && splitDomainEval.sortedData != null) {
+            if (splitDomain instanceof QuantitativeDomain && splitDomainEval.getSortedData() != null) {
                 QuantitativeDomain qSplitDomain = (QuantitativeDomain) splitDomain;
 
                 //Collections.sort(facts, choosenDomain.factComparator()); /* hack*/
-                this.splitFromQuantitative(splitDomainEval.sortedData, qSplitDomain, instLists);
+                this.splitFromQuantitative(splitDomainEval.getSortedData(), qSplitDomain, instLists);
             } else {
                 throw new RuntimeException("Can not split a quatitative domain if it's object type is not QuantitativeDomain " + splitDomain);
             }

@@ -17,7 +17,7 @@ public class ImpurityDecrease implements StoppingCriterion {
     }
 
     public boolean stop(InformationContainer bestAttrEval) {
-        if (bestAttrEval.attributeEval < beta) {
+        if (bestAttrEval.getAttributeEval() < beta) {
             numPrunned++;
             return true;
         } else {
