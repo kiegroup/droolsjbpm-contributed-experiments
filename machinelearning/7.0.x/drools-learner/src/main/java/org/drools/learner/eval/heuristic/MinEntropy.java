@@ -1,6 +1,6 @@
 package org.drools.learner.eval.heuristic;
 
-public class MinEntropy extends Entropy implements Heuristic {
+public class MinEntropy extends InformationGain implements Heuristic {
 
     public MinEntropy() {
         super();

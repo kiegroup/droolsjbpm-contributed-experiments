@@ -10,9 +10,9 @@ public interface Heuristic {
 
     public void init(InstDistribution instsByTarget);
 
-    public double getEval(Domain attrDomain);
+    public double evalCategorical(Domain attrDomain);
 
-    public double getEvalCont(Domain attrDomain);
+    public double evalContinuous(Domain attrDomain);
 
     public Domain getDomain();
 

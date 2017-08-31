@@ -7,7 +7,7 @@ import org.drools.learner.Domain;
 import org.drools.learner.Instance;
 import org.drools.learner.InstanceComparator;
 import org.drools.learner.QuantitativeDomain;
-import org.drools.learner.eval.heuristic.Entropy;
+import org.drools.learner.eval.heuristic.InformationGain;
 import org.drools.learner.tools.Util;
 import org.slf4j.Logger;
 
@@ -161,7 +161,7 @@ public class Categorizer {
                  * (info gain, gain ratio, gini coefficient, chi-squared test)
                  * on the cut point and calculate its gain
                  */
-                double sum = Entropy.calcInfoAttr(instancesByAttr);
+                double sum = InformationGain.calculateInformation(instancesByAttr);
                 if (sum < bestSum) {
                     bestSum = sum;
                     splitIndex = index;

@@ -36,7 +36,7 @@ public class AttributeChooser {
              */
             double attributeEval = 0.0;
             if (attrDomain.isCategorical()) {
-                attributeEval = heuristic.getEval(attrDomain);//data_eval - heuristic.info_attr(insts_by_target, attr_domain);
+                attributeEval = heuristic.evalCategorical(attrDomain);//data_eval - heuristic.info_attr(insts_by_target, attr_domain);
                 container.setAttributeEval(attributeEval);
                 container.setDomain(attrDomain);
                 if (log.isDebugEnabled()) {
@@ -44,7 +44,7 @@ public class AttributeChooser {
                 }
             } else {
                 //				the continuous domain
-                attributeEval = heuristic.getEvalCont(attrDomain);
+                attributeEval = heuristic.evalContinuous(attrDomain);
                 container.setAttributeEval(attributeEval);
                 container.setDomain(heuristic.getDomain());
                 container.setSortedData(heuristic.getSortedInstances());
@@ -100,7 +100,7 @@ public class AttributeChooser {
              * they are
              */
             //double attribute_eval = dt_info - heuristic.info_attr(insts_by_target, attr_domain);
-            double attributeEval = heuristic.getEval(attrDomain);
+            double attributeEval = heuristic.evalCategorical(attrDomain);
             //			flog.debug("Attribute: " + attr_domain.getFName() + " the gain: " + gain);
             if (attributeEval > greatestEval) {
                 greatestEval = attributeEval;

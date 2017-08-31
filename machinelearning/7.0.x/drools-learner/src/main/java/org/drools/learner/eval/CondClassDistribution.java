@@ -15,13 +15,11 @@ public class CondClassDistribution {
 
     public CondClassDistribution(Domain attributeDomain, Domain targetDomain) {
         this.condAttr = attributeDomain;
-        //List<?> attributeValues = this.domain.getValues();
         condQuantityByClass = new HashMap<Object, ClassDistribution>(attributeDomain.getCategoryCount());
 
         for (int i = 0; i < attributeDomain.getCategoryCount(); i++) {
-            // @mireynol - FWIW, this variable was formerly named attr_category 
-            Object attributeCategory = attributeDomain.getCategory(i);
-            condQuantityByClass.put(attributeCategory, new ClassDistribution(targetDomain));
+            Object category = attributeDomain.getCategory(i);
+            condQuantityByClass.put(category, new ClassDistribution(targetDomain));
         }
     }
 

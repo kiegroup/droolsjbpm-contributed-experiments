@@ -32,7 +32,7 @@ public class InstDistribution extends ClassDistribution {
     public InstDistribution(Domain targetDomain, List<Instance> instances) {
         this(targetDomain);
 
-        String tName    = super.getClassDomain().getFReferenceName();
+        String tName    = targetDomain.getFReferenceName();
         if (log.isDebugEnabled()) {
             log.debug("tName : {}", tName);
         }
@@ -150,5 +150,75 @@ public class InstDistribution extends ClassDistribution {
                 //				System.out.println(Util.ntimes("DANIEL", 5)+ "how many times matching?? not a looser "+ looser );
             }
         }
+    }
+
+    public CondClassDistribution categoricalGroupBy(Domain attrDomain) {
+
+        Domain targetDomain = getClassDomain();
+
+        //log.debug("What is the attributeToSplit? " + attr_domain);
+
+        /* initialize the hashtable */
+        CondClassDistribution instsByAttr = new CondClassDistribution(attrDomain, targetDomain);
+        instsByAttr.setTotal(getSum());
+
+        //log.debug("Cond distribution for "+ attr_domain + " \n"+ insts_by_attr);
+
+        for (int category = 0; category < targetDomain.getCategoryCount(); category++) {
+            Object targetCategory = targetDomain.getCategory(category);
+
+            for (Instance inst : getSupportersFor(targetCategory)) {
+                Object instAttrCategory = inst.getAttrValue(attrDomain.getFReferenceName());
+
+                Object instClass = inst.getAttrValue(targetDomain.getFReferenceName());
+
+                if (!targetCategory.equals(instClass)) {
+                    log.error("How the fuck they are not the same ? {} {}", targetCategory, instClass);
+                    System.exit(0);
+                }
+                instsByAttr.change(instAttrCategory, targetCategory, inst.getWeight()); //+1
+            }
+        }
+
+        return instsByAttr;
+    }
+
+    /* you can calculate this before */
+
+    /*
+     * calculates the calculateInformation of a quantitative domain given the split
+     * indexes of instances a wrapper for the quantitative domain to be able to
+     * calculate the stats
+     */
+    //public static double info_contattr(InstanceList data, Domain targetDomain, QuantitativeDomain splitDomain) {
+    public CondClassDistribution continuousGroupBy(Categorizer visitor) {
+
+        List<Instance>     data         = visitor.getSortedInstances();
+        QuantitativeDomain splitDomain  = visitor.getSplitDomain();
+        Domain             targetDomain = getClassDomain();
+        String             targetAttr   = targetDomain.getFReferenceName();
+
+        CondClassDistribution instancesByAttr = new CondClassDistribution(splitDomain, targetDomain);
+        instancesByAttr.setTotal(data.size());
+
+        int    index      = 0;
+        int    splitIndex = 0;
+        Object attrKey    = splitDomain.getCategory(splitIndex);
+        for (Instance i : data) {
+
+            if (index == splitDomain.getSplit(splitIndex).getIndex() + 1) {
+                attrKey = splitDomain.getCategory(splitIndex + 1);
+                splitIndex++;
+            }
+            Object targetKey = i.getAttrValue(targetAttr);
+            instancesByAttr.change(attrKey, targetKey, i.getWeight()); //+1
+
+            index++;
+        }
+
+        return instancesByAttr;
+        //		double sum = calc_info_attr(instances_by_attr);
+        //		return sum;
+
     }
 }
