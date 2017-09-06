@@ -74,8 +74,8 @@ public class GlobalCategorizer {
                 }
 
                 InformationContainer categorizedEval = new InformationContainer();
-                categorizedEval.domain = trialDomain;
-                categorizedEval.sortedData = visitor.getSortedInstances();
+                categorizedEval.setDomain(trialDomain);
+                categorizedEval.setSortedData(visitor.getSortedInstances());
 
                 HashMap<Object, InstDistribution> filteredStats = null;
                 filteredStats = instsByTarget.split(categorizedEval);

@@ -7,7 +7,7 @@ import org.drools.learner.QuantitativeDomain;
 import org.drools.learner.eval.Categorizer;
 import org.drools.learner.eval.CondClassDistribution;
 
-public class RandomInfo extends Entropy implements Heuristic {
+public class RandomInfo extends InformationGain implements Heuristic {
 
     private static Random infoNumber = new Random(System.currentTimeMillis());
 
@@ -15,14 +15,14 @@ public class RandomInfo extends Entropy implements Heuristic {
         super();
     }
 
-    public double getEval(Domain attrDomain) {
-        CondClassDistribution instsByAttr = super.infoAttr(attrDomain);
-        double                infoGain    = super.dataEval - Entropy.calcInfoAttr(instsByAttr);
+    public double evalCategorical(Domain attrDomain) {
+        CondClassDistribution instsByAttr = instsByTarget.categoricalGroupBy(attrDomain);
+        double                infoGain    = super.entropyValue - InformationGain.calculateInformation(instsByAttr);
 
         return infoNumber.nextDouble(); //info_gain;// /split_info;
     }
 
-    public double getEvalCont(Domain attrDomain) {
+    public double evalContinuous(Domain attrDomain) {
 
         double             attributeEval = 0.0d, splitInfo = 1.0d;
         QuantitativeDomain trialDomain   = QuantitativeDomain.createFromDomain(attrDomain);

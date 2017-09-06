@@ -26,7 +26,7 @@ public interface HeuristicFactory {
 
     public static class EntropyFactory implements HeuristicFactory {
         @Override public Heuristic newHeuristic() {
-            return new Entropy();
+            return new InformationGain();
         }
     }
 

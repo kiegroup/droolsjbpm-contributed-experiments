@@ -6,12 +6,11 @@ import java.util.List;
 import org.drools.learner.DecisionTree;
 import org.drools.learner.DecisionTreePruner;
 import org.drools.learner.Memory;
-import org.drools.learner.MemoryImpl;
 import org.drools.learner.Stats;
 import org.drools.learner.StatsPrinter;
 import org.drools.learner.builder.DecisionTreeBuilder.TreeAlgo;
 import org.drools.learner.builder.Learner.DataType;
-import org.drools.learner.eval.heuristic.Entropy;
+import org.drools.learner.eval.heuristic.InformationGain;
 import org.drools.learner.eval.heuristic.GainRatio;
 import org.drools.learner.eval.heuristic.Heuristic;
 import org.drools.learner.eval.heuristic.MinEntropy;
@@ -88,7 +87,7 @@ public class DecisionTreeFactory {
     public static DecisionTree createSingleC45E(List<Object> objects,
                                                 Class<? extends Object> objClass) throws FeatureNotSupported {
         ArrayList<StoppingCriterion> criteria = new ArrayList<StoppingCriterion>(1);
-        return createSingleC45(objects, objClass, new Entropy(), criteria, null);
+        return createSingleC45(objects, objClass, new InformationGain(), criteria, null);
     }
 
     public static DecisionTree createSingleC45G(List<Object> objects,
@@ -115,7 +114,7 @@ public class DecisionTreeFactory {
         criteria.add(new EstimatedNodeSize(0.5));
         criteria.add(new ImpurityDecrease());
         criteria.add(new MaximumDepth(50));
-        return createSingleC45(objects, objClass, new Entropy(), criteria, null);
+        return createSingleC45(objects, objClass, new InformationGain(), criteria, null);
     }
 
     public static DecisionTree createSingleC45GStop(List<Object> objects,
@@ -132,7 +131,7 @@ public class DecisionTreeFactory {
         DecisionTreePruner           pruner   = new DecisionTreePruner();
         ArrayList<StoppingCriterion> criteria = new ArrayList<StoppingCriterion>(1);
         criteria.add(new EstimatedNodeSize(0.05));
-        return createSingleC45(objects, objClass, new Entropy(), criteria, pruner);
+        return createSingleC45(objects, objClass, new InformationGain(), criteria, pruner);
     }
 
     public static DecisionTree createSingleC45GPrunStop(List<Object> objects,
@@ -196,7 +195,7 @@ public class DecisionTreeFactory {
     public static DecisionTree createBagC45E(List<Object> objects,
                                              Class<? extends Object> objClass) throws FeatureNotSupported {
         ArrayList<StoppingCriterion> criteria = new ArrayList<StoppingCriterion>(1);
-        return createBagC45(objects, objClass, new Entropy(), criteria, null);
+        return createBagC45(objects, objClass, new InformationGain(), criteria, null);
     }
 
     public static DecisionTree createBagC45G(List<Object> objects,
@@ -211,7 +210,7 @@ public class DecisionTreeFactory {
         criteria.add(new EstimatedNodeSize(0.5));
         criteria.add(new ImpurityDecrease());
         criteria.add(new MaximumDepth(50));
-        return createBagC45(objects, objClass, new Entropy(), criteria, null);
+        return createBagC45(objects, objClass, new InformationGain(), criteria, null);
     }
 
     public static DecisionTree createBagC45GStop(List<Object> objects,
@@ -228,7 +227,7 @@ public class DecisionTreeFactory {
         DecisionTreePruner           pruner   = new DecisionTreePruner();
         ArrayList<StoppingCriterion> criteria = new ArrayList<StoppingCriterion>(1);
         criteria.add(new EstimatedNodeSize(0.05));
-        return createBagC45(objects, objClass, new Entropy(), criteria, pruner);
+        return createBagC45(objects, objClass, new InformationGain(), criteria, pruner);
     }
 
     public static DecisionTree createBagC45GPrunStop(List<Object> objects,
@@ -311,7 +310,7 @@ public class DecisionTreeFactory {
     public static DecisionTree createBoostC45E(List<Object> objects,
                                                Class<? extends Object> objClass) throws FeatureNotSupported {
         ArrayList<StoppingCriterion> criteria = new ArrayList<StoppingCriterion>(1);
-        return createBoostC45(objects, objClass, new Entropy(), criteria, null);
+        return createBoostC45(objects, objClass, new InformationGain(), criteria, null);
     }
 
     public static DecisionTree createBoostC45G(List<Object> objects,
@@ -326,7 +325,7 @@ public class DecisionTreeFactory {
         criteria.add(new EstimatedNodeSize(0.5));
         criteria.add(new ImpurityDecrease());
         criteria.add(new MaximumDepth(50));
-        return createBoostC45(objects, objClass, new Entropy(), criteria, null);
+        return createBoostC45(objects, objClass, new InformationGain(), criteria, null);
     }
 
     public static DecisionTree createBoostC45GStop(List<Object> objects,
@@ -343,7 +342,7 @@ public class DecisionTreeFactory {
         DecisionTreePruner           pruner   = new DecisionTreePruner();
         ArrayList<StoppingCriterion> criteria = new ArrayList<StoppingCriterion>(1);
         criteria.add(new EstimatedNodeSize(0.05));
-        return createBoostC45(objects, objClass, new Entropy(), criteria, pruner);
+        return createBoostC45(objects, objClass, new InformationGain(), criteria, pruner);
     }
 
     public static DecisionTree createBoostC45GPrunStop(List<Object> objects,

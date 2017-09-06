@@ -21,34 +21,16 @@ public class InstanceFactory {
     }
 
     public Instance createInstance(Object obj) {
-        try {
-            //if (schema.getClassStructure().containsKey(_obj.getClass())) {
-            if (schema.getObjectClass().isAssignableFrom(obj.getClass())) {
-                Instance i   = new Instance();
-                boolean  bok = instantiateAttributes(i, obj, obj.getClass());
-                if (!bok) {
-                    if (log.isErrorEnabled()) {
-                        log.error("What is going on, how come it is wrong : ");
-                    }
-                    System.exit(0);
-                }
-                return i; // perfectly instantiated
-            } else {
-                return null;// could not instantiate
-            }
-
-            //			if (instantiateAttributes(i, _obj, _obj.getClass()))
-            //				return i;	// perfectly instantiated
-            //			else
-            //				return null;// could not instantiate
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if (schema.getObjectClass().isAssignableFrom(obj.getClass())) {
+            Instance i   = new Instance();
+            boolean  bok = instantiateAttributes(i, obj, obj.getClass());
+            return i; // perfectly instantiated
+        } else {
+            return null;// could not instantiate
         }
-        return null;
     }
 
-    public boolean instantiateAttributes(Instance inst, Object obj, Class<?> klass) throws Exception {
+    public boolean instantiateAttributes(Instance inst, Object obj, Class<?> klass) {
 
         if (log.isInfoEnabled()) {
             log.info("Klass : " + klass);
@@ -91,7 +73,7 @@ public class InstanceFactory {
         return true;
     }
 
-    public void getAttributeValue(Instance inst, Object obj, String name, DataType type) throws Exception {
+    public void getAttributeValue(Instance inst, Object obj, String name, DataType type)  {
         Class<?> objKlass       = obj.getClass();
         String   fieldReference = Util.getFReference(objKlass, name);
         switch (type) {
@@ -135,7 +117,7 @@ public class InstanceFactory {
                 break;
             // case Collection
             default:
-                throw new Exception("What type of data is this");
+                throw new RuntimeException("What type of data is this");
         }
 
         return;

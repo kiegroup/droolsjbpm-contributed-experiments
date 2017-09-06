@@ -41,10 +41,6 @@ public class ClassDistribution {
         return sum;
     }
 
-    public void setSum(double sum) {
-        this.sum = sum;
-    }
-
     public Domain getClassDomain() {
         return targetAttr;
     }

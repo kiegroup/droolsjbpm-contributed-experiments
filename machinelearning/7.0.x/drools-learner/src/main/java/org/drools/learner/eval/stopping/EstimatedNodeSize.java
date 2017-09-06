@@ -17,7 +17,7 @@ public class EstimatedNodeSize implements StoppingCriterion {
 
     public boolean stop(InformationContainer bestAttrEval) {
         int d = bestAttrEval.getDepth();
-        estimatedSumBranch += bestAttrEval.domain.getCategoryCount();
+        estimatedSumBranch += bestAttrEval.getDomain().getCategoryCount();
         numTimesBranched++;
         double estimatedBranch = (double) estimatedSumBranch / (double) numTimesBranched;
         // N/(b^d)

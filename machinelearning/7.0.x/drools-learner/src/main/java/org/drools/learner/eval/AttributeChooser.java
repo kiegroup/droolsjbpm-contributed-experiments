@@ -16,7 +16,7 @@ public class AttributeChooser {
         this.heuristic = heuristic;
     }
 
-    public Domain chooseAttribute(InformationContainer eval, InstDistribution instsByTarget, List<Domain> attrDomains) {
+    public void chooseAttribute(InformationContainer eval, InstDistribution instsByTarget, List<Domain> attrDomains) {
         // List<Instance> instances
 
         //		double data_eval = heuristic.calc_info(insts_by_target);
@@ -36,20 +36,20 @@ public class AttributeChooser {
              */
             double attributeEval = 0.0;
             if (attrDomain.isCategorical()) {
-                attributeEval = heuristic.getEval(attrDomain);//data_eval - heuristic.info_attr(insts_by_target, attr_domain);
-                container.attributeEval = attributeEval;
-                container.domain = attrDomain;
+                attributeEval = heuristic.evalCategorical(attrDomain);//data_eval - heuristic.info_attr(insts_by_target, attr_domain);
+                container.setAttributeEval(attributeEval);
+                container.setDomain(attrDomain);
                 if (log.isDebugEnabled()) {
-                    log.debug("CatAttribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
+                    log.debug("CatAttribute: " + container.getDomain() + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
                 }
             } else {
                 //				the continuous domain
-                attributeEval = heuristic.getEvalCont(attrDomain);
-                container.attributeEval = attributeEval;
-                container.domain = heuristic.getDomain();
-                container.sortedData = heuristic.getSortedInstances();
+                attributeEval = heuristic.evalContinuous(attrDomain);
+                container.setAttributeEval(attributeEval);
+                container.setDomain(heuristic.getDomain());
+                container.setSortedData(heuristic.getSortedInstances());
                 if (log.isDebugEnabled()) {
-                    log.debug("ContAttribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
+                    log.debug("ContAttribute: " + container.getDomain() + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
                 }
 
                 //				attr_domain = heuristic.getDomain();
@@ -57,20 +57,19 @@ public class AttributeChooser {
 
             }
             if (log.isWarnEnabled()) {
-                log.warn("Attribute: " + container.domain + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
+                log.warn("Attribute: " + container.getDomain() + " the gain: " + attributeEval + " greatest " + greatestEval + "\n");
             }
             if (attributeEval > greatestEval) {// TODO implement a comparator
                 greatestEval = attributeEval;
-                best.domain = container.domain;
-                best.sortedData = container.sortedData;
+                best.setDomain(container.getDomain());
+                best.setSortedData(container.getSortedData());
             }
         }
 
         //		Clone the best attribute domain cause it is going to be the domain of the treenode
-        eval.domain = best.domain.cheapClone();
-        eval.sortedData = best.sortedData;
-        eval.attributeEval = greatestEval;
-        return eval.domain;
+        eval.setDomain(best.getDomain().cheapClone());
+        eval.setSortedData(best.getSortedData());
+        eval.setAttributeEval(greatestEval);
     }
 
     //	/* 
@@ -101,7 +100,7 @@ public class AttributeChooser {
              * they are
              */
             //double attribute_eval = dt_info - heuristic.info_attr(insts_by_target, attr_domain);
-            double attributeEval = heuristic.getEval(attrDomain);
+            double attributeEval = heuristic.evalCategorical(attrDomain);
             //			flog.debug("Attribute: " + attr_domain.getFName() + " the gain: " + gain);
             if (attributeEval > greatestEval) {
                 greatestEval = attributeEval;
