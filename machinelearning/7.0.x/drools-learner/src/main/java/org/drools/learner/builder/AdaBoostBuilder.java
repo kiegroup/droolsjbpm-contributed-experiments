@@ -55,7 +55,7 @@ public class AdaBoostBuilder implements DecisionTreeBuilder  {
             System.exit(0);
         }
 
-        int N        = solSet.getTrainSet().getSize();
+        int N        = solSet.getTrainSet().size();
         int NUM_DATA = (int) (TREE_SIZE_RATIO * N); // TREE_SIZE_RATIO = 1.0, all training data is used to train the trees again again
         trainer.setTrainingDataSizePerTree(NUM_DATA);
         /*
@@ -215,20 +215,20 @@ public class AdaBoostBuilder implements DecisionTreeBuilder  {
     //			System.exit(0);
     //		}
     //		
-    //		int split_idx =  (int)(trainRatio * class_instances.getSize());
-    //		int split_idx2 =  split_idx + (int)(testRatio * class_instances.getSize());
+    //		int split_idx =  (int)(trainRatio * class_instances.size());
+    //		int split_idx2 =  split_idx + (int)(testRatio * class_instances.size());
     //		
     //		InstanceList train_instances = class_instances.subList(0, split_idx);
-    //		InstanceList test_instances = class_instances.subList(split_idx, split_idx2);//class_instances.getSize());
+    //		InstanceList test_instances = class_instances.subList(split_idx, split_idx2);//class_instances.size());
     //		
     //	
-    //		int N = train_instances.getSize();
+    //		int N = train_instances.size();
     //		int NUM_DATA = (int)(TREE_SIZE_RATIO * N);	// TREE_SIZE_RATIO = 1.0, all training data is used to train the trees again again
     //		_trainer.setTrainingDataSizePerTree(NUM_DATA);
     //		/* tree_capacity number of data fed to each tree, there are FOREST_SIZE trees*/
     //		_trainer.setTrainingDataSize(NUM_DATA); 
     //		
-    ////		int N = class_instances.getSize();
+    ////		int N = class_instances.size();
     ////		int NUM_DATA = (int)(TREE_SIZE_RATIO * N);	// TREE_SIZE_RATIO = 1.0, all data is used to train the trees again again
     ////		_trainer.setTrainingDataSizePerTree(NUM_DATA);
     ////		

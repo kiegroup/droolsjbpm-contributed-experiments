@@ -58,7 +58,7 @@ public class AdaBoostKBuilder implements DecisionTreeBuilder  {
             }
         }
 
-        int N = solSet.getTrainSet().getSize();
+        int N = solSet.getTrainSet().size();
         //_trainer.setTrainingDataSize(N); not only N data is fed. 
 
         int K = trainer.getTargetDomain().getCategoryCount();

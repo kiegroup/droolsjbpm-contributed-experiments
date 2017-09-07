@@ -45,7 +45,7 @@ public class TestSample implements ErrorEstimate {
 
     public void validate(Learner trainer, InstanceList instances) {
         classInstances = instances;
-        numInstances = classInstances.getSize();
+        numInstances = classInstances.size();
         if (classInstances.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
             if (log.isErrorEnabled()) {
@@ -70,19 +70,19 @@ public class TestSample implements ErrorEstimate {
         int              error = 0;
         SingleTreeTester t     = new SingleTreeTester(dt);
         if (log.isDebugEnabled()) {
-            log.debug("validation fold_size " + testSet.getSize() + "\n");
+            log.debug("validation fold_size " + testSet.size() + "\n");
         }
-        for (int indexI = 0; indexI < testSet.getSize(); indexI++) {
+        for (int indexI = 0; indexI < testSet.size(); indexI++) {
 
             if (log.isWarnEnabled()) {
-                log.warn(" validation index_i " + indexI + (indexI == testSet.getSize() - 1 ? "\n" : ""));
+                log.warn(" validation index_i " + indexI + (indexI == testSet.size() - 1 ? "\n" : ""));
             }
             Integer result = t.test(testSet.getInstance(indexI));
             if (result == Stats.INCORRECT) {
                 error++;
             }
         }
-        //TODO dt.setValidationError(Util.division(error, test_set.getSize()));
+        //TODO dt.setValidationError(Util.division(error, test_set.size()));
         dt.calcNumNodeLeaves(dt.getRoot());
 
         //		if (log.error() !=null)

@@ -29,7 +29,7 @@ public class SingleTreeBuilder implements DecisionTreeBuilder {
         SolutionSet solSet =  new SolutionSet(wm);
 
         trainer.setInputData(solSet.getInputData());
-        trainer.setTrainingDataSize(solSet.getTrainSet().getSize());
+        trainer.setTrainingDataSize(solSet.getTrainSet().size());
 
         log.debug("Training a tree");
         DecisionTree oneTree = trainer.trainTree(solSet.getTrainSet());

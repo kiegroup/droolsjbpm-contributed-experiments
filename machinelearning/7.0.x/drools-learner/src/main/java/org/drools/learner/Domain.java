@@ -25,17 +25,6 @@ public class Domain {
         this.fCategories = new ArrayList<Object>(2);
     }
 
-    public Domain cheapClone() {
-        Domain dom = new Domain(this.objKlass, this.fName, this.fType);
-        //dom.fixed = this.fixed;
-        dom.categorical = this.categorical;
-        //dom.readingSeq = readingSeq;
-        dom.fCategories = this.fCategories;
-        dom.ignore = this.ignore;
-
-        return dom;
-    }
-
     public Class<?> getFType() {
         return this.fType;
     }

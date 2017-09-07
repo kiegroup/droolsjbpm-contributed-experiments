@@ -70,7 +70,7 @@ public class InstanceList {
         instances.add(inst);
     }
 
-    public int getSize() {
+    public int size() {
         return instances.size();
     }
 
@@ -83,7 +83,7 @@ public class InstanceList {
     }
 
     public InstanceList getInstances(int[] bag) {
-        if (bag.length > this.getSize()) {
+        if (bag.length > this.size()) {
             System.out.println("Exception: TOO BIG to get Memory.getClassInstancesOf");
             return null;
         }
@@ -115,7 +115,7 @@ public class InstanceList {
      * 
      * public Collection<Domain> getDomains();
      * 
-     * public int getSize();
+     * public int size();
      * 
      * public String toString();
      */

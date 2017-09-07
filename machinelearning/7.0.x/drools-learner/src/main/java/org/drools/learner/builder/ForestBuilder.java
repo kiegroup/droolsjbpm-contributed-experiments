@@ -53,7 +53,7 @@ public class ForestBuilder implements DecisionTreeBuilder {
             System.exit(0);
         }
 
-        int N            = solSet.getTrainSet().getSize();
+        int N            = solSet.getTrainSet().size();
         int treeCapacity = (int) (TREE_SIZE_RATIO * N);
         trainer.setTrainingDataSizePerTree(treeCapacity);
         /*

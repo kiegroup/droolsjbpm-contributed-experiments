@@ -25,12 +25,12 @@ public class MemoryImpl implements Memory {
 
     public void processTestSet(double trainRatio, double testRatio) {
         InstanceList list = instances;
-        int splitIdx = (int) (trainRatio * list.getSize());
-        //int split_idx2 =  split_idx + (int)(testRatio * instances.get(this.clazzToClassify).getSize());
-        int splitIdx2 = list.getSize();
+        int splitIdx = (int) (trainRatio * list.size());
+        //int split_idx2 =  split_idx + (int)(testRatio * instances.get(this.clazzToClassify).size());
+        int splitIdx2 = list.size();
 
         trainInstances = list.subList(0, splitIdx);
-        testInstances = list.subList(splitIdx, splitIdx2);//class_instances.getSize());
+        testInstances = list.subList(splitIdx, splitIdx2);//class_instances.size());
         return;
     }
 }

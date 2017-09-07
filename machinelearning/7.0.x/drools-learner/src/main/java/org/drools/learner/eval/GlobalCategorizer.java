@@ -10,7 +10,6 @@ import org.drools.learner.Instance;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Memory;
 import org.drools.learner.QuantitativeDomain;
-import org.drools.learner.tools.FeatureNotSupported;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +42,7 @@ public class GlobalCategorizer {
         //log.debug("Num of attributes: "+ dt.getAttrDomains().size());
 
         InstDistribution statsByClass = new InstDistribution(dt.getTargetDomain(), workingInstances.getInstances());
-        dt.FACTS_READ += workingInstances.getSize();//
+        dt.FACTS_READ += workingInstances.size();//
 
         categorize(statsByClass, dt.getAttrDomains());
         //log.debug("Result tree\n" + dt);

@@ -60,7 +60,7 @@ public class CrossValidation implements ErrorEstimate {
     // for small samples
     public void validate(Learner trainer, InstanceList instances) {
         classInstances = instances;
-        numInstances = classInstances.getSize();
+        numInstances = classInstances.size();
         if (classInstances.getTargets().size() > 1) {
             //throw new FeatureNotSupported("There is more than 1 target candidates");
             if (log.isErrorEnabled()) {
