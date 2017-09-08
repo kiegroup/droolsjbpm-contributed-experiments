@@ -120,4 +120,101 @@ public class Weather {
         list.stream().forEach(v->instList.addStructuredInstance(v));
         return instList;
     }
+
+    public static InstanceList getDataMoreYes() {
+        return getDataPlayYes();
+    }
+
+    public static InstanceList getDataMoreNo() {
+        Schema schema  = Schema.createSchemaStructure(Weather.class, Learner.DataType.STRUCTURED);
+
+        List<Weather> list = new ArrayList<Weather>();
+        list.add(new Weather("sun", "hot", "high", "low", "no"));
+        list.add(new Weather("sun", "hot", "high", "high", "no"));
+        list.add(new Weather("overcast", "hot", "high", "low", "yes"));
+        list.add(new Weather("rain", "sweet", "high", "low", "no"));
+        list.add(new Weather("rain", "cold", "normal", "low", "yes"));
+        list.add(new Weather("rain", "cold", "normal", "high", "no"));
+        list.add(new Weather("overcast", "cold", "normal", "high", "yes"));
+        list.add(new Weather("sun", "sweet", "high", "low", "no"));
+        list.add(new Weather("sun", "cold", "normal", "low", "yes"));
+        list.add(new Weather("rain", "sweet", "normal", "low", "no"));
+        list.add(new Weather("sun", "sweet", "normal", "high", "yes"));
+        list.add(new Weather("overcast", "sweet", "high", "high", "yes"));
+        list.add(new Weather("overcast", "hot", "normal", "low", "no"));
+        list.add(new Weather("rain", "sweet", "high", "high", "no"));
+
+        InstanceList instList = new InstanceList(schema);
+        list.stream().forEach(v->instList.addStructuredInstance(v));
+        return instList;
+    }
+
+    public static InstanceList getDataSameOutlook() {
+        Schema schema  = Schema.createSchemaStructure(Weather.class, Learner.DataType.STRUCTURED);
+
+        List<Weather> list = new ArrayList<Weather>();
+        list.add(new Weather("sun", "hot", "high", "low", "no"));
+        list.add(new Weather("sun", "hot", "high", "high", "no"));
+        list.add(new Weather("sun", "sweet", "high", "low", "no"));
+        list.add(new Weather("sun", "cold", "normal", "low", "yes"));
+        list.add(new Weather("sun", "sweet", "normal", "high", "yes"));
+
+        InstanceList instList = new InstanceList(schema);
+        list.stream().forEach(v->instList.addStructuredInstance(v));
+        return instList;
+    }
+
+    public static InstanceList getDataPlayNo() {
+        Schema schema  = Schema.createSchemaStructure(Weather.class, Learner.DataType.STRUCTURED);
+
+        List<Weather> list = new ArrayList<Weather>();
+        list.add(new Weather("sun", "hot", "high", "low", "no"));
+        list.add(new Weather("sun", "hot", "high", "high", "no"));
+        list.add(new Weather("rain", "cold", "normal", "high", "no"));
+        list.add(new Weather("sun", "sweet", "high", "low", "no"));
+        list.add(new Weather("rain", "sweet", "high", "high", "no"));
+
+        InstanceList instList = new InstanceList(schema);
+        list.stream().forEach(v->instList.addStructuredInstance(v));
+        return instList;
+    }
+
+    public static InstanceList getDataPlayYes() {
+        Schema schema  = Schema.createSchemaStructure(Weather.class, Learner.DataType.STRUCTURED);
+
+        List<Weather> list = new ArrayList<Weather>();
+        list.add(new Weather("overcast", "hot", "high", "low", "yes"));
+        list.add(new Weather("rain", "sweet", "high", "low", "yes"));
+        list.add(new Weather("rain", "cold", "normal", "low", "yes"));
+        list.add(new Weather("overcast", "cold", "normal", "high", "yes"));
+        list.add(new Weather("sun", "cold", "normal", "low", "yes"));
+        list.add(new Weather("rain", "sweet", "normal", "low", "yes"));
+        list.add(new Weather("sun", "sweet", "normal", "high", "yes"));
+        list.add(new Weather("overcast", "sweet", "high", "high", "yes"));
+        list.add(new Weather("overcast", "hot", "normal", "low", "yes"));
+
+        InstanceList instList = new InstanceList(schema);
+        list.stream().forEach(v->instList.addStructuredInstance(v));
+        return instList;
+    }
+
+    public static InstanceList getDataNoOvercast() {
+        Schema schema  = Schema.createSchemaStructure(Weather.class, Learner.DataType.STRUCTURED);
+
+        List<Weather> list = new ArrayList<Weather>();
+        list.add(new Weather("sun", "hot", "high", "low", "yes"));
+        list.add(new Weather("sun", "hot", "high", "high", "no"));
+        list.add(new Weather("rain", "sweet", "high", "low", "no"));
+        list.add(new Weather("rain", "cold", "normal", "low", "no"));
+        list.add(new Weather("rain", "cold", "normal", "high", "no"));
+        list.add(new Weather("sun", "sweet", "high", "low", "yes"));
+        list.add(new Weather("sun", "cold", "normal", "low", "yes"));
+        list.add(new Weather("rain", "sweet", "normal", "low", "no"));
+        list.add(new Weather("sun", "sweet", "normal", "high", "yes"));
+        list.add(new Weather("sun", "sweet", "high", "high", "no") );
+
+        InstanceList instList = new InstanceList(schema);
+        list.stream().forEach(v->instList.addStructuredInstance(v));
+        return instList;
+    }
 }

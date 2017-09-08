@@ -24,7 +24,6 @@ import org.drools.learner.tools.Util;
 
 // uses the static functions from the deprecated class DecisionTreeFactory
 public class DecisionTreeFactory {
-
 //    public static DecisionTree createSingleID3E(List<Object> objects,
 //                                                Class<? extends Object> objClass) throws FeatureNotSupported {
 //        return createSingleID3(objects, objClass, HeuristicFactory.Heuristics.ENTROPY.newHeuristic());

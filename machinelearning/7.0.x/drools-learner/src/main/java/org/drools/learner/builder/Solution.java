@@ -50,12 +50,12 @@ public class Solution {
     }
 
     public double getTrainError() {
-        System.out.println("Total Train" + trainStats.getTotal() + ", size " + trainingList.getSize());
+        System.out.println("Total Train" + trainStats.getTotal() + ", size " + trainingList.size());
         return (double) trainStats.getResult(Stats.INCORRECT) / (double) trainStats.getTotal();
     }
 
     public double getTestError() {
-        System.out.println("Total Test" + testStats.getTotal() + ", size " + testList.getSize());
+        System.out.println("Total Test" + testStats.getTotal() + ", size " + testList.size());
         return (double) testStats.getResult(Stats.INCORRECT) / (double) testStats.getTotal();
     }
 

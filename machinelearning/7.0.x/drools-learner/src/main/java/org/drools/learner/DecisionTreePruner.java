@@ -413,18 +413,18 @@ public class DecisionTreePruner {
             SingleTreeTester t             = new SingleTreeTester(treeSol.getTree());
             Stats            testStats     = t.test(treeSol.getTestList());
 
-            //System.out.println(validation_set.getSize());
-            for (int indexI = 0; indexI < validationSet.getSize(); indexI++) {
+            //System.out.println(validation_set.size());
+            for (int indexI = 0; indexI < validationSet.size(); indexI++) {
                 Integer result = t.test(validationSet.getInstance(indexI));
                 if (result == Stats.INCORRECT) {
                     numError++;
                 }
             }
-            double percentError = Util.division(numError, validationSet.getSize());
+            double percentError = Util.division(numError, validationSet.size());
             System.out.println("From test: " + testStats.getResult(Stats.INCORRECT) / (double) testStats.getTotal() + " x " + percentError);
             int newNumLeaves = treeSol.getTree().getRoot().getNumLeaves();
 
-            //double new_resubstitution_cost = tree_sol.getTree().getTrainError() + Util.division(change_in_training_error, learning_set.getSize());
+            //double new_resubstitution_cost = tree_sol.getTree().getTrainError() + Util.division(change_in_training_error, learning_set.size());
             treeSol.changeTrainError(changeInTrainingError);//setTrainingError(new_resubstitution_cost);
             //tree_sol.setError();
             double costComplexity = treeSol.getTrainError() + computedAlpha * (newNumLeaves);
@@ -460,10 +460,10 @@ public class DecisionTreePruner {
                         log.debug(":search_alphas:k == 0\n");
                     }
                 }
-                double numTrainingData = (double) treeSol.getList().getSize();
+                double numTrainingData = (double) treeSol.getList().size();
                 double alpha           = ((double) k / numTrainingData) / ((double) (numLeaves - 1));
                 if (log.isDebugEnabled()) {
-                    log.debug(":search_alphas:alpha " + alpha + "/" + alphaProc.getAlpha() + " k " + k + " num_leaves " + numLeaves + " all " + treeSol.getList().getSize() + "\n");
+                    log.debug(":search_alphas:alpha " + alpha + "/" + alphaProc.getAlpha() + " k " + k + " num_leaves " + numLeaves + " all " + treeSol.getList().size() + "\n");
                 }
 
                 //the_alpha = alpha_proc.check_node(alpha, the_alpha, my_node, nodes);
