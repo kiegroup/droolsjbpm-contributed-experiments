@@ -8,31 +8,18 @@ public class Restaurant {
 
     private boolean alternate;    //yesno
     private boolean bar;        //yesno
-    private boolean fri_sat;    //yesno
+    private boolean friSat;    //yesno
     private boolean hungry;        //yesno
     private String  patrons;    //String[]{"None","Some","Full"});
     private int     price;        //",new String[]{"$","$$","$$$"});
     private boolean raining;    //yesno
     private boolean reservation; //yesno
     private String  type;        //",new String[]{"French","Italian","Thai","Burger"});
-    private String  wait_estimate;    //",new String[]{"0-10","10-30","30-60",">60"});
+    private String  waitEstimate;    //",new String[]{"0-10","10-30","30-60",">60"});
     @FieldAnnotation(target = true, readingSeq = 0)
-    private boolean will_wait;    //yesno
-
-    public Restaurant(boolean alt, boolean b, boolean f_s, boolean hung, String pat, int pri,
-                      boolean rain, boolean reserv, String t, String wait, boolean will) {
-        alternate = alt;        //yesno
-        bar = b;                //yesno
-        fri_sat = f_s;            //yesno
-        hungry = hung;            //yesno
-        patrons = pat;            //",new String[]{"None","Some","Full"});
-        price = pri;            //",new String[]{"$","$$","$$$"});
-        raining = rain;        //yesno
-        reservation = reserv;    //yesno
-        type = t;                //",new String[]{"French","Italian","Thai","Burger"});
-        wait_estimate = wait;    //",new String[]{"0-10","10-30","30-60",">60"});
-        will_wait = will;        //yesno
-    }
+    private boolean willWait;    //yesno
+    
+    public Restaurant() {}
 
     public boolean getAlternate() {
         return alternate;
@@ -50,12 +37,12 @@ public class Restaurant {
         this.bar = bar;
     }
 
-    public boolean getFri_sat() {
-        return fri_sat;
+    public boolean getFriSat() {
+        return friSat;
     }
 
-    public void setFri_sat(boolean fri_sat) {
-        this.fri_sat = fri_sat;
+    public void setFriSat(boolean fri_sat) {
+        this.friSat = fri_sat;
     }
 
     public boolean getHungry() {
@@ -106,19 +93,26 @@ public class Restaurant {
         this.type = type;
     }
 
-    public String getWait_estimate() {
-        return wait_estimate;
+    public String getWaitEstimate() {
+        return waitEstimate;
     }
 
-    public void setWait_estimate(String wait_estimate) {
-        this.wait_estimate = wait_estimate;
+    public void setWaitEstimate(String waitEstimate) {
+        this.waitEstimate = waitEstimate;
     }
 
-    public boolean getWill_wait() {
-        return will_wait;
+    public boolean getWillWait() {
+        return willWait;
     }
 
-    public void setWill_wait(boolean will_wait) {
-        this.will_wait = will_wait;
+    public void setWillWait(boolean willWait) {
+        this.willWait = willWait;
     }
+
+    @Override
+    public String toString() {
+        return "Restaurant [alternate=" + alternate + ", bar=" + bar + ", friSat=" + friSat + ", hungry=" + hungry + ", patrons=" + patrons + ", price=" + price + ", raining=" + raining + ", reservation=" + reservation + ", type=" + type + ", waitEstimate=" + waitEstimate + ", willWait=" + willWait + "]";
+    }
+    
+    
 }
