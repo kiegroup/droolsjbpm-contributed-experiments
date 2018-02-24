@@ -7,10 +7,14 @@ public class LeafNode extends TreeNode {
     private Object targetCategory;
     private double numIntancesClassified;
 
-    public LeafNode(Domain targetDomain, Object value, Object incomingCategory, TreeNode father, DecisionTree tree) {
-        super(targetDomain, incomingCategory, father, tree);
+    public LeafNode(TreeNode father, Domain targetDomain, Object incomingCategory, Object value) {
+        super(targetDomain, incomingCategory, father);
         this.targetCategory = value;
         this.numIntancesClassified = 0;
+    }
+
+    public boolean isLeaf() {
+        return true;
     }
 
     public void putNode(Object attributeCategory, TreeNode node) {
@@ -29,8 +33,8 @@ public class LeafNode extends TreeNode {
         this.numIntancesClassified = size;
     }
 
-    public int getMissClassified() {
-        return (int) (getNumMatch() - numIntancesClassified);
+    public double getMissClassified() {
+        return getNumMatch() - numIntancesClassified;
     }
 
     public int getNumLeaves() {

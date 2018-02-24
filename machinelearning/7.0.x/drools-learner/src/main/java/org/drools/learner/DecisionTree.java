@@ -64,6 +64,27 @@ public class DecisionTree {
         return objSchema.getObjectClass();
     }
 
+    public TreeNode createNode(TreeNode father, Domain domain, Object category) {
+        TreeNode node  = new TreeNode(domain, category, father);
+        addChildToFather(father, node, category);
+        return node;
+    }
+
+    private void addChildToFather(TreeNode father, TreeNode child, Object category) {
+        if (father != null) {
+            father.addChild(category, child);
+        } else {
+            setRoot(child);
+        }
+    }
+
+    public LeafNode createLeaf(TreeNode father, Domain targetDomain, Object incomingCategory, Object value) {
+        LeafNode node = new LeafNode(father, targetDomain, incomingCategory, value);
+        addChildToFather(father, node, incomingCategory);
+        return node;
+    }
+
+
     public HashMap<String, ArrayList<Field>> getAttrRelationMap() {
         return objSchema.getAttrRelationMap();
     }
@@ -130,84 +151,38 @@ public class DecisionTree {
     //		return training_error;
     //	}
 
-    public int calcNumNodeLeaves(TreeNode myNode) {
-        if (myNode instanceof LeafNode) {
 
-            return 1;
-        } else {
-            numNonterminalNodes++; // TODO does this really work?
-        }
-
-        int leaves = 0;
-        for (Object childKey : myNode.getChildrenKeys()) {
-            /* split the last two class at the same time */
-
-            TreeNode child = myNode.getChild(childKey);
-            leaves += calcNumNodeLeaves(child);
-        }
-        myNode.setNumLeaves(leaves);
-        return leaves;
+    public void calcNumNodeLeaves(TreeNode root) {
+        indexNodes(null, null, root);
     }
 
-    //private ArrayList<LeafNode> leaf_nodes;
-    public ArrayList<LeafNode> getLeaves(TreeNode startNode) {
-        ArrayList<LeafNode> terminalNodes = new ArrayList<LeafNode>();
-
-        findLeaves(terminalNodes, startNode);
-
-        return terminalNodes;
-    }
-
-    private int findLeaves(ArrayList<LeafNode> terminals, TreeNode myNode) {
-        if (myNode instanceof LeafNode) {
-            terminals.add((LeafNode) myNode);
-            return 1;
-        } else {
-            numNonterminalNodes++; // TODO does this really work?
-        }
-
-        int leaves = 0;
-        for (Object childKey : myNode.getChildrenKeys()) {
-            /* split the last two class at the same time */
-
-            TreeNode child = myNode.getChild(childKey);
-            leaves += findLeaves(terminals, child);
-        }
-        //my_node.setNumLeaves(leaves);
-        return leaves;
-    }
-
-    public ArrayList<TreeNode> getAnchestorOfLeaves(TreeNode startNode) {
-        ArrayList<LeafNode> terminalNodes = new ArrayList<LeafNode>();
-
-        ArrayList<TreeNode> ancTerminalNodes = new ArrayList<TreeNode>();
-
-        findLeaves(terminalNodes, ancTerminalNodes, startNode);
-
-        return ancTerminalNodes;
-    }
-
-    private int findLeaves(ArrayList<LeafNode> terminals, ArrayList<TreeNode> anchestors, TreeNode myNode) {
+    public int indexNodes(ArrayList<LeafNode> terminals, ArrayList<TreeNode> penultNodes, TreeNode myNode) {
 
         int     leaves         = 0;
-        boolean anchestorAdded = false;
+        boolean penultAdded = false;
+
+        if (!myNode.isLeaf()) {
+            numNonterminalNodes++;
+        }
+
         for (Object childKey : myNode.getChildrenKeys()) {
-            /* split the last two class at the same time */
+            // split the last two class at the same time
 
             TreeNode child = myNode.getChild(childKey);
-            if (child instanceof LeafNode) {
-                terminals.add((LeafNode) child);
-                if (!anchestorAdded) {
-                    numNonterminalNodes++; // TODO does this really work?
-                    anchestors.add(myNode);
-                    anchestorAdded = true;
+            if (child.isLeaf()) {
+                leaves++;
+                if (terminals != null) {
+                    terminals.add((LeafNode) child);
                 }
-                return 1;
+                if (penultNodes != null && !penultAdded) {
+                    penultNodes.add(myNode);
+                    penultAdded = true;
+                }
             } else {
-                leaves += findLeaves(terminals, anchestors, child);
+                leaves += indexNodes(terminals, penultNodes, child);
             }
         }
-        //my_node.setNumLeaves(leaves);
+        myNode.setNumLeaves(leaves);
         return leaves;
     }
 
@@ -244,6 +219,7 @@ public class DecisionTree {
     public void setTestingDataSize(int size) {
         testDataSize = size;
     }
+
 
     //	public void setTrain(InstanceList x) {
     //		train = x;

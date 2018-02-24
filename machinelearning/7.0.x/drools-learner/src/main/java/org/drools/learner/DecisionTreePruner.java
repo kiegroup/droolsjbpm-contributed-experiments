@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 public class DecisionTreePruner {
 
-    private static final double EPSILON    = 0.0d;//0.0000000001;
+    private static final double EPSILON    = 0x1.0p-53; //Smallest positive number such that 1 - EPSILON is not numerically equal to 1: .
 
     //	private PrunerStats best_stats;
     protected static final transient Logger log        = LoggerFactory.getLogger(DecisionTreePruner.class);
@@ -39,9 +39,9 @@ public class DecisionTreePruner {
          * classification error not exceeding an expected error rate on some
          * test set (cross-validation error), which is done at the second stage.
          */
-        int i = 0;
-        for (Solution sol : solSet.getSolutions()) {
-            boolean updated = this.prunToEstimate(sol);
+        for (int i = 0; i < solSet.getSolutions().size(); i++) {
+            Solution sol = solSet.getSolutions().get(i);
+            boolean updated = prunToEstimate(sol);
             if (updated) {
                 solSet.setBestSolutionId(i);
             }
@@ -56,13 +56,8 @@ public class DecisionTreePruner {
          */
 
         DecisionTree dt = sol.getTree();
-        dt.calcNumNodeLeaves(dt.getRoot());
 
-        double           epsilon   = EPSILON * numExtraMisClassIfPrun(dt.getRoot());
-        MinAlphaProc     alphaProc = new MinAlphaProc(INIT_ALPHA, epsilon);
-        TreeSequenceProc search    = new TreeSequenceProc(sol, alphaProc);//INIT_ALPHA
-
-        search.initTree(); // alpha_1 = 0.0 
+        TreeSequenceProc search = createSearchTree(sol);
         search.iterateTrees(1);
 
         //		updates.add(search.getTreeSequence());
@@ -126,6 +121,16 @@ public class DecisionTreePruner {
         return false;
     }
 
+    public TreeSequenceProc createSearchTree(Solution sol) {
+        DecisionTree dt = sol.getTree();
+        double           epsilon   = EPSILON * numExtraMisClassIfPrun(dt.getRoot());
+        MinAlphaProc     alphaProc = new MinAlphaProc(INIT_ALPHA, epsilon);
+        TreeSequenceProc search    = new TreeSequenceProc(sol, alphaProc);//INIT_ALPHA
+
+        search.initTree(); // alpha_1 = 0.0
+        return search;
+    }
+
     public void prunTree(Solution sol) {
         double           epsilon = 0.0000001 * numExtraMisClassIfPrun(sol.getTree().getRoot());
         TreeSequenceProc search  = new TreeSequenceProc(sol, new AnAlphaProc(bestStatsEverFound.getAlpha(), epsilon));
@@ -142,16 +147,11 @@ public class DecisionTreePruner {
         }
     }
 
-    // returns the node missclassification cost
-    private int R(TreeNode t) {
-        if (log.isDebugEnabled()) {
-            log.debug(":R:num_misclassified " + t.getNumMatch() + " " + t.getNumLabeled());
-        }
-        return (int) (t.getNumMatch() - t.getNumLabeled());
-    }
-
     private int numExtraMisClassIfPrun(TreeNode myNode) {
-        int numMisclassified = R(myNode); // needs to be cast because of
+        if (log.isDebugEnabled()) {
+            log.debug(":R:num_misclassified " + myNode.getNumMatch() + " - " + myNode.getNumLabeled());
+        }
+        int numMisclassified = (int) (myNode.getNumMatch() - myNode.getNumLabeled()); // needs to be cast because of doubles
 
         if (log.isDebugEnabled()) {
             log.debug(":numExtraMisClassIfPrun:num_misclassified " + numMisclassified);
@@ -169,9 +169,7 @@ public class DecisionTreePruner {
             log.debug("\n");
         }
         if (numMisclassified < kidsMisclassified) {
-            System.out.println("Problem ++++++");
-            //System.exit(0);
-            return 0;
+            throw new RuntimeException("Problem ++++++ should not be possible - numMisclassified < kidsMisclassified");
         }
         return numMisclassified - kidsMisclassified;
     }
@@ -208,10 +206,16 @@ public class DecisionTreePruner {
         //		private ArrayList<PrunerStats> tree_sequence_stats;
         private ArrayList<PrunerStats> treeSequenceStats;
 
+        ArrayList<TreeNode> penultNodes;
+
         private PrunerStats bestTreeStats;
 
         public TreeSequenceProc(Solution sol, AlphaSelectionProc cond) { //, double init_alpha
+
             treeSol = sol;
+
+            penultNodes = new ArrayList<TreeNode>();
+            treeSol.getTree().indexNodes(null, penultNodes, treeSol.getTree().getRoot());
 
             alphaProc = cond;
             treeSequence = new ArrayList<NodeUpdate>();
@@ -259,13 +263,12 @@ public class DecisionTreePruner {
             // initialize the tree to be prunned
             // T_1 is the smallest subtree of T_max satisfying R(T_1) = R(T_max)
 
-            ArrayList<TreeNode> lastNonterminals = treeSol.getTree().getAnchestorOfLeaves(treeSol.getTree().getRoot());
-
             // R(t) <= sum R(t_children) by the proposition 2.14, R(t) node miss-classification cost
             // if R(t) = sum R(t_children) then prune off t_children
 
             boolean treeChanged = false; // (k)
-            for (TreeNode t : lastNonterminals) {
+            // When initialising the tree remove any nodes that do not reduce the number of missclassified instances
+            for (TreeNode t : penultNodes) {
                 if (numExtraMisClassIfPrun(t) == 0) {
                     // prune off the candidate node
                     treeChanged = true;
@@ -357,7 +360,7 @@ public class DecisionTreePruner {
             System.out.println(treeSol.getTree().getTargetDomain() + " " + candidateNode.getLabel());
 
             // initially LeafNode father is null, it'll be set if it's later added as a child
-            LeafNode bestClone = new LeafNode(treeSol.getTree().getTargetDomain(), candidateNode.getLabel(), null, null, treeSol.getTree());
+            LeafNode bestClone = treeSol.getTree().createLeaf(null, treeSol.getTree().getTargetDomain(), null, candidateNode.getLabel());
             bestClone.setRank(candidateNode.getRank());
             bestClone.setNumMatch(candidateNode.getNumMatch()); //num of matching instances to the leaf node
             bestClone.setNumClassification(candidateNode.getNumLabeled()); //num of (correctly) classified instances at the leaf node
@@ -445,9 +448,7 @@ public class DecisionTreePruner {
         // memory optimized
         public void findCandidateNodes(TreeNode myNode, ArrayList<TreeNode> nodes) {
 
-            if (myNode instanceof LeafNode) {
-
-                //leaves.add((LeafNode) my_node);
+            if (myNode.isLeaf()) {
                 return;
             } else {
                 // if you prune that one k more instances are misclassified
@@ -455,6 +456,7 @@ public class DecisionTreePruner {
                 int k         = numExtraMisClassIfPrun(myNode);
                 int numLeaves = myNode.getNumLeaves();
 
+                // FIXME check what should happen if k == 0 (mdp)
                 if (k == 0) {
                     if (log.isDebugEnabled()) {
                         log.debug(":search_alphas:k == 0\n");
@@ -502,10 +504,8 @@ public class DecisionTreePruner {
 
         public double checkNode(double curAlpha, TreeNode curNode, ArrayList<TreeNode> nodes) {
             if (Util.epsilon(curAlpha - anAlpha, CART_EPSILON)) {
-                for (TreeNode parent : nodes) {
-                    if (isChildOf(curNode, parent)) {
-                        return curAlpha;// it is not added
-                    }
+                if (parentExistsInList(curNode, nodes)) {
+                    return curAlpha;
                 }
                 // add this one to the set
                 nodes.add(curNode);
@@ -545,12 +545,10 @@ public class DecisionTreePruner {
             }
 
             if (Util.epsilon(curAlpha - averageOfMinAlphas, CART_EPSILON)) {
-                // check if the cur_node is a child of any node that has been added to the list before.
-                for (TreeNode parent : nodes) {
-                    if (isChildOf(curNode, parent)) {
-                        return curAlpha;// if it is the case do not add the node
-                    }
+                if (parentExistsInList(curNode, nodes)) {
+                    return curAlpha;// if it is the case do not add the node
                 }
+
                 // else add this one to the set
                 nodes.add(curNode);
                 sumMinAlpha += curAlpha;
@@ -578,6 +576,16 @@ public class DecisionTreePruner {
                 return sumMinAlpha / numMinimum;
             }
         }
+    }
+
+    private boolean parentExistsInList(TreeNode curNode, ArrayList<TreeNode> nodes) {
+        // check if the cur_node is a child of any node that has been added to the list before.
+        for (TreeNode parent : nodes) {
+            if (isChildOf(curNode, parent)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public class NodeUpdate {

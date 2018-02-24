@@ -32,8 +32,8 @@ public class Util {
     public static boolean SORT_RULES_BY_RANK = true;
     public static boolean PRINT_RULES        = true;
     //public static String log_file = "testing.log";
-    public static  double TRAINING_RATIO = 1.0, TESTING_RATIO = 0.0;
-    public static double DEFAULT_TRAINING_RATIO = 0.80, DEFAULT_TESTING_RATIO = 0.20;
+    public static double TRAINING_RATIO = 1.0;
+    public static double DEFAULT_TRAINING_RATIO = 0.80;
     ;
     private static Random BAGGING        = new Random(System.currentTimeMillis());
     public boolean bok = false;

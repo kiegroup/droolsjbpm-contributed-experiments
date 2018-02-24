@@ -2,6 +2,7 @@ package org.drools.learner.tools;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -12,13 +13,12 @@ import org.drools.learner.Domain;
 import org.drools.learner.Schema;
 import org.drools.learner.builder.Learner;
 import org.drools.learner.builder.Learner.DataType;
-import org.drools.learner.eval.CrossValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClassVisitor {
 
-    protected static final transient Logger                  log        = LoggerFactory.getLogger(CrossValidation.class);
+    protected static final transient Logger                  log        = LoggerFactory.getLogger(ClassVisitor.class);
     private static               ClassFieldAccessorCache cache      = new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader());
     //private static ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
     private                      ClassFieldAccessorStore store      = new ClassFieldAccessorStore();
@@ -75,11 +75,14 @@ public class ClassVisitor {
         // get the fields declared in the class
         Field[] elementFields = clazz.getDeclaredFields(); //clazz.getFields();
         for (Field f : elementFields) {
-            try {
-                decomposeField(structure, f /* , owner_clazz */);
-            } catch (FeatureNotSupported e) {
-                if (log.isErrorEnabled()) {
-                    log.error("FeatureNotSupported " + e + ")\n");
+            if ( !Modifier.isStatic(f.getModifiers())) {
+                // skip static fields
+                try {
+                    decomposeField(structure, f /* , owner_clazz */);
+                } catch (FeatureNotSupported e) {
+                    if (log.isErrorEnabled()) {
+                        log.error("FeatureNotSupported " + e + ")\n");
+                    }
                 }
             }
         }

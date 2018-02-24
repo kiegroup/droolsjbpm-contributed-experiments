@@ -23,7 +23,7 @@ public class MemoryImpl implements Memory {
         return testInstances;
     }
 
-    public void processTestSet(double trainRatio, double testRatio) {
+    public void processTestSet(double trainRatio) {
         InstanceList list = instances;
         int splitIdx = (int) (trainRatio * list.size());
         //int split_idx2 =  split_idx + (int)(testRatio * instances.get(this.clazzToClassify).size());

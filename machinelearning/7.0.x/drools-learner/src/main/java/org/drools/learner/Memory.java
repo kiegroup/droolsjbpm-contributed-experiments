@@ -10,11 +10,11 @@ import org.drools.learner.tools.Util;
 public interface Memory {
 
     static Memory createFromObjects(List<Object> objects, Class<?> clazz, Learner.DataType data) {
-        return createFromObjects(objects, clazz, data, Util.TRAINING_RATIO, Util.TESTING_RATIO);
+        return createFromObjects(objects, clazz, data, Util.TRAINING_RATIO);
     }
 
     static Memory createFromObjects(List<Object> objects, Class<?> clazz, Learner.DataType data,
-                                    double trainRatio, double testRatio)  {
+                                    double trainRatio)  {
         Schema instSchema = null;
         instSchema = Schema.createSchemaStructure(clazz, data);
 
@@ -29,7 +29,7 @@ public interface Memory {
 
         MemoryImpl mem = new MemoryImpl(clazz, instances);
 
-        mem.processTestSet(trainRatio, testRatio);
+        mem.processTestSet(trainRatio);
 
         return mem;
     }

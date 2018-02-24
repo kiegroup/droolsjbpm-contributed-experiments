@@ -1,6 +1,7 @@
 package org.drools.learner.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -109,6 +110,8 @@ public class C45Learner  implements Learner {
 
         dt.FACTS_READ += dataStats.getSum();
 
+        List<Domain> reducedAttrsToClassify = reducedAttrsToClassify(attrsToClassify, nodeDomain);
+
         for (int c = 0; c < nodeDomain.getCategoryCount(); c++) {
             // split the last two class at the same time
             Object category = nodeDomain.getCategory(c);
@@ -118,8 +121,7 @@ public class C45Learner  implements Learner {
 
             // list of domains except the choosen one (&target domain)
             if (categoryExistsWithData(filteredStats, category)) {
-                attrsToClassify.remove(nodeDomain);
-                train(dt, currentNode, category, filteredStats.get(category), attrsToClassify,depth + 1);//, attributeNames_copy
+                train(dt, currentNode, category, filteredStats.get(category), reducedAttrsToClassify,depth + 1);//, attributeNames_copy
             } else {
                 // majority !!!!
                 createLeafNode(dt, currentNode, category, dataStats);
@@ -131,8 +133,15 @@ public class C45Learner  implements Learner {
         }
     }
 
+    private List<Domain> reducedAttrsToClassify(List<Domain> attrsToClassify, Domain nodeDomain) {
+        List<Domain> reducedAttrsToClassify = new ArrayList<>();
+        reducedAttrsToClassify.addAll(attrsToClassify);
+        reducedAttrsToClassify.remove(nodeDomain);
+        return reducedAttrsToClassify;
+    }
+
     private TreeNode createNode(DecisionTree dt, TreeNode father, Object incomingCategory, InstDistribution dataStats, InformationContainer bestAttrEval, Domain nodeDomain) {
-        TreeNode currentNode = new TreeNode(nodeDomain, incomingCategory,father, dt);
+        TreeNode currentNode = dt.createNode(father, nodeDomain, incomingCategory);
         currentNode.setNumMatch(dataStats.getSum()); //num of matching instances to the leaf node
         currentNode.setRank(dataStats.getSum() / this.getTrainingDataSize() ); // total size of data fed to trainer
         currentNode.setInfoMea(bestAttrEval.getAttributeEval());
@@ -143,14 +152,14 @@ public class C45Learner  implements Learner {
     }
 
     private void createLeafNode(DecisionTree dt, TreeNode father, Object incomingCategory, InstDistribution dataStats) {
-        LeafNode majorityNode = new LeafNode(dt.getTargetDomain(), dataStats.getWinnerClass(), incomingCategory, father, dt);
+        LeafNode majorityNode = dt.createLeaf(father, dt.getTargetDomain(), incomingCategory, dataStats.getWinnerClass());
         majorityNode.setRank(-1.0); //it does not classify any instance
         majorityNode.setNumMatch(0);
         majorityNode.setNumClassification(0);
     }
 
     private void createLeafSingleCategories(DecisionTree dt, TreeNode father, Object incomingCategory, InstDistribution dataStats) {
-        LeafNode classifiedNode = new LeafNode(dt.getTargetDomain(), dataStats.getWinnerClass(), incomingCategory, father, dt );
+        LeafNode classifiedNode = dt.createLeaf(father, dt.getTargetDomain(), incomingCategory, dataStats.getWinnerClass());
         classifiedNode.setRank(dataStats.getSum() / this.getTrainingDataSize()); // total size of data fed to dt
         // These next two values are the same, as we know there is only one target label  value
         classifiedNode.setNumMatch(dataStats.getSum()); //num of matching instances to the leaf node
@@ -160,7 +169,7 @@ public class C45Learner  implements Learner {
     private void createLeafMultipleCategories(DecisionTree dt, TreeNode father, Object incomingCategory, InstDistribution dataStats) {
     /* an heuristic of the leaf classification */
         Object   winner              = dataStats.getWinnerClass(); // winner target category
-        LeafNode noAttributeLeftNode = new LeafNode(dt.getTargetDomain(), winner, incomingCategory, father, dt);
+        LeafNode noAttributeLeftNode = dt.createLeaf(father, dt.getTargetDomain(), incomingCategory, winner);
         noAttributeLeftNode.setRank(dataStats.getVoteFor(winner) / this.getTrainingDataSize() ); // total size of data fed to dt
         noAttributeLeftNode.setNumMatch(dataStats.getSum()); //num of matching instances to the leaf node
         noAttributeLeftNode.setNumClassification(dataStats.getVoteFor(winner)); //num of classified instances at the leaf node

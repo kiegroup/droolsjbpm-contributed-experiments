@@ -23,15 +23,14 @@ public class TreeNode {
 
     private int depth;
 
-    public TreeNode(Domain domain, Object category, TreeNode father, DecisionTree tree) {
+    public TreeNode(Domain domain, Object category, TreeNode father) {
         this.father = father;
         this.domain = domain;
         this.children = new Hashtable<Object, TreeNode>();
-        if (father != null) {
-            father.addChild(category, this);
-        } else {
-            tree.setRoot(this);
-        }
+    }
+
+    public boolean isLeaf() {
+        return false;
     }
 
     public int getDepth() {
@@ -103,8 +102,8 @@ public class TreeNode {
         return leaves;
     }
 
-    public void setNumLeaves(int leaves2) {
-        leaves = leaves2;
+    public void setNumLeaves(int leaves) {
+        this.leaves = leaves;
     }
 
     public TreeNode getFather() {
@@ -135,13 +134,15 @@ public class TreeNode {
         return myNode.voteFor(i);
     }
 
-    public int getMissClassified() {
-        int numMissclassified = 0;
-        for (Object key : this.getChildrenKeys()) {
-            TreeNode child = this.getChild(key);
-            numMissclassified += child.getMissClassified();
-        }
-        return numMissclassified;
+    // TODO this needs regression tests!!!! MDP
+    public double getMissClassified() {
+        return getNumMatch() -  getNumLabeled();
+//        int numMissclassified = 0;
+//        for (Object key : this.getChildrenKeys()) {
+//            TreeNode child = this.getChild(key);
+//            numMissclassified += child.getMissClassified();
+//        }
+//        return numMissclassified;
     }
 
     public int hashCode() {

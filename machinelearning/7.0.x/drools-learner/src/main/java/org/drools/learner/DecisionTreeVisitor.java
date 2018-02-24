@@ -37,7 +37,7 @@ public class DecisionTreeVisitor {
     private void dfs(TreeNode mynode, int treeId) {
         //System.out.println("How many guys there of "+my_node.getDomain().getName() +"  : "+my_node.getDomain().getValues().size());
 
-        if (mynode instanceof LeafNode) {
+        if (mynode.isLeaf()) {
             NodeValue leafValue = new NodeValue(mynode);
             leafValue.setValue(((LeafNode) mynode).getCategory()); //getValue(null));
             nodes.push(leafValue);
@@ -68,7 +68,7 @@ public class DecisionTreeVisitor {
         //System.out.println("How many guys there of "+my_node.getDomain().getName() +"  : "+my_node.getDomain().getValues().size());
         NodeValue nodeValue = new NodeValue(myNode);
         nodes.push(nodeValue);
-        if (myNode instanceof LeafNode) {
+        if (myNode.isLeaf()) {
             //NodeValue leaf_value = new NodeValue(my_node);
             nodeValue.setValue(((LeafNode) myNode).getCategory()); //getValue(null));
             //nodes.push(leaf_value);

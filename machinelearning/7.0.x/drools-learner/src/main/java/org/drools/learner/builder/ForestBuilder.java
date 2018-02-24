@@ -6,6 +6,7 @@ import org.drools.learner.DecisionTree;
 import org.drools.learner.InstanceList;
 import org.drools.learner.Memory;
 import org.drools.learner.Stats;
+import org.drools.learner.tools.FeatureNotSupported;
 import org.drools.learner.tools.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +40,10 @@ public class ForestBuilder implements DecisionTreeBuilder {
         SolutionSet solSet =  new SolutionSet(wm);
         trainer.setInputData(solSet.getInputData());
         if (solSet.getTargets().size() > 1) {
-            //throw new FeatureNotSupported("There is more than 1 target candidates");
+
             if (log.isErrorEnabled()) {
                 log.error("There is more than 1 target candidates");
             }
-
             System.exit(0);
             // TODO put the feature not supported exception || implement it
         } else if (trainer.getTargetDomain().getCategoryCount() > 2) {
