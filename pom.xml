@@ -9,7 +9,7 @@
   <packaging>war</packaging>
 
   <properties>
-    <version.thorntail>2.3.0.Final</version.thorntail>
+    <version.thorntail>2.2.0.Final-redhat-00021</version.thorntail>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -20,7 +20,7 @@
     <dependencies>
       <dependency>
         <groupId>io.thorntail</groupId>
-        <artifactId>bom-all</artifactId>
+        <artifactId>bom</artifactId>
         <version>${version.thorntail}</version>
         <scope>import</scope>
         <type>pom</type>
@@ -35,7 +35,7 @@
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-maven-plugin</artifactId>
         <version>${version.thorntail}</version>
-        
+
         <executions>
           <execution>
             <goals>
@@ -54,4 +54,19 @@
       <artifactId>jaxrs-jaxb</artifactId>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>redhat-ga-repository</id>
+      <name>Redhat GA Repository</name>
+      <url>https://maven.repository.redhat.com/ga/all/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>redhat-ga-repository</id>
+      <name>Redhat GA Repository</name>
+      <url>https://maven.repository.redhat.com/ga/all/</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
