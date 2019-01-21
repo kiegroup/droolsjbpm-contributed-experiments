@@ -1,0 +1,11 @@
+.idea
+*.iml
+out/
+target/
+build/
+.gradle/
+
+# eclipse stuff
+.classpath
+.project
+.settings/
