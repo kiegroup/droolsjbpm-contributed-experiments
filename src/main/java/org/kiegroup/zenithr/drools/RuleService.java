@@ -1,20 +1,18 @@
 package org.kiegroup.zenithr.drools;
 
 import org.kie.api.runtime.KieSession;
-import org.kiegroup.zenithr.drools.model.DoubleField;
-import org.kiegroup.zenithr.drools.model.StringField;
 
 public class RuleService {
     public static String getGradeLetter(Double grade) {
         KieSession kieSession = SessionFactory.getInstance().newKieSession();
-        DoubleField input = new DoubleField();
+        FactField input = new FactField();
         input.setName("grade");
-        input.setValue(grade);
-        StringField output = new StringField();
-        output.setName("letter");
+        input.setDoubleValue(grade);
+        FactField output = new FactField();
+        output.setName("output");
         kieSession.insert(input);
         kieSession.insert(output);
         kieSession.fireAllRules();
-        return output.getValue();
+        return output.getStringValue();
     }
 }

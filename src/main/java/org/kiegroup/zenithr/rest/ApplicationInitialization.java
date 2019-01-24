@@ -11,6 +11,7 @@ public class ApplicationInitialization implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        System.setProperty("GET", System.getenv("GET"));
         SessionFactory.getInstance();
     }
 
