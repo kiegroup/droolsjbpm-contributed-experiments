@@ -1,35 +1,29 @@
 package org.kiegroup.zenithr.drools;
 
-import org.drools.core.io.impl.ReaderResource;
-import org.jboss.forge.roaster.Roaster;
-import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-public class KieContainerHolder {
-    private static KieContainerHolder INSTANCE;
+public class SessionFactory {
+    private static SessionFactory INSTANCE;
     private KieContainer kieContainer;
 
-    private KieContainerHolder(KieContainer kieContainer) {
+    private SessionFactory(KieContainer kieContainer) {
         this.kieContainer = kieContainer;
     }
 
-    public static KieContainerHolder getInstance() throws IOException {
+    public static SessionFactory getInstance() {
         if (INSTANCE == null) {
-            synchronized (KieContainerHolder.class) {
+            synchronized (SessionFactory.class) {
                 if (INSTANCE == null) {
                     KieServices ks = KieServices.Factory.get();
                     KieRepository kr = ks.getRepository();
                     KieFileSystem kfs = ks.newKieFileSystem();
 
-                    kfs.write("src/main/java/org/kiegroup/zenithr/drools/Parameters.java", getPOJO());
                     kfs.write("src/main/resources/org/kiegroup/zenithr/drools/rule.drl", getRule());
 
                     KieBuilder kb = ks.newKieBuilder(kfs);
@@ -40,53 +34,51 @@ public class KieContainerHolder {
                     }
 
                     KieContainer kieContainer = ks.newKieContainer(kr.getDefaultReleaseId());
-                    INSTANCE = new KieContainerHolder(kieContainer);
+                    INSTANCE = new SessionFactory(kieContainer);
                 }
             }
         }
         return INSTANCE;
     }
 
-    public KieContainer getKieContainer() {
-        return kieContainer;
+    KieSession newKieSession() {
+        return kieContainer.newKieSession();
     }
 
     private static String getRule() {
         return "" +
                 "package org.kiegroup.zenithr.drools \n\n" +
-                "import org.kiegroup.zenithr.drools.Parameters \n\n" +
-                "global java.util.Map map \n\n" +
+                "import org.kiegroup.zenithr.drools.model.DoubleField \n" +
+                "import org.kiegroup.zenithr.drools.model.StringField \n\n" +
                 "rule \"grade A\" when \n" +
-                "    params : Parameters(grade >= 90 && <= 100 ) \n" +
+                "    grade: DoubleField(name == \"grade\", value >= 90 && <= 100 ) \n" +
+                "    output: StringField(name == \"letter\") \n" +
                 "then \n" +
-                "    map.put( \"letter\", \"A\" ); \n" +
+                "    output.setValue(\"A\"); \n" +
                 "end \n" +
                 "rule \"grade B\" when \n" +
-                "    params : Parameters(grade >= 80 && < 90 ) \n" +
+                "    grade: DoubleField(name == \"grade\", value >= 80 && < 90 ) \n" +
+                "    output: StringField(name == \"letter\") \n" +
                 "then \n" +
-                "    map.put( \"letter\", \"B\" ); \n" +
+                "    output.setValue(\"B\"); \n" +
                 "end \n" +
                 "rule \"grade C\" when \n" +
-                "    params : Parameters(grade >= 70 && < 80 ) \n" +
+                "    grade: DoubleField(name == \"grade\", value >= 70 && < 80 ) \n" +
+                "    output: StringField(name == \"letter\") \n" +
                 "then \n" +
-                "    map.put( \"letter\", \"C\" ); \n" +
+                "    output.setValue(\"C\"); \n" +
                 "end \n" +
                 "rule \"grade D\" when \n" +
-                "    params : Parameters(grade >= 60 && < 70 ) \n" +
+                "    grade: DoubleField(name == \"grade\", value >= 60 && < 70 ) \n" +
+                "    output: StringField(name == \"letter\") \n" +
                 "then \n" +
-                "    map.put( \"letter\", \"D\" ); \n" +
+                "    output.setValue(\"D\"); \n" +
                 "end \n" +
                 "rule \"grade F\" when \n" +
-                "    params : Parameters(grade < 60 ) \n" +
+                "    grade: DoubleField(name == \"grade\", value < 60 ) \n" +
+                "    output: StringField(name == \"letter\") \n" +
                 "then \n" +
-                "    map.put( \"letter\", \"F\" ); \n" +
+                "    output.setValue(\"F\"); \n" +
                 "end";
-    }
-
-    private static ReaderResource getPOJO() {
-        final JavaClassSource parametersClass = Roaster.create(JavaClassSource.class);
-        parametersClass.setPackage("org.kiegroup.zenithr.drools").setName("Parameters");
-        parametersClass.addProperty(Double.class, "grade");
-        return new ReaderResource(new StringReader(parametersClass.toString()));
     }
 }
