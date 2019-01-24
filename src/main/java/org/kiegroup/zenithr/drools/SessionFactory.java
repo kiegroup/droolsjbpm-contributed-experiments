@@ -46,10 +46,7 @@ public class SessionFactory {
     }
 
     private static String getRule() {
-        return "" +
-                "package org.kiegroup.zenithr.drools \n\n" +
-                "import org.kiegroup.zenithr.drools.model.DoubleField \n" +
-                "import org.kiegroup.zenithr.drools.model.StringField \n\n" +
+        return RULE_HEADER +
                 "rule \"grade A\" when \n" +
                 "    grade: DoubleField(name == \"grade\", value >= 90 && <= 100 ) \n" +
                 "    output: StringField(name == \"letter\") \n" +
@@ -81,4 +78,14 @@ public class SessionFactory {
                 "    output.setValue(\"F\"); \n" +
                 "end";
     }
+
+    private static final String RULE_HEADER =
+            "" +
+                    "package org.kiegroup.zenithr.drools \n\n" +
+                    "import org.kiegroup.zenithr.drools.model.BooleanField \n" +
+                    "import org.kiegroup.zenithr.drools.model.DateField \n" +
+                    "import org.kiegroup.zenithr.drools.model.DateTimeField \n" +
+                    "import org.kiegroup.zenithr.drools.model.DoubleField \n" +
+                    "import org.kiegroup.zenithr.drools.model.LongField \n" +
+                    "import org.kiegroup.zenithr.drools.model.StringField \n\n";
 }
