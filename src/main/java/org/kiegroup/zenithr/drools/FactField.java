@@ -6,10 +6,10 @@ import java.util.Objects;
 public class FactField {
     private String name;
     private String stringValue;
-    private boolean booleanValue;
-    private int intValue;
-    private long longValue;
-    private double doubleValue;
+    private Boolean booleanValue;
+    private Integer intValue;
+    private Long longValue;
+    private Double doubleValue;
     private Date dateValue;
 
     public String getName() {
@@ -28,35 +28,35 @@ public class FactField {
         this.stringValue = stringValue;
     }
 
-    public boolean isBooleanValue() {
+    public Boolean getBooleanValue() {
         return booleanValue;
     }
 
-    public void setBooleanValue(boolean booleanValue) {
+    public void setBooleanValue(Boolean booleanValue) {
         this.booleanValue = booleanValue;
     }
 
-    public int getIntValue() {
+    public Integer getIntValue() {
         return intValue;
     }
 
-    public void setIntValue(int intValue) {
+    public void setIntValue(Integer intValue) {
         this.intValue = intValue;
     }
 
-    public long getLongValue() {
+    public Long getLongValue() {
         return longValue;
     }
 
-    public void setLongValue(long longValue) {
+    public void setLongValue(Long longValue) {
         this.longValue = longValue;
     }
 
-    public double getDoubleValue() {
+    public Double getDoubleValue() {
         return doubleValue;
     }
 
-    public void setDoubleValue(double doubleValue) {
+    public void setDoubleValue(Double doubleValue) {
         this.doubleValue = doubleValue;
     }
 
@@ -73,12 +73,12 @@ public class FactField {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FactField factField = (FactField) o;
-        return booleanValue == factField.booleanValue &&
-                intValue == factField.intValue &&
-                longValue == factField.longValue &&
-                Double.compare(factField.doubleValue, doubleValue) == 0 &&
-                Objects.equals(name, factField.name) &&
+        return Objects.equals(name, factField.name) &&
                 Objects.equals(stringValue, factField.stringValue) &&
+                Objects.equals(booleanValue, factField.booleanValue) &&
+                Objects.equals(intValue, factField.intValue) &&
+                Objects.equals(longValue, factField.longValue) &&
+                Objects.equals(doubleValue, factField.doubleValue) &&
                 Objects.equals(dateValue, factField.dateValue);
     }
 
