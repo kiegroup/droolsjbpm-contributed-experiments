@@ -1,0 +1,84 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: zenithrapps.zenithr.kiegroup.org
+spec:
+  group: zenithr.kiegroup.org
+  names:
+    kind: ZenithrApp
+    listKind: ZenithrAppList
+    plural: zenithrapps
+    singular: zenithrapp
+  scope: Namespaced
+  version: v1
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      required:
+        - spec
+      properties:
+        spec:
+          type: object
+          required:
+            - input
+            - rules
+            - output
+          properties:
+            input:
+              type: array
+              description: Request parameters accepted by the service
+              minitems: 1
+              items:
+                type: object
+                required:
+                  - name
+                  - type
+                properties:
+                  name:
+                    type: string
+                  type:
+                    type: string
+                    enum:
+                      - boolean
+                      - int
+                      - double
+                      - long
+                      - date
+                      - datetime
+                      - string
+            rules:
+              type: array
+              description: The rules
+              minitems: 1
+              items:
+                type: object
+                required:
+                  - when
+                  - then
+                properties:
+                  when:
+                    type: string
+                  then:
+                    type: object
+                    required:
+                      - output
+                    properties:
+                      output:
+                        type: string
+            output:
+              type: object
+              description: Result type
+              required:
+                - type
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - boolean
+                    - int
+                    - double
+                    - long
+                    - date
+                    - datetime
+                    - string
