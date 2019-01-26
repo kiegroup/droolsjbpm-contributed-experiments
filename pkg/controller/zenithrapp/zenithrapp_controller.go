@@ -3,6 +3,7 @@ package zenithrapp
 import (
 	"context"
 	"encoding/json"
+	"k8s.io/apimachinery/pkg/util/intstr"
 
 	zenithrv1 "github.com/kiegroup/zenithr-operator/pkg/apis/zenithr/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -77,8 +78,6 @@ type ReconcileZenithrApp struct {
 
 // Reconcile reads that state of the cluster for a ZenithrApp object and makes changes based on the state read
 // and what is in the ZenithrApp.Spec
-// TODO(user): Modify this Reconcile function to implement your Controller logic.  This example creates
-// a Pod as an example
 // Note:
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
@@ -143,13 +142,34 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name:    cr.Name,
-					Image:   "quay.io/bmozaffa/zenithr",
-					Env:     []corev1.EnvVar{
+					Name:  cr.Name,
+					Image: "quay.io/bmozaffa/zenithr",
+					Env: []corev1.EnvVar{
 						{
-							Name:    "GET",
-							Value:   getJson(cr.Spec),
+							Name:  "GET",
+							Value: getJson(cr.Spec),
 						},
+					},
+					ReadinessProbe: &corev1.Probe{
+						Handler: corev1.Handler{
+							HTTPGet: &corev1.HTTPGetAction{
+								Path: "health",
+								Port: intstr.IntOrString{IntVal: 8080},
+							},
+						},
+						InitialDelaySeconds: 5,
+						PeriodSeconds:       3,
+						FailureThreshold:    20,
+					},
+					LivenessProbe: &corev1.Probe{
+						Handler: corev1.Handler{
+							HTTPGet: &corev1.HTTPGetAction{
+								Path: "health",
+								Port: intstr.IntOrString{IntVal: 8080},
+							},
+						},
+						InitialDelaySeconds: 60,
+						PeriodSeconds:       60,
 					},
 				},
 			},
@@ -158,11 +178,9 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 }
 
 func getJson(spec zenithrv1.ZenithrAppSpec) string {
-	json, err := json.Marshal(spec)
+	bytes, err := json.Marshal(spec)
 	if err != nil {
 		panic("Failed to parse input!")
 	}
-	log.Info("Return json", "json", string(json))
-	return string(json)
+	return string(bytes)
 }
-
