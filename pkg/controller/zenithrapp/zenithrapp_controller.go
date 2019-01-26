@@ -2,6 +2,7 @@ package zenithrapp
 
 import (
 	"context"
+	"encoding/json"
 
 	zenithrv1 "github.com/kiegroup/zenithr-operator/pkg/apis/zenithr/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -142,11 +143,26 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name:    "busybox",
-					Image:   "busybox",
-					Command: []string{"sleep", "3600"},
+					Name:    cr.Name,
+					Image:   "quay.io/bmozaffa/zenithr",
+					Env:     []corev1.EnvVar{
+						{
+							Name:    "GET",
+							Value:   getJson(cr.Spec),
+						},
+					},
 				},
 			},
 		},
 	}
 }
+
+func getJson(spec zenithrv1.ZenithrAppSpec) string {
+	json, err := json.Marshal(spec)
+	if err != nil {
+		panic("Failed to parse input!")
+	}
+	log.Info("Return json", "json", string(json))
+	return string(json)
+}
+

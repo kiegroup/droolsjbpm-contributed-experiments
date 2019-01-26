@@ -1,7 +1,0 @@
-apiVersion: zenithr.kiegroup.org/v1
-kind: ZenithrApp
-metadata:
-  name: example-zenithrapp
-spec:
-  # Add fields here
-  size: 3

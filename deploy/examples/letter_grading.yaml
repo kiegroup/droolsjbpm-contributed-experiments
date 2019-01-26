@@ -1,0 +1,26 @@
+apiVersion: zenithr.kiegroup.org/v1
+kind: ZenithrApp
+metadata:
+  name: letter-grading
+spec:
+  input:
+  - name: grade
+    type: double
+  rules:
+  - when: grade >= 90 && grade <= 100
+    then:
+      output: A
+  - when: grade >= 80 && grade < 90
+    then:
+      output: B
+  - when: grade >= 70 && grade < 80
+    then:
+      output: C
+  - when: grade >= 60 && grade < 70
+    then:
+      output: D
+  - when: grade < 60
+    then:
+      output: F
+  output:
+    type: string

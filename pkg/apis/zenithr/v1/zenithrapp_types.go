@@ -9,8 +9,29 @@ import (
 
 // ZenithrAppSpec defines the desired state of ZenithrApp
 type ZenithrAppSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+	Input    []Variable      `json:"input"`
+	Rules    []Rules         `json:"rules"`
+	Output   OutputType      `json:"output"`
+
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
+}
+
+type Variable struct {
+	Name    string      `json:"name"`
+	Type    string      `json:"type"`
+}
+
+type Rules struct {
+	When    string      `json:"when"`
+	Then    Action      `json:"then"`
+}
+
+type Action struct {
+	Output  string      `json:"output"`
+}
+
+type OutputType struct {
+	Type    string      `json:"type"`
 }
 
 // ZenithrAppStatus defines the observed state of ZenithrApp
