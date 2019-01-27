@@ -80,7 +80,7 @@ public class SessionFactory {
     }
 
     private static Map<String, String> getDataTypeMap(JsonArray jsonArray) {
-        Map<String, String> dataTypeMap = new HashMap<>();
+        Map<String, String> dataTypeMap = new LinkedHashMap<>();
         for (JsonObject entry : jsonArray.getValuesAs(JsonObject.class)) {
             dataTypeMap.put(entry.getString("name"), entry.getString("type"));
         }
@@ -132,7 +132,7 @@ public class SessionFactory {
     private static String qualifyGetters(String when, Map<String, String> inputTypes) {
         for (String name : inputTypes.keySet()) {
             String type = inputTypes.get(name);
-            String qualifiedField = name + "." + getgetter(type) + "()";
+            String qualifiedField = name + "." + getGetter(type) + "()";
             when = when.replaceAll(name, qualifiedField);
         }
         return when;
@@ -159,7 +159,7 @@ public class SessionFactory {
         }
     }
 
-    private static String getgetter(String type) {
+    private static String getGetter(String type) {
         switch (type) {
             case "boolean":
                 return "getBooleanValue";
@@ -262,6 +262,10 @@ public class SessionFactory {
             default:
                 return null;
         }
+    }
+
+    public Map<String, String> getInputTypeMap() {
+        return Collections.unmodifiableMap(inputTypeMap);
     }
 
     private static final String RULE_HEADER =
