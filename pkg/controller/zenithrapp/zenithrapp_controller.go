@@ -53,17 +53,21 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
-	// TODO(user): Modify this to be the types you create that are owned by the primary resource
-	// Watch for changes to secondary resource Pods and requeue the owner ZenithrApp
-	err = c.Watch(&source.Kind{Type: &corev1.Pod{}}, &handler.EnqueueRequestForOwner{
+	// Watch for changes to secondary resource Pods and Services, and requeue the owner ZenithrApp
+	if err = watchResources(c, &corev1.Pod{}); err != nil {
+		return err
+	}
+	if err = watchResources(c, &corev1.Service{}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func watchResources(controller controller.Controller, resource runtime.Object) error {
+	return controller.Watch(&source.Kind{Type: resource}, &handler.EnqueueRequestForOwner{
 		IsController: true,
 		OwnerType:    &zenithrv1.ZenithrApp{},
 	})
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 var _ reconcile.Reconciler = &ReconcileZenithrApp{}
@@ -108,34 +112,52 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 	}
 
 	// Check if this Pod already exists
-	found := &corev1.Pod{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, found)
+	existingPod := &corev1.Pod{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, existingPod)
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
 		err = r.client.Create(context.TODO(), pod)
 		if err != nil {
 			return reconcile.Result{}, err
 		}
-
 		// Pod created successfully - don't requeue
-		return reconcile.Result{}, nil
 	} else if err != nil {
 		return reconcile.Result{}, err
 	}
 
-	// Pod already exists - don't requeue
-	reqLogger.Info("Skip reconcile: Pod already exists", "Pod.Namespace", found.Namespace, "Pod.Name", found.Name)
+	// Define a new Service object
+	service := newServiceForCR(instance)
+
+	// Set ZenithrApp instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Check if this Service already exists
+	existingService := &corev1.Service{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, existingService)
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+		err = r.client.Create(context.TODO(), service)
+		if err != nil {
+			return reconcile.Result{}, err
+		}
+		// Service created successfully - don't requeue
+	} else if err != nil {
+		return reconcile.Result{}, err
+	}
+
 	return reconcile.Result{}, nil
 }
 
-// newPodForCR returns a busybox pod with the same name/namespace as the cr
+// newPodForCR returns a functioning pod with the same name/namespace as the cr
 func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
 	return &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-pod",
+			Name:      cr.Name,
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
@@ -177,6 +199,29 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 					},
 				},
 			},
+		},
+	}
+}
+
+// newServiceForCR returns a service that directs to the application pod
+func newServiceForCR(cr *zenithrv1.ZenithrApp) *corev1.Service {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+	return &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name,
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: corev1.ServiceSpec{
+			Ports:     []corev1.ServicePort{
+				{
+					Name:       "http",
+					Port:       8080,
+				},
+			},
+			Selector:  labels,
 		},
 	}
 }
