@@ -39,7 +39,7 @@ public class RuleServiceTest {
         parameters.put("biology", new String[]{String.valueOf(91d)});
         Object object = RuleService.getOutput(parameters);
         System.out.println(object);
-        double average = (Double) (object);
-        Assert.assertEquals(94d, average, 0d);
+        Assert.assertNotNull(object);
+        Assert.assertEquals(94d, (Double) object, 0d);
     }
 }
