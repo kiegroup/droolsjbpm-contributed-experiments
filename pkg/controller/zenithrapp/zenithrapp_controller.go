@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"reflect"
 
 	zenithrv1 "github.com/kiegroup/zenithr-operator/pkg/apis/zenithr/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -80,6 +81,11 @@ type ReconcileZenithrApp struct {
 	scheme *runtime.Scheme
 }
 
+type KubeObject interface {
+	runtime.Object
+	metav1.Object
+}
+
 // Reconcile reads that state of the cluster for a ZenithrApp object and makes changes based on the state read
 // and what is in the ZenithrApp.Spec
 // Note:
@@ -103,48 +109,26 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 		return reconcile.Result{}, err
 	}
 
-	// Define a new Pod object
-	pod := newPodForCR(instance)
-
-	// Set ZenithrApp instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, pod, r.scheme); err != nil {
-		return reconcile.Result{}, err
-	}
-
-	// Check if this Pod already exists
-	existingPod := &corev1.Pod{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, existingPod)
-	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
-		err = r.client.Create(context.TODO(), pod)
-		if err != nil {
+	requested := []KubeObject{newPodForCR(instance), newServiceForCR(instance)}
+	existing := []KubeObject{&corev1.Pod{}, &corev1.Service{}}
+	for index := 0; index < len(requested); index++ {
+		// Set ZenithrApp instance as the owner and controller
+		if err := controllerutil.SetControllerReference(instance, requested[index], r.scheme); err != nil {
 			return reconcile.Result{}, err
 		}
-		// Pod created successfully - don't requeue
-	} else if err != nil {
-		return reconcile.Result{}, err
-	}
 
-	// Define a new Service object
-	service := newServiceForCR(instance)
-
-	// Set ZenithrApp instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
-		return reconcile.Result{}, err
-	}
-
-	// Check if this Service already exists
-	existingService := &corev1.Service{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, existingService)
-	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
-		err = r.client.Create(context.TODO(), service)
-		if err != nil {
+		// Check if this resource already exists
+		err = r.client.Get(context.TODO(), types.NamespacedName{Name: requested[index].GetName(), Namespace: requested[index].GetNamespace()}, existing[index])
+		if err != nil && errors.IsNotFound(err) {
+			reqLogger.Info("Creating a new resource of type ", "Resource Type", reflect.TypeOf(requested[index]), "Pod.Namespace", requested[index].GetNamespace(), "Pod.Name", requested[index].GetName())
+			err = r.client.Create(context.TODO(), requested[index])
+			if err != nil {
+				return reconcile.Result{}, err
+			}
+			// Resource created successfully - don't requeue
+		} else if err != nil {
 			return reconcile.Result{}, err
 		}
-		// Service created successfully - don't requeue
-	} else if err != nil {
-		return reconcile.Result{}, err
 	}
 
 	return reconcile.Result{}, nil
