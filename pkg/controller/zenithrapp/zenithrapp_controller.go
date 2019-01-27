@@ -149,6 +149,10 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 							Name:  "GET",
 							Value: getJson(cr.Spec),
 						},
+						{
+							Name:  "NAME",
+							Value: cr.Name,
+						},
 					},
 					ReadinessProbe: &corev1.Probe{
 						Handler: corev1.Handler{
