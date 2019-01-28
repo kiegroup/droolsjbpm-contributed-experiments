@@ -53,7 +53,7 @@ public class FormServlet extends HttpServlet {
         StringWriter inputSection = new StringWriter();
         for (String name : inputTypes.keySet()) {
             String capitalized = name.substring(0, 1).toUpperCase() + name.substring(1);
-            inputSection.append(String.format(inputTemplate, name, capitalized, getHtmlType(inputTypes.get(name)), name, name));
+            inputSection.append(String.format(inputTemplate, name, capitalized, getHtmlType(inputTypes.get(name)), getOtherAttribute(inputTypes.get(name)), name, name));
         }
         System.out.println(inputSection.toString());
         return inputSection;
@@ -74,6 +74,15 @@ public class FormServlet extends HttpServlet {
             case "string":
             default:
                 return "text";
+        }
+    }
+
+    private String getOtherAttribute(String type) {
+        switch (type) {
+            case "double":
+                return "step=" + '"' + "any" + '"';
+            default:
+                return "";
         }
     }
 
