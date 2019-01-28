@@ -39,6 +39,12 @@ rules:
   - get
   - create
 - apiGroups:
+    - route.openshift.io
+  resources:
+    - '*'
+  verbs:
+    - '*'
+- apiGroups:
   - zenithr.kiegroup.org
   resources:
   - '*'

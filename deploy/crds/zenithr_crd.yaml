@@ -82,3 +82,9 @@ spec:
                     - date
                     - datetime
                     - string
+            expose:
+              type: boolean
+              description: Whether to create a route to expose the service
+            hostname:
+              type: string
+              description: Optional hostname for generate route

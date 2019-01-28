@@ -9,29 +9,31 @@ import (
 
 // ZenithrAppSpec defines the desired state of ZenithrApp
 type ZenithrAppSpec struct {
-	Input    []Variable      `json:"input"`
-	Rules    []Rules         `json:"rules"`
-	Output   OutputType      `json:"output"`
+	Input    []Variable `json:"input"`
+	Rules    []Rules    `json:"rules"`
+	Output   OutputType `json:"output"`
+	Expose   bool       `json:"expose,omitempty"`
+	HostName string     `json:"hostname,omitempty"`
 
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 }
 
 type Variable struct {
-	Name    string      `json:"name"`
-	Type    string      `json:"type"`
+	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 type Rules struct {
-	When    string      `json:"when"`
-	Then    Action      `json:"then"`
+	When string `json:"when"`
+	Then Action `json:"then"`
 }
 
 type Action struct {
-	Output  string      `json:"output"`
+	Output string `json:"output"`
 }
 
 type OutputType struct {
-	Type    string      `json:"type"`
+	Type string `json:"type"`
 }
 
 // ZenithrAppStatus defines the observed state of ZenithrApp

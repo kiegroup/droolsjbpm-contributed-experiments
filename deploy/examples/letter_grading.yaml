@@ -24,3 +24,5 @@ spec:
       output: F
   output:
     type: string
+  expose: true
+  hostname: grading.example.com

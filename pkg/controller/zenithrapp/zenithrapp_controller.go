@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"reflect"
 
 	zenithrv1 "github.com/kiegroup/zenithr-operator/pkg/apis/zenithr/v1"
+	routev1 "github.com/openshift/api/route/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -81,11 +81,6 @@ type ReconcileZenithrApp struct {
 	scheme *runtime.Scheme
 }
 
-type KubeObject interface {
-	runtime.Object
-	metav1.Object
-}
-
 // Reconcile reads that state of the cluster for a ZenithrApp object and makes changes based on the state read
 // and what is in the ZenithrApp.Spec
 // Note:
@@ -109,25 +104,81 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 		return reconcile.Result{}, err
 	}
 
-	requested := []KubeObject{newPodForCR(instance), newServiceForCR(instance)}
-	existing := []KubeObject{&corev1.Pod{}, &corev1.Service{}}
-	for index := 0; index < len(requested); index++ {
-		// Set ZenithrApp instance as the owner and controller
-		if err := controllerutil.SetControllerReference(instance, requested[index], r.scheme); err != nil {
+	// Define a new Pod object
+	pod := newPodForCR(instance)
+
+	// Set ZenithrApp instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, pod, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Check if this Pod already exists
+	existingPod := &corev1.Pod{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, existingPod)
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
+		err = r.client.Create(context.TODO(), pod)
+		if err != nil {
 			return reconcile.Result{}, err
 		}
+		// Pod created successfully - don't requeue
+	} else if err != nil {
+		return reconcile.Result{}, err
+	}
 
-		// Check if this resource already exists
-		err = r.client.Get(context.TODO(), types.NamespacedName{Name: requested[index].GetName(), Namespace: requested[index].GetNamespace()}, existing[index])
-		if err != nil && errors.IsNotFound(err) {
-			reqLogger.Info("Creating a new resource of type ", "Resource Type", reflect.TypeOf(requested[index]), "Pod.Namespace", requested[index].GetNamespace(), "Pod.Name", requested[index].GetName())
-			err = r.client.Create(context.TODO(), requested[index])
+	// Define a new Service object
+	service := newServiceForCR(instance)
+
+	// Set ZenithrApp instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Check if this Service already exists
+	existingService := &corev1.Service{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, existingService)
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+		err = r.client.Create(context.TODO(), service)
+		if err != nil {
+			return reconcile.Result{}, err
+		}
+		// Service created successfully - don't requeue
+	} else if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Define a new Route object
+	route := newRouteForCR(instance)
+
+	// Set ZenithrApp instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, route, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Check if this Route already exists
+	existingRoute := &routev1.Route{}
+	existingRoute.SetGroupVersionKind(routev1.SchemeGroupVersion.WithKind("Route"))
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: route.Name, Namespace: route.Namespace}, existingRoute)
+	if err != nil && errors.IsNotFound(err) {
+		//There is no existing route, create one if there should be, ignore otherwise
+		if instance.Spec.Expose {
+			reqLogger.Info("Creating a new Route", "Route.Namespace", route.Namespace, "Route.Name", route.Name)
+			err = r.client.Create(context.TODO(), route)
 			if err != nil {
 				return reconcile.Result{}, err
 			}
-			// Resource created successfully - don't requeue
-		} else if err != nil {
-			return reconcile.Result{}, err
+			// Route created successfully - don't requeue
+		}
+	} else if err != nil {
+		return reconcile.Result{}, err
+	} else {
+		//There is a route from before, but delete it if expose flag has been removed
+		if !instance.Spec.Expose {
+			err = r.client.Delete(context.TODO(), route)
+			if err != nil {
+				return reconcile.Result{}, err
+			}
 		}
 	}
 
@@ -199,15 +250,39 @@ func newServiceForCR(cr *zenithrv1.ZenithrApp) *corev1.Service {
 			Labels:    labels,
 		},
 		Spec: corev1.ServiceSpec{
-			Ports:     []corev1.ServicePort{
+			Ports: []corev1.ServicePort{
 				{
-					Name:       "http",
-					Port:       8080,
+					Name: "http",
+					Port: 8080,
 				},
 			},
-			Selector:  labels,
+			Selector: labels,
 		},
 	}
+}
+
+// newRouteForCR returns a route that exposes the application service
+func newRouteForCR(cr *zenithrv1.ZenithrApp) *routev1.Route {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+	route := routev1.Route{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name,
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: routev1.RouteSpec{
+			To: routev1.RouteTargetReference{
+				Name: cr.Name,
+			},
+		},
+	}
+	if len(cr.Spec.HostName) > 0 {
+		route.Spec.Host = cr.Spec.HostName
+	}
+	route.SetGroupVersionKind(routev1.SchemeGroupVersion.WithKind("Route"))
+	return &route
 }
 
 func getJson(spec zenithrv1.ZenithrAppSpec) string {
