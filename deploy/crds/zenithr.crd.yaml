@@ -25,6 +25,8 @@ spec:
             - rules
             - output
           properties:
+            name:
+              type: string
             input:
               type: array
               description: Request parameters accepted by the service

@@ -3,7 +3,10 @@ package zenithrapp
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"reflect"
+	"time"
 
 	zenithrv1 "github.com/kiegroup/zenithr-operator/pkg/apis/zenithr/v1"
 	routev1 "github.com/openshift/api/route/v1"
@@ -23,11 +26,6 @@ import (
 )
 
 var log = logf.Log.WithName("controller_zenithrapp")
-
-/**
-* USER ACTION REQUIRED: This is a scaffold file intended for the user to modify with their own Controller
-* business logic.  Delete these comments after modifying this file.*
- */
 
 // Add creates a new ZenithrApp Controller and adds it to the Manager. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
@@ -81,6 +79,11 @@ type ReconcileZenithrApp struct {
 	scheme *runtime.Scheme
 }
 
+type KubeObject interface {
+	runtime.Object
+	metav1.Object
+}
+
 // Reconcile reads that state of the cluster for a ZenithrApp object and makes changes based on the state read
 // and what is in the ZenithrApp.Spec
 // Note:
@@ -104,84 +107,65 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 		return reconcile.Result{}, err
 	}
 
-	// Define a new Pod object
-	pod := newPodForCR(instance)
+	if len(instance.Spec.Name) == 0 {
+		instance.Spec.Name = instance.Name
+	}
 
-	// Set ZenithrApp instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, pod, r.scheme); err != nil {
+	// Create pod object based on CR, if does not exist:
+	err = r.create(instance, newPodForCR(instance), &corev1.Pod{})
+	if err != nil {
 		return reconcile.Result{}, err
 	}
 
-	// Check if this Pod already exists
-	existingPod := &corev1.Pod{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, existingPod)
-	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
-		err = r.client.Create(context.TODO(), pod)
+	// Create service object based on CR, if does not exist:
+	err = r.create(instance, newServiceForCR(instance), &corev1.Service{})
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	genRoute := newRouteForCR(instance)
+	curRoute := &routev1.Route{}
+	if instance.Spec.Expose {
+		// Create route based on CR, if does not exist:
+		err = r.create(instance, genRoute, curRoute)
 		if err != nil {
 			return reconcile.Result{}, err
 		}
-		// Pod created successfully - don't requeue
-	} else if err != nil {
-		return reconcile.Result{}, err
-	}
-
-	// Define a new Service object
-	service := newServiceForCR(instance)
-
-	// Set ZenithrApp instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
-		return reconcile.Result{}, err
-	}
-
-	// Check if this Service already exists
-	existingService := &corev1.Service{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, existingService)
-	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
-		err = r.client.Create(context.TODO(), service)
-		if err != nil {
-			return reconcile.Result{}, err
-		}
-		// Service created successfully - don't requeue
-	} else if err != nil {
-		return reconcile.Result{}, err
-	}
-
-	// Define a new Route object
-	route := newRouteForCR(instance)
-
-	// Set ZenithrApp instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, route, r.scheme); err != nil {
-		return reconcile.Result{}, err
-	}
-
-	// Check if this Route already exists
-	existingRoute := &routev1.Route{}
-	existingRoute.SetGroupVersionKind(routev1.SchemeGroupVersion.WithKind("Route"))
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: route.Name, Namespace: route.Namespace}, existingRoute)
-	if err != nil && errors.IsNotFound(err) {
-		//There is no existing route, create one if there should be, ignore otherwise
-		if instance.Spec.Expose {
-			reqLogger.Info("Creating a new Route", "Route.Namespace", route.Namespace, "Route.Name", route.Name)
-			err = r.client.Create(context.TODO(), route)
-			if err != nil {
-				return reconcile.Result{}, err
-			}
-			// Route created successfully - don't requeue
-		}
-	} else if err != nil {
-		return reconcile.Result{}, err
 	} else {
-		//There is a route from before, but delete it if expose flag has been removed
-		if !instance.Spec.Expose {
-			err = r.client.Delete(context.TODO(), route)
+		err := r.client.Get(context.TODO(), types.NamespacedName{Name: genRoute.Name, Namespace: genRoute.Namespace}, curRoute)
+		if err == nil {
+			//There is a route from before, but delete it, since expose flag has been removed
+			reqLogger.Info("Will delete old route")
+			err = r.client.Delete(context.TODO(), curRoute)
 			if err != nil {
+				reqLogger.Info("Error deleting", "error", err)
 				return reconcile.Result{}, err
 			}
+		} else if errors.IsNotFound(err) {
+			//There is no existing route, nor should there be one, so all is good
+		} else {
+			//Unknown error
+			reqLogger.Info("Error finding out if there was an old route", "error", err)
+			return reconcile.Result{}, err
 		}
 	}
-
+	if instance.Spec.Expose && len(instance.Status.RouteHost) == 0 {
+		if len(curRoute.Name) == 0 {
+			//Route must have been just created, let's set URL status later
+			retryTime := 5
+			reqLogger.Info("Will try reconciliation again to set status hostname", "retry time", retryTime)
+			return reconcile.Result{Requeue:true, RequeueAfter:time.Duration(retryTime) * time.Second}, nil
+		}
+		err := r.setRouteHostname(instance, *curRoute)
+		if err != nil {
+			reqLogger.Error(err, "Error setting route hostname")
+			return reconcile.Result{}, err
+		} else {
+			retryTime := 5
+			reqLogger.Info("Should have updated route host, but will try reconciliation again to verify", "retry time", retryTime)
+			return reconcile.Result{Requeue:true, RequeueAfter:time.Duration(retryTime) * time.Second}, nil
+		}
+	}
 	return reconcile.Result{}, nil
 }
 
@@ -208,7 +192,7 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 						},
 						{
 							Name:  "NAME",
-							Value: cr.Name,
+							Value: cr.Spec.Name,
 						},
 					},
 					ReadinessProbe: &corev1.Probe{
@@ -291,4 +275,47 @@ func getJson(spec zenithrv1.ZenithrAppSpec) string {
 		panic("Failed to parse input!")
 	}
 	return string(bytes)
+}
+
+func (r *ReconcileZenithrApp) setRouteHostname(cr *zenithrv1.ZenithrApp, route routev1.Route) (err error) {
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: cr.Name, Namespace: cr.Namespace}, cr)
+	if err != nil {
+		log.Error(err, "Error Reloading CR", "cr", cr)
+		return
+	}
+	if len(route.Spec.Host) > 0 {
+		log.Info("Will set route hostname to", "hostname", route.Spec.Host)
+		cr.Status.RouteHost = fmt.Sprintf("http://%s", route.Spec.Host)
+		err = r.client.Update(context.TODO(), cr)
+		if err != nil {
+			log.Error(err, "Error updating CR", "cr", cr)
+			return
+		}
+	}
+	return
+}
+
+func (r *ReconcileZenithrApp) create(instance *zenithrv1.ZenithrApp, genObject KubeObject, curObject KubeObject) error {
+	reqLogger := log.WithValues("Request.Namespace", instance.Namespace, "Request.Name", instance.Name)
+	// Set ZenithrApp instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, genObject, r.scheme); err != nil {
+		return err
+	}
+	//Check if this object already exists
+	err := r.client.Get(context.TODO(), types.NamespacedName{Name: genObject.GetName(), Namespace: genObject.GetNamespace()}, curObject)
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new Object", "type", reflect.TypeOf(genObject), "Namespace", genObject.GetNamespace(), "Name", genObject.GetName())
+		err = r.client.Create(context.TODO(), genObject)
+		if err != nil {
+			reqLogger.Info("Got an error creating it", "error", err)
+			return err
+		}
+		// Object created successfully - don't requeue
+		return nil
+	} else if err != nil {
+		reqLogger.Info("Got an error looking it up", "error", err)
+		return err
+	} else {
+		return nil
+	}
 }

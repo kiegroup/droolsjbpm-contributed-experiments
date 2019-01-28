@@ -9,6 +9,7 @@ import (
 
 // ZenithrAppSpec defines the desired state of ZenithrApp
 type ZenithrAppSpec struct {
+	Name     string     `json:"name,omitempty"`
 	Input    []Variable `json:"input"`
 	Rules    []Rules    `json:"rules"`
 	Output   OutputType `json:"output"`
@@ -38,7 +39,7 @@ type OutputType struct {
 
 // ZenithrAppStatus defines the observed state of ZenithrApp
 type ZenithrAppStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+	RouteHost string      `json:"routeHost,omitempty"`
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 }
 
