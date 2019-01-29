@@ -11,8 +11,6 @@ spec:
     singular: zenithrapp
   scope: Namespaced
   version: v1
-  subresources:
-    status: {}
   validation:
     openAPIV3Schema:
       required:
