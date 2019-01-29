@@ -221,10 +221,6 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 							Name:  GETRules,
 							Value: getJson(cr.Spec),
 						},
-						{
-							Name:  ServiceName,
-							Value: cr.Spec.Name,
-						},
 					},
 					ReadinessProbe: &corev1.Probe{
 						Handler: corev1.Handler{
@@ -352,11 +348,6 @@ func (r *ReconcileZenithrApp) loadOrCreate(instance *zenithrv1.ZenithrApp, genOb
 }
 
 func changed(current *corev1.Pod, generated *corev1.Pod) (changed bool, err error) {
-	currentName := getEnvVar(current.Spec.Containers[0].Env, ServiceName)
-	generatedName := getEnvVar(generated.Spec.Containers[0].Env, ServiceName)
-	if currentName != generatedName {
-		changed = true
-	}
 	currentRules := getEnvVar(current.Spec.Containers[0].Env, GETRules)
 	var currentSpec zenithrv1.ZenithrAppSpec
 	err = json.Unmarshal([]byte(currentRules), &currentSpec)
