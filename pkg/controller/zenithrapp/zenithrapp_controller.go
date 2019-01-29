@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	. "github.com/kiegroup/zenithr-operator/pkg/controller/zenithrapp/constants"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"reflect"
 	"time"
@@ -112,13 +113,29 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 	}
 
 	// Create pod object based on CR, if does not exist:
-	err = r.create(instance, newPodForCR(instance), &corev1.Pod{})
+	genPod := newPodForCR(instance)
+	curPod := &corev1.Pod{}
+	err = r.loadOrCreate(instance, genPod, curPod)
 	if err != nil {
 		return reconcile.Result{}, err
+	} else if existed(curPod) {
+		updated, err := changed(curPod, genPod)
+		if err != nil {
+			return reconcile.Result{}, err
+		} else if updated {
+			reqLogger.Info("Detected that pod needs to be updated, will delete it and let it be recreated!")
+			err = r.client.Delete(context.TODO(), curPod)
+			if err != nil {
+				return reconcile.Result{}, err
+			} else {
+				return reconcile.Result{Requeue:true}, nil
+			}
+		}
 	}
 
 	// Create service object based on CR, if does not exist:
-	err = r.create(instance, newServiceForCR(instance), &corev1.Service{})
+	curService := &corev1.Service{}
+	err = r.loadOrCreate(instance, newServiceForCR(instance), curService)
 	if err != nil {
 		return reconcile.Result{}, err
 	}
@@ -127,9 +144,21 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 	curRoute := &routev1.Route{}
 	if instance.Spec.Expose {
 		// Create route based on CR, if does not exist:
-		err = r.create(instance, genRoute, curRoute)
+		err = r.loadOrCreate(instance, genRoute, curRoute)
 		if err != nil {
 			return reconcile.Result{}, err
+		} else if existed(curRoute) {
+			if len(instance.Spec.HostName) > 0 && instance.Spec.HostName != curRoute.Spec.Host {
+				reqLogger.Info("Detected that route hostname needs to be updated!")
+				curRoute.Spec.Host = instance.Spec.HostName
+				err = r.client.Update(context.TODO(), curRoute)
+				if err != nil {
+					return reconcile.Result{}, err
+				} else {
+					//Status URL should next be updated based on this
+					return reconcile.Result{Requeue:true}, nil
+				}
+			}
 		}
 	} else {
 		err := r.client.Get(context.TODO(), types.NamespacedName{Name: genRoute.Name, Namespace: genRoute.Namespace}, curRoute)
@@ -149,21 +178,23 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 			return reconcile.Result{}, err
 		}
 	}
-	if instance.Spec.Expose && len(instance.Status.RouteHost) == 0 {
+	if instance.Spec.Expose {
 		if len(curRoute.Name) == 0 {
 			//Route must have been just created, let's set URL status later
 			retryTime := 5
 			reqLogger.Info("Will try reconciliation again to set status hostname", "retry time", retryTime)
 			return reconcile.Result{Requeue:true, RequeueAfter:time.Duration(retryTime) * time.Second}, nil
 		}
-		err := r.setRouteHostname(instance, *curRoute)
-		if err != nil {
-			reqLogger.Error(err, "Error setting route hostname")
-			return reconcile.Result{}, err
-		} else {
-			retryTime := 5
-			reqLogger.Info("Should have updated route host, but will try reconciliation again to verify", "retry time", retryTime)
-			return reconcile.Result{Requeue:true, RequeueAfter:time.Duration(retryTime) * time.Second}, nil
+		if instance.Status.RouteHost != curRoute.Spec.Host {
+			err := r.setRouteHostname(instance, *curRoute)
+			if err != nil {
+				reqLogger.Error(err, "Error setting route hostname")
+				return reconcile.Result{}, err
+			} else {
+				retryTime := 5
+				reqLogger.Info("Should have updated route host, but will try reconciliation again to verify", "retry time", retryTime)
+				return reconcile.Result{Requeue:true, RequeueAfter:time.Duration(retryTime) * time.Second}, nil
+			}
 		}
 	}
 	return reconcile.Result{}, nil
@@ -187,11 +218,11 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 					Image: "quay.io/bmozaffa/zenithr",
 					Env: []corev1.EnvVar{
 						{
-							Name:  "GET",
+							Name:  GETRules,
 							Value: getJson(cr.Spec),
 						},
 						{
-							Name:  "NAME",
+							Name:  ServiceName,
 							Value: cr.Spec.Name,
 						},
 					},
@@ -285,7 +316,7 @@ func (r *ReconcileZenithrApp) setRouteHostname(cr *zenithrv1.ZenithrApp, route r
 	}
 	if len(route.Spec.Host) > 0 {
 		log.Info("Will set route hostname to", "hostname", route.Spec.Host)
-		cr.Status.RouteHost = fmt.Sprintf("http://%s", route.Spec.Host)
+		cr.Status.RouteHost = fmt.Sprintf(route.Spec.Host)
 		err = r.client.Update(context.TODO(), cr)
 		if err != nil {
 			log.Error(err, "Error updating CR", "cr", cr)
@@ -295,7 +326,7 @@ func (r *ReconcileZenithrApp) setRouteHostname(cr *zenithrv1.ZenithrApp, route r
 	return
 }
 
-func (r *ReconcileZenithrApp) create(instance *zenithrv1.ZenithrApp, genObject KubeObject, curObject KubeObject) error {
+func (r *ReconcileZenithrApp) loadOrCreate(instance *zenithrv1.ZenithrApp, genObject KubeObject, curObject KubeObject) error {
 	reqLogger := log.WithValues("Request.Namespace", instance.Namespace, "Request.Name", instance.Name)
 	// Set ZenithrApp instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, genObject, r.scheme); err != nil {
@@ -318,4 +349,41 @@ func (r *ReconcileZenithrApp) create(instance *zenithrv1.ZenithrApp, genObject K
 	} else {
 		return nil
 	}
+}
+
+func changed(current *corev1.Pod, generated *corev1.Pod) (changed bool, err error) {
+	currentName := getEnvVar(current.Spec.Containers[0].Env, ServiceName)
+	generatedName := getEnvVar(generated.Spec.Containers[0].Env, ServiceName)
+	if currentName != generatedName {
+		changed = true
+	}
+	currentRules := getEnvVar(current.Spec.Containers[0].Env, GETRules)
+	var currentSpec zenithrv1.ZenithrAppSpec
+	err = json.Unmarshal([]byte(currentRules), &currentSpec)
+	if err != nil {
+		return
+	}
+	generatedRules := getEnvVar(generated.Spec.Containers[0].Env, GETRules)
+	var generatedSpec zenithrv1.ZenithrAppSpec
+	err = json.Unmarshal([]byte(generatedRules), &generatedSpec)
+	if err != nil {
+		return
+	}
+	if !reflect.DeepEqual(currentSpec, generatedSpec) {
+		changed = true
+	}
+	return
+}
+
+func getEnvVar(vars []corev1.EnvVar, key string) string {
+	for _, envVar := range vars {
+		if envVar.Name == key {
+			return envVar.Value
+		}
+	}
+	return ""
+}
+
+func existed(object KubeObject) bool {
+	return len(object.GetName()) > 0
 }

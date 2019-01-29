@@ -8,35 +8,7 @@ import (
 )
 
 func TestGetJson(t *testing.T) {
-	cr := &v1.ZenithrApp{
-		Spec: v1.ZenithrAppSpec{
-			Input: []v1.Variable{
-				{
-					Name: "grade",
-					Type: "double",
-				},
-			},
-			Rules: []v1.Rules{
-				{
-					When: "grade >= 90 && grade <= 100",
-					Then: v1.Action{
-						Output: "A",
-					},
-				},
-				{
-					When: "grade >= 80 && grade < 90",
-					Then: v1.Action{
-						Output: "B",
-					},
-				},
-			},
-			Output: v1.OutputType{
-				Type: "string",
-			},
-		},
-	}
-	actualJsonString := getJson(cr.Spec)
-
+	actualJsonString := getJson(getSampleCR().Spec)
 	expectedJsonString := `
 {
    "input":[
@@ -68,9 +40,56 @@ func TestGetJson(t *testing.T) {
 	assert.Equal(t, parseSpec(t, expectedJsonString), parseSpec(t, actualJsonString), "Expected json value to be the same as provided")
 }
 
+func getSampleCR() v1.ZenithrApp {
+	return v1.ZenithrApp{
+		Spec: v1.ZenithrAppSpec{
+			Input: []v1.Variable{
+				{
+					Name: "grade",
+					Type: "double",
+				},
+			},
+			Rules: []v1.Rules{
+				{
+					When: "grade >= 90 && grade <= 100",
+					Then: v1.Action{
+						Output: "A",
+					},
+				},
+				{
+					When: "grade >= 80 && grade < 90",
+					Then: v1.Action{
+						Output: "B",
+					},
+				},
+			},
+			Output: v1.OutputType{
+				Type: "string",
+			},
+		},
+	}
+
+}
+
 func parseSpec(t *testing.T, jsonString string) *v1.ZenithrAppSpec {
 	spec := &v1.ZenithrAppSpec{}
 	err := json.Unmarshal([]byte(jsonString), spec)
 	assert.NoError(t, err, "Should be able to unmarshal this json with no error %v", err)
 	return spec
+}
+
+func TestDetectRuleChanges(t *testing.T) {
+	cr1 := getSampleCR()
+	cr2 := getSampleCR()
+	pod1 := newPodForCR(&cr1)
+	pod2 := newPodForCR(&cr2)
+	updated, err := changed(pod1, pod2)
+	assert.NoError(t, err)
+	assert.False(t, updated)
+
+	cr2.Spec.Rules[0].Then.Output = "C"
+	pod2 = newPodForCR(&cr2)
+	updated, err = changed(pod1, pod2)
+	assert.NoError(t, err)
+	assert.True(t, updated)
 }
