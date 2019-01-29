@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @WebServlet("/*")
@@ -40,7 +39,7 @@ public class FormServlet extends HttpServlet {
 
     private String getHTML(String result) {
         String template = getFileContent("/form.html");
-        String serviceName = getServiceName();
+        String serviceName = SessionFactory.getInstance().getServiceName();
         StringWriter inputSection = getInputSection();
         String html = String.format(template, serviceName, serviceName, inputSection, result);
         System.out.println(html);
@@ -89,10 +88,5 @@ public class FormServlet extends HttpServlet {
     private String getFileContent(String fileName) {
         InputStream inputStream = getClass().getResourceAsStream(fileName);
         return new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n"));
-    }
-
-    private static String getServiceName() {
-        Optional<String> name = Optional.ofNullable(System.getenv("NAME"));
-        return name.orElse("Zenithr");
     }
 }

@@ -21,6 +21,7 @@ import java.util.*;
 public class SessionFactory {
     private static SessionFactory INSTANCE;
     private KieContainer kieContainer;
+    private static String serviceName;
     private static Map<String, String> inputTypeMap;
     private static String outputType;
 
@@ -64,17 +65,14 @@ public class SessionFactory {
     private static String getRules() {
         StringWriter drl = new StringWriter();
         drl.append(RULE_HEADER);
-
         String getJson = System.getProperty("GET");
         System.out.println(getJson);
         JsonObject spec = Json.createReader(new StringReader(getJson)).readObject();
+        serviceName = spec.getString("name", "Zenithr");
         inputTypeMap = getDataTypeMap(spec.getJsonArray("input"));
         outputType = spec.getJsonObject("output").getString("type");
         List<JsonObject> rules = spec.getJsonArray("rules").getValuesAs(JsonObject.class);
-        for (JsonObject rule : rules) {
-            drl.append(getRule(rule, inputTypeMap, outputType)).append('\n');
-        }
-
+        drl.append(getRule(rules, inputTypeMap, outputType)).append('\n');
         System.out.println(drl.toString());
         return drl.toString();
     }
@@ -87,21 +85,24 @@ public class SessionFactory {
         return dataTypeMap;
     }
 
-    private static String getRule(JsonObject ruleObject, Map<String, String> inputTypes, String outputType) {
+    private static String getRule(List<JsonObject> rules, Map<String, String> inputTypes, String outputType) {
         StringWriter ruleString = new StringWriter();
-        String when = ruleObject.getString("when");
-        String name = ruleObject.getString("name", when);
-        ruleString.append("rule ").append('"').append(name).append('"').append(" when").append('\n');
-        for (String input : inputTypes.keySet()) {
-            ruleString.append('\t').append(input).append(": FactField(name == ").append('"').append(input).append('"').append(")\n");
+        for (int index = 0; index < rules.size(); index++) {
+            JsonObject ruleObject = rules.get(index);
+            String when = ruleObject.getString("when");
+            String name = ruleObject.getString("name", "rule" + (index + 1));
+            ruleString.append("rule ").append('"').append(name).append('"').append(" when").append('\n');
+            for (String input : inputTypes.keySet()) {
+                ruleString.append('\t').append(input).append(": FactField(name == ").append('"').append(input).append('"').append(")\n");
+            }
+            when = qualifyFields(when, inputTypes);
+            ruleString.append('\t').append("output: FactField(name == ").append('"').append("output").append('"').append(", ").append(when).append(")\n");
+            ruleString.append("then \n");
+            String output = ruleObject.getJsonObject("then").getString("output");
+            output = qualifyGetters(output, inputTypes);
+            ruleString.append("\t").append("output.").append(getSetter(outputType)).append('(').append(getValue(outputType, output)).append(");\n");
+            ruleString.append("end").append('\n');
         }
-        when = qualifyFields(when, inputTypes);
-        ruleString.append('\t').append("output: FactField(name == ").append('"').append("output").append('"').append(", ").append(when).append(")\n");
-        ruleString.append("then \n");
-        String output = ruleObject.getJsonObject("then").getString("output");
-        output = qualifyGetters(output, inputTypes);
-        ruleString.append("\t").append("output.").append(getSetter(outputType)).append('(').append(getValue(outputType, output)).append(");\n");
-        ruleString.append("end");
         return ruleString.toString();
     }
 
@@ -266,6 +267,10 @@ public class SessionFactory {
 
     public Map<String, String> getInputTypeMap() {
         return Collections.unmodifiableMap(inputTypeMap);
+    }
+
+    public String getServiceName() {
+        return serviceName;
     }
 
     private static final String RULE_HEADER =
