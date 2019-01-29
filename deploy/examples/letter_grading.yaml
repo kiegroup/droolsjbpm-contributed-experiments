@@ -3,6 +3,7 @@ kind: ZenithrApp
 metadata:
   name: letter-grading
 spec:
+  name: Grading Service
   input:
   - name: grade
     type: double
