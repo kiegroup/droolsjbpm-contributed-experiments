@@ -42,7 +42,7 @@ public class FormServlet extends HttpServlet {
         String template = getFileContent("/form.html");
         String serviceName = getServiceName();
         StringWriter inputSection = getInputSection();
-        String html = String.format(template, serviceName, inputSection, result);
+        String html = String.format(template, serviceName, serviceName, inputSection, result);
         System.out.println(html);
         return html;
     }
