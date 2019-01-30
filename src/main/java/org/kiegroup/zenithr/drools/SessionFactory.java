@@ -13,12 +13,16 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.time.LocalDate;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
 public class SessionFactory {
+    private static final String PATTERN = "yyyy-mm-dd";
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat(PATTERN);
     private static SessionFactory INSTANCE;
     private KieContainer kieContainer;
     private static String serviceName;
@@ -29,7 +33,8 @@ public class SessionFactory {
         this.kieContainer = kieContainer;
     }
 
-    public static void init() {
+    static void init() {
+        System.setProperty("drools.dateformat", PATTERN);
         KieServices ks = KieServices.Factory.get();
         KieRepository kr = ks.getRepository();
         KieFileSystem kfs = ks.newKieFileSystem();
@@ -72,7 +77,7 @@ public class SessionFactory {
         inputTypeMap = getDataTypeMap(spec.getJsonArray("input"));
         outputType = spec.getJsonObject("output").getString("type");
         List<JsonObject> rules = spec.getJsonArray("rules").getValuesAs(JsonObject.class);
-        drl.append(getRule(rules, inputTypeMap, outputType)).append('\n');
+        drl.append(getRule(rules, outputType)).append('\n');
         System.out.println(drl.toString());
         return drl.toString();
     }
@@ -85,25 +90,41 @@ public class SessionFactory {
         return dataTypeMap;
     }
 
-    private static String getRule(List<JsonObject> rules, Map<String, String> inputTypes, String outputType) {
+    private static String getRule(List<JsonObject> rules, String outputType) {
         StringWriter ruleString = new StringWriter();
+        String ruleTemplate = "FactField(name == \"%s\", %s: %s%s)\n";
         for (int index = 0; index < rules.size(); index++) {
             JsonObject ruleObject = rules.get(index);
             String when = ruleObject.getString("when");
             String name = ruleObject.getString("name", "rule" + (index + 1));
             ruleString.append("rule ").append('"').append(name).append('"').append(" when").append('\n');
-            for (String input : inputTypes.keySet()) {
-                ruleString.append('\t').append(input).append(": FactField(name == ").append('"').append(input).append('"').append(")\n");
+            String[] inputs = getSortedInputs(inputTypeMap);
+            for (int inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
+                String input = inputs[inputIndex];
+                String constraints = "";
+                if (inputIndex + 1 == inputs.length) {
+                    constraints = ", " + when;
+                }
+                String fieldName = getFieldName(inputTypeMap.get(input));
+                ruleString.append( String.format(ruleTemplate, input, input, fieldName, constraints) );
             }
-            when = qualifyFields(when, inputTypes);
-            ruleString.append('\t').append("output: FactField(name == ").append('"').append("output").append('"').append(", ").append(when).append(")\n");
+            ruleString.append('\t').append( String.format("output: FactField(name == \"%s\")\n", "output") );
             ruleString.append("then \n");
             String output = ruleObject.getJsonObject("then").getString("output");
-            output = qualifyGetters(output, inputTypes);
             ruleString.append("\t").append("output.").append(getSetter(outputType)).append('(').append(getValue(outputType, output)).append(");\n");
             ruleString.append("end").append('\n');
         }
         return ruleString.toString();
+    }
+
+    static String[] getSortedInputs(Map<String, String> inputTypeMap) {
+        String[] inputs = inputTypeMap.keySet().toArray(new String[]{});
+        Arrays.sort(inputs, (o1, o2) -> {
+            Boolean o1Date = inputTypeMap.get(o1).equals("date");
+            Boolean o2Date = inputTypeMap.get(o2).equals("date");
+            return o1Date.compareTo(o2Date);
+        });
+        return inputs;
     }
 
     private static String getValue(String type, String value) {
@@ -119,24 +140,6 @@ public class SessionFactory {
             default:
                 return value;
         }
-    }
-
-    private static String qualifyFields(String when, Map<String, String> inputTypes) {
-        for (String name : inputTypes.keySet()) {
-            String type = inputTypes.get(name);
-            String qualifiedField = name + "." + getFieldName(type);
-            when = when.replaceAll(name, qualifiedField);
-        }
-        return when;
-    }
-
-    private static String qualifyGetters(String when, Map<String, String> inputTypes) {
-        for (String name : inputTypes.keySet()) {
-            String type = inputTypes.get(name);
-            String qualifiedField = name + "." + getGetter(type) + "()";
-            when = when.replaceAll(name, qualifiedField);
-        }
-        return when;
     }
 
     private static String getSetter(String type) {
@@ -155,27 +158,6 @@ public class SessionFactory {
                 return "setDateValue";
             case "string":
                 return "setStringValue";
-            default:
-                return null;
-        }
-    }
-
-    private static String getGetter(String type) {
-        switch (type) {
-            case "boolean":
-                return "getBooleanValue";
-            case "int":
-                return "getIntValue";
-            case "double":
-                return "getDoubleValue";
-            case "long":
-                return "getLongValue";
-            case "date":
-                return "getDateValue";
-            case "datetime":
-                return "getDateValue";
-            case "string":
-                return "getStringValue";
             default:
                 return null;
         }
@@ -216,30 +198,34 @@ public class SessionFactory {
         return list;
     }
 
-    private FactField getFact(String type, String value) throws NumberFormatException {
+    private FactField getFact(String type, String value) {
         FactField factField = new FactField();
-        switch (type) {
-            case "boolean":
-                factField.setBooleanValue(Boolean.parseBoolean(value));
-                break;
-            case "int":
-                factField.setIntValue(Integer.parseInt(value));
-                break;
-            case "double":
-                factField.setDoubleValue(Double.parseDouble(value));
-                break;
-            case "long":
-                factField.setLongValue(Long.parseLong(value));
-                break;
-            case "date":
-                factField.setDateValue(new Date(LocalDate.parse(value).toEpochDay()));
-                break;
-            case "datetime":
-                factField.setDateValue(new Date(LocalDateTime.parse(value).toEpochSecond(ZoneOffset.UTC)));
-                break;
-            case "string":
-                factField.setStringValue(value);
-                break;
+        try {
+            switch (type) {
+                case "boolean":
+                    factField.setBooleanValue(Boolean.parseBoolean(value));
+                    break;
+                case "int":
+                    factField.setIntValue(Integer.parseInt(value));
+                    break;
+                case "double":
+                    factField.setDoubleValue(Double.parseDouble(value));
+                    break;
+                case "long":
+                    factField.setLongValue(Long.parseLong(value));
+                    break;
+                case "date":
+                    factField.setDateValue(DATE_FORMAT.parse(value));
+                    break;
+                case "datetime":
+                    factField.setDateValue(new Date(LocalDateTime.parse(value).toEpochSecond(ZoneOffset.UTC)));
+                    break;
+                case "string":
+                    factField.setStringValue(value);
+                    break;
+            }
+        } catch (NumberFormatException | ParseException e) {
+            e.printStackTrace();
         }
         return factField;
     }

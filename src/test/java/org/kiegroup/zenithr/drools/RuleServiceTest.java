@@ -42,4 +42,15 @@ public class RuleServiceTest {
         Assert.assertNotNull(object);
         Assert.assertEquals(94d, (Double) object, 0d);
     }
+
+    @Test
+    public void testSortInputs() {
+        Map<String, String> map = new HashMap<>();
+        map.put("someString", "string");
+        map.put("someDate", "date");
+        map.put("someInt", "int");
+        map.put("someOtherString", "string");
+        String[] sorted = SessionFactory.getSortedInputs(map);
+        Assert.assertEquals(sorted[sorted.length - 1], "someDate");
+    }
 }

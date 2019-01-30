@@ -20,7 +20,7 @@ public class FormServlet extends HttpServlet {
         if (request.getParameterMap().size() > 0) {
             request.getRequestDispatcher("/rest").forward(request, response);
         } else {
-            response.getWriter().print(getHTML(""));
+            response.getWriter().print(getHTML(request.getParameterMap(), ""));
             response.getWriter().close();
         }
     }
@@ -30,31 +30,32 @@ public class FormServlet extends HttpServlet {
         if (request.getParameterMap().size() > 0) {
             Object output = RuleService.getOutput(request.getParameterMap());
             String result = String.format(getFileContent("/result.html"), output);
-            response.getWriter().print(getHTML(result));
+            response.getWriter().print(getHTML(request.getParameterMap(), result));
             response.getWriter().close();
         } else {
             request.getRequestDispatcher("/rest").forward(request, response);
         }
     }
 
-    private String getHTML(String result) {
+    private String getHTML(Map<String, String[]> parameterMap, String result) {
         String template = getFileContent("/form.html");
         String serviceName = SessionFactory.getInstance().getServiceName();
-        StringWriter inputSection = getInputSection();
-        String html = String.format(template, serviceName, serviceName, inputSection, result);
-        System.out.println(html);
-        return html;
+        StringWriter inputSection = getInputSection(parameterMap);
+        return String.format(template, serviceName, serviceName, inputSection, result);
     }
 
-    private StringWriter getInputSection() {
+    private StringWriter getInputSection(Map<String, String[]> parameterMap) {
         String inputTemplate = getFileContent("/input.html");
         Map<String, String> inputTypes = SessionFactory.getInstance().getInputTypeMap();
         StringWriter inputSection = new StringWriter();
         for (String name : inputTypes.keySet()) {
+            String value = "";
+            if( parameterMap.get(name) != null ) {
+                value = parameterMap.get(name)[0];
+            }
             String capitalized = name.substring(0, 1).toUpperCase() + name.substring(1);
-            inputSection.append(String.format(inputTemplate, name, capitalized, getHtmlType(inputTypes.get(name)), getOtherAttribute(inputTypes.get(name)), name, name));
+            inputSection.append(String.format(inputTemplate, name, capitalized, getHtmlType(inputTypes.get(name)), getOtherAttribute(inputTypes.get(name)), name, name, value));
         }
-        System.out.println(inputSection.toString());
         return inputSection;
     }
 
