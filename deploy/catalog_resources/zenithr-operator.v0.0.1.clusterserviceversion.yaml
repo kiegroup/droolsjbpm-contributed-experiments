@@ -6,18 +6,18 @@ metadata:
   annotations:
     categories: zenithr, drools, kie, rules, operator
     certified: "false"
-    description: Zenithr Operator can deploy rule services in the form of ZenithrApp objects.
+    description: Zenithr Operator can deploy rule services in the form of DecisionService objects.
     containerImage: quay.io/bmozaffa/zenithr-operator:0.0.1
     createdAt: 2019-01-28T01:50:00Z
     support: Red Hat, Inc.
     tectonic-visibility: ocs
     alm-examples: >-
-      [{ "apiVersion": "zenithr.kiegroup.org/v1", "kind": "ZenithrApp", "metadata": { "name": "support-contacts" }, "spec": { "name": "Support Contact Discovery Service", "input": [ { "name": "severity", "type": "int" }, { "name": "system", "type": "string" }, { "name": "date", "type": "date" } ], "rules": [ { "when": "system == \"reporting\"", "then": { "output": "joe@example.com" } }, { "when": "system == \"banking\" && date < \"2020-01-01\"", "then": { "output": "lisa@example.com" } }, { "when": "system == \"banking\" && date >= \"2020-01-01\"", "then": { "output": "jack@example.com" } }, { "when": "system == \"credit\" && severity == 1", "then": { "output": "jill@example.com" } }, { "when": "system == \"credit\" && severity >= 2", "then": { "output": "john@example.com" } } ], "output": { "type": "string" }, "expose": true } }]
+      [{ "apiVersion": "zenithr.kiegroup.org/v1", "kind": "DecisionService", "metadata": { "name": "support-contacts" }, "spec": { "name": "Support Contact Discovery Service", "input": [ { "name": "severity", "type": "int" }, { "name": "system", "type": "string" }, { "name": "date", "type": "date" } ], "rules": [ { "when": "system == \"reporting\"", "then": { "output": "joe@example.com" } }, { "when": "system == \"banking\" && date < \"2020-01-01\"", "then": { "output": "lisa@example.com" } }, { "when": "system == \"banking\" && date >= \"2020-01-01\"", "then": { "output": "jack@example.com" } }, { "when": "system == \"credit\" && severity == 1", "then": { "output": "jill@example.com" } }, { "when": "system == \"credit\" && severity >= 2", "then": { "output": "john@example.com" } } ], "output": { "type": "string" }, "expose": true } }]
   labels:
     operator-zenithr: "true"
 spec:
   displayName: Zenithr
-  description: Zenithr Operator can deploy rule services in the form of ZenithrApp objects.
+  description: Zenithr Operator can deploy rule services in the form of DecisionService objects.
   keywords: [zenithr drools kie rules operator]
   version: 0.0.1
   maturity: alpha
@@ -53,10 +53,10 @@ spec:
   customresourcedefinitions:
     owned:
       - version: v1
-        kind: ZenithrApp
-        description: An instance of ZenithrApp
-        displayName: ZenithrApp
-        name: zenithrapps.zenithr.kiegroup.org
+        kind: DecisionService
+        description: An instance of DecisionService
+        displayName: DecisionService
+        name: decisionServices.zenithr.kiegroup.org
         resources:
           - kind: Pod
             version: v1

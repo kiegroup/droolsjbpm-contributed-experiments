@@ -28,7 +28,7 @@ import (
 
 var log = logf.Log.WithName("controller_zenithrapp")
 
-// Add creates a new ZenithrApp Controller and adds it to the Manager. The Manager will set fields on the Controller
+// Add creates a new DecisionService Controller and adds it to the Manager. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
 func Add(mgr manager.Manager) error {
 	return add(mgr, newReconciler(mgr))
@@ -36,7 +36,7 @@ func Add(mgr manager.Manager) error {
 
 // newReconciler returns a new reconcile.Reconciler
 func newReconciler(mgr manager.Manager) reconcile.Reconciler {
-	return &ReconcileZenithrApp{client: mgr.GetClient(), scheme: mgr.GetScheme()}
+	return &ReconcileDecisionService{client: mgr.GetClient(), scheme: mgr.GetScheme()}
 }
 
 // add adds a new Controller to mgr with r as the reconcile.Reconciler
@@ -47,13 +47,13 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
-	// Watch for changes to primary resource ZenithrApp
-	err = c.Watch(&source.Kind{Type: &zenithrv1.ZenithrApp{}}, &handler.EnqueueRequestForObject{})
+	// Watch for changes to primary resource DecisionService
+	err = c.Watch(&source.Kind{Type: &zenithrv1.DecisionService{}}, &handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
 	}
 
-	// Watch for changes to secondary resource Pods and Services, and requeue the owner ZenithrApp
+	// Watch for changes to secondary resource Pods and Services, and requeue the owner DecisionService
 	if err = watchResources(c, &corev1.Pod{}); err != nil {
 		return err
 	}
@@ -66,14 +66,14 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 func watchResources(controller controller.Controller, resource runtime.Object) error {
 	return controller.Watch(&source.Kind{Type: resource}, &handler.EnqueueRequestForOwner{
 		IsController: true,
-		OwnerType:    &zenithrv1.ZenithrApp{},
+		OwnerType:    &zenithrv1.DecisionService{},
 	})
 }
 
-var _ reconcile.Reconciler = &ReconcileZenithrApp{}
+var _ reconcile.Reconciler = &ReconcileDecisionService{}
 
-// ReconcileZenithrApp reconciles a ZenithrApp object
-type ReconcileZenithrApp struct {
+// ReconcileDecisionService reconciles a DecisionService object
+type ReconcileDecisionService struct {
 	// This client, initialized using mgr.Client() above, is a split client
 	// that reads objects from the cache and writes to the apiserver
 	client client.Client
@@ -85,17 +85,17 @@ type KubeObject interface {
 	metav1.Object
 }
 
-// Reconcile reads that state of the cluster for a ZenithrApp object and makes changes based on the state read
-// and what is in the ZenithrApp.Spec
+// Reconcile reads that state of the cluster for a DecisionService object and makes changes based on the state read
+// and what is in the DecisionService.Spec
 // Note:
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
-func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Result, error) {
+func (r *ReconcileDecisionService) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	reqLogger := log.WithValues("Request.Namespace", request.Namespace, "Request.Name", request.Name)
-	reqLogger.Info("Reconciling ZenithrApp")
+	reqLogger.Info("Reconciling DecisionService")
 
-	// Fetch the ZenithrApp instance
-	instance := &zenithrv1.ZenithrApp{}
+	// Fetch the DecisionService instance
+	instance := &zenithrv1.DecisionService{}
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -208,7 +208,7 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 }
 
 // newPodForCR returns a functioning pod with the same name/namespace as the cr
-func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
+func newPodForCR(cr *zenithrv1.DecisionService) *corev1.Pod {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -257,7 +257,7 @@ func newPodForCR(cr *zenithrv1.ZenithrApp) *corev1.Pod {
 }
 
 // newServiceForCR returns a service that directs to the application pod
-func newServiceForCR(cr *zenithrv1.ZenithrApp) *corev1.Service {
+func newServiceForCR(cr *zenithrv1.DecisionService) *corev1.Service {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -280,7 +280,7 @@ func newServiceForCR(cr *zenithrv1.ZenithrApp) *corev1.Service {
 }
 
 // newRouteForCR returns a route that exposes the application service
-func newRouteForCR(cr *zenithrv1.ZenithrApp) *routev1.Route {
+func newRouteForCR(cr *zenithrv1.DecisionService) *routev1.Route {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -303,7 +303,7 @@ func newRouteForCR(cr *zenithrv1.ZenithrApp) *routev1.Route {
 	return &route
 }
 
-func getJson(spec zenithrv1.ZenithrAppSpec) string {
+func getJson(spec zenithrv1.DecisionServiceSpec) string {
 	bytes, err := json.Marshal(spec)
 	if err != nil {
 		panic("Failed to parse input!")
@@ -311,7 +311,7 @@ func getJson(spec zenithrv1.ZenithrAppSpec) string {
 	return string(bytes)
 }
 
-func (r *ReconcileZenithrApp) setRouteHostname(cr *zenithrv1.ZenithrApp, route routev1.Route) (err error) {
+func (r *ReconcileDecisionService) setRouteHostname(cr *zenithrv1.DecisionService, route routev1.Route) (err error) {
 	hostname := getHostname(route.Spec.Host)
 	if len(hostname) > 0 {
 		err = r.client.Get(context.TODO(), types.NamespacedName{Name: cr.Name, Namespace: cr.Namespace}, cr)
@@ -338,9 +338,9 @@ func getHostname(routeHost string) string {
 	}
 }
 
-func (r *ReconcileZenithrApp) loadOrCreate(instance *zenithrv1.ZenithrApp, genObject KubeObject, curObject KubeObject) error {
+func (r *ReconcileDecisionService) loadOrCreate(instance *zenithrv1.DecisionService, genObject KubeObject, curObject KubeObject) error {
 	reqLogger := log.WithValues("Request.Namespace", instance.Namespace, "Request.Name", instance.Name)
-	// Set ZenithrApp instance as the owner and controller
+	// Set DecisionService instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, genObject, r.scheme); err != nil {
 		return err
 	}
@@ -365,13 +365,13 @@ func (r *ReconcileZenithrApp) loadOrCreate(instance *zenithrv1.ZenithrApp, genOb
 
 func changed(current *corev1.Pod, generated *corev1.Pod) (changed bool, err error) {
 	currentRules := getEnvVar(current.Spec.Containers[0].Env, GETRules)
-	var currentSpec zenithrv1.ZenithrAppSpec
+	var currentSpec zenithrv1.DecisionServiceSpec
 	err = json.Unmarshal([]byte(currentRules), &currentSpec)
 	if err != nil {
 		return
 	}
 	generatedRules := getEnvVar(generated.Spec.Containers[0].Env, GETRules)
-	var generatedSpec zenithrv1.ZenithrAppSpec
+	var generatedSpec zenithrv1.DecisionServiceSpec
 	err = json.Unmarshal([]byte(generatedRules), &generatedSpec)
 	if err != nil {
 		return

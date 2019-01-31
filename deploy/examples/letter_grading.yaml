@@ -1,5 +1,5 @@
 apiVersion: zenithr.kiegroup.org/v1
-kind: ZenithrApp
+kind: DecisionService
 metadata:
   name: letter-grading
 spec:

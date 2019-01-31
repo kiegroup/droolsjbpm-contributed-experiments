@@ -7,8 +7,8 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// ZenithrAppSpec defines the desired state of ZenithrApp
-type ZenithrAppSpec struct {
+// DecisionServiceSpec defines the desired state of DecisionService
+type DecisionServiceSpec struct {
 	Name     string     `json:"name,omitempty"`
 	Input    []Variable `json:"input"`
 	Rules    []Rules    `json:"rules"`
@@ -37,33 +37,33 @@ type OutputType struct {
 	Type string `json:"type"`
 }
 
-// ZenithrAppStatus defines the observed state of ZenithrApp
-type ZenithrAppStatus struct {
+// DecisionServiceStatus defines the observed state of DecisionService
+type DecisionServiceStatus struct {
 	RouteHost string      `json:"routeHost,omitempty"`
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// ZenithrApp is the Schema for the zenithrapps API
+// DecisionService is the Schema for the zenithrapps API
 // +k8s:openapi-gen=true
-type ZenithrApp struct {
+type DecisionService struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   ZenithrAppSpec   `json:"spec,omitempty"`
-	Status ZenithrAppStatus `json:"status,omitempty"`
+	Spec   DecisionServiceSpec   `json:"spec,omitempty"`
+	Status DecisionServiceStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// ZenithrAppList contains a list of ZenithrApp
-type ZenithrAppList struct {
+// DecisionServiceList contains a list of DecisionService
+type DecisionServiceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []ZenithrApp `json:"items"`
+	Items           []DecisionService `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&ZenithrApp{}, &ZenithrAppList{})
+	SchemeBuilder.Register(&DecisionService{}, &DecisionServiceList{})
 }

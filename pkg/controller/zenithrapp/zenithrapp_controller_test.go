@@ -40,9 +40,9 @@ func TestGetJson(t *testing.T) {
 	assert.Equal(t, parseSpec(t, expectedJsonString), parseSpec(t, actualJsonString), "Expected json value to be the same as provided")
 }
 
-func getSampleCR() v1.ZenithrApp {
-	return v1.ZenithrApp{
-		Spec: v1.ZenithrAppSpec{
+func getSampleCR() v1.DecisionService {
+	return v1.DecisionService{
+		Spec: v1.DecisionServiceSpec{
 			Input: []v1.Variable{
 				{
 					Name: "grade",
@@ -71,8 +71,8 @@ func getSampleCR() v1.ZenithrApp {
 
 }
 
-func parseSpec(t *testing.T, jsonString string) *v1.ZenithrAppSpec {
-	spec := &v1.ZenithrAppSpec{}
+func parseSpec(t *testing.T, jsonString string) *v1.DecisionServiceSpec {
+	spec := &v1.DecisionServiceSpec{}
 	err := json.Unmarshal([]byte(jsonString), spec)
 	assert.NoError(t, err, "Should be able to unmarshal this json with no error %v", err)
 	return spec
