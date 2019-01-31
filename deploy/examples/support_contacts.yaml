@@ -1,0 +1,32 @@
+apiVersion: zenithr.kiegroup.org/v1
+kind: ZenithrApp
+metadata:
+  name: support-contacts
+spec:
+  name: Support Contact Discovery Service
+  input:
+    - name: severity
+      type: int
+    - name: system
+      type: string
+    - name: date
+      type: date
+  rules:
+    - when: system == "reporting"
+      then:
+        output: joe@example.com
+    - when: system == "banking" && date < "2020-01-01"
+      then:
+        output: lisa@example.com
+    - when: system == "banking" && date >= "2020-01-01"
+      then:
+        output: jack@example.com
+    - when: system == "credit" && severity == 1
+      then:
+        output: jill@example.com
+    - when: system == "credit" && severity >= 2
+      then:
+        output: john@example.com
+  output:
+    type: string
+  expose: true

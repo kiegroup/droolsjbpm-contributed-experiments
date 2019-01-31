@@ -128,7 +128,7 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 			if err != nil {
 				return reconcile.Result{}, err
 			} else {
-				return reconcile.Result{Requeue:true}, nil
+				return reconcile.Result{Requeue: true}, nil
 			}
 		}
 	}
@@ -156,7 +156,7 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 					return reconcile.Result{}, err
 				} else {
 					//Status URL should next be updated based on this
-					return reconcile.Result{Requeue:true}, nil
+					return reconcile.Result{Requeue: true}, nil
 				}
 			}
 		}
@@ -183,9 +183,9 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 			//Route must have been just created, let's set URL status later
 			retryTime := 5
 			reqLogger.Info("Will try reconciliation again to set status hostname", "retry time", retryTime)
-			return reconcile.Result{Requeue:true, RequeueAfter:time.Duration(retryTime) * time.Second}, nil
+			return reconcile.Result{Requeue: true, RequeueAfter: time.Duration(retryTime) * time.Second}, nil
 		}
-		if instance.Status.RouteHost != curRoute.Spec.Host {
+		if instance.Status.RouteHost != getHostname(curRoute.Spec.Host) {
 			err := r.setRouteHostname(instance, *curRoute)
 			if err != nil {
 				reqLogger.Error(err, "Error setting route hostname")
@@ -193,8 +193,15 @@ func (r *ReconcileZenithrApp) Reconcile(request reconcile.Request) (reconcile.Re
 			} else {
 				retryTime := 5
 				reqLogger.Info("Should have updated route host, but will try reconciliation again to verify", "retry time", retryTime)
-				return reconcile.Result{Requeue:true, RequeueAfter:time.Duration(retryTime) * time.Second}, nil
+				return reconcile.Result{Requeue: true, RequeueAfter: time.Duration(retryTime) * time.Second}, nil
 			}
+		}
+	} else if len(instance.Status.RouteHost) > 0 {
+		instance.Status.RouteHost = ""
+		err = r.client.Update(context.TODO(), instance)
+		if err != nil {
+			log.Error(err, "Error updating CR", "cr", instance)
+			return reconcile.Result{}, err
 		}
 	}
 	return reconcile.Result{}, nil
@@ -305,14 +312,15 @@ func getJson(spec zenithrv1.ZenithrAppSpec) string {
 }
 
 func (r *ReconcileZenithrApp) setRouteHostname(cr *zenithrv1.ZenithrApp, route routev1.Route) (err error) {
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: cr.Name, Namespace: cr.Namespace}, cr)
-	if err != nil {
-		log.Error(err, "Error Reloading CR", "cr", cr)
-		return
-	}
-	if len(route.Spec.Host) > 0 {
-		log.Info("Will set route hostname to", "hostname", route.Spec.Host)
-		cr.Status.RouteHost = fmt.Sprintf(route.Spec.Host)
+	hostname := getHostname(route.Spec.Host)
+	if len(hostname) > 0 {
+		err = r.client.Get(context.TODO(), types.NamespacedName{Name: cr.Name, Namespace: cr.Namespace}, cr)
+		if err != nil {
+			log.Error(err, "Error Reloading CR", "cr", cr)
+			return
+		}
+		log.Info("Will set route hostname to", "hostname", hostname)
+		cr.Status.RouteHost = hostname
 		err = r.client.Update(context.TODO(), cr)
 		if err != nil {
 			log.Error(err, "Error updating CR", "cr", cr)
@@ -320,6 +328,14 @@ func (r *ReconcileZenithrApp) setRouteHostname(cr *zenithrv1.ZenithrApp, route r
 		}
 	}
 	return
+}
+
+func getHostname(routeHost string) string {
+	if len(routeHost) > 0 {
+		return fmt.Sprintf("http://%s", routeHost)
+	} else {
+		return ""
+	}
 }
 
 func (r *ReconcileZenithrApp) loadOrCreate(instance *zenithrv1.ZenithrApp, genObject KubeObject, curObject KubeObject) error {
