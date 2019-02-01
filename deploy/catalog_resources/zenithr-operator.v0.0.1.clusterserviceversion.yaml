@@ -71,6 +71,11 @@ spec:
             x-descriptors:
               - "urn:alm:descriptor:com.tectonic.ui:label"
         statusDescriptors:
+          - description: Deployments for the Decision Service
+            displayName: Deployments
+            path: deployments
+            x-descriptors:
+              - "urn:alm:descriptor:com.tectonic.ui:podStatuses"
           - description: The address for accessing the service
             displayName: Service URL
             path: routeHost
