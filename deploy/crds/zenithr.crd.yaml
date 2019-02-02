@@ -7,8 +7,8 @@ spec:
   names:
     kind: DecisionService
     listKind: DecisionServiceList
-    plural: decisionservices
-    singular: decisionservice
+    plural: DecisionServices
+    singular: DecisionService
   scope: Namespaced
   version: v1
   validation:

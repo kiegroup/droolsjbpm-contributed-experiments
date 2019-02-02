@@ -56,7 +56,7 @@ spec:
         kind: DecisionService
         description: An instance of DecisionService
         displayName: DecisionService
-        name: decisionServices.zenithr.kiegroup.org
+        name: decisionservices.zenithr.kiegroup.org
         resources:
           - kind: Pod
             version: v1
