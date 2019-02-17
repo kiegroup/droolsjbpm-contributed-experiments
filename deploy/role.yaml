@@ -50,3 +50,10 @@ rules:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - serving.knative.dev
+  resources:
+  - '*'
+  verbs:
+  - '*'
+

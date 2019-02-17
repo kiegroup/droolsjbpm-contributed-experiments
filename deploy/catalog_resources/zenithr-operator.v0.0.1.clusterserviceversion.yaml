@@ -12,7 +12,7 @@ metadata:
     support: Red Hat, Inc.
     tectonic-visibility: ocs
     alm-examples: >-
-      [{ "apiVersion": "zenithr.kiegroup.org/v1", "kind": "DecisionService", "metadata": { "name": "support-contacts" }, "spec": { "name": "Support Contact Discovery Service", "input": [ { "name": "severity", "type": "int" }, { "name": "system", "type": "string" }, { "name": "date", "type": "date" } ], "rules": [ { "when": "system == \"reporting\"", "then": { "output": "joe@example.com" } }, { "when": "system == \"banking\" && date < \"2020-01-01\"", "then": { "output": "lisa@example.com" } }, { "when": "system == \"banking\" && date >= \"2020-01-01\"", "then": { "output": "jack@example.com" } }, { "when": "system == \"credit\" && severity == 1", "then": { "output": "jill@example.com" } }, { "when": "system == \"credit\" && severity >= 2", "then": { "output": "john@example.com" } } ], "output": { "type": "string" }, "expose": true } }]
+      [{ "apiVersion": "zenithr.kiegroup.org/v1", "kind": "DecisionService", "metadata": { "name": "support-contacts" }, "spec": { "name": "Support Contact Discovery Service", "input": [ { "name": "severity", "type": "int" }, { "name": "system", "type": "string" }, { "name": "date", "type": "date" } ], "rules": [ { "when": "system == \"reporting\"", "then": { "output": "joe@example.com" } }, { "when": "system == \"banking\" && date < \"2020-01-01\"", "then": { "output": "lisa@example.com" } }, { "when": "system == \"banking\" && date >= \"2020-01-01\"", "then": { "output": "jack@example.com" } }, { "when": "system == \"credit\" && severity == 1", "then": { "output": "jill@example.com" } }, { "when": "system == \"credit\" && severity >= 2", "then": { "output": "john@example.com" } } ], "output": { "type": "string" }, "expose": true, "knative": false } }]
   labels:
     operator-zenithr: "true"
 spec:
@@ -124,6 +124,12 @@ spec:
                 - '*'
             - apiGroups:
                 - zenithr.kiegroup.org
+              resources:
+                - '*'
+              verbs:
+                - '*'
+            - apiGroups:
+                - serving.knative.dev
               resources:
                 - '*'
               verbs:

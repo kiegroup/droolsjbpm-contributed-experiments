@@ -88,3 +88,6 @@ spec:
             hostname:
               type: string
               description: Optional hostname for generate route
+            knative:
+              type: boolean
+              description: When set to true, the decision service will be created as a knative service

@@ -15,6 +15,7 @@ type DecisionServiceSpec struct {
 	Output   OutputType `json:"output"`
 	Expose   bool       `json:"expose,omitempty"`
 	HostName string     `json:"hostname,omitempty"`
+	KNative  bool       `json:"knative,omitempty"`
 
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 }

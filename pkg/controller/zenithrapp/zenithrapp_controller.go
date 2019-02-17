@@ -10,6 +10,7 @@ import (
 	"time"
 
 	zenithrv1 "github.com/kiegroup/zenithr-operator/pkg/apis/zenithr/v1"
+	knative "github.com/knative/serving/pkg/apis/serving/v1alpha1"
 	routev1 "github.com/openshift/api/route/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -112,6 +113,33 @@ func (r *ReconcileDecisionService) Reconcile(request reconcile.Request) (reconci
 		instance.Spec.Name = instance.Name
 	}
 
+	if instance.Spec.KNative {
+		genKService := newKService(instance)
+		curKService := &knative.Service{}
+		err = r.loadOrCreate(instance, genKService, curKService)
+		if err != nil {
+			return reconcile.Result{}, err
+		} else if existed(curKService) {
+			curContainer := curKService.Spec.RunLatest.Configuration.RevisionTemplate.Spec.Container
+			genContainer := genKService.Spec.RunLatest.Configuration.RevisionTemplate.Spec.Container
+			updated, err := changed(curContainer, genContainer)
+			if err != nil {
+				reqLogger.Info("Detected that knative service remains unchanged")
+				return reconcile.Result{}, err
+			} else if updated {
+				reqLogger.Info("Detected that knative service needs to be updated")
+				genKService.SetResourceVersion(curKService.GetResourceVersion())
+				err = r.client.Update(context.TODO(), genKService)
+				if err != nil {
+					return reconcile.Result{}, err
+				} else {
+					return reconcile.Result{Requeue: true}, nil
+				}
+			}
+		}
+		return reconcile.Result{}, nil
+	}
+
 	// Create pod object based on CR, if does not exist:
 	genPod := newPodForCR(instance)
 	curPod := &corev1.Pod{}
@@ -119,7 +147,9 @@ func (r *ReconcileDecisionService) Reconcile(request reconcile.Request) (reconci
 	if err != nil {
 		return reconcile.Result{}, err
 	} else if existed(curPod) {
-		updated, err := changed(curPod, genPod)
+		curContainer := curPod.Spec.Containers[0]
+		genContainer := genPod.Spec.Containers[0]
+		updated, err := changed(curContainer, genContainer)
 		if err != nil {
 			return reconcile.Result{}, err
 		} else if updated {
@@ -303,6 +333,47 @@ func newRouteForCR(cr *zenithrv1.DecisionService) *routev1.Route {
 	return &route
 }
 
+func newKService(cr *zenithrv1.DecisionService) *knative.Service {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+	klabels := map[string]string{
+		"knative.dev/type": "container",
+	}
+	service := knative.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name,
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: knative.ServiceSpec{
+			RunLatest: &knative.RunLatestType{
+				Configuration: knative.ConfigurationSpec{
+					RevisionTemplate: knative.RevisionTemplateSpec{
+						ObjectMeta: metav1.ObjectMeta{
+							Labels: klabels,
+						},
+						Spec: knative.RevisionSpec{
+							Container: corev1.Container{
+								Image:           "quay.io/bmozaffa/zenithr",
+								ImagePullPolicy: corev1.PullAlways,
+								Env: []corev1.EnvVar{
+									{
+										Name:  GETRules,
+										Value: getJson(cr.Spec),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	service.SetGroupVersionKind(knative.SchemeGroupVersion.WithKind("Service"))
+	return &service
+}
+
 func getJson(spec zenithrv1.DecisionServiceSpec) string {
 	bytes, err := json.Marshal(spec)
 	if err != nil {
@@ -363,14 +434,14 @@ func (r *ReconcileDecisionService) loadOrCreate(instance *zenithrv1.DecisionServ
 	}
 }
 
-func changed(current *corev1.Pod, generated *corev1.Pod) (changed bool, err error) {
-	currentRules := getEnvVar(current.Spec.Containers[0].Env, GETRules)
+func changed(current corev1.Container, generated corev1.Container) (changed bool, err error) {
+	currentRules := getEnvVar(current.Env, GETRules)
 	var currentSpec zenithrv1.DecisionServiceSpec
 	err = json.Unmarshal([]byte(currentRules), &currentSpec)
 	if err != nil {
 		return
 	}
-	generatedRules := getEnvVar(generated.Spec.Containers[0].Env, GETRules)
+	generatedRules := getEnvVar(generated.Env, GETRules)
 	var generatedSpec zenithrv1.DecisionServiceSpec
 	err = json.Unmarshal([]byte(generatedRules), &generatedSpec)
 	if err != nil {
