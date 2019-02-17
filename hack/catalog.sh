@@ -14,7 +14,7 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: alpha-operators
+  name: zenithr-operator
   namespace: ${CATALOG_NS}
 data:
   clusterServiceVersions: |
@@ -29,15 +29,15 @@ cat <<EOF | kubectl apply -f -
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
-  name: alpha-operators
+  name: zenithr-operator
   namespace: ${CATALOG_NS}
 spec:
-  configMap: alpha-operators
-  displayName: Alpha Operators
+  configMap: zenithr-operator
+  displayName: Zenithr Operator
   publisher: Red Hat
   sourceType: internal
 status:
   configMapReference:
-    name: alpha-operators
+    name: zenithr-operator
     namespace: ${CATALOG_NS}
 EOF
