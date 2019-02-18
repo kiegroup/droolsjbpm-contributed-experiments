@@ -61,6 +61,11 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	if err = watchResources(c, &corev1.Service{}); err != nil {
 		return err
 	}
+
+	// Watch for changes to knative Service, and requeue the owner DecisionService
+	if err = watchResources(c, &knative.Service{}); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -135,9 +140,20 @@ func (r *ReconcileDecisionService) Reconcile(request reconcile.Request) (reconci
 				} else {
 					return reconcile.Result{Requeue: true}, nil
 				}
+			} else {
+				if instance.Status.RouteHost != getHostname(curKService.Status.Domain) {
+					log.Info("Will set hostname to", "hostname", curKService.Status.Domain)
+					instance.Status.RouteHost = getHostname(curKService.Status.Domain)
+					err = r.client.Update(context.TODO(), instance)
+					if err != nil {
+						log.Error(err, "Error updating CR", "cr", instance)
+						return reconcile.Result{}, err
+					}
+				}
+
 			}
 		}
-		return reconcile.Result{}, nil
+		return reconcile.Result{Requeue: true}, nil
 	}
 
 	// Create pod object based on CR, if does not exist:
