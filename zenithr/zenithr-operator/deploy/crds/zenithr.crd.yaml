@@ -1,0 +1,93 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: decisionservices.zenithr.kiegroup.org
+spec:
+  group: zenithr.kiegroup.org
+  names:
+    kind: DecisionService
+    listKind: DecisionServiceList
+    plural: decisionservices
+    singular: decisionservice
+  scope: Namespaced
+  version: v1
+  validation:
+    openAPIV3Schema:
+      required:
+        - spec
+      properties:
+        spec:
+          type: object
+          required:
+            - input
+            - rules
+            - output
+          properties:
+            name:
+              type: string
+            input:
+              type: array
+              description: Request parameters accepted by the service
+              minitems: 1
+              items:
+                type: object
+                required:
+                  - name
+                  - type
+                properties:
+                  name:
+                    type: string
+                  type:
+                    type: string
+                    enum:
+                      - boolean
+                      - int
+                      - double
+                      - long
+                      - date
+                      - datetime
+                      - string
+            rules:
+              type: array
+              description: The rules
+              minitems: 1
+              items:
+                type: object
+                required:
+                  - when
+                  - then
+                properties:
+                  when:
+                    type: string
+                  then:
+                    type: object
+                    required:
+                      - output
+                    properties:
+                      output:
+                        type: string
+            output:
+              type: object
+              description: Result type
+              required:
+                - type
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - boolean
+                    - int
+                    - double
+                    - long
+                    - date
+                    - datetime
+                    - string
+            expose:
+              type: boolean
+              description: Whether to create a route to expose the service
+            hostname:
+              type: string
+              description: Optional hostname for generate route
+            knative:
+              type: boolean
+              description: When set to true, the decision service will be created as a knative service

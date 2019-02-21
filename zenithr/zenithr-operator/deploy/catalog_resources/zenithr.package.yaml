@@ -1,0 +1,5 @@
+#! package-manifest: deploy/catalog_resources/zenithr-operator.v0.0.1.clusterserviceversion.yaml
+packageName: zenithr-operator
+channels:
+  - name: zenithr
+    currentCSV: zenithr-operator.v0.0.1

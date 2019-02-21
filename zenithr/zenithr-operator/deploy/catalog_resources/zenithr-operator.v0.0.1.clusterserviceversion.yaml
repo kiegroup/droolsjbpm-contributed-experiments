@@ -1,0 +1,167 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: zenithr-operator.v0.0.1
+  namespace: placeholder
+  annotations:
+    categories: zenithr, drools, kie, rules, operator
+    certified: "false"
+    description: Zenithr Operator can deploy decision services in the form of DecisionService objects.
+    containerImage: quay.io/bmozaffa/zenithr-operator:0.0.1
+    createdAt: 2019-01-28T01:50:00Z
+    support: Red Hat, Inc.
+    tectonic-visibility: ocs
+    alm-examples: >-
+      [{ "apiVersion": "zenithr.kiegroup.org/v1", "kind": "DecisionService", "metadata": { "name": "support-contacts" }, "spec": { "name": "Support Contact Discovery Service", "input": [ { "name": "severity", "type": "int" }, { "name": "system", "type": "string" }, { "name": "date", "type": "date" } ], "rules": [ { "when": "system == \"reporting\"", "then": { "output": "joe@example.com" } }, { "when": "system == \"banking\" && date < \"2020-01-01\"", "then": { "output": "lisa@example.com" } }, { "when": "system == \"banking\" && date >= \"2020-01-01\"", "then": { "output": "jack@example.com" } }, { "when": "system == \"credit\" && severity == 1", "then": { "output": "jill@example.com" } }, { "when": "system == \"credit\" && severity >= 2", "then": { "output": "john@example.com" } } ], "output": { "type": "string" }, "expose": true, "knative": false } }]
+  labels:
+    operator-zenithr: "true"
+spec:
+  displayName: Zenithr
+  description: Zenithr Operator can deploy decision services in the form of DecisionService objects.
+  keywords: [zenithr drools kie rules operator]
+  version: 0.0.1
+  maturity: alpha
+  maintainers:
+    - name: Red Hat, Inc.
+      email: babak@redhat.com
+  provider:
+    name: Red Hat, Inc.
+  links:
+    - name: Product Page
+      url: https://github.com/bmozaffa/zenithr
+    - name: Documentation
+      url: https://github.com/bmozaffa/zenithr-operator
+  icon:
+    - base64data: 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
+      mediatype: image/png
+  labels:
+    alm-owner-zenithr: zenithr-operator
+    operated-by: zenithr-operator.v0.0.1
+  selector:
+    matchLabels:
+      alm-owner-zenithr: zenithr-operator
+      operated-by: zenithr-operator.v0.0.1
+  installModes:
+    - type: OwnNamespace
+      supported: true
+    - type: SingleNamespace
+      supported: true
+    - type: MultiNamespace
+      supported: false
+    - type: AllNamespaces
+      supported: true
+  customresourcedefinitions:
+    owned:
+      - version: v1
+        kind: DecisionService
+        description: An instance of DecisionService
+        displayName: DecisionService
+        name: decisionservices.zenithr.kiegroup.org
+        resources:
+          - kind: Pod
+            version: v1
+          - kind: Service
+            version: v1
+          - kind: Route
+            version: route.openshift.io/v1
+        specDescriptors:
+          - description: The name of the created decision service
+            displayName: Decision Service
+            path: name
+            x-descriptors:
+              - "urn:alm:descriptor:com.tectonic.ui:label"
+        statusDescriptors:
+          - description: The address for accessing the service
+            displayName: Service URL
+            path: routeHost
+            x-descriptors:
+              - "urn:alm:descriptor:org.w3:link"
+  install:
+    strategy: deployment
+    spec:
+      permissions:
+        - serviceAccountName: zenithr-operator
+          rules:
+            - apiGroups:
+                - ""
+              resources:
+                - pods
+                - services
+                - endpoints
+                - persistentvolumeclaims
+                - events
+                - configmaps
+                - secrets
+              verbs:
+                - '*'
+            - apiGroups:
+                - ""
+              resources:
+                - namespaces
+              verbs:
+                - get
+            - apiGroups:
+                - apps
+              resources:
+                - deployments
+                - daemonsets
+                - replicasets
+                - statefulsets
+              verbs:
+                - '*'
+            - apiGroups:
+                - monitoring.coreos.com
+              resources:
+                - servicemonitors
+              verbs:
+                - get
+                - create
+            - apiGroups:
+                - route.openshift.io
+              resources:
+                - '*'
+              verbs:
+                - '*'
+            - apiGroups:
+                - zenithr.kiegroup.org
+              resources:
+                - '*'
+              verbs:
+                - '*'
+            - apiGroups:
+                - serving.knative.dev
+              resources:
+                - '*'
+              verbs:
+                - '*'
+      deployments:
+        - name: zenithr-operator
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                name: zenithr-operator
+            template:
+              metadata:
+                labels:
+                  name: zenithr-operator
+              spec:
+                serviceAccountName: zenithr-operator
+                containers:
+                  - name: zenithr-operator
+                    # Replace this with the built image name
+                    image: quay.io/bmozaffa/zenithr-operator
+                    command:
+                      - zenithr-operator
+                    imagePullPolicy: Always
+                    env:
+                      - name: WATCH_NAMESPACE
+                        valueFrom:
+                          fieldRef:
+                            fieldPath: metadata.namespace
+                      - name: POD_NAME
+                        valueFrom:
+                          fieldRef:
+                            fieldPath: metadata.name
+                      - name: OPERATOR_NAME
+                        value: "zenithr-operator"
