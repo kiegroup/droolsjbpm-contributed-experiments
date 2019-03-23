@@ -1,0 +1,32 @@
+import org.kiegroup.zenithr.drools.model.Fact
+
+rule "rule_0" when
+	grade: Fact(id == "grade" && grade.getNumber() >= 90)
+	output: Fact(id == "output")
+then
+	output.setString("A");
+end
+rule "rule_1" when
+	grade: Fact(id == "grade" && grade.getNumber() >= 80 && grade.getNumber() < 90)
+	output: Fact(id == "output")
+then
+	output.setString("B");
+end
+rule "rule_2" when
+	grade: Fact(id == "grade" && grade.getNumber() >= 70 && grade.getNumber() < 80)
+	output: Fact(id == "output")
+then
+	output.setString("C");
+end
+rule "rule_3" when
+	grade: Fact(id == "grade" && grade.getNumber() >= 60 && grade.getNumber() < 70)
+	output: Fact(id == "output")
+then
+	output.setString("D");
+end
+rule "rule_4" when
+	grade: Fact(id == "grade" && grade.getNumber() < 60)
+	output: Fact(id == "output")
+then
+	output.setString("F");
+end

@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-package org.kiegroup.zenithr.rest;
+package org.kiegroup.zenithr.drools.model.exceptions;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+public class TypeParseException extends RuntimeException {
 
-@ApplicationPath("/")
-public class RestApplication extends Application {
+    private static final long serialVersionUID = -1456775705375961560L;
+
+    public TypeParseException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public TypeParseException(String message) {
+        super(message);
+    }
+
+    public TypeParseException(Throwable cause) {
+        super(cause);
+    }
+
 }

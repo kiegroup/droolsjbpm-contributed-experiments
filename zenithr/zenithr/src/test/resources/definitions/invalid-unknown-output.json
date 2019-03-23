@@ -1,0 +1,43 @@
+{
+	"name": "Average Grade",
+	"inputs": [
+		{
+			"name": "math",
+			"type": "number"
+		},
+		{
+			"name": "physics",
+			"type": "number"
+		},
+		{
+			"name": "biology",
+			"type": "number"
+		}
+	],
+	"types": [
+		{
+			"name": "Average",
+			"fields": [
+				{
+					"name": "average",
+					"type": "number"
+				}
+			]
+		}
+	],
+	"output": "Foo",
+	"rules": [
+		{
+			"when": [
+				"biology >= 50",
+				"physics >= 50",
+				"math >= 50"
+			],
+			"then": {
+				"output": {
+					"average": "($math + $physics + $biology) / 3"
+				}
+			}
+		}
+	]
+}

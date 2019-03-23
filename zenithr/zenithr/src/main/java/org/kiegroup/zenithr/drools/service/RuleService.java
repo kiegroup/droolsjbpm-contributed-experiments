@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.kiegroup.zenithr.rest;
+package org.kiegroup.zenithr.drools.service;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import java.util.Map;
 
-@ApplicationPath("/")
-public class RestApplication extends Application {
+public interface RuleService {
+   
+    Object process(Map<String, String> parameters) throws Exception ;
+    
 }

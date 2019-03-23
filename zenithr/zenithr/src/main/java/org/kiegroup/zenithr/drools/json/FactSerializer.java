@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package org.kiegroup.zenithr.rest;
+package org.kiegroup.zenithr.drools.json;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import java.io.IOException;
 
-import org.kiegroup.zenithr.drools.service.SessionFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import org.kiegroup.zenithr.drools.model.Fact;
 
-@WebListener
-public class ApplicationInitialization implements ServletContextListener {
-
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        if (System.getenv().containsKey("GET")) {
-            System.setProperty("GET", System.getenv("GET"));
-        }
-        SessionFactory.getInstance();
-    }
+public class FactSerializer  extends JsonSerializer<Fact>{
 
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        //Nothing to do
+    public void serialize(Fact value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        gen.writeStartObject();
+        gen.writeStringField("id", value.getId());
+        gen.writeStringField("value", value.toString());
+        gen.writeEndObject();
     }
+
 }

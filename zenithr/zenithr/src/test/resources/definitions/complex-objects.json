@@ -1,0 +1,63 @@
+{
+	"name": "Driver license",
+	"inputs": [
+		{
+			"name": "person",
+			"type": "Person"
+		}
+	],
+	"types": [
+		{
+			"name": "Person",
+			"fields": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "age",
+					"type": "integer"
+				}
+			]
+		}
+	],
+	"output": "string",
+	"rules": [
+		{
+			"when": [
+				"person.name == Kermit",
+				"person.age < 18"
+			],
+			"then": {
+				"output": "$person.name can't drive"
+			}
+		},
+		{
+			"when": [
+				"person.name == Kermit",
+				"person.age >= 18"
+			],
+			"then": {
+				"output": "$person.name can drive"
+			}
+		},
+		{
+			"when": [
+				"person.name != Kermit",
+				"person.age < 18"
+			],
+			"then": {
+				"output": "I don't know you but you can't drive"
+			}
+		},
+		{
+			"when": [
+				"person.name != Kermit",
+				"person.age >= 18"
+			],
+			"then": {
+				"output": "I don't know you but you can drive"
+			}
+		}
+	]
+}
