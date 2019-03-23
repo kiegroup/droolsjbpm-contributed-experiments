@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package org.kiegroup.zenithr.rest;
+package org.kiegroup.zenithr.drools.service;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import java.util.List;
 
-@ApplicationPath("/")
-public class RestApplication extends Application {
+public interface Session extends AutoCloseable {
+
+    void addInput(List<Object> facts);
+    
+    Object process();
+
 }
