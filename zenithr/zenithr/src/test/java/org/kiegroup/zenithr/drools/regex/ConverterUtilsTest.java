@@ -19,13 +19,13 @@ package org.kiegroup.zenithr.drools.regex;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kiegroup.zenithr.drools.model.DeclaredType;
 import org.kiegroup.zenithr.drools.model.FieldType;
 import org.kiegroup.zenithr.drools.model.Input;
 import org.kiegroup.zenithr.drools.model.Spec;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConverterUtilsTest {
 

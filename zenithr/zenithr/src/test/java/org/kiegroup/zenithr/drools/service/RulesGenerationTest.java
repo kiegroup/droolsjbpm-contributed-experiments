@@ -22,8 +22,7 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -33,6 +32,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kiegroup.zenithr.drools.model.Fact;
 import org.kiegroup.zenithr.drools.model.OutputFact;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RulesGenerationTest {
 
@@ -46,7 +47,7 @@ public class RulesGenerationTest {
         session.insert(output);
         session.fireAllRules();
         session.dispose();
-        Assert.assertEquals("A", output.getString());
+        assertEquals("A", output.getString());
     }
     
     private KieSession createSession(String rulesFile) throws Exception {
