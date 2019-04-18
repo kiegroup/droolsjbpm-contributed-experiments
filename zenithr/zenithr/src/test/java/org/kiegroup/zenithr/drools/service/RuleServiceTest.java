@@ -20,11 +20,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kiegroup.zenithr.drools.model.Fact;
 import org.kiegroup.zenithr.drools.model.exceptions.InvalidSpecException;
 import org.kiegroup.zenithr.drools.service.impl.RuleServiceImpl;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class RuleServiceTest {
 
@@ -32,11 +36,11 @@ public class RuleServiceTest {
     public void testGradeLetters() throws Exception {
         RuleService ruleService = getRuleService("grade-letters.json");
 
-        Assert.assertEquals("A", grade(ruleService, 92.5));
-        Assert.assertEquals("B", grade(ruleService, 84.5));
-        Assert.assertEquals("C", grade(ruleService, 70d));
-        Assert.assertEquals("D", grade(ruleService, 69.99));
-        Assert.assertEquals("F", grade(ruleService, 45d));
+        assertEquals("A", grade(ruleService, 92.5));
+        assertEquals("B", grade(ruleService, 84.5));
+        assertEquals("C", grade(ruleService, 70d));
+        assertEquals("D", grade(ruleService, 69.99));
+        assertEquals("F", grade(ruleService, 45d));
     }
 
     @Test
@@ -44,7 +48,7 @@ public class RuleServiceTest {
         RuleService ruleService = getRuleService("grade-letters.json");
         Map<String, String> parameters = new HashMap<>();
         parameters.put("grade", null);
-        Assert.assertNull(((Fact) ruleService.process(parameters)).getString());
+        assertNull(((Fact) ruleService.process(parameters)).getString());
     }
 
     private String grade(RuleService ruleService, double value) throws Exception {
@@ -62,8 +66,8 @@ public class RuleServiceTest {
         parameters.put("physics", String.valueOf(95d));
         parameters.put("biology", String.valueOf(91d));
         Object output = ruleService.process(parameters);
-        Assert.assertNotNull(output);
-        Assert.assertEquals(Double.valueOf(94d), output.getClass().getMethod("getAverage").invoke(output));
+        assertNotNull(output);
+        assertEquals(Double.valueOf(94d), output.getClass().getMethod("getAverage").invoke(output));
     }
 
     @Test
@@ -73,7 +77,7 @@ public class RuleServiceTest {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("person", "{\"name\":\"Kermit\",\"age\":16}");
         String result = ((Fact) ruleService.process(parameters)).getString();
-        Assert.assertEquals("Kermit can't drive", result);
+        assertEquals("Kermit can't drive", result);
     }
 
     @Test
@@ -83,37 +87,49 @@ public class RuleServiceTest {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("person", "{\"name\":\"Joe\",\"age\":18}");
         String result = ((Fact) ruleService.process(parameters)).getString();
-        Assert.assertEquals("I don't know you but you can drive", result);
+        assertEquals("I don't know you but you can drive", result);
     }
 
-    @Test(expected = InvalidSpecException.class)
+    @Test
     public void testInvalidSpecEmpty() throws Exception {
+        Assertions.assertThrows(InvalidSpecException.class, () -> {
         getRuleService("invalid-empty.json");
+        });
     }
 
-    @Test(expected = InvalidSpecException.class)
+    @Test
     public void testParseMissingInput() throws IOException {
-        getRuleService("invalid-missing-input.json");
+        Assertions.assertThrows(InvalidSpecException.class, () -> {
+            getRuleService("invalid-missing-input.json");
+        });
     }
 
-    @Test(expected = InvalidSpecException.class)
+    @Test
     public void testParseMissingRules() throws IOException {
-        getRuleService("invalid-missing-rules.json");
+        Assertions.assertThrows(InvalidSpecException.class, () -> {
+            getRuleService("invalid-missing-rules.json");
+        });
     }
 
-    @Test(expected = InvalidSpecException.class)
+    @Test
     public void testParseMissingOutput() throws IOException {
-        getRuleService("invalid-missing-output.json");
+        Assertions.assertThrows(InvalidSpecException.class, () -> {
+            getRuleService("invalid-missing-output.json");
+        });
     }
 
-    @Test(expected = InvalidSpecException.class)
+    @Test
     public void testInvalidOutput() throws IOException {
-        getRuleService("invalid-unknown-output.json");
+        Assertions.assertThrows(InvalidSpecException.class, () -> {
+            getRuleService("invalid-unknown-output.json");
+        });
     }
 
-    @Test(expected = InvalidSpecException.class)
+    @Test
     public void testParseInputsUnknownType() throws IOException {
-        getRuleService("invalid-unknown-input.json");
+        Assertions.assertThrows(InvalidSpecException.class, () -> {
+            getRuleService("invalid-unknown-input.json");
+        });
     }
 
     private RuleService getRuleService(String file) {
