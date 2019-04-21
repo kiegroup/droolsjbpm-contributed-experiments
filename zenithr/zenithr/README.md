@@ -10,20 +10,27 @@ $ mvn clean package
 
 ## Run the application locally
 
-When running the application, the `GET` environment variable must contain the rules definition.
+When running the application, the `RULES_DEFINITION` environment variable must contain the rules definition.
 
 ```{bash}
-$ GET=`cat src/test/resources/definitions/grade-letters.json` mvn thorntail:run 
+$ RULES_DEFINITION=`cat src/test/resources/definitions/grade-letters.json` mvn quarkus:dev
 ```
 
-If you want to remotelly debug the application, set the following parameter `-Dthorntail.debug.port=<DEBUG_PORT>`
+If you want to remotely debug the application, set the following parameter use port 5005 (default).
 
 ## Run the application standalone
 
-When running the application, the `GET` environment variable must contain the rules definition.
+When running the application, the `RULES_DEFINITION` environment variable must contain the rules definition.
 
 ```{bash}
-$ GET=`cat src/test/resources/definitions/grade-letters.json` java -jar target/zenithr-thorntail.jar
+$ RULES_DEFINITION=`cat src/test/resources/definitions/grade-letters.json` java -jar target/zenithr-1.0.0-SNAPSHOT-runner.jar
+```
+
+## Native application
+
+```{bash}
+$ mvn clean package -Pnative
+$ RULES_DEFINITION=`cat src/test/resources/definitions/grade-letters.json` ./target/zenithr-1.0.0-SNAPSHOT-runner
 ```
 
 ## Invoke the service
@@ -38,12 +45,12 @@ And both GET and POST can be used:
 
 ```{bash}
 $ curl http://localhost:8080/\?grade\=30
-F
+{"id":"output","value":"F"}%
 ```
 
 ```{bash}
-$ curl -XPOST -H "Content-Type: application/json" http://localhost:8080/rest --data '{"grade": 60}'
-D
+$ curl -XPOST -H "Content-Type: application/json" http://localhost:8080/ --data '{"grade": 60}'
+{"id":"output","value":"D"}%
 ```
 
 ### Complex types
@@ -54,9 +61,9 @@ Example of complex-objects rules:
 
 ```{bash}
 $ curl -XPOST -H "Content-Type: application/json" http://localhost:8080/ --data '{"person": "{\"name\":\"Kermit\", \"age\": 18}"}'
-Kermit can drive
+{"id":"output","value":"Kermit can drive"}
 
 $ curl -XPOST -H "Content-Type: application/json" http://localhost:8080/ --data '{"person": "{\"name\":\"Gonzo\", \"age\": 16}"}'
-I don't know you but you can't drive
+{"id":"output","value":"I don't know you but you can't drive"}
 ```
  
