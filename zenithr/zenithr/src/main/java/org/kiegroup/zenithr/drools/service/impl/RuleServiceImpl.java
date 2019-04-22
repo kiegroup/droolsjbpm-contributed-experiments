@@ -20,21 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kiegroup.zenithr.drools.service.RuleService;
 import org.kiegroup.zenithr.drools.service.Session;
 import org.kiegroup.zenithr.drools.service.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ApplicationScoped
 public class RuleServiceImpl implements RuleService {
 
     private static final Logger logger = LoggerFactory.getLogger(RuleServiceImpl.class);
-    private SessionFactory sessionFactory;
 
-    public RuleServiceImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-    
+    @Inject
+    SessionFactory sessionFactory;
+
     public Object process(Map<String, String> parameters) throws Exception {
         try (Session session = sessionFactory.getSession()) {
             List<Object> input = buildInput(parameters);

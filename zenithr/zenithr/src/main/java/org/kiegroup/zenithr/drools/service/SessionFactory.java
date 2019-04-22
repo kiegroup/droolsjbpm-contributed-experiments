@@ -30,7 +30,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -50,6 +54,7 @@ import org.kiegroup.zenithr.drools.service.impl.ZenithrSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ApplicationScoped
 public class SessionFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionFactory.class);
@@ -64,25 +69,17 @@ public class SessionFactory {
     private static final Pattern SIMPLE_TYPE_CONDITION_PATTERN = Pattern.compile("^(\\w+)\\s*([=<>\\!]+)\\s(.+)$");
     private static final Pattern COMPOSED_TYPE_CONDITION_PATTERN = Pattern.compile("^(\\w+)\\.(\\w+)\\s*([=<>\\!]+)\\s*(.+)$");
 
+    @ConfigProperty(name = "rules.definition")
+    String jsonSpec;
+    
     private KieContainer kieContainer;
     private Spec spec;
     private ConverterUtils converter;
     private String serviceName;
 
-    private static class SessionFactoryHolder {
-        static final SessionFactory INSTANCE = new SessionFactory();
-    }
-
-    public static SessionFactory getInstance() {
-        return SessionFactoryHolder.INSTANCE;
-    }
-
-    private SessionFactory() {
-        this(System.getProperty("GET", "{}"));
-    }
-
-    protected SessionFactory(String jsonSpec) {
-        this.spec = loadSpec(jsonSpec);
+    @PostConstruct
+    public void initialize() {
+        this.spec = loadSpec();
         this.converter = new ConverterUtils(spec);
         this.serviceName = spec.getName();
 
@@ -110,7 +107,7 @@ public class SessionFactory {
         }
     }
 
-    private Spec loadSpec(String jsonSpec) {
+    private Spec loadSpec() {
         logger.debug("Loaded rules spec: {}", jsonSpec);
         Spec spec = null;
         try {

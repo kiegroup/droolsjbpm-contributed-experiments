@@ -17,6 +17,7 @@
 package org.kiegroup.zenithr.drools.service;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,11 +25,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kiegroup.zenithr.drools.model.Fact;
 import org.kiegroup.zenithr.drools.model.exceptions.InvalidSpecException;
-import org.kiegroup.zenithr.drools.service.impl.RuleServiceImpl;
+import org.kiegroup.zenithr.drools.service.impl.TestRuleServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RuleServiceTest {
 
@@ -133,7 +135,14 @@ public class RuleServiceTest {
     }
 
     private RuleService getRuleService(String file) {
-        return new RuleServiceImpl(TestSessionFactory.getInstance(file));
+        SessionFactory sessionFactory = null;
+        try {
+            sessionFactory = new TestSessionFactory(file);
+            sessionFactory.initialize();
+        } catch (URISyntaxException | IOException e) {
+            fail("Exception creating test session factory");
+        }
+        return new TestRuleServiceImpl(sessionFactory);
     }
 
 }

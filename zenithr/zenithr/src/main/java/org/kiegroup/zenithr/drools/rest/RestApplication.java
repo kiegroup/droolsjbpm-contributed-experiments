@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kiegroup.zenithr.rest;
+package org.kiegroup.zenithr.drools.rest;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

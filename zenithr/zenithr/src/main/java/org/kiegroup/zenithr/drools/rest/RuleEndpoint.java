@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kiegroup.zenithr.rest;
+package org.kiegroup.zenithr.drools.rest;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -33,8 +33,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,12 +43,14 @@ import org.kiegroup.zenithr.drools.model.OutputFact;
 import org.kiegroup.zenithr.drools.model.exceptions.TypeParseException;
 import org.kiegroup.zenithr.drools.service.RuleService;
 import org.kiegroup.zenithr.drools.service.SessionFactory;
-import org.kiegroup.zenithr.drools.service.impl.RuleServiceImpl;
 
 @Path("/")
 public class RuleEndpoint {
 
-    private RuleService ruleService = new RuleServiceImpl(SessionFactory.getInstance());
+    @Inject
+    SessionFactory sessionFactory;
+    @Inject
+    RuleService ruleService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @GET
@@ -81,11 +83,11 @@ public class RuleEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
-    public Response doPost(MultivaluedMap<String, String> formParams, @Context HttpServletRequest request, @Context HttpServletResponse response) {
+    public Response doPost(Form form, @Context HttpServletRequest request) {
         try {
-            Map<String, String[]> parameters = formParams.entrySet().stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().toArray(new String[0])));
+            Map<String, String[]> parameters = form.asMap().entrySet().stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().toArray(new String[0])));
             Object output = ruleService.process(toInputParameters(parameters));
-            String result = String.format(getFileContent("/result.html"), outputToJson(output));
+            String result = String.format(getFileContent("/META-INF/resources/result.html"), outputToJson(output));
             return Response.ok(getHTML(request.getParameterMap(), result)).build();
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -93,16 +95,16 @@ public class RuleEndpoint {
     }
 
     private String getHTML(Map<String, String[]> parameterMap, String result) {
-        String template = getFileContent("/form.html");
-        String serviceName = SessionFactory.getInstance().getServiceName();
+        String template = getFileContent("/META-INF/resources/form.html");
+        String serviceName = sessionFactory.getServiceName();
         StringWriter inputSection = getInputSection(parameterMap);
         return String.format(template, serviceName, serviceName, inputSection, result);
     }
 
     private StringWriter getInputSection(Map<String, String[]> parameterMap) {
-        String inputTemplate = getFileContent("/input.html");
+        String inputTemplate = getFileContent("/META-INF/resources/input.html");
         StringWriter inputSection = new StringWriter();
-        for (String name : SessionFactory.getInstance().getInputNames()) {
+        for (String name : sessionFactory.getInputNames()) {
             String value = "";
             if (parameterMap.get(name) != null) {
                 value = parameterMap.get(name)[0];

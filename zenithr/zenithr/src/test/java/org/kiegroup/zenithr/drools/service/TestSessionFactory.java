@@ -26,16 +26,8 @@ import java.util.stream.Stream;
 
 public class TestSessionFactory extends SessionFactory {
     
-    private TestSessionFactory(String specFileName) throws URISyntaxException, IOException {
-        super(readRulesDefinition(specFileName));
-    }
-    
-    public static SessionFactory getInstance(String specFileName) {
-        try {
-            return new TestSessionFactory(specFileName);
-        } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException("Unable to load test definitions", e);
-        }
+    public TestSessionFactory(String specFileName) throws URISyntaxException, IOException {
+        this.jsonSpec = readRulesDefinition(specFileName);
     }
     
     private static String readRulesDefinition(String fileName) throws URISyntaxException, IOException {

@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package org.kiegroup.zenithr.rest;
+package org.kiegroup.zenithr.drools.service;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import javax.enterprise.context.ApplicationScoped;
 
-import org.kiegroup.zenithr.drools.service.SessionFactory;
+import org.eclipse.microprofile.health.Health;
+import org.eclipse.microprofile.health.HealthCheckResponse;
 
-@WebListener
-public class ApplicationInitialization implements ServletContextListener {
+@Health
+@ApplicationScoped
+public class HealthCheck implements org.eclipse.microprofile.health.HealthCheck {
 
+    private static final HealthCheckResponse UP = HealthCheckResponse.named("Rules health check").up().build();
+    
     @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        if (System.getenv().containsKey("GET")) {
-            System.setProperty("GET", System.getenv("GET"));
-        }
-        SessionFactory.getInstance();
+    public HealthCheckResponse call() {
+        return UP;
     }
 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        //Nothing to do
-    }
 }
