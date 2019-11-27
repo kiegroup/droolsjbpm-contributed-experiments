@@ -29,7 +29,7 @@ public class Series1Test extends NaiveBayesRecommendationServiceProcessTest {
      * shows how after passing min count of 2 input, accuracy goes to > 0.95 (95%) very quickly.
      */
     @Test
-    public void test1() {
+    public void testHighConfidenceWithSmallDataset() {
         Map<String, Object> outputs = new HashMap<>();
 
         for (int i = 0; i < 30; i++) {

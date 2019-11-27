@@ -30,7 +30,7 @@ public class Series4Test extends RandomForestPredictionServiceProcessTest {
      * values, accuracy of completely new input is extremely high.
      */
     @Test
-    public void test4() {
+    public void testHighPredictionConfidenceWithVaryingParameter() {
         Map<String, Object> outputs;
 
         for (int i = 0; i < 50; i++) {

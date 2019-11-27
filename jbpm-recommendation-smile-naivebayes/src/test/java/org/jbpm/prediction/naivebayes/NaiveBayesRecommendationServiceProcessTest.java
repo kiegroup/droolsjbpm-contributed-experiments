@@ -81,6 +81,6 @@ public abstract class NaiveBayesRecommendationServiceProcessTest extends Abstrac
             return outputs;
         }
 
-        return null;
+        return new HashMap<>();
     }
 }

@@ -82,6 +82,6 @@ public abstract class RandomForestPredictionServiceProcessTest extends AbstractK
             return outputs;
         }
 
-        return null;
+        return new HashMap<>();
     }
 }

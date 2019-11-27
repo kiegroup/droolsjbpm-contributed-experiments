@@ -103,7 +103,15 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
         } catch (Exception e) {
             logger.error("Exception: " + e);
         }
-        configuration.setInputFeatures(inputFeatures);
+
+        // check input configuration is appropriate for this concrete example
+        if (inputFeatures.containsKey("item") && inputFeatures.get("item")==AttributeType.NOMINAL &&
+            inputFeatures.containsKey("ActorId") && inputFeatures.get("ActorId")==AttributeType.NOMINAL &&
+            inputFeatures.containsKey("level") && inputFeatures.get("level")==AttributeType.NOMINAL) {
+            configuration.setInputFeatures(inputFeatures);
+        } else {
+            throw new IllegalArgumentException("Required inputs not properly specified.");
+        }
 
         try {
             Properties prop = new Properties();
@@ -116,10 +124,23 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
                 throw new FileNotFoundException("Could not find the property file 'output.properties' in the classpath.");
             }
 
-            configuration.setOutcomeName(prop.getProperty("name"));
-            configuration.setOutcomeType(AttributeType.valueOf(prop.getProperty("type")));
-            configuration.setConfidenceThreshold(Double.parseDouble(prop.getProperty("confidence_threshold")));
-            configuration.setNumTrees(Integer.parseInt(prop.getProperty("num_trees")));
+            // check input configuration is appropriate for this concrete example
+            if (prop.containsKey("name") && prop.get("name").equals("approved") &&
+                prop.containsKey("type") && prop.get("type").equals("NOMINAL") &&
+                    prop.containsKey("confidence_threshold") &&
+                    prop.containsKey("num_trees")) {
+
+                configuration.setOutcomeName(prop.getProperty("name"));
+                configuration.setOutcomeType(AttributeType.valueOf(prop.getProperty("type")));
+                try {
+                    configuration.setConfidenceThreshold(Double.parseDouble(prop.getProperty("confidence_threshold")));
+                    configuration.setNumTrees(Integer.parseInt(prop.getProperty("num_trees")));
+                } catch (NumberFormatException e) {
+                    logger.error("Invalid numerical value in output.properties");
+                }
+            } else {
+                throw new IllegalArgumentException("Required outputs not properly specified.");
+            }
         } catch (Exception e) {
             logger.error("Exception: " + e);
         }
@@ -145,20 +166,21 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
     public void addData(Map<String, Object> data, Object outcome) {
         final double[] features = new double[numAttributes];
         int i = 0;
-        for (String attrName : smileAttributes.keySet()) {
+        for (Map.Entry<String, Attribute> attribute : smileAttributes.entrySet()) {
+            final String datum = data.get(attribute.getKey()).toString();
             try {
-                features[i] = smileAttributes.get(attrName).valueOf(data.get(attrName).toString());
+                features[i] = attribute.getValue().valueOf(datum);
             } catch (ParseException e) {
-                e.printStackTrace();
+                logger.error(String.format("Error parsing the value of %s: '%s'", attribute.getKey(), datum));
             }
             i++;
         }
+        final String outcomeStr = outcome.toString();
         try {
-            final String outcomeStr = outcome.toString();
             outcomeSet.add(outcomeStr);
             dataset.add(features, outcomeAttribute.valueOf(outcomeStr));
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error(String.format("Error parsing the outcome value: %s", outcomeStr));
         }
     }
 

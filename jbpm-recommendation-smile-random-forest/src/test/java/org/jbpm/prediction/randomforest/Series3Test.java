@@ -31,7 +31,7 @@ public class Series3Test extends RandomForestPredictionServiceProcessTest {
      * values, it takes a while longer to get to high accuracy
      */
     @Test
-    public void test3() {
+    public void testPredictionWithHighVaryingParameter() {
         Map<String, Object> outputs = new HashMap<>();
 
         for (int i = 0; i < 50; i++) {

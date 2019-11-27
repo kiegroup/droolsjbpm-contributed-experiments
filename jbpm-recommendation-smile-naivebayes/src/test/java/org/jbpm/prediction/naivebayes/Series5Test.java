@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 public class Series5Test extends NaiveBayesRecommendationServiceProcessTest {
     @Test
-    public void test6() {
+    public void testConfidenceWithRandomOutcomes() {
         Map<String, Object> outputs;
 
         for (int i = 0; i < 100; i++) {

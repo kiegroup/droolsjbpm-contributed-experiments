@@ -18,7 +18,7 @@ package org.jbpm.prediction.randomforest;
 
 import java.util.Map;
 
-abstract public class AbstractPredictionEngine {
+public abstract class AbstractPredictionEngine {
 
     protected Map<String, AttributeType> inputFeatures;
     protected String outcomeFeatureName;

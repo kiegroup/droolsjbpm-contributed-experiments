@@ -29,7 +29,7 @@ public class Series3Test extends NaiveBayesRecommendationServiceProcessTest {
      * it does not even respond to different inputs
      */
     @Test
-    public void test3() {
+    public void testOutcomeWithPreviouslyUnseenInputData() {
         Map<String, Object> outputs;
 
         for (int i = 0; i < 10; i++) {

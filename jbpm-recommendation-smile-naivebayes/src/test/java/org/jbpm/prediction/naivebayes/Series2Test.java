@@ -30,7 +30,7 @@ public class Series2Test extends NaiveBayesRecommendationServiceProcessTest {
      * values, it takes a while longer to get to high accuracy
      */
     @Test
-    public void test2() {
+    public void testPredictionWithHighVaryingParameter() {
         Map<String, Object> outputs = new HashMap<>();
 
         for (int i = 0; i < 50; i++) {

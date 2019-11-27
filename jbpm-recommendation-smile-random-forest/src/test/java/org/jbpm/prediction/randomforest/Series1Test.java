@@ -27,17 +27,17 @@ import static org.junit.Assert.assertTrue;
 public class Series1Test extends RandomForestPredictionServiceProcessTest {
 
     /**
-     * This test shows how after testing with a mixed set (3x false, 17x true) how prediction (and probability)
+     * This test shows how after testing with a mixed set (60x false, 17x true) how prediction (and probability)
      * evolve when you then keep sending as "false" value to the outcome.
      */
     @Test
-    public void test1() {
+    public void testChangingConfidenceWithInputDataDrift() {
         Map<String, Object> outputs = new HashMap<>();
 
         for (int i = 0; i < 17; i++) {
             outputs = startAndReturnTaskOutputData("test item", "john", 5, true);
         }
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 60; i++) {
             outputs = startAndReturnTaskOutputData("test item", "john", 5, false);
         }
         assertTrue((double) outputs.get("confidence") > 0.5);
