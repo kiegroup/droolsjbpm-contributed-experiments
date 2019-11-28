@@ -32,6 +32,7 @@ public class UnequalProbabilityTest extends RandomForestPredictionServiceProcess
      */
     @Test
     public void testUnequalProbabilityRandomForestPredictionService() {
+        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "1.0");
         Map<String, Object> outputs;
 
         outputs = startAndReturnTaskOutputData("test item", "john", 5, true);

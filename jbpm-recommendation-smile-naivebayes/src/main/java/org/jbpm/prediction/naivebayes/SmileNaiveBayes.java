@@ -217,6 +217,19 @@ public class SmileNaiveBayes extends AbstractPredictionEngine implements Predict
      */
     @Override
     public PredictionOutcome predict(Task task, Map<String, Object> inputData) {
+
+        // Allow confidence threshold to be overriden by a Java property
+        final String confidenceThreshold = System.getProperty("org.jbpm.task.prediction.service.confidence_threshold");
+
+        // Check if the confidence threshold was set at runtime, otherwise keep using as defined in output.properties
+        if (confidenceThreshold!=null) {
+            try {
+                this.confidenceThreshold = Double.parseDouble(confidenceThreshold);
+            } catch (NumberFormatException e) {
+                logger.error("Invalid confidence threshold set in org.jbpm.task.prediction.service.confidence_threshold");
+            }
+        }
+
         Map<String, Object> outcomes = new HashMap<>();
         if (outcomeSet.size() >= 2) {
             model = new NaiveBayes(NaiveBayes.Model.MULTINOMIAL, outcomeSet.size(), attributeNames.size());

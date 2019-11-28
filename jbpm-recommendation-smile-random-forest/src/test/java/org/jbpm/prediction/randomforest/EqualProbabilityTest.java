@@ -35,6 +35,7 @@ public class EqualProbabilityTest extends RandomForestPredictionServiceProcessTe
      */
     @Test
     public void testEqualProbabilityRandomForestPredictionService() {
+        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "1.0");
         Map<String, Object> outputs = new HashMap<>();
 
         for (int i = 0; i < 100; i++) {

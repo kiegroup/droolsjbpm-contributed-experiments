@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.prediction.naivebayes;
+package org.jbpm.prediction.randomforest;
 
 import org.junit.Test;
 
@@ -24,23 +24,18 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class Series2Test extends NaiveBayesRecommendationServiceProcessTest {
-    /**
-     * This test shows how after passing min count of 2 input with 1 irrelevant param switching between 5 possible
-     * values, it takes a while longer to get to high accuracy
-     */
+public class Series6Test extends RandomForestPredictionServiceProcessTest {
+
     @Test
-    public void testPredictionWithHighVaryingParameter() {
-        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "1.0");
+    public void testAutoCompletion() {
+        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "0.95");
         Map<String, Object> outputs = new HashMap<>();
-
-        for (int i = 0; i < 50; i++) {
-            startAndReturnTaskOutputData("test item", "john", i % 5, false);
-            outputs = startAndReturnTaskOutputData("test item", "mary", i % 5, true);
+        startAndReturnTaskOutputData("item6", "mary", 5, false);
+        for (int i = 0; i < 200; i++) {
+            outputs = startAndReturnTaskOutputData("item6", "mary", 5, true);
         }
-        assertTrue((double) outputs.get("confidence") > 0.7);
-        assertEquals("true", outputs.get("approved"));
-
+        assertTrue(outputs.isEmpty());
     }
+
 
 }

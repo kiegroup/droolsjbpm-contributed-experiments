@@ -32,6 +32,7 @@ public class Series3Test extends RandomForestPredictionServiceProcessTest {
      */
     @Test
     public void testPredictionWithHighVaryingParameter() {
+        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "1.0");
         Map<String, Object> outputs = new HashMap<>();
 
         for (int i = 0; i < 50; i++) {

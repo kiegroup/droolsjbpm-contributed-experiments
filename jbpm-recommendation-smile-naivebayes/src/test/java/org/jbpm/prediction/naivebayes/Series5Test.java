@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 public class Series5Test extends NaiveBayesRecommendationServiceProcessTest {
     @Test
     public void testConfidenceWithRandomOutcomes() {
+        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "1.0");
         Map<String, Object> outputs;
 
         for (int i = 0; i < 100; i++) {
@@ -41,7 +42,6 @@ public class Series5Test extends NaiveBayesRecommendationServiceProcessTest {
         startAndReturnTaskOutputData("test item2", "krisv", 10, false);
         startAndReturnTaskOutputData("test item", "john", 5, false);
         outputs = startAndReturnTaskOutputData("test item2", "krisv", 10, true);
-
         assertTrue((double) outputs.get("confidence") > 0.5);
         assertEquals("true", outputs.get("approved"));
 

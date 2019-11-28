@@ -30,6 +30,7 @@ public class RepeatedRandomForestTest extends RandomForestPredictionServiceProce
      */
     @Test
     public void testRepeatedRandomForestPredictionService() {
+        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "1.0");
         Map<String, Object> outputs;
         outputs = startAndReturnTaskOutputData("test item", "john", 5, false);
         for (int i = 0; i < 40; i++) {
