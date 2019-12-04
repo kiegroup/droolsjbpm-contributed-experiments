@@ -29,6 +29,7 @@ public class Series6Test extends NaiveBayesRecommendationServiceProcessTest {
     public void testAutoCompletion() {
         System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "0.85");
         Map<String, Object> outputs = new HashMap<>();
+        startAndReturnTaskOutputData("item6", "mary", 5, false);
         for (int i = 0; i < 200; i++) {
                 startAndReturnTaskOutputData("item6", "mary", 5, false);
             for (int j = 0 ; j < 6 ; j++) {
