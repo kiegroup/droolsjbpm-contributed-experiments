@@ -22,7 +22,7 @@
   </modules>
 
   <properties>
-    <version.org.apache.lucene>5.3.1</version.org.apache.lucene>
+    <version.org.apache.lucene>7.1.0</version.org.apache.lucene>
   </properties>
 
   <dependencyManagement>
