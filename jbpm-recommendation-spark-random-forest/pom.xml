@@ -11,9 +11,55 @@
     <properties>
         <skipTests>true</skipTests>
         <spark.version>2.4.4</spark.version>
+        <smile.version>1.5.2</smile.version>
+        <janino.version>3.0.8</janino.version>
+        <jackson.version>2.6.7.1</jackson.version>
     </properties>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>ban-blacklisted-dependencies</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedDependencies>
+                                        <includes combine.children="append">
+                                            <include>log4j:log4j</include>
+                                        </includes>
+                                    </bannedDependencies>
+                                </rules>
+                                <fail>true</fail>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>ban-duplicated-classes</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <banDuplicateClasses>
+                                        <ignoreClasses combine.children="append">
+                                            <ignoreClass>org.apache.spark.unused.*</ignoreClass>
+                                        </ignoreClasses>
+                                    </banDuplicateClasses>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -29,7 +75,47 @@
 
     <name>jBPM :: Prediction :: Apache Spark Random Forest based prediction service</name>
     <description>Random Forest based prediction service</description>
-
+  
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>com.github.haifengl</groupId>
+          <artifactId>smile-core</artifactId>
+          <version>${smile.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.codehaus.janino</groupId>
+          <artifactId>commons-compiler</artifactId>
+          <version>${janino.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.codehaus.janino</groupId>
+          <artifactId>janino</artifactId>
+          <version>${janino.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-core_2.12</artifactId>
+          <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-sql_2.12</artifactId>
+          <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-mllib_2.12</artifactId>
+          <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+          <version>${jackson.version}</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+    
     <dependencies>
         <dependency>
             <groupId>org.kie</groupId>
@@ -65,6 +151,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                   <groupId>javax.activation</groupId>
+                   <artifactId>javax.activation-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -102,36 +194,62 @@
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.12</artifactId>
-            <version>${spark.version}</version>
+            <exclusions>
+                <exclusion>
+                   <groupId>javax.xml.bind</groupId>
+                   <artifactId>jaxb-api</artifactId>
+                </exclusion>
+                <exclusion>
+                   <groupId>javax.ws.rs</groupId>
+                   <artifactId>javax.ws.rs-api</artifactId>
+                </exclusion>
+                <exclusion>
+                   <groupId>org.slf4j</groupId>
+                   <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                   <groupId>org.apache.hadoop</groupId>
+                   <artifactId>hadoop-yarn-common</artifactId>
+                </exclusion>
+                <exclusion>
+                   <groupId>org.glassfish.hk2.external</groupId>
+                   <artifactId>aopalliance-repackaged</artifactId>
+                </exclusion>
+                <exclusion>
+                   <groupId>org.glassfish.hk2.external</groupId>
+                   <artifactId>javax.inject</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_2.12</artifactId>
-            <version>${spark.version}</version>
+            <exclusions>
+                <exclusion>
+                   <groupId>org.apache.orc</groupId>
+                   <artifactId>orc-mapreduce</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-mllib_2.12</artifactId>
-            <version>${spark.version}</version>
         </dependency>
 
         <!-- Dependency override for Spark-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.6.7.1</version>
             <scope>compile</scope>
         </dependency>
         <!--Spark java.lang.NoClassDefFoundError: org/codehaus/janino/InternalCompilerException-->
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>commons-compiler</artifactId>
-            <version>3.0.8</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
-            <version>3.0.8</version>
         </dependency>
     </dependencies>
 </project>
