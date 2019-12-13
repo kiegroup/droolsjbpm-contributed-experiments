@@ -22,7 +22,7 @@ import org.apache.spark.ml.Pipeline;
 import org.apache.spark.ml.PipelineModel;
 import org.apache.spark.ml.PipelineStage;
 import org.apache.spark.ml.classification.RandomForestClassifier;
-import org.apache.spark.ml.feature.OneHotEncoder;
+import org.apache.spark.ml.feature.OneHotEncoderEstimator;
 import org.apache.spark.ml.feature.StringIndexer;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.sql.Dataset;
@@ -38,6 +38,7 @@ import org.kie.internal.task.api.prediction.PredictionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,19 +47,17 @@ public class SparkRandomForest implements PredictionService {
 
     public static final String IDENTIFIER = "SparkRandomForest";
     private static final Logger logger = LoggerFactory.getLogger(SparkRandomForest.class);
+    private static final int numTrees = 10;
 
     private final SparkSession session;
 
     private final StructType trainingSchema;
     private final StructType predictionSchema;
     private org.apache.spark.sql.Dataset<Row> df;
-    private int count = 0;
     private PipelineModel pm = null;
     private final Pipeline pipeline;
     private double confidenceThreshold = 1.0;
-    private final int numTrees = 10;
-    private final int MINIMUM_OBSERVATIONS = 2;
-
+    private final List<Row> miniBatch = new ArrayList<>();
 
     public SparkRandomForest() {
 
@@ -79,30 +78,46 @@ public class SparkRandomForest implements PredictionService {
                 new StructField[] {
                         DataTypes.createStructField("user", DataTypes.StringType, false),
                         DataTypes.createStructField("level", DataTypes.IntegerType, false),
+                        DataTypes.createStructField("item", DataTypes.StringType, false),
                         DataTypes.createStructField("label", DataTypes.IntegerType, false),
                 });
 
         predictionSchema = DataTypes.createStructType(
                 new StructField[] {
                         DataTypes.createStructField("user", DataTypes.StringType, false),
-                        DataTypes.createStructField("level", DataTypes.IntegerType, false)
+                        DataTypes.createStructField("level", DataTypes.IntegerType, false),
+                        DataTypes.createStructField("item", DataTypes.StringType, false)
                 });
 
         // Create an empty dataframe to store incoming data
         df = session.createDataFrame(jsc.emptyRDD(), trainingSchema).toDF();
 
-        final StringIndexer userIndexer = new StringIndexer().setInputCol("user").setOutputCol("userIndex");
-        final OneHotEncoder userEncoder = new OneHotEncoder().setInputCol("userIndex").setOutputCol("userVec");
+        final StringIndexer userIndexer = new StringIndexer()
+                .setInputCol("user")
+                .setOutputCol("userIndex")
+                .setHandleInvalid("keep");
+        final OneHotEncoderEstimator userEncoder = new OneHotEncoderEstimator()
+                .setInputCols(new String[]{"userIndex"})
+                .setOutputCols(new String[]{"userVec"});
+        final StringIndexer itemIndexer = new StringIndexer()
+                .setInputCol("item")
+                .setOutputCol("itemIndex")
+                .setHandleInvalid("keep");
+        final OneHotEncoderEstimator itemEncoder = new OneHotEncoderEstimator()
+                .setInputCols(new String[]{"itemIndex"})
+                .setOutputCols(new String[]{"itemVec"});
 
-        final VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"userVec", "level"}).setOutputCol("features");
+        final VectorAssembler assembler = new VectorAssembler()
+                .setInputCols(new String[]{"userVec", "level", "itemVec"})
+                .setOutputCol("features");
         final RandomForestClassifier randomForest = new RandomForestClassifier().setNumTrees(this.numTrees)
                 .setMaxBins(32)
                 .setMaxMemoryInMB(128)
                 .setMaxDepth(3);
 
-        // Pipeline stages consist of: indexing users -> encoding features -> assembling vector -> random forest
+        // Pipeline stages consist of: indexing users / items -> encoding features -> assembling vector -> random forest
         final PipelineStage[] stages = new PipelineStage[]{
-                userIndexer, userEncoder, assembler, randomForest
+                userIndexer, userEncoder, itemIndexer, itemEncoder, assembler, randomForest
         };
 
         pipeline = new Pipeline().setStages(stages);
@@ -110,21 +125,27 @@ public class SparkRandomForest implements PredictionService {
 
 
     /**
-     * Add the data provided as a map to a Smile {@link smile.data.Dataset}.
+     * Add provided data to an existing JavaRDD {@link org.apache.spark.api.java.JavaRDD}.
      *
      * @param data    A map containing the input attribute names as keys and the attribute values as values.
      * @param outcome The value of the outcome (output data).
      */
     public void addData(Map<String, Object> data, Object outcome) {
         // convert input data to a Row
-        final List<Row> rows = ImmutableList.of(
-                RowFactory.create(
-                        data.get("ActorId").toString(),
-                        data.get("level"),
-                        ((Boolean) outcome) ? 1 : 0
-                ));
-        // Append the row to the existing dataframe
-        df = df.union(session.createDataFrame(rows, trainingSchema));
+        final Row row = RowFactory.create(
+                data.get("ActorId").toString(),
+                data.get("level"),
+                data.get("item"),
+                (Boolean.TRUE.equals((Boolean) outcome)) ? 1 : 0
+        );
+
+        miniBatch.add(row);
+
+        if (miniBatch.size() > 20) {
+            // Append the row to the existing dataframe
+            df = df.union(session.createDataFrame(miniBatch, trainingSchema));
+            miniBatch.clear();
+        }
     }
 
     /**
@@ -148,47 +169,55 @@ public class SparkRandomForest implements PredictionService {
     public PredictionOutcome predict(Task task, Map<String, Object> inputData) {
         Map<String, Object> outcomes = new HashMap<>();
 
-        if (pm != null) {
-
-            // Allow confidence threshold to be overriden by a Java property
-            final String confidenceThreshold = System.getProperty("org.jbpm.task.prediction.service.confidence_threshold");
-
-            // Check if the confidence threshold was set at runtime, otherwise keep using as defined in output.properties
-            if (confidenceThreshold!=null) {
-                try {
-                    this.confidenceThreshold = Double.parseDouble(confidenceThreshold);
-                } catch (NumberFormatException e) {
-                    logger.error("Invalid confidence threshold set in org.jbpm.task.prediction.service.confidence_threshold");
-                }
-            }
-
-
-            final List<Row> rows = ImmutableList.of(RowFactory.create(inputData.get("ActorId").toString(), inputData.get("level")));
-            final Dataset<Row> pdf = session.createDataFrame(rows, predictionSchema);
-            final List<Row> result = pm.transform(pdf).toJavaRDD().collect();
-
-            // Prediction must return at least one result
-            if (result.isEmpty()) {
-                logger.error("Apache Spark returned no predictions");
-                return new PredictionOutcome();
-            } else {
-                final Row r = result.get(0);
-                // prediction's row 6th element contains the outcome probabilities
-                org.apache.spark.ml.linalg.DenseVector m = (org.apache.spark.ml.linalg.DenseVector) r.get(6);
-                // determine the highest probability
-                double[] outcomeProbabilities = m.toArray();
-                double maxProbability = Math.max(outcomeProbabilities[0], outcomeProbabilities[1]);
-                // prediction's row 7th element contains the outcome category (0 = false, 1 = true)
-                final Boolean approved = (Double) r.get(7) == 1.0;
-                logger.debug("predicting '{}' with confidence {}%", approved, maxProbability * 100.0);
-                outcomes.put("approved", approved);
-                outcomes.put("confidence", maxProbability);
-                // TODO: Get the conf. threshold from a system property and test autocompletion
-                return new PredictionOutcome(maxProbability, this.confidenceThreshold, outcomes);
-
-            }
-        } else {
+        if (pm == null) {
             return new PredictionOutcome();
+        }
+
+        // Allow confidence threshold to be overriden by a Java property
+        final String confidenceThreshold = System.getProperty("org.jbpm.task.prediction.service.confidence_threshold");
+
+        // Check if the confidence threshold was set at runtime, otherwise keep using as defined in output.properties
+        if (confidenceThreshold!=null) {
+            try {
+                this.confidenceThreshold = Double.parseDouble(confidenceThreshold);
+            } catch (NumberFormatException e) {
+                logger.error("Invalid confidence threshold set in org.jbpm.task.prediction.service.confidence_threshold");
+            }
+        }
+        final List<Row> rows = ImmutableList.of(
+                RowFactory.create(
+                        inputData.get("ActorId").toString(),
+                        inputData.get("level"),
+                        inputData.get("item")
+                ));
+        final Dataset<Row> pdf = session.createDataFrame(rows, predictionSchema);
+        final List<Row> result = pm.transform(pdf).toJavaRDD().collect();
+
+        // Prediction must return at least one result
+        if (result.isEmpty()) {
+            logger.error("Apache Spark returned no predictions");
+            return new PredictionOutcome();
+        } else {
+            final Row r = result.get(0);
+            System.out.println(r);
+            // prediction's row 10th element contains the outcome probabilities
+            org.apache.spark.ml.linalg.DenseVector m = (org.apache.spark.ml.linalg.DenseVector) r.get(9);
+            // determine the highest probability
+            double[] outcomeProbabilities = m.toArray();
+            double maxProbability;
+            // The outcome probabilities will be as many as unique outcomes seen so far
+            // We have either one or two unique outcomes in this example
+            if (outcomeProbabilities.length == 1) {
+                maxProbability = outcomeProbabilities[0];
+            } else {
+                maxProbability = Math.max(outcomeProbabilities[0], outcomeProbabilities[1]);
+            }
+            // prediction's row 11th element contains the outcome category (0 = false, 1 = true)
+            final Boolean approved = (Double) r.get(10) == 1.0;
+            logger.debug("predicting '{}' with confidence {}%", approved, maxProbability * 100.0);
+            outcomes.put("approved", approved);
+            outcomes.put("confidence", maxProbability);
+            return new PredictionOutcome(maxProbability, this.confidenceThreshold, outcomes);
         }
     }
 
@@ -201,13 +230,14 @@ public class SparkRandomForest implements PredictionService {
      */
     @Override
     public void train(Task task, Map<String, Object> inputData, Map<String, Object> outputData) {
+
         addData(inputData, outputData.get("approved"));
 
-        // Wait until we have the minimum number of observations
-        if (count > MINIMUM_OBSERVATIONS) {
+        try {
             pm = pipeline.fit(df);
+        } catch (IllegalArgumentException e) {
+            // Fitting will be skipped until we have the necessary amount of data
+            logger.debug("Apache Spark does not have enough unique data for training");
         }
-
-        count++;
     }
 }

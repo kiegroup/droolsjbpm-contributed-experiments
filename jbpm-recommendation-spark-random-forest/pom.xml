@@ -11,7 +11,6 @@
     <properties>
         <skipTests>true</skipTests>
         <spark.version>2.4.4</spark.version>
-        <smile.version>1.5.2</smile.version>
         <janino.version>3.0.8</janino.version>
         <jackson.version>2.6.7.1</jackson.version>
     </properties>
@@ -78,11 +77,6 @@
   
     <dependencyManagement>
       <dependencies>
-        <dependency>
-          <groupId>com.github.haifengl</groupId>
-          <artifactId>smile-core</artifactId>
-          <version>${smile.version}</version>
-        </dependency>
         <dependency>
           <groupId>org.codehaus.janino</groupId>
           <artifactId>commons-compiler</artifactId>
@@ -184,10 +178,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.haifengl</groupId>
-            <artifactId>smile-core</artifactId>
         </dependency>
 
         <!-- Spark dependencies -->

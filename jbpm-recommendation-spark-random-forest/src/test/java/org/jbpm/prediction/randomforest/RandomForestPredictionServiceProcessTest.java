@@ -32,10 +32,6 @@ public class RandomForestPredictionServiceProcessTest extends AbstractKieService
 
     private List<Long> instances = new ArrayList<>();
 
-    private static void assertBetween(double value, double min, double max) {
-        assertTrue(value > min && value < max);
-    }
-
     @BeforeClass
     public static void setupOnce() {
         System.setProperty("org.jbpm.task.prediction.service", SparkRandomForest.IDENTIFIER);
@@ -94,7 +90,7 @@ public class RandomForestPredictionServiceProcessTest extends AbstractKieService
         Map<String, Object> outputs = new HashMap<>();
 
         startAndReturnTaskOutputData("test item", "mary", 5, false);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 120; i++) {
             startAndReturnTaskOutputData("test item", "john", 5, false);
             outputs = startAndReturnTaskOutputData("test item", "john", 5, true);
         }
@@ -112,19 +108,15 @@ public class RandomForestPredictionServiceProcessTest extends AbstractKieService
     @Test
     public void testAutocompletion() {
 
-        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "0.8");
-
-        Map<String, Object> outputs;
-
-        outputs = startAndReturnTaskOutputData("test item", "mary", 5, false);
-        outputs = startAndReturnTaskOutputData("test item", "john", 5, true);
-        for (int i = 0; i < 10; i++) {
-            outputs = startAndReturnTaskOutputData("test item", "john", 5, false);
+        System.setProperty("org.jbpm.task.prediction.service.confidence_threshold", "0.85");
+        Map<String, Object> outputs = new HashMap<>();
+        startAndReturnTaskOutputData("item6", "john", 5, false);
+        for (int i = 0; i < 200; i++) {
+            startAndReturnTaskOutputData("item6", "john", 5, false);
+            for (int j = 0 ; j < 6 ; j++) {
+                outputs = startAndReturnTaskOutputData("item6", "john", 5, true);
+            }
         }
-        for (int i = 0; i < 90; i++) {
-            outputs = startAndReturnTaskOutputData("test item", "john", 5, true);
-        }
-
         assertTrue(outputs.isEmpty());
     }
 
