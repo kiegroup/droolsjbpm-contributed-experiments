@@ -1,0 +1,18 @@
+import org.kiegroup.zenithr.drools.model.InputFact
+import org.kiegroup.zenithr.drools.model.OutputFact
+import org.kiegroup.zenithr.drools.model.Output
+
+rule "rule_0" when
+  deployment1: InputFact(getName() == "deployment1" && deployment1.greaterThanEquals("spec.replicas", 3))
+  outputs: OutputFact()
+then
+  outputs.add(Output.withName("deployment2").withPath("spec").withValue("{\"replicas\": \"" + (deployment1.getNumber("spec.replicas") / 2 + 1) + "\"}"));
+  outputs.add(Output.withName("deployment3").withPath("metadata.labels").withValue("{\"example\": \"" + deployment1.getString("metadata.name") + "\"}"));
+end
+rule "rule_1" when
+  deployment: InputFact(getName() == "deployment1" && deployment.lessThan("spec.replicas", 3))
+  outputs: OutputFact()
+then
+  outputs.add(Output.withName("deployment2").withPath("spec").withValue("{\"replicas\": \"1\"}"));
+  outputs.add(Output.withName("deployment3").withPath("spec").withValue("{\"replicas\": \"0\"}"));
+end

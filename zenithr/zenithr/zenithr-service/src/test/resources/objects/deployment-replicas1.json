@@ -1,0 +1,160 @@
+{
+  "kind": "Deployment",
+  "apiVersion": "apps/v1",
+  "metadata": {
+    "annotations": {
+      "deployment.kubernetes.io/revision": "2"
+    },
+    "selfLink": "/apis/apps/v1/namespaces/myproject/deployments/default-broker-filter",
+    "resourceVersion": "47971489",
+    "name": "default-broker-filter",
+    "uid": "48578b9f-f5d3-11e9-9701-beeffeed006b",
+    "creationTimestamp": "2019-10-23T20:25:41Z",
+    "generation": 2,
+    "namespace": "myproject",
+    "ownerReferences": [
+      {
+        "apiVersion": "eventing.knative.dev/v1alpha1",
+        "kind": "Broker",
+        "name": "default",
+        "uid": "482c502c-f5d3-11e9-9701-beeffeed006b",
+        "controller": true,
+        "blockOwnerDeletion": true
+      }
+    ],
+    "labels": {
+      "eventing.knative.dev/broker": "default",
+      "eventing.knative.dev/brokerRole": "filter"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "eventing.knative.dev/broker": "default",
+        "eventing.knative.dev/brokerRole": "filter"
+      }
+    },
+    "template": {
+      "metadata": {
+        "creationTimestamp": null,
+        "labels": {
+          "eventing.knative.dev/broker": "default",
+          "eventing.knative.dev/brokerRole": "filter"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "resources": {},
+            "readinessProbe": {
+              "httpGet": {
+                "path": "/readyz",
+                "port": 8080,
+                "scheme": "HTTP"
+              },
+              "initialDelaySeconds": 5,
+              "timeoutSeconds": 1,
+              "periodSeconds": 2,
+              "successThreshold": 1,
+              "failureThreshold": 3
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "name": "filter",
+            "livenessProbe": {
+              "httpGet": {
+                "path": "/healthz",
+                "port": 8080,
+                "scheme": "HTTP"
+              },
+              "initialDelaySeconds": 5,
+              "timeoutSeconds": 1,
+              "periodSeconds": 2,
+              "successThreshold": 1,
+              "failureThreshold": 3
+            },
+            "env": [
+              {
+                "name": "SYSTEM_NAMESPACE",
+                "value": "knative-eventing"
+              },
+              {
+                "name": "NAMESPACE",
+                "valueFrom": {
+                  "fieldRef": {
+                    "apiVersion": "v1",
+                    "fieldPath": "metadata.namespace"
+                  }
+                }
+              },
+              {
+                "name": "BROKER",
+                "value": "default"
+              },
+              {
+                "name": "METRICS_DOMAIN",
+                "value": "knative.dev/eventing"
+              }
+            ],
+            "ports": [
+              {
+                "name": "http",
+                "containerPort": 8080,
+                "protocol": "TCP"
+              },
+              {
+                "name": "metrics",
+                "containerPort": 9090,
+                "protocol": "TCP"
+              }
+            ],
+            "imagePullPolicy": "IfNotPresent",
+            "terminationMessagePolicy": "File",
+            "image": "quay.io/openshift-knative/knative-eventing-filter:v0.9.0"
+          }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 30,
+        "dnsPolicy": "ClusterFirst",
+        "serviceAccountName": "eventing-broker-filter",
+        "serviceAccount": "eventing-broker-filter",
+        "securityContext": {},
+        "schedulerName": "default-scheduler"
+      }
+    },
+    "strategy": {
+      "type": "RollingUpdate",
+      "rollingUpdate": {
+        "maxUnavailable": "25%",
+        "maxSurge": "25%"
+      }
+    },
+    "revisionHistoryLimit": 10,
+    "progressDeadlineSeconds": 600
+  },
+  "status": {
+    "observedGeneration": 2,
+    "replicas": 1,
+    "updatedReplicas": 1,
+    "readyReplicas": 1,
+    "availableReplicas": 1,
+    "conditions": [
+      {
+        "type": "Progressing",
+        "status": "True",
+        "lastUpdateTime": "2019-11-04T11:39:00Z",
+        "lastTransitionTime": "2019-10-23T20:25:40Z",
+        "reason": "NewReplicaSetAvailable",
+        "message": "ReplicaSet \"default-broker-filter-7d8ccc9f94\" has successfully progressed."
+      },
+      {
+        "type": "Available",
+        "status": "True",
+        "lastUpdateTime": "2019-12-04T00:38:57Z",
+        "lastTransitionTime": "2019-12-04T00:38:57Z",
+        "reason": "MinimumReplicasAvailable",
+        "message": "Deployment has minimum availability."
+      }
+    ]
+  }
+}
