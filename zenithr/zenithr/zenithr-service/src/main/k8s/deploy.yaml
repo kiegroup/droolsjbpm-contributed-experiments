@@ -1,0 +1,122 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  labels:
+    app: zenithr-service
+  name: zenithr-service
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: zenithr-service
+    weight: 100
+  wildcardPolicy: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zenithr-service
+  name: zenithr-service
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    deploymentconfig: zenithr-service
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: zenithr-service
+  name: zenithr-service
+spec:
+  selector:
+    deploymentconfig: zenithr-service
+  template:
+    metadata:
+      labels:
+        deploymentconfig: zenithr-service
+    spec:
+      containers:
+      - env:
+        - name: RULES_DEFINITION
+          value: |-
+            {
+              "inputs": [
+                "deployment1"
+              ],
+              "rules": [
+                {
+                  "when": [
+                    "$deployment1.spec.replicas >= 3"
+                  ],
+                  "then": [
+                    {
+                      "name": "deployment2",
+                      "path": "spec",
+                      "value": {
+                        "replicas": "$deployment1.spec.replicas / 2 + 1"
+                      }
+                    },
+                    {
+                      "name": "deployment3",
+                      "path": "metadata.labels",
+                      "value": {
+                        "example": "$deployment1.metadata.name"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "when": [
+                    "$deployment1.spec.replicas < 3"
+                  ],
+                  "then": [
+                    {
+                      "name": "deployment2",
+                      "path": "spec",
+                      "value": {
+                        "replicas": 1
+                      }
+                    },
+                    {
+                      "name": "deployment3",
+                      "path": "spec",
+                      "value": {
+                        "replicas": 0
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+        image: ' '
+        imagePullPolicy: Always
+        name: zenithr-service
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        - containerPort: 9779
+          protocol: TCP
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - zenithr-service
+      from:
+        kind: ImageStreamTag
+        name: zenithr-service:latest
+        namespace: zenithr
+    type: ImageChange
