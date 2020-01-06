@@ -38,6 +38,8 @@ import org.kie.internal.task.api.prediction.PredictionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +51,7 @@ public class SparkRandomForest implements PredictionService {
     private static final Logger logger = LoggerFactory.getLogger(SparkRandomForest.class);
     private static final int numTrees = 10;
 
-    private final SparkSession session;
+    private SparkSession session;
 
     private final StructType trainingSchema;
     private final StructType predictionSchema;
@@ -122,7 +124,6 @@ public class SparkRandomForest implements PredictionService {
 
         pipeline = new Pipeline().setStages(stages);
     }
-
 
     /**
      * Add provided data to an existing JavaRDD {@link org.apache.spark.api.java.JavaRDD}.
@@ -199,7 +200,6 @@ public class SparkRandomForest implements PredictionService {
             return new PredictionOutcome();
         } else {
             final Row r = result.get(0);
-            System.out.println(r);
             // prediction's row 10th element contains the outcome probabilities
             org.apache.spark.ml.linalg.DenseVector m = (org.apache.spark.ml.linalg.DenseVector) r.get(9);
             // determine the highest probability
@@ -239,5 +239,10 @@ public class SparkRandomForest implements PredictionService {
             // Fitting will be skipped until we have the necessary amount of data
             logger.debug("Apache Spark does not have enough unique data for training");
         }
+    }
+
+    @PreDestroy
+    public void closeSparkSession() {
+        session.close();
     }
 }
