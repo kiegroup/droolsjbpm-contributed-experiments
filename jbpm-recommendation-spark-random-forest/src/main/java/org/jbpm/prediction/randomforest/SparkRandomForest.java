@@ -38,8 +38,6 @@ import org.kie.internal.task.api.prediction.PredictionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +49,7 @@ public class SparkRandomForest implements PredictionService {
     private static final Logger logger = LoggerFactory.getLogger(SparkRandomForest.class);
     private static final int numTrees = 10;
 
-    private SparkSession session;
+    private final SparkSession session;
 
     private final StructType trainingSchema;
     private final StructType predictionSchema;
@@ -72,9 +70,6 @@ public class SparkRandomForest implements PredictionService {
                 .appName("Random Forest example")
                 .getOrCreate();
 
-        // Get the Java specific Spark context
-        final JavaSparkContext jsc = new JavaSparkContext(session.sparkContext());
-
         // Dataframe schema
         trainingSchema = DataTypes.createStructType(
                 new StructField[] {
@@ -92,7 +87,8 @@ public class SparkRandomForest implements PredictionService {
                 });
 
         // Create an empty dataframe to store incoming data
-        df = session.createDataFrame(jsc.emptyRDD(), trainingSchema).toDF();
+        df = session.createDataFrame(JavaSparkContext.fromSparkContext(session.sparkContext()).emptyRDD(),
+                trainingSchema).toDF();
 
         final StringIndexer userIndexer = new StringIndexer()
                 .setInputCol("user")
@@ -239,10 +235,5 @@ public class SparkRandomForest implements PredictionService {
             // Fitting will be skipped until we have the necessary amount of data
             logger.debug("Apache Spark does not have enough unique data for training");
         }
-    }
-
-    @PreDestroy
-    public void closeSparkSession() {
-        session.close();
     }
 }
