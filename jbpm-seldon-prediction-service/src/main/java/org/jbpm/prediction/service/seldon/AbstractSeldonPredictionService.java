@@ -36,20 +36,21 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractSeldonPredictionService implements PredictionService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSeldonPredictionService.class);
-    protected final ResteasyClient client = new ResteasyClientBuilder().build();
+    protected final ResteasyClient client;
     protected final ResteasyWebTarget predict;
     private double confidenceThreshold = 1.0;
 
     private static final String SELDON_URL_KEY = "org.jbpm.task.prediction.service.seldon.url";
     private static final String CONFIDENCE_THRESHOLD_KEY = "org.jbpm.task.prediction.service.seldon.confidence_threshold";
-
+    private static final String SELDON_TIMEOUT_KEY = "org.jbpm.task.prediction.service.seldon.timeout";
+    private static final String SELDON_CONNECTION_POOL_SIZE_KEY = "org.jbpm.task.prediction.service.seldon.connection_pool_size";
 
     public AbstractSeldonPredictionService() {
         // Seldon connection configuration
@@ -78,6 +79,34 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
 
         logger.debug("Using Seldon endpoint " + SELDON_URL);
 
+        ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder();
+
+        final String seldonTimeoutStr = compositeConfiguration.getString(SELDON_TIMEOUT_KEY);
+
+        if (seldonTimeoutStr!=null) {
+            try {
+                final long seldonTimeout = Long.parseLong(seldonTimeoutStr);
+                clientBuilder = clientBuilder.connectionCheckoutTimeout(seldonTimeout, TimeUnit.MILLISECONDS);
+                logger.info("Seldon connection timeout set to " + seldonTimeout + " milliseconds");
+            } catch (NumberFormatException e) {
+                logger.error("Invalid Seldon connection timeout");
+            }
+        }
+
+        final String seldonConnectioPoolSizeStr = compositeConfiguration.getString(SELDON_CONNECTION_POOL_SIZE_KEY);
+
+        if (seldonConnectioPoolSizeStr!=null) {
+            try {
+                final int seldonConnectioPoolSize = Integer.parseInt(seldonConnectioPoolSizeStr);
+                clientBuilder = clientBuilder.connectionPoolSize(seldonConnectioPoolSize);
+                logger.info("Seldon connection pool size set to " + seldonConnectioPoolSize);
+            } catch (NumberFormatException e) {
+                logger.error("Invalid Seldon connection pool size");
+            }
+        }
+
+        client = clientBuilder.build();
+
         predict = client.target(SELDON_URL).path("predict");
 
         // set confidence threshold from configuration
@@ -94,9 +123,6 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
             logger.info("Using default confidence threshold of 1.0");
         }
     }
-
-    @Override
-    public abstract String getIdentifier();
 
     /**
      * Returns a model prediction given the input data.
@@ -120,8 +146,8 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
             final PredictionResponse response = PredictionResponse.parse(stringResponse);
             final Map<String, Object> parsedResponse = parsePredictFeatures(response);
             return new PredictionOutcome((Double) parsedResponse.get("confidence"), this.confidenceThreshold, parsedResponse);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
 
         return new PredictionOutcome();

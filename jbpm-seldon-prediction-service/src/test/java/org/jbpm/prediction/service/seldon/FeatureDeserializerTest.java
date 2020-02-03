@@ -37,9 +37,9 @@ public class FeatureDeserializerTest {
         assertEquals(response.getData().getArray().size(), 1);
         assertEquals(response.getData().getNames().size(), 2);
         List<Double> firstOutcome = response.getData().getArray().get(0);
-        assertEquals(firstOutcome.size(), 2);
-        assertEquals(firstOutcome.get(0), 0.71, 0.0);
-        assertEquals(firstOutcome.get(1), 0.29, 0.0);
+        assertEquals(2, firstOutcome.size());
+        assertEquals(0.71, firstOutcome.get(0), 0.0);
+        assertEquals(0.29, firstOutcome.get(1), 0.0);
     }
 
     @Test
@@ -50,8 +50,8 @@ public class FeatureDeserializerTest {
 
         final PredictionMetadata metadata = response.getMetadata();
 
-        assertEquals(metadata.getTags().keySet().size(), 2);
-        assertEquals(metadata.getTags().get("version"), 1.0);
-        assertEquals(metadata.getTags().get("namespace"), "localhost");
+        assertEquals(2, metadata.getTags().keySet().size());
+        assertEquals(1.0, metadata.getTags().get("version"));
+        assertEquals("localhost", metadata.getTags().get("namespace"));
     }
 }

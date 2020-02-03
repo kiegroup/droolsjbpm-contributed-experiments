@@ -9,6 +9,10 @@ The prediction service allows to set a model's predictions as the Human Task out
 
  The example Human Task has three inputs (`actor`, `level`, `item`) and one output (`approved`).
 
+### Configuration
+
+#### Seldon URL
+
 To configure the service, Seldon's server URL must be specified by passing the location in the format `org.jbpm.task.prediction.service.seldon.url="<PROTOCOL>://<HOST>:<PORT>"`. This can be done either with Java properties, for instance when invoking Business Central with:
 
 ```shell
@@ -23,11 +27,20 @@ org.jbpm.task.prediction.service.seldon.url="http://localhost:5000"
 
 Note that the Seldon URL just refers to the hostname, it does not include any endpoint.
 
+#### Confidence threshold
+
 The confidence threshold can similarly be set using the key `org.jbpm.task.prediction.service.seldon.confidence_threshold`
 either on a `seldon.properties` file, as a Java system property or as a `-D` parameter.
 
 The concrete service implementation can get or change the threshold at runtime using the
 `.getConfidenceThreshold()` or `.setConfidenceThreshold()` respectively.   
+
+#### Connection properties
+
+The prediction service connection timeout and connection pool size can be configured using the following keys (as above, either in `seldom.properties`, as system properties or as a parameter) using the respective keys:
+
+* `org.jbpm.task.prediction.service.seldon.timeout` , which expects a `long` with the connection timeout duration in milliseconds
+* `org.jbpm.task.prediction.service.seldon.connection_pool_size`, which expects an `int` with the connection pool size
 
  ## Installation
 
