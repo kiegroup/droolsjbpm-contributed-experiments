@@ -16,7 +16,6 @@
 
 package org.kiegroup.zenithr.drools.service;
 
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -37,8 +36,7 @@ public class RuleServiceTest {
     @Test
     public void testSysOpsShouldScaleDown() {
         RuleService ruleService = getRuleService("sysops-example.json");
-        String object = FileUtils.readObject("deployment-replicas1.json");
-        JsonObject deployment = Json.createReader(new StringReader(object)).readObject();
+        JsonObject deployment = FileUtils.readObject("deployment-replicas1.json");
         JsonObject inputs = Json.createObjectBuilder().add("deployment1", deployment).build();
         Collection<Output> result = ruleService.process(inputs);
         assertNotNull(result);
@@ -52,8 +50,7 @@ public class RuleServiceTest {
     @Test
     public void testSysOpsShouldScaleUp() {
         RuleService ruleService = getRuleService("sysops-example.json");
-        String object = FileUtils.readObject("deployment-replicas3.json");
-        JsonObject deployment = Json.createReader(new StringReader(object)).readObject();
+        JsonObject deployment = FileUtils.readObject("deployment-replicas3.json");
         JsonObject inputs = Json.createObjectBuilder().add("deployment1", deployment).build();
         Collection<Output> result = ruleService.process(inputs);
         assertNotNull(result);
@@ -64,12 +61,82 @@ public class RuleServiceTest {
         hasOutput(secondOutput, result);
     }
 
+    @Test
+    public void testMultipleInputs_1Replica() {
+        RuleService ruleService = getRuleService("multiple-inputs.json");
+        JsonObject deployment = FileUtils.readObject("deployment-replicas1.json");
+        JsonObject replicaSet = FileUtils.readObject("replicaset-replicas1.json");
+
+        JsonObject inputs = Json.createObjectBuilder().add("deployment1", deployment).add("replicaSet1", replicaSet).build();
+        Collection<Output> result = ruleService.process(inputs);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        Output firstOutput = Output.withName("depConfig1").withPath("spec").withValue("{\"replicas\":\"1\"}");
+        hasOutput(firstOutput, result);
+        Output secondOutput = Output.withName("replicaSet1").withPath("spec").withValue("{\"replicas\":\"1\"}");
+        hasOutput(secondOutput, result);
+    }
+
+    @Test
+    public void testMultipleInputs_deployment3() {
+        RuleService ruleService = getRuleService("multiple-inputs.json");
+        JsonObject deployment = FileUtils.readObject("deployment-replicas3.json");
+        JsonObject replicaSet = FileUtils.readObject("replicaset-replicas1.json");
+
+        JsonObject inputs = Json.createObjectBuilder().add("deployment1", deployment).add("replicaSet1", replicaSet).build();
+        Collection<Output> result = ruleService.process(inputs);
+
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        Output firstOutput = Output.withName("depConfig1").withPath("spec").withValue("{\"replicas\":\"2\"}");
+        hasOutput(firstOutput, result);
+        Output secondOutput = Output.withName("replicaSet1").withPath("metadata.labels").withValue("{\"example\":\"default-broker-filter\"}");
+        hasOutput(secondOutput, result);
+        Output thirdOutput = Output.withName("replicaSet1").withPath("spec").withValue("{\"replicas\":\"2\"}");
+        hasOutput(thirdOutput, result);
+    }
+
+    @Test
+    public void testMultipleInputs_replicaSet3() {
+        RuleService ruleService = getRuleService("multiple-inputs.json");
+        JsonObject deployment = FileUtils.readObject("deployment-replicas1.json");
+        JsonObject replicaSet = FileUtils.readObject("replicaset-replicas3.json");
+
+        JsonObject inputs = Json.createObjectBuilder().add("deployment1", deployment).add("replicaSet1", replicaSet).build();
+        Collection<Output> result = ruleService.process(inputs);
+
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        Output firstOutput = Output.withName("depConfig1").withPath("spec").withValue("{\"replicas\":\"1\"}");
+        hasOutput(firstOutput, result);
+        Output secondOutput = Output.withName("replicaSet1").withPath("spec").withValue("{\"replicas\":\"1\"}");
+        hasOutput(secondOutput, result);
+        Output thirdOutput = Output.withName("route1").withPath("metadata.labels").withValue("{\"example\":\"default-broker-filter\"}");
+        hasOutput(thirdOutput, result);
+    }
+
+    @Test
+    public void testMultipleInputs_3replicas() {
+        RuleService ruleService = getRuleService("multiple-inputs.json");
+        JsonObject deployment = FileUtils.readObject("deployment-replicas3.json");
+        JsonObject replicaSet = FileUtils.readObject("replicaset-replicas3.json");
+
+        JsonObject inputs = Json.createObjectBuilder().add("deployment1", deployment).add("replicaSet1", replicaSet).build();
+        Collection<Output> result = ruleService.process(inputs);
+
+        assertNotNull(result);
+        assertEquals(4, result.size());
+        Output thirdOutput = Output.withName("route1").withPath("metadata.labels").withValue("{\"example\":\"default-broker-filter\"}");
+        hasOutput(thirdOutput, result);
+    }
+
     private void hasOutput(Output expected, Collection<Output> outputs) {
-        Optional<Output> actual = outputs.stream().filter(o -> expected.getName().equals(o.getName())).findFirst();
-        assertTrue(actual.isPresent(), "Missing expected output: " + expected.getName());
-        assertEquals(expected.getName(), actual.get().getName(), expected.getName());
-        assertEquals(expected.getPath(), actual.get().getPath(), expected.getName());
-        assertEquals(expected.getValue(), actual.get().getValue(), expected.getName());
+        assertTrue(outputs.stream().filter(o -> expected.getName().equals(o.getName())).anyMatch(o ->
+            expected.getName().equals(o.getName())
+                && expected.getPath().equals(o.getPath())
+                && expected.getValue().equals(o.getValue())
+        ), "Missing expected output: " + expected);
     }
 
     private RuleService getRuleService(String file) {

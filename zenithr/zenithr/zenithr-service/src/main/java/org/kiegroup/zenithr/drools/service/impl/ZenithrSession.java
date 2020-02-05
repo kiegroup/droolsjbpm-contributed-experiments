@@ -20,8 +20,13 @@ import java.util.Collection;
 
 import javax.json.JsonObject;
 
+import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.config.DefaultRuleEventListenerConfig;
+import org.drools.core.config.StaticRuleConfig;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kiegroup.zenithr.drools.model.InputFact;
 import org.kiegroup.zenithr.drools.model.Output;
 import org.kiegroup.zenithr.drools.model.OutputFact;
@@ -33,7 +38,9 @@ public class ZenithrSession implements Session {
     private final OutputFact outputInstance;
 
     public ZenithrSession(KieContainer kieContainer, JsonObject inputs) {
-        this.kieSession = kieContainer.newKieSession();
+        SessionConfigurationImpl conf = new SessionConfigurationImpl();
+        conf.setOption(ClockTypeOption.get("realtime"));
+        this.kieSession = kieContainer.newKieSession(conf);
         this.outputInstance = new OutputFact();
         this.kieSession.insert(outputInstance);
         inputs.keySet()

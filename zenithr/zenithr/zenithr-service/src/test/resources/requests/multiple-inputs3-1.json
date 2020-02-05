@@ -1,0 +1,280 @@
+{
+  "deployment1": {
+    "kind": "Deployment",
+    "apiVersion": "apps/v1",
+    "metadata": {
+      "annotations": {
+        "deployment.kubernetes.io/revision": "2"
+      },
+      "selfLink": "/apis/apps/v1/namespaces/myproject/deployments/default-broker-filter",
+      "resourceVersion": "47971489",
+      "name": "default-broker-filter",
+      "uid": "48578b9f-f5d3-11e9-9701-beeffeed006b",
+      "creationTimestamp": "2019-10-23T20:25:41Z",
+      "generation": 2,
+      "namespace": "myproject",
+      "ownerReferences": [
+        {
+          "apiVersion": "eventing.knative.dev/v1alpha1",
+          "kind": "Broker",
+          "name": "default",
+          "uid": "482c502c-f5d3-11e9-9701-beeffeed006b",
+          "controller": true,
+          "blockOwnerDeletion": true
+        }
+      ],
+      "labels": {
+        "eventing.knative.dev/broker": "default",
+        "eventing.knative.dev/brokerRole": "filter"
+      }
+    },
+    "spec": {
+      "replicas": 3,
+      "selector": {
+        "matchLabels": {
+          "eventing.knative.dev/broker": "default",
+          "eventing.knative.dev/brokerRole": "filter"
+        }
+      },
+      "template": {
+        "metadata": {
+          "creationTimestamp": null,
+          "labels": {
+            "eventing.knative.dev/broker": "default",
+            "eventing.knative.dev/brokerRole": "filter"
+          }
+        },
+        "spec": {
+          "containers": [
+            {
+              "resources": {},
+              "readinessProbe": {
+                "httpGet": {
+                  "path": "/readyz",
+                  "port": 8080,
+                  "scheme": "HTTP"
+                },
+                "initialDelaySeconds": 5,
+                "timeoutSeconds": 1,
+                "periodSeconds": 2,
+                "successThreshold": 1,
+                "failureThreshold": 3
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "name": "filter",
+              "livenessProbe": {
+                "httpGet": {
+                  "path": "/healthz",
+                  "port": 8080,
+                  "scheme": "HTTP"
+                },
+                "initialDelaySeconds": 5,
+                "timeoutSeconds": 1,
+                "periodSeconds": 2,
+                "successThreshold": 1,
+                "failureThreshold": 3
+              },
+              "env": [
+                {
+                  "name": "SYSTEM_NAMESPACE",
+                  "value": "knative-eventing"
+                },
+                {
+                  "name": "NAMESPACE",
+                  "valueFrom": {
+                    "fieldRef": {
+                      "apiVersion": "v1",
+                      "fieldPath": "metadata.namespace"
+                    }
+                  }
+                },
+                {
+                  "name": "BROKER",
+                  "value": "default"
+                },
+                {
+                  "name": "METRICS_DOMAIN",
+                  "value": "knative.dev/eventing"
+                }
+              ],
+              "ports": [
+                {
+                  "name": "http",
+                  "containerPort": 8080,
+                  "protocol": "TCP"
+                },
+                {
+                  "name": "metrics",
+                  "containerPort": 9090,
+                  "protocol": "TCP"
+                }
+              ],
+              "imagePullPolicy": "IfNotPresent",
+              "terminationMessagePolicy": "File",
+              "image": "quay.io/openshift-knative/knative-eventing-filter:v0.9.0"
+            }
+          ],
+          "restartPolicy": "Always",
+          "terminationGracePeriodSeconds": 30,
+          "dnsPolicy": "ClusterFirst",
+          "serviceAccountName": "eventing-broker-filter",
+          "serviceAccount": "eventing-broker-filter",
+          "securityContext": {},
+          "schedulerName": "default-scheduler"
+        }
+      },
+      "strategy": {
+        "type": "RollingUpdate",
+        "rollingUpdate": {
+          "maxUnavailable": "25%",
+          "maxSurge": "25%"
+        }
+      },
+      "revisionHistoryLimit": 10,
+      "progressDeadlineSeconds": 600
+    }
+  },
+  "replicaSet1": {
+    "apiVersion": "extensions/v1beta1",
+    "kind": "ReplicaSet",
+    "metadata": {
+      "annotations": {
+        "deployment.kubernetes.io/desired-replicas": "1",
+        "deployment.kubernetes.io/max-replicas": "2",
+        "deployment.kubernetes.io/revision": "1"
+      },
+      "creationTimestamp": null,
+      "generation": 1,
+      "labels": {
+        "app": "openshift-web-console",
+        "pod-template-hash": "4105078647",
+        "webconsole": "true"
+      },
+      "name": "webconsole-85494cdb8c",
+      "ownerReferences": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Deployment",
+          "name": "webconsole",
+          "uid": "cb497a0d-436c-11ea-8355-fa163eba1681"
+        }
+      ],
+      "selfLink": "/apis/extensions/v1beta1/namespaces/openshift-web-console/replicasets/webconsole-85494cdb8c"
+    },
+    "spec": {
+      "replicas": 1,
+      "selector": {
+        "matchLabels": {
+          "app": "openshift-web-console",
+          "pod-template-hash": "4105078647",
+          "webconsole": "true"
+        }
+      },
+      "template": {
+        "metadata": {
+          "creationTimestamp": null,
+          "labels": {
+            "app": "openshift-web-console",
+            "pod-template-hash": "4105078647",
+            "webconsole": "true"
+          },
+          "name": "webconsole"
+        },
+        "spec": {
+          "containers": [
+            {
+              "command": [
+                "/usr/bin/origin-web-console",
+                "--audit-log-path=-",
+                "-v=0",
+                "--config=/var/webconsole-config/webconsole-config.yaml"
+              ],
+              "image": "registry.redhat.io/openshift3/ose-web-console:v3.11",
+              "imagePullPolicy": "IfNotPresent",
+              "livenessProbe": {
+                "exec": {
+                  "command": [
+                    "/bin/sh",
+                    "-c",
+                    "if [[ ! -f /tmp/webconsole-config.hash ]]; then \\\n  md5sum /var/webconsole-config/webconsole-config.yaml \u003e /tmp/webconsole-config.hash; \\\nelif [[ $(md5sum /var/webconsole-config/webconsole-config.yaml) != $(cat /tmp/webconsole-config.hash) ]]; then \\\n  echo 'webconsole-config.yaml has changed.'; \\\n  exit 1; \\\nfi \u0026\u0026 NSS_SDB_USE_CACHE=no curl -k -f https://0.0.0.0:8443/console/"
+                  ]
+                },
+                "failureThreshold": 3,
+                "periodSeconds": 10,
+                "successThreshold": 1,
+                "timeoutSeconds": 1
+              },
+              "name": "webconsole",
+              "ports": [
+                {
+                  "containerPort": 8443,
+                  "protocol": "TCP"
+                }
+              ],
+              "readinessProbe": {
+                "failureThreshold": 3,
+                "httpGet": {
+                  "path": "/healthz",
+                  "port": 8443,
+                  "scheme": "HTTPS"
+                },
+                "periodSeconds": 10,
+                "successThreshold": 1,
+                "timeoutSeconds": 1
+              },
+              "resources": {
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
+                }
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File",
+              "volumeMounts": [
+                {
+                  "mountPath": "/var/serving-cert",
+                  "name": "serving-cert"
+                },
+                {
+                  "mountPath": "/var/webconsole-config",
+                  "name": "webconsole-config"
+                }
+              ]
+            }
+          ],
+          "dnsPolicy": "ClusterFirst",
+          "nodeSelector": {
+            "node-role.kubernetes.io/master": "true"
+          },
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "securityContext": {},
+          "serviceAccount": "webconsole",
+          "serviceAccountName": "webconsole",
+          "terminationGracePeriodSeconds": 30,
+          "volumes": [
+            {
+              "name": "serving-cert",
+              "secret": {
+                "defaultMode": 288,
+                "secretName": "webconsole-serving-cert"
+              }
+            },
+            {
+              "configMap": {
+                "defaultMode": 288,
+                "name": "webconsole-config"
+              },
+              "name": "webconsole-config"
+            }
+          ]
+        }
+      }
+    },
+    "status": {
+      "replicas": 0
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "inputs": [
+    "deployment1",
+    "replicaSet1"
+  ],
+  "rules": [
+    {
+      "when": [
+        "$deployment1.spec.replicas >= 3"
+      ],
+      "then": [
+        {
+          "name": "depConfig1",
+          "path": "spec",
+          "value": {
+            "replicas": "$deployment1.spec.replicas / 2 + 1"
+          }
+        },
+        {
+          "name": "replicaSet1",
+          "path": "metadata.labels",
+          "value": {
+            "example": "$deployment1.metadata.name"
+          }
+        },
+        {
+          "name": "replicaSet1",
+          "path": "spec",
+          "value": {
+            "replicas": "2"
+          }
+        }
+      ]
+    },
+    {
+      "when": [
+        "$deployment1.spec.replicas < 3"
+      ],
+      "then": [
+        {
+          "name": "depConfig1",
+          "path": "spec",
+          "value": {
+            "replicas": "1"
+          }
+        },
+        {
+          "name": "replicaSet1",
+          "path": "spec",
+          "value": {
+            "replicas": "1"
+          }
+        }
+      ]
+    },
+    {
+      "when": [
+        "$replicaSet1.spec.replicas > 1"
+      ],
+      "then": [
+        {
+          "name": "route1",
+          "path": "metadata.labels",
+          "value": {
+            "example": "$deployment1.metadata.name"
+          }
+        }
+      ]
+    }
+  ]
+}

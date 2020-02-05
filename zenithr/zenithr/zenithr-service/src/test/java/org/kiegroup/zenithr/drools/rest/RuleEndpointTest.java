@@ -16,12 +16,9 @@
 
 package org.kiegroup.zenithr.drools.rest;
 
-import java.io.StringReader;
-
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.ws.rs.core.MediaType;
 
 import io.quarkus.test.junit.QuarkusTest;
@@ -36,8 +33,7 @@ public class RuleEndpointTest {
 
     @Test
     public void testRequest() {
-        String file = FileUtils.readObject("deployment-replicas1.json");
-        JsonObject deployment = Json.createReader(new StringReader(file)).readObject();
+        JsonObject deployment = FileUtils.readObject("deployment-replicas1.json");
         JsonObject json = Json.createObjectBuilder().add("deployment1", deployment).build();
         JsonArray expected = Json.createArrayBuilder().add(
             Json.createObjectBuilder()
@@ -59,12 +55,12 @@ public class RuleEndpointTest {
 
         given()
             .when()
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(json.toString())
-                .post()
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(json.toString())
+            .post()
             .then()
-                .statusCode(200)
-                .body(CoreMatchers.is(expected.toString()));
+            .statusCode(200)
+            .body(CoreMatchers.is(expected.toString()));
     }
 }

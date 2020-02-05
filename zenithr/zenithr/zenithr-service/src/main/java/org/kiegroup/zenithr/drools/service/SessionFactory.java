@@ -25,6 +25,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
+import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -65,19 +67,17 @@ public class SessionFactory {
         this.spec = loadSpec();
 
         System.setProperty("drools.dateformat", DATE_PATTERN);
-        KieServices ks = KieServices.Factory.get();
-        KieRepository kr = ks.getRepository();
+        KieServices ks = new KieServicesImpl();
         KieFileSystem kfs = ks.newKieFileSystem();
 
         kfs.write("src/main/resources/org/kiegroup/zenithr/drools/rule.drl", parseRules());
 
         KieBuilder kb = ks.newKieBuilder(kfs);
 
-        kb.buildAll(); // kieModule is automatically deployed to KieRepository if successfully built.
         if (kb.getResults().hasMessages(Message.Level.ERROR)) {
             throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
         }
-        this.kieContainer = ks.newKieContainer(kr.getDefaultReleaseId());
+        this.kieContainer = ks.newKieContainer(new KieRepositoryImpl().getDefaultReleaseId());
     }
 
     public Collection<Output> process(JsonObject inputs) {
@@ -151,5 +151,4 @@ public class SessionFactory {
         }
         return imports.append("\n").toString();
     }
-
 }

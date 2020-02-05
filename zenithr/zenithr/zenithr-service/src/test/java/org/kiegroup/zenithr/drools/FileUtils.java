@@ -1,10 +1,14 @@
 package org.kiegroup.zenithr.drools;
 
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.json.Json;
+import javax.json.JsonObject;
 
 import org.kiegroup.zenithr.drools.service.TestSessionFactory;
 
@@ -16,8 +20,9 @@ public class FileUtils {
         return readFile("definitions", fileName);
     }
 
-    public static String readObject(String fileName) {
-        return readFile("objects", fileName);
+    public static JsonObject readObject(String fileName) {
+        String object = readFile("objects", fileName);
+        return Json.createReader(new StringReader(object)).readObject();
     }
 
     private static String readFile(String base, String name) {

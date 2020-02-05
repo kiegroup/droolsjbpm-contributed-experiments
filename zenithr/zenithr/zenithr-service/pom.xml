@@ -106,6 +106,8 @@
                 </goals>
                 <configuration>
                   <enableHttpUrlHandler>true</enableHttpUrlHandler>
+                  <enableReports>true</enableReports>
+<!--                  <additionalBuildArgs>-H:PrintFlags=true</additionalBuildArgs>-->
 <!--                  <reportErrorsAtRuntime>true</reportErrorsAtRuntime>-->
                 </configuration>
               </execution>

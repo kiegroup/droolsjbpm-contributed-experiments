@@ -1,6 +1,7 @@
 # ZenithR
 
-ZenithR is an application that will load a json-defined set of rules and start a Drools engine. Then a REST API will be exposed providing the possibility to execute such rules as a service.
+ZenithR is an application that will load a json-defined set of rules and start a Drools engine. 
+Then a REST API will be exposed providing the possibility to execute such rules as a service.
 
 ## Build the application
 
@@ -23,47 +24,66 @@ If you want to remotely debug the application, set the following parameter use p
 When running the application, the `RULES_DEFINITION` environment variable must contain the rules definition.
 
 ```{bash}
-$ RULES_DEFINITION=`cat src/test/resources/definitions/grade-letters.json` java -jar target/zenithr-1.0.0-SNAPSHOT-runner.jar
+$ RULES_DEFINITION=`cat src/test/resources/definitions/sysops-example.json` java -jar target/zenithr-1.0.0-SNAPSHOT-runner.jar
 ```
 
 ## Native application
 
 ```{bash}
 $ mvn clean package -Pnative
-$ RULES_DEFINITION=`cat src/test/resources/definitions/grade-letters.json` ./target/zenithr-1.0.0-SNAPSHOT-runner
+$ RULES_DEFINITION=`cat src/test/resources/definitions/sysops-example.json` ./target/zenithr-1.0.0-SNAPSHOT-runner
 ```
 
 ## Invoke the service
 
-### Basic types only
-
-For basic types a form-based URL is supported just type in your browser the following URL
-
-http://localhost:8080/)
-
-And both GET and POST can be used:
-
-```{bash}
-$ curl http://localhost:8080/\?grade\=30
-{"id":"output","value":"F"}%
-```
-
-```{bash}
-$ curl -XPOST -H "Content-Type: application/json" http://localhost:8080/ --data '{"grade": 60}'
-{"id":"output","value":"D"}%
-```
-
 ### Complex types
 
-For more complex types, the form-based URL will have a text input in which it is possible to add the json object.
+The service expects one JSON object for each input defined in the definition.
 
-Example of complex-objects rules:
+Execution examples rules executions:
 
 ```{bash}
-$ curl -XPOST -H "Content-Type: application/json" http://localhost:8080/ --data '{"person": "{\"name\":\"Kermit\", \"age\": 18}"}'
-{"id":"output","value":"Kermit can drive"}
+$ curl -v -X POST http://localhost:8080/ \                                                   
+ -H "Content-Type: application/json" \
+ --data-binary "@src/test/resources/requests/deployment-replicas3.json" | jq
 
-$ curl -XPOST -H "Content-Type: application/json" http://localhost:8080/ --data '{"person": "{\"name\":\"Gonzo\", \"age\": 16}"}'
-{"id":"output","value":"I don't know you but you can't drive"}
+[
+  {
+    "name": "deployment2",
+    "path": "spec",
+    "value": {
+      "replicas": "2"
+    }
+  },
+  {
+    "name": "deployment3",
+    "path": "metadata.labels",
+    "value": {
+      "example": "default-broker-filter"
+    }
+  }
+]
+```
+```{bash}
+$ curl -v -X POST http://localhost:8080/ \                                                   
+ -H "Content-Type: application/json" \
+ --data-binary "@src/test/resources/requests/deployment-replicas3.json" | jq
+
+[
+  {
+    "name": "deployment2",
+    "path": "spec",
+    "value": {
+      "replicas": 1
+    }
+  },
+  {
+    "name": "deployment3",
+    "path": "spec",
+    "value": {
+      "replicas": 0
+    }
+  }
+]
 ```
  

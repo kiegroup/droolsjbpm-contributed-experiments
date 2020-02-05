@@ -68,4 +68,13 @@ public class Output {
     public Output withValue(String value) {
         return new Output(name, path, value);
     }
+
+    @Override
+    public String toString() {
+        return "Output{" +
+            "name='" + name + '\'' +
+            ", path='" + path + '\'' +
+            ", value='" + value + '\'' +
+            '}';
+    }
 }
