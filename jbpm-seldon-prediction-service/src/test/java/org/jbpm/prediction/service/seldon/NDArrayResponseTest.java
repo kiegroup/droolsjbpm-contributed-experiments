@@ -38,7 +38,7 @@ public class NDArrayResponseTest extends AbstractSeldonTestSuite {
         Map<String, Object> outputs = startAndReturnTaskOutputData("test item", "john", 5, true);
 
         final double confidence = (double) outputs.get("confidence");
-        assertEquals(confidence, 0.71, 1e-10);
+        assertEquals(0.71, confidence, 1e-10);
     }
 
 }

@@ -38,7 +38,7 @@ public class TensorResponseTest extends AbstractSeldonTestSuite {
         Map<String, Object> outputs = startAndReturnTaskOutputData("test item", "john", 5, true);
 
         final double confidence = (double) outputs.get("confidence");
-        assertEquals(confidence, 0.79, 1e-10);
+        assertEquals(0.79, confidence, 1e-10);
     }
 
 }

@@ -34,8 +34,8 @@ public class FeatureDeserializerTest {
 
         final PredictionResponse response = PredictionResponse.parse(JSON);
 
-        assertEquals(response.getData().getArray().size(), 1);
-        assertEquals(response.getData().getNames().size(), 2);
+        assertEquals(1, response.getData().getArray().size());
+        assertEquals(2, response.getData().getNames().size());
         List<Double> firstOutcome = response.getData().getArray().get(0);
         assertEquals(2, firstOutcome.size());
         assertEquals(0.71, firstOutcome.get(0), 0.0);
