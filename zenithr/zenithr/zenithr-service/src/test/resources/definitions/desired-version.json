@@ -1,0 +1,23 @@
+{
+  "inputs": [
+    "ocsSub",
+    "version"
+  ],
+  "rules": [
+    {
+      "when": [
+        "$version.status.desired.version >= 4.3",
+        "$version.status.desired.version < 4.4"
+      ],
+      "then": [
+        {
+          "name": "ocsSub",
+          "path": "spec",
+          "value": {
+            "replicas": "$version.spec.channel"
+          }
+        }
+      ]
+    }
+  ]
+}

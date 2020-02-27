@@ -1,0 +1,41 @@
+{
+  "version": {
+    "apiVersion": "config.openshift.io/v1",
+    "kind": "ClusterVersion",
+    "metadata": {
+      "name": "version"
+    },
+    "spec": {
+      "channel": "stable-4.3",
+      "clusterID": "4747a4e8-73b6-48ad-a99b-c901c8d4094e",
+      "desiredUpdate": {
+        "force": false,
+        "image": "quay.io/openshift-release-dev/ocp-release@sha256:ea7ac3ad42169b39fce07e5e53403a028644810bee9a212e7456074894df40f3",
+        "version": "4.3.1"
+      },
+      "upstream": "https://api.openshift.com/api/upgrades_info/v1/graph"
+    },
+    "status": {
+      "desired": {
+        "force": false,
+        "image": "quay.io/openshift-release-dev/ocp-release@sha256:ea7ac3ad42169b39fce07e5e53403a028644810bee9a212e7456074894df40f3",
+        "version": "4.3.1"
+      }
+    }
+  },
+  "ocsSub": {
+    "apiVersion": "operators.coreos.com/v1alpha1",
+    "kind": "Subscription",
+    "metadata": {
+      "name": "activemq-artemis"
+    },
+    "spec": {
+      "channel": "stable2-76",
+      "installPlanApproval": "Automatic",
+      "name": "activemq-artemis",
+      "source": "activemq-artemis",
+      "sourceNamespace": "openshift-marketplace",
+      "startingCSV": "activemq-artemis-operator.0.13.0"
+    }
+  }
+}

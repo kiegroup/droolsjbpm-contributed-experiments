@@ -66,8 +66,12 @@ public class InputFact {
     }
 
     private boolean compareTo(String path, Comparable other, BiFunction<Comparable, Comparable, Boolean> compare) {
-        Object result = search(path);
-        return compare.apply(getComparable(result), other);
+        Comparable result = getComparable(search(path));
+        if(other.getClass().isAssignableFrom(result.getClass()) || result.getClass().isAssignableFrom(other.getClass())) {
+            return compare.apply(result, other);
+        } else {
+            return compare.apply(result.toString(), other.toString());
+        }
     }
 
     private Object search(String path) {
