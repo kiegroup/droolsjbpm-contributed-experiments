@@ -29,12 +29,13 @@ import org.kie.internal.query.QueryFilter;
 
 import java.util.*;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertNotNull;
 
 public class AbstractSeldonTestSuite extends AbstractKieServicesTest {
 
     @ClassRule
-    public static final WireMockClassRule wireMockRule = new WireMockClassRule(5000);
+    public static final WireMockClassRule wireMockRule = new WireMockClassRule(wireMockConfig().extensions(new AuthTokenRequestFilter()).port(5000));
 
     @Rule
     public WireMockClassRule instanceRule = wireMockRule;
@@ -45,6 +46,7 @@ public class AbstractSeldonTestSuite extends AbstractKieServicesTest {
     public static void setupOnce() {
         System.setProperty("org.jbpm.task.prediction.service", ExampleSeldonPredictionService.IDENTIFIER);
         System.setProperty("org.jbpm.task.prediction.service.seldon.url", "http://localhost:5000");
+        System.setProperty("org.jbpm.task.prediction.service.seldon.token", "foobar");
     }
 
     @AfterClass

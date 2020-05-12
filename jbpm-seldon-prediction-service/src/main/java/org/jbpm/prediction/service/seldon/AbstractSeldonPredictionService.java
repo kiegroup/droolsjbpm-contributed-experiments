@@ -25,6 +25,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jbpm.prediction.service.seldon.payload.AuthorizationTokenFilter;
 import org.jbpm.prediction.service.seldon.payload.PredictionRequest;
 import org.jbpm.prediction.service.seldon.payload.PredictionResponse;
 import org.kie.api.task.model.Task;
@@ -48,6 +49,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
     private double confidenceThreshold = 1.0;
 
     private static final String SELDON_URL_KEY = "org.jbpm.task.prediction.service.seldon.url";
+    private static final String SELDON_AUTH_TOKEN_KEY = "org.jbpm.task.prediction.service.seldon.token";
     private static final String CONFIDENCE_THRESHOLD_KEY = "org.jbpm.task.prediction.service.seldon.confidence_threshold";
     private static final String SELDON_TIMEOUT_KEY = "org.jbpm.task.prediction.service.seldon.timeout";
     private static final String SELDON_CONNECTION_POOL_SIZE_KEY = "org.jbpm.task.prediction.service.seldon.connection_pool_size";
@@ -106,6 +108,16 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
         }
 
         client = clientBuilder.build();
+
+        // If the authorization token is set, send it to the model server
+        final String SELDON_AUTH_TOKEN = compositeConfiguration.getString(SELDON_AUTH_TOKEN_KEY);
+
+        if (SELDON_AUTH_TOKEN != null) {
+            logger.debug("Using authenticated Seldon requests");
+            client.register(new AuthorizationTokenFilter(SELDON_AUTH_TOKEN));
+        } else {
+            logger.debug("Using Seldon without authentication");
+        }
 
         predict = client.target(SELDON_URL).path("predict");
 
