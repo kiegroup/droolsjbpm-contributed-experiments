@@ -23,23 +23,23 @@ import java.util.Map;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
 
-public class TensorResponseTest extends AbstractSeldonTestSuite {
+public class NDArrayResponseCustomEndpointTest extends AbstractSeldonCustomEndpointTestSuite {
 
     @Test
-    public void testTensorResponse() {
+    public void testNDArrayResponse() {
         final String endpoint = System.getProperty("org.jbpm.task.prediction.service.seldon.endpoint");
         stubFor(post(urlEqualTo("/" + endpoint))
                 .withHeader("Accept", equalTo("application/json"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(TestUtils.readJSONAsString("responses/tensor.json"))));
+                        .withBody(TestUtils.readJSONAsString("responses/ndarray.json"))));
 
         startAndReturnTaskOutputData("test item", "john", 5, false);
         Map<String, Object> outputs = startAndReturnTaskOutputData("test item", "john", 5, true);
 
         final double confidence = (double) outputs.get("confidence");
-        assertEquals(0.79, confidence, 1e-10);
+        assertEquals(0.71, confidence, 1e-10);
     }
 
 }

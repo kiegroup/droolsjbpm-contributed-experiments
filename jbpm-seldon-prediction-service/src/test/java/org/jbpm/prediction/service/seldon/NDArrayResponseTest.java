@@ -27,7 +27,8 @@ public class NDArrayResponseTest extends AbstractSeldonTestSuite {
 
     @Test
     public void testNDArrayResponse() {
-        stubFor(post(urlEqualTo("/predict"))
+        final String endpoint = System.getProperty("org.jbpm.task.prediction.service.seldon.endpoint");
+        stubFor(post(urlEqualTo("/" + endpoint))
                 .withHeader("Accept", equalTo("application/json"))
                 .willReturn(aResponse()
                         .withStatus(200)
