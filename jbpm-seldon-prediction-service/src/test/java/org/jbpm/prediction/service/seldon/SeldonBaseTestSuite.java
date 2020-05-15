@@ -17,11 +17,9 @@
 package org.jbpm.prediction.service.seldon;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import org.jbpm.prediction.service.seldon.examples.ExampleSeldonPredictionService;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.test.services.AbstractKieServicesTest;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.kie.api.task.model.TaskSummary;
@@ -29,9 +27,15 @@ import org.kie.internal.query.QueryFilter;
 
 import java.util.*;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class AbstractSeldonTestSuite extends AbstractKieServicesTest {
+public class SeldonBaseTestSuite extends AbstractKieServicesTest {
 
     @ClassRule
     public static final WireMockClassRule wireMockRule = new WireMockClassRule(5000);
@@ -40,13 +44,7 @@ public class AbstractSeldonTestSuite extends AbstractKieServicesTest {
     public WireMockClassRule instanceRule = wireMockRule;
 
     private List<Long> instances = new ArrayList<>();
-
-    @BeforeClass
-    public static void setupOnce() {
-        System.setProperty("org.jbpm.task.prediction.service", ExampleSeldonPredictionService.IDENTIFIER);
-        System.setProperty("org.jbpm.task.prediction.service.seldon.url", "http://localhost:5000");
-    }
-
+    
     @AfterClass
     public static void cleanOnce() {
         System.clearProperty("org.jbpm.task.prediction.service");
@@ -90,6 +88,22 @@ public class AbstractSeldonTestSuite extends AbstractKieServicesTest {
         }
 
         return new HashMap<>();
+    }
+    
+    public void testNDArrayResponse() {
+        final String endpoint = System.getProperty("org.jbpm.task.prediction.service.seldon.endpoint", "predict");
+        stubFor(post(urlEqualTo("/" + endpoint))
+                .withHeader("Accept", equalTo("application/json"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(TestUtils.readJSONAsString("responses/ndarray.json"))));
+
+        startAndReturnTaskOutputData("test item", "john", 5, false);
+        Map<String, Object> outputs = startAndReturnTaskOutputData("test item", "john", 5, true);
+
+        final double confidence = (double) outputs.get("confidence");
+        assertEquals(0.71, confidence, 1e-10);
     }
 
 
