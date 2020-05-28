@@ -9,12 +9,18 @@ public class AuthTokenRequestFilter extends StubRequestFilter {
 
     @Override
     public RequestFilterAction filter(Request request) {
-        if (request.header("Authorization").firstValue().equals("Bearer foobar")) {
+        // bypass authorization for token request endpoint
+        if (request.getUrl().equals("/oauth/token")) {
             return RequestFilterAction.continueWith(request);
         }
-
-        return RequestFilterAction.stopWith(ResponseDefinition.notAuthorised());
-
+        else {
+            // use authorization for all other endpoints
+            if (request.header("Authorization").firstValue().equals("Bearer foobar")) {
+                return RequestFilterAction.continueWith(request);
+            } else {
+                return RequestFilterAction.stopWith(ResponseDefinition.notAuthorised());
+            }
+        }
     }
 
     @Override

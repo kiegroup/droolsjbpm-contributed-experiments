@@ -30,7 +30,6 @@ public class NDArrayResponseTest extends AbstractSeldonTestSuite {
     public void testNDArrayResponse() {
         stubFor(post(urlEqualTo("/predict"))
                 .withHeader("Accept", equalTo("application/json"))
-
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")

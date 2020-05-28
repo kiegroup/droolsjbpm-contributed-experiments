@@ -29,6 +29,8 @@ import org.kie.internal.query.QueryFilter;
 
 import java.util.*;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertNotNull;
 
@@ -46,7 +48,14 @@ public class AbstractSeldonTestSuite extends AbstractKieServicesTest {
     public static void setupOnce() {
         System.setProperty("org.jbpm.task.prediction.service", ExampleSeldonPredictionService.IDENTIFIER);
         System.setProperty("org.jbpm.task.prediction.service.seldon.url", "http://localhost:5000");
-        System.setProperty("org.jbpm.task.prediction.service.seldon.token", "foobar");
+        System.setProperty("org.jbpm.task.prediction.service.seldon.usetoken", "true");
+        stubFor(post(urlEqualTo("/oauth/token"))
+                .withHeader("Content-Type", equalTo("application/x-www-form-urlencoded"))
+                .withBasicAuth("foo", "bar")
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(TestUtils.readJSONAsString("responses/token.json"))));
     }
 
     @AfterClass
