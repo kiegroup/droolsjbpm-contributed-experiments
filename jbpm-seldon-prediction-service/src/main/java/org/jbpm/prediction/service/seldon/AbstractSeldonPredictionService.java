@@ -126,7 +126,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
                     logger.info("Client authorized by Seldon at {}/oauth/token", SELDON_URL);
                     client.register(new AuthorizationTokenFilter(tokenResponse.getAccess_token()));
                 } else {
-                    logger.info("No valid token response. Skipping authentication");
+                    logger.warn("No valid token response. Skipping authentication");
                 }
 
         } else {
