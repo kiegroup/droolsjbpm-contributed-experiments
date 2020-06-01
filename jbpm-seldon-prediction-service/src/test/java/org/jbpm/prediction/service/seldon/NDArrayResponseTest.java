@@ -16,6 +16,7 @@
 
 package org.jbpm.prediction.service.seldon;
 
+
 import org.junit.Test;
 
 import java.util.Map;

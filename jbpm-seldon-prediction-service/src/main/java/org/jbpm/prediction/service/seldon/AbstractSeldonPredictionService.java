@@ -22,11 +22,14 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.jboss.resteasy.client.jaxrs.BasicAuthentication;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jbpm.prediction.service.seldon.payload.AuthorizationTokenFilter;
 import org.jbpm.prediction.service.seldon.payload.PredictionRequest;
 import org.jbpm.prediction.service.seldon.payload.PredictionResponse;
+import org.jbpm.prediction.service.seldon.payload.TokenResponse;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.prediction.PredictionOutcome;
 import org.kie.internal.task.api.prediction.PredictionService;
@@ -34,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.util.List;
@@ -43,14 +47,15 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractSeldonPredictionService implements PredictionService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSeldonPredictionService.class);
-    protected final ResteasyClient client;
-    protected final ResteasyWebTarget predict;
-    private double confidenceThreshold = 1.0;
-
     private static final String SELDON_URL_KEY = "org.jbpm.task.prediction.service.seldon.url";
+    private static final String SELDON_AUTH_CLIENT_ID = "org.jbpm.task.prediction.service.seldon.auth.client_id";
+    private static final String SELDON_AUTH_CLIENT_SECRET = "org.jbpm.task.prediction.service.seldon.auth.client_secret";
     private static final String CONFIDENCE_THRESHOLD_KEY = "org.jbpm.task.prediction.service.seldon.confidence_threshold";
     private static final String SELDON_TIMEOUT_KEY = "org.jbpm.task.prediction.service.seldon.timeout";
     private static final String SELDON_CONNECTION_POOL_SIZE_KEY = "org.jbpm.task.prediction.service.seldon.connection_pool_size";
+    protected final ResteasyClient client;
+    protected final ResteasyWebTarget predict;
+    private double confidenceThreshold = 1.0;
 
     public AbstractSeldonPredictionService() {
         // Seldon connection configuration
@@ -62,12 +67,9 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
 
         compositeConfiguration.addConfiguration(javaProperties);
         compositeConfiguration.addConfiguration(systemProperties);
-        try {
-            Configuration config = configs.properties(new File("seldon.properties"));
-            compositeConfiguration.addConfiguration(config);
-        } catch (ConfigurationException e) {
-            logger.debug("Could not find the file 'seldon.properties'. Trying other configuration sources.");
-        }
+
+        readConfigurationProperties("/seldon.properties", configs, compositeConfiguration);
+        readConfigurationProperties("/authorization.properties", configs, compositeConfiguration);
 
         final String SELDON_URL = compositeConfiguration.getString(SELDON_URL_KEY);
 
@@ -83,7 +85,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
 
         final String seldonTimeoutStr = compositeConfiguration.getString(SELDON_TIMEOUT_KEY);
 
-        if (seldonTimeoutStr!=null) {
+        if (seldonTimeoutStr != null) {
             try {
                 final long seldonTimeout = Long.parseLong(seldonTimeoutStr);
                 clientBuilder = clientBuilder.connectionCheckoutTimeout(seldonTimeout, TimeUnit.MILLISECONDS);
@@ -95,7 +97,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
 
         final String seldonConnectioPoolSizeStr = compositeConfiguration.getString(SELDON_CONNECTION_POOL_SIZE_KEY);
 
-        if (seldonConnectioPoolSizeStr!=null) {
+        if (seldonConnectioPoolSizeStr != null) {
             try {
                 final int seldonConnectioPoolSize = Integer.parseInt(seldonConnectioPoolSizeStr);
                 clientBuilder = clientBuilder.connectionPoolSize(seldonConnectioPoolSize);
@@ -106,6 +108,30 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
         }
 
         client = clientBuilder.build();
+
+        // Get the OAuth client id and secret from the configuration
+        final String seldonOAuthClientID = compositeConfiguration.getString(SELDON_AUTH_CLIENT_ID);
+        final String seldonOAuthClientSecret = compositeConfiguration.getString(SELDON_AUTH_CLIENT_SECRET);
+
+        if (seldonOAuthClientID != null && seldonOAuthClientSecret != null) {
+            logger.info("Using authenticated Seldon requests");
+                // If both OAuth client id and secret exist, request an authorization token from the auth endpoint
+                final TokenResponse tokenResponse = requestAuthorizationToken(client,
+                        SELDON_URL,
+                        seldonOAuthClientID,
+                        seldonOAuthClientSecret);
+                if (tokenResponse != null) {
+                    // If the authorization was successful, register the token for all subsequent
+                    // HTTP requests
+                    logger.info("Client authorized by Seldon at {}/oauth/token", SELDON_URL);
+                    client.register(new AuthorizationTokenFilter(tokenResponse.getAccess_token()));
+                } else {
+                    logger.warn("No valid token response. Skipping authentication");
+                }
+
+        } else {
+            logger.debug("Using Seldon without authentication");
+        }
 
         predict = client.target(SELDON_URL).path("predict");
 
@@ -124,16 +150,46 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
         }
     }
 
+    private void readConfigurationProperties(String filename, Configurations configurations, CompositeConfiguration composite) {
+        try {
+            Configuration properties = configurations.properties(new File(filename));
+            composite.addConfiguration(properties);
+
+        } catch (ConfigurationException e) {
+            logger.debug("Could not find the file '" + filename + "'. Trying other configuration sources.");
+        }
+    }
+
+    /**
+     * Request an authorization token from the server, by providing the OAuth key and secret
+     * @param client HTTP {@link ResteasyClient} object
+     * @param seldonURL Seldon server location
+     * @param oauthClientID OAuth client id
+     * @param oauthClientSecret OAuth client secret
+     * @return An authorization token as a {@link TokenResponse}
+     */
+    private TokenResponse requestAuthorizationToken(ResteasyClient client,
+                                                    String seldonURL,
+                                                    String oauthClientID,
+                                                    String oauthClientSecret) {
+
+        final Form form = new Form().param("grant_type", "client_credentials");
+        final ResteasyWebTarget target = client.target(seldonURL).path("oauth").path("token");
+
+        target.register(new BasicAuthentication(oauthClientID, oauthClientSecret));
+        return target.request().post(Entity.form(form), TokenResponse.class);
+    }
+
     /**
      * Returns a model prediction given the input data.
-     *
+     * <p>
      * A {@link PredictionRequest} is sent to the Seldon server containing the features built using the concrete
      * implementation of {@link PredictionRequest#build(List)}. The response is deserialized by
      * {@link PredictionResponse#parse(String)} and passed to {@link #parsePredictFeatures(PredictionResponse)}
      * in order to build the {@link PredictionOutcome}.
      *
      * @param task Human task data
-     * @param map A map containing the input attribute names as keys and the attribute values as values.
+     * @param map  A map containing the input attribute names as keys and the attribute values as values.
      * @return A {@link PredictionOutcome} containing the model's prediction for the input data.
      */
     @Override
@@ -169,7 +225,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
      * This is domain specific and must be implemented in the concrete service.
      *
      * @param task Human task data
-     * @param map A map containing the input attribute names as keys and the attribute values as values.
+     * @param map  A map containing the input attribute names as keys and the attribute values as values.
      * @return A two-dimensional list of numerical features.
      */
     public abstract List<List<Double>> buildPredictFeatures(Task task, Map<String, Object> map);
