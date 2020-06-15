@@ -11,7 +11,7 @@
     <properties>
 
         <drools.version>5.3.0.Final</drools.version>
-        <springframework.version>3.1.0.RELEASE</springframework.version>
+        <springframework.version>5.2.7.RELEASE</springframework.version>
         <slf4j.version>1.6.4</slf4j.version>
         <maven.jar.plugin.version>2.2</maven.jar.plugin.version>
         <junit.version>4.8.1</junit.version>
