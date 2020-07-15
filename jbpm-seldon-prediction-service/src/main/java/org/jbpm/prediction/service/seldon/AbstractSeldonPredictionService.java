@@ -48,6 +48,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
     private double confidenceThreshold = 1.0;
 
     private static final String SELDON_URL_KEY = "org.jbpm.task.prediction.service.seldon.url";
+    private static final String SELDON_ENDPOINT_KEY = "org.jbpm.task.prediction.service.seldon.endpoint";
     private static final String CONFIDENCE_THRESHOLD_KEY = "org.jbpm.task.prediction.service.seldon.confidence_threshold";
     private static final String SELDON_TIMEOUT_KEY = "org.jbpm.task.prediction.service.seldon.timeout";
     private static final String SELDON_CONNECTION_POOL_SIZE_KEY = "org.jbpm.task.prediction.service.seldon.connection_pool_size";
@@ -77,7 +78,17 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
             throw new IllegalArgumentException(errorMessage);
         }
 
-        logger.debug("Using Seldon endpoint " + SELDON_URL);
+        String SELDON_ENDPOINT = compositeConfiguration.getString(SELDON_ENDPOINT_KEY);
+
+        if (SELDON_ENDPOINT == null) {
+            logger.debug("Using default endpoint: /predict");
+            SELDON_ENDPOINT = "predict";
+        } else {
+            logger.debug("Using custom endpoint: /" + SELDON_ENDPOINT);
+        }
+
+
+        logger.debug("Using Seldon host " + SELDON_URL);
 
         ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder();
 
@@ -107,7 +118,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
 
         client = clientBuilder.build();
 
-        predict = client.target(SELDON_URL).path("predict");
+        predict = client.target(SELDON_URL).path(SELDON_ENDPOINT);
 
         // set confidence threshold from configuration
         final String CONFIDENCE_THRESHOLD = compositeConfiguration.getString(CONFIDENCE_THRESHOLD_KEY);

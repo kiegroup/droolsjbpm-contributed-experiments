@@ -18,7 +18,7 @@ package org.jbpm.prediction.service.seldon;
 
 import org.junit.Test;
 
-public class NDArrayResponseTest extends SeldonTestSuite {
+public class NDArrayResponseCustomEndpointTest extends SeldonCustomEndpointTestSuite {
 
     @Test
     public void testNDArrayResponse() {

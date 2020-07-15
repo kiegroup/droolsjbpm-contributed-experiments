@@ -20,14 +20,19 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
 
-public class TensorResponseTest extends AbstractSeldonTestSuite {
+public class TensorResponseTest extends SeldonTestSuite {
 
     @Test
     public void testTensorResponse() {
-        stubFor(post(urlEqualTo("/predict"))
+        final String endpoint = System.getProperty("org.jbpm.task.prediction.service.seldon.endpoint", "predict");
+        stubFor(post(urlEqualTo("/" + endpoint))
                 .withHeader("Accept", equalTo("application/json"))
                 .willReturn(aResponse()
                         .withStatus(200)

@@ -16,13 +16,13 @@
 
 package org.jbpm.prediction.service.seldon;
 
-import org.junit.Test;
+import org.jbpm.prediction.service.seldon.examples.ExampleSeldonPredictionService;
 
-public class NDArrayResponseTest extends SeldonTestSuite {
+public class SeldonTestSuite extends SeldonBaseTestSuite {
 
-    @Test
-    public void testNDArrayResponse() {
-        super.testNDArrayResponse();
+    public SeldonTestSuite() {
+        System.setProperty("org.jbpm.task.prediction.service", ExampleSeldonPredictionService.IDENTIFIER);
+        System.setProperty("org.jbpm.task.prediction.service.seldon.url", "http://localhost:5000");
     }
 
 }
