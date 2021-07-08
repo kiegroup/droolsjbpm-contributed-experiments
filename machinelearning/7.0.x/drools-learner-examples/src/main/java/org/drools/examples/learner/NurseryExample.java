@@ -2,7 +2,6 @@ package org.drools.examples.learner;
 
 import java.util.List;
 
-import org.drools.examples.learner.models.Car;
 import org.drools.examples.learner.models.Nursery;
 import org.drools.examples.learner.utils.CsvFileReader;
 import org.slf4j.Logger;
@@ -15,7 +14,6 @@ public class NurseryExample {
 
     public static void main( String... args ) throws Exception {
         String inputFile = System.getProperty( "user.dir" ) + "/src/main/resources/data/nursery/nursery.data.csv";
-        LOG.info( "parsing training data file " + inputFile );
         List<Object> nursureyData = CsvFileReader.readObjects( inputFile, csv -> {
             Nursery nursery = new Nursery();
             nursery.setParents( csv.get( "parents" ).trim() );
@@ -30,7 +28,6 @@ public class NurseryExample {
             return nursery;
         } );
 
-        LOG.info( "beginning training example" );
         DroolsLearnerExample nurseryExample = new DroolsLearnerExample( DroolsLearnerExample.SINGLE_C45E );
         nurseryExample.runTraningExample( Nursery.class, nursureyData );
 
@@ -38,7 +35,6 @@ public class NurseryExample {
             System.out.println( nurseryExample.getDrl() );
         }
 
-        LOG.info( "executing test data set against genearted rules" );
         nurseryExample.runGeneratedRules( nursureyData );
     }
 }

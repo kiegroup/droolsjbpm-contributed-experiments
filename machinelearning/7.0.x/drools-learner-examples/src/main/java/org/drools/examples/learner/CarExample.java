@@ -15,7 +15,6 @@ public class CarExample {
     public static void main( String... args ) throws Exception {
 
         String inputFile = System.getProperty( "user.dir" ) + "/src/main/resources/data/car/car.data.csv";
-        LOG.info( "parsing training data file " + inputFile );
         List<Object> carData = CsvFileReader.readObjects( inputFile, csv -> {
             Car car = new Car();
             car.setBuying( csv.get( "buying" ).trim() );
@@ -28,14 +27,13 @@ public class CarExample {
             return car;
         } );
 
-        LOG.info( "beginning training example" );
         DroolsLearnerExample carExample = new DroolsLearnerExample( DroolsLearnerExample.SINGLE_C45E );
         carExample.runTraningExample( Car.class, carData );
 
         if ( PRINT_DRL ) {
             System.out.println( carExample.getDrl() );
         }
-        LOG.info( "executing test data set against genearted rules" );
+
         carExample.runGeneratedRules( carData );
     }
 }
